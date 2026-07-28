@@ -7,6 +7,11 @@ import {
     setDriveViewMode
 } from "./ui.js";
 
+import {
+    initializeImageViewer
+} from "./viewer.js";
+
+initializeImageViewer();
 
 const loginButton =
     document.getElementById(
@@ -108,6 +113,8 @@ else {
     );
 
 }
+
+
 /*
  * Recupera a última visualização escolhida.
  * Caso não exista preferência, utiliza lista.
