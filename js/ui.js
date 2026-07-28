@@ -1,7 +1,7 @@
 import {
     DRIVE_ITEM_ICONS,
     DRIVE_DEFAULT_ICONS
-} from "./files-type.js";
+} from "./files-types.js";
 
 
 const FOLDER_MIME_TYPE =
