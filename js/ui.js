@@ -441,7 +441,7 @@ function getDriveItemFallbackIcon(
         FOLDER_MIME_TYPE
     ) {
 
-        return "images/file-type/folder-icon.svg";
+        return "images/files-type/folder-icon.svg";
 
     }
 
@@ -451,7 +451,7 @@ function getDriveItemFallbackIcon(
         )
     ) {
 
-        return "images/file-type/image-icon.svg";
+        return "images/files-type/image-icon.svg";
 
     }
 
@@ -460,11 +460,11 @@ function getDriveItemFallbackIcon(
         "application/pdf"
     ) {
 
-        return "images/file-type/pdf-icon.svg";
+        return "images/files-type/pdf-icon.svg";
 
     }
 
-    return "images/file-type/file-icon.svg";
+    return "images/files-type/file-icon.svg";
 
 }
 
