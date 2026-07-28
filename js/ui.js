@@ -474,9 +474,26 @@ function createDriveItemButton(
 
 
     console.log({
-        name: driveItem.name,
-        thumbnailLink: driveItem.thumbnailLink,
-        iconLink: driveItem.iconLink
+        name:
+            driveItem.name,
+
+        mimeType:
+            driveItem.mimeType,
+
+        hasThumbnail:
+            driveItem.hasThumbnail,
+
+        thumbnailLink:
+            driveItem.thumbnailLink,
+
+        canDownload:
+            driveItem.capabilities?.canDownload,
+
+        webContentLink:
+            driveItem.webContentLink,
+
+        iconLink:
+            driveItem.iconLink
     });
 
 
