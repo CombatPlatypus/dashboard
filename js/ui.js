@@ -188,6 +188,102 @@ export function showDriveBreadcrumb(
 }
 
 /**
+ * Exibe o indicador de carregamento
+ * enquanto uma pasta está sendo consultada.
+ */
+export function showDriveLoading() {
+
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
+
+    if (!driveFilesContainer) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
+        return;
+
+    }
+
+    driveFilesContainer.setAttribute(
+        "aria-busy",
+        "true"
+    );
+
+    driveFilesContainer.innerHTML = `
+
+        <div class="drive-loading">
+
+            <span
+                class="drive-loading-spinner"
+                aria-hidden="true"
+            ></span>
+
+            <span>
+                Carregando arquivos...
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/**
+ * Exibe uma mensagem quando não é possível
+ * carregar uma pasta do Google Drive.
+ */
+export function showDriveError(
+    errorMessage
+) {
+
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
+
+    if (!driveFilesContainer) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
+        return;
+
+    }
+
+    driveFilesContainer.setAttribute(
+        "aria-busy",
+        "false"
+    );
+
+    driveFilesContainer.innerHTML = "";
+
+    const errorElement =
+        document.createElement(
+            "p"
+        );
+
+    errorElement.classList.add(
+        "drive-error"
+    );
+
+    errorElement.textContent =
+        errorMessage ??
+        "Não foi possível carregar os arquivos.";
+
+    driveFilesContainer.appendChild(
+        errorElement
+    );
+
+}
+
+
+/**
  * Renderiza os arquivos e as pastas
  * retornados pela API do Google Drive.
  */
@@ -210,6 +306,11 @@ export function showDriveFiles(
         return;
 
     }
+
+    driveFilesContainer.setAttribute(
+    "aria-busy",
+    "false"
+);
 
     driveFilesContainer.innerHTML = "";
 
