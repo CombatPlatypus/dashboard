@@ -295,6 +295,10 @@ export function showDriveError(
  * Renderiza os arquivos e as pastas
  * retornados pela API do Google Drive.
  */
+/**
+ * Renderiza os arquivos e as pastas
+ * retornados pela API do Google Drive.
+ */
 export function showDriveFiles(
     driveItems,
     handleFolderOpen
@@ -339,10 +343,11 @@ export function showDriveFiles(
                     driveItem
                 );
 
-            if (
+            const isFolder =
                 driveItem.mimeType ===
-                FOLDER_MIME_TYPE
-            ) {
+                FOLDER_MIME_TYPE;
+
+            if (isFolder) {
 
                 driveItemButton.addEventListener(
                     "click",
@@ -406,6 +411,15 @@ export function showDriveFiles(
                 );
 
             }
+
+            driveFilesContainer.appendChild(
+                driveItemButton
+            );
+
+        }
+    );
+
+}
 
 /**
  * Altera o modo de exibição
