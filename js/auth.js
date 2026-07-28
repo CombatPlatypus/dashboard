@@ -1,8 +1,8 @@
 import { CONFIG } from "./config.js";
 
 import {
-    showUser,
-    showDriveFiles
+    showDriveFiles,
+    showUser
 } from "./ui.js";
 
 import { listDriveFiles } from "./drive.js";
@@ -12,9 +12,14 @@ export let tokenClient = null;
 export let accessToken = null;
 
 
-const folderHistory = [];
+// Armazena o caminho percorrido entre as pastas.
+const folderNavigationHistory = [];
 
 
+/**
+ * Abre uma pasta do Google Drive, renderiza seus itens
+ * e atualiza o histórico usado pelo botão de voltar.
+ */
 export async function openDriveFolder(
     folderId,
     addToHistory = true
@@ -24,26 +29,31 @@ export async function openDriveFolder(
 
         if (addToHistory) {
 
-            const currentFolder =
-                folderHistory.at(-1);
+            const currentFolderId =
+                folderNavigationHistory.at(-1);
 
-            if (currentFolder !== folderId) {
-                folderHistory.push(folderId);
+            if (currentFolderId !== folderId) {
+
+                folderNavigationHistory.push(
+                    folderId
+                );
+
             }
 
         }
 
-        const files = await listDriveFiles(
-            accessToken,
-            folderId
-        );
+        const driveItems =
+            await listDriveFiles(
+                accessToken,
+                folderId
+            );
 
         showDriveFiles(
-            files,
+            driveItems,
             openDriveFolder
         );
 
-        updateBackButton();
+        updateBackButtonVisibility();
 
     }
     catch (error) {
@@ -58,10 +68,16 @@ export async function openDriveFolder(
 }
 
 
-function updateBackButton() {
+/**
+ * Mostra ou oculta o botão de voltar conforme
+ * a profundidade atual da navegação.
+ */
+function updateBackButtonVisibility() {
 
     const backButton =
-        document.getElementById("driveBackButton");
+        document.getElementById(
+            "driveBackButton"
+        );
 
     if (!backButton) {
 
@@ -74,11 +90,15 @@ function updateBackButton() {
     }
 
     backButton.hidden =
-        folderHistory.length <= 1;
+        folderNavigationHistory.length <= 1;
 
 }
 
 
+/**
+ * Inicializa o cliente OAuth do Google
+ * e configura os eventos de navegação.
+ */
 function initializeGoogleAuth() {
 
     if (typeof google === "undefined") {
@@ -94,17 +114,21 @@ function initializeGoogleAuth() {
     tokenClient =
         google.accounts.oauth2.initTokenClient({
 
-            client_id: CONFIG.google.clientId,
+            client_id:
+                CONFIG.google.clientId,
 
             scope:
                 CONFIG.google.scopes.join(" "),
 
-            callback: handleTokenResponse
+            callback:
+                handleTokenResponse
 
         });
 
     const backButton =
-        document.getElementById("driveBackButton");
+        document.getElementById(
+            "driveBackButton"
+        );
 
     if (!backButton) {
 
@@ -118,37 +142,45 @@ function initializeGoogleAuth() {
 
     backButton.addEventListener(
         "click",
-        handleBackButton
+        handleBackButtonClick
     );
 
-    updateBackButton();
-
-    console.log(
-        "Cliente OAuth inicializado."
-    );
+    updateBackButtonVisibility();
 
 }
 
 
-async function handleBackButton() {
+/**
+ * Retorna para a pasta anterior registrada
+ * no histórico de navegação.
+ */
+async function handleBackButtonClick() {
 
-    if (folderHistory.length <= 1) {
+    if (
+        folderNavigationHistory.length <= 1
+    ) {
+
         return;
+
     }
 
-    folderHistory.pop();
+    folderNavigationHistory.pop();
 
-    const previousFolder =
-        folderHistory.at(-1);
+    const previousFolderId =
+        folderNavigationHistory.at(-1);
 
     await openDriveFolder(
-        previousFolder,
+        previousFolderId,
         false
     );
 
 }
 
 
+/**
+ * Processa a resposta do Google após
+ * a solicitação de autorização.
+ */
 async function handleTokenResponse(response) {
 
     if (response.error) {
@@ -165,20 +197,20 @@ async function handleTokenResponse(response) {
     accessToken =
         response.access_token;
 
-    console.log(
-        "Autorização concluída com sucesso."
-    );
-
     await initializeUserSession();
 
 }
 
 
+/**
+ * Carrega os dados do usuário
+ * e abre a pasta inicial configurada.
+ */
 async function initializeUserSession() {
 
     try {
 
-        folderHistory.length = 0;
+        folderNavigationHistory.length = 0;
 
         await loadUserInformation();
 
@@ -199,6 +231,10 @@ async function initializeUserSession() {
 }
 
 
+/**
+ * Consulta as informações básicas
+ * do usuário autenticado.
+ */
 async function loadUserInformation() {
 
     const response = await fetch(
@@ -227,6 +263,8 @@ async function loadUserInformation() {
 }
 
 
+// Aguarda o carregamento completo da página
+// antes de inicializar o OAuth.
 window.addEventListener(
     "load",
     initializeGoogleAuth
