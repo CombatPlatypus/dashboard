@@ -1,5 +1,8 @@
 import { CONFIG } from "./config.js";
-import { showUser } from "./ui.js";
+import {
+    showUser,
+    showDriveFiles
+} from "./ui.js";
 import { listDriveFiles } from "./drive.js";
 
 export let tokenClient = null;
@@ -63,7 +66,7 @@ async function initializeUserSession() {
 
         const files = await listDriveFiles(accessToken);
 
-        console.log("Arquivos encontrados:", files);
+        showDriveFiles(files);
 
     }
     catch (error) {
@@ -74,8 +77,9 @@ async function initializeUserSession() {
         );
 
     }
-
 }
+
+
 async function loadUserInformation() {
 
     const response = await fetch(
