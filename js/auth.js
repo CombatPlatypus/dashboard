@@ -2,7 +2,9 @@ import { CONFIG } from "./config.js";
 
 import {
     showDriveBreadcrumb,
+    showDriveError,
     showDriveFiles,
+    showDriveLoading,
     showUser
 } from "./ui.js";
 
@@ -28,6 +30,8 @@ export async function openDriveFolder(
     folderId,
     addToHistory = true
 ) {
+
+    showDriveLoading();
 
     try {
 
@@ -97,10 +101,14 @@ export async function openDriveFolder(
             error
         );
 
+        showDriveError(
+            error.message ??
+            "Não foi possível carregar os arquivos."
+        );
+
     }
 
 }
-
 
 /**
  * Mostra ou oculta o botão de voltar conforme
@@ -334,6 +342,8 @@ async function loadUserInformation() {
     showUser(user);
 
 }
+
+
 // Inicializa o OAuth depois que a página estiver carregada.
 window.addEventListener(
     "load",
