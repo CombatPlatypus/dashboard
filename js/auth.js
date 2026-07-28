@@ -1,24 +1,28 @@
 import { CONFIG } from "./config.js";
 
 import {
+    showDriveBreadcrumb,
     showDriveFiles,
     showUser
 } from "./ui.js";
 
-import { listDriveFiles } from "./drive.js";
+import {
+    getDriveFolderInformation,
+    listDriveFiles
+} from "./drive.js";
 
 
 export let tokenClient = null;
 export let accessToken = null;
 
 
-// Armazena o caminho percorrido entre as pastas.
+// Cada posição armazena o ID e o nome de uma pasta.
 const folderNavigationHistory = [];
 
 
 /**
- * Abre uma pasta do Google Drive, renderiza seus itens
- * e atualiza o histórico usado pelo botão de voltar.
+ * Abre uma pasta do Google Drive, carrega seus arquivos
+ * e atualiza o histórico de navegação.
  */
 export async function openDriveFolder(
     folderId,
@@ -27,18 +31,25 @@ export async function openDriveFolder(
 
     try {
 
-        if (addToHistory) {
+        const currentFolder =
+            folderNavigationHistory.at(-1);
 
-            const currentFolderId =
-                folderNavigationHistory.at(-1);
+        let newFolderInformation = null;
 
-            if (currentFolderId !== folderId) {
+        /*
+         * Consulta o nome da pasta apenas quando ela
+         * representa um novo nível da navegação.
+         */
+        if (
+            addToHistory &&
+            currentFolder?.id !== folderId
+        ) {
 
-                folderNavigationHistory.push(
+            newFolderInformation =
+                await getDriveFolderInformation(
+                    accessToken,
                     folderId
                 );
-
-            }
 
         }
 
@@ -48,9 +59,32 @@ export async function openDriveFolder(
                 folderId
             );
 
+        /*
+         * A pasta só entra no histórico depois que
+         * sua consulta é concluída com sucesso.
+         */
+        if (newFolderInformation) {
+
+            folderNavigationHistory.push({
+
+                id:
+                    newFolderInformation.id,
+
+                name:
+                    newFolderInformation.name
+
+            });
+
+        }
+
         showDriveFiles(
             driveItems,
             openDriveFolder
+        );
+
+        showDriveBreadcrumb(
+            folderNavigationHistory,
+            handleBreadcrumbNavigation
         );
 
         updateBackButtonVisibility();
@@ -97,7 +131,7 @@ function updateBackButtonVisibility() {
 
 /**
  * Inicializa o cliente OAuth do Google
- * e configura os eventos de navegação.
+ * e registra os eventos da navegação.
  */
 function initializeGoogleAuth() {
 
@@ -151,8 +185,7 @@ function initializeGoogleAuth() {
 
 
 /**
- * Retorna para a pasta anterior registrada
- * no histórico de navegação.
+ * Retorna para a pasta imediatamente anterior.
  */
 async function handleBackButtonClick() {
 
@@ -166,11 +199,50 @@ async function handleBackButtonClick() {
 
     folderNavigationHistory.pop();
 
-    const previousFolderId =
+    const previousFolder =
         folderNavigationHistory.at(-1);
 
     await openDriveFolder(
-        previousFolderId,
+        previousFolder.id,
+        false
+    );
+
+}
+
+
+/**
+ * Abre uma pasta selecionada no breadcrumb
+ * e remove do histórico os níveis posteriores.
+ */
+async function handleBreadcrumbNavigation(
+    folderIndex
+) {
+
+    const selectedFolder =
+        folderNavigationHistory[
+            folderIndex
+        ];
+
+    if (!selectedFolder) {
+
+        console.error(
+            "Pasta do breadcrumb não encontrada."
+        );
+
+        return;
+
+    }
+
+    /*
+     * Remove todas as pastas que estavam
+     * depois da pasta selecionada.
+     */
+    folderNavigationHistory.splice(
+        folderIndex + 1
+    );
+
+    await openDriveFolder(
+        selectedFolder.id,
         false
     );
 
@@ -203,8 +275,8 @@ async function handleTokenResponse(response) {
 
 
 /**
- * Carrega os dados do usuário
- * e abre a pasta inicial configurada.
+ * Carrega o usuário e abre
+ * a pasta inicial configurada.
  */
 async function initializeUserSession() {
 
@@ -237,15 +309,16 @@ async function initializeUserSession() {
  */
 async function loadUserInformation() {
 
-    const response = await fetch(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        {
-            headers: {
-                Authorization:
-                    `Bearer ${accessToken}`
+    const response =
+        await fetch(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            {
+                headers: {
+                    Authorization:
+                        `Bearer ${accessToken}`
+                }
             }
-        }
-    );
+        );
 
     if (!response.ok) {
 
@@ -263,8 +336,7 @@ async function loadUserInformation() {
 }
 
 
-// Aguarda o carregamento completo da página
-// antes de inicializar o OAuth.
+// Inicializa o OAuth depois que a página estiver carregada.
 window.addEventListener(
     "load",
     initializeGoogleAuth
