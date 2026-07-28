@@ -432,6 +432,14 @@ function createDriveItemButton(
     driveItem
 ) {
 
+
+    console.log({
+        name: driveItem.name,
+        thumbnailLink: driveItem.thumbnailLink,
+        iconLink: driveItem.iconLink
+    });
+
+
     /*
      * Botão principal que representa
      * o arquivo ou a pasta.
@@ -446,6 +454,21 @@ function createDriveItemButton(
 
     driveItemButton.classList.add(
         "drive-file"
+    );
+
+
+    const isFolder =
+        driveItem.mimeType ===
+        FOLDER_MIME_TYPE;
+
+    driveItemButton.classList.toggle(
+        "drive-folder",
+        isFolder
+    );
+
+    driveItemButton.classList.toggle(
+        "drive-document",
+        !isFolder
     );
 
 
