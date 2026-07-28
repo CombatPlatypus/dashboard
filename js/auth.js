@@ -10,11 +10,9 @@ export let accessToken = null;
 
 const folderHistory = [];
 
-
 export async function openDriveFolder(
     folderId,
-    addToHistory = true
-) {
+    addToHistory = true) {
 
     try {
 
@@ -45,8 +43,6 @@ export async function openDriveFolder(
     }
 
 }
-
-
 function initializeGoogleAuth() {
 
     if (typeof google === "undefined") {
@@ -56,7 +52,6 @@ function initializeGoogleAuth() {
         );
 
         return;
-
     }
 
     tokenClient = google.accounts.oauth2.initTokenClient({
@@ -137,7 +132,6 @@ async function loadUserInformation() {
     showUser(user);
 
 }
-
 function updateBackButton() {
 
     const backButton =
@@ -147,6 +141,11 @@ function updateBackButton() {
         folderHistory.length <= 1;
 
 }
+
+window.addEventListener(
+    "load",
+    initializeGoogleAuth
+);
 
 document
     .getElementById("driveBackButton")
@@ -167,8 +166,3 @@ document
         );
 
     });
-
-window.addEventListener(
-    "load",
-    initializeGoogleAuth
-);
