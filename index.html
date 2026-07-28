@@ -138,6 +138,64 @@
             }
 
 
+
+
+            /* BARRA DE NAVEGAÇÃO DO DRIVE */
+
+            .drive-toolbar {
+                display: flex;
+                align-items: center;
+                column-gap: 15px;
+                row-gap: 10px;
+
+                margin-bottom: 15px;
+
+                flex-wrap: wrap;
+            }
+
+            .drive-toolbar .button {
+                margin: 0;
+            }
+
+            .drive-breadcrumb {
+                display: flex;
+                align-items: center;
+                column-gap: 8px;
+                row-gap: 5px;
+
+                flex-wrap: wrap;
+            }
+
+            .drive-breadcrumb-button {
+                padding: 0;
+
+                color: inherit;
+                font-size: 14px;
+
+                background: transparent;
+                border: none;
+
+                cursor: pointer;
+            }
+
+            .drive-breadcrumb-button:hover {
+                text-decoration: underline;
+            }
+
+            .drive-breadcrumb-current {
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .drive-breadcrumb-separator {
+                font-size: 14px;
+                opacity: 0.6;
+                user-select: none;
+            }
+
+            /* DRIVE */
+
+
             .drive-section {
                 padding: 20px;
             }
@@ -385,7 +443,8 @@
 
                             <div class="drive-toolbar">
 
-                                <button class="button"
+                                <button
+                                    class="button"
                                     type="button"
                                     id="driveBackButton"
                                     hidden
@@ -393,6 +452,11 @@
                                     ← Voltar
                                 </button>
 
+                                <nav
+                                    id="driveBreadcrumb"
+                                    class="drive-breadcrumb"
+                                    aria-label="Caminho da pasta"
+                                ></nav>
                             </div>
 
                             <div id="driveFiles">
