@@ -1,8 +1,7 @@
 import {
-    DRIVE_DEFAULT_ICONS,
-    DRIVE_ITEM_ICONS
-} from "./file-types.js";
-
+    DRIVE_ITEM_ICONS,
+    DRIVE_DEFAULT_ICONS
+} from "./files-type.js";
 
 
 const FOLDER_MIME_TYPE =
@@ -675,8 +674,6 @@ function openDriveFile(fileUrl) {
     );
 
 }
-
-
 /**
  * Converte uma data ISO
  * para o formato brasileiro.
