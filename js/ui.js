@@ -1,3 +1,10 @@
+import {
+    DRIVE_DEFAULT_ICONS,
+    DRIVE_ITEM_ICONS
+} from "./file-types.js";
+
+
+
 const FOLDER_MIME_TYPE =
     "application/vnd.google-apps.folder";
 
@@ -75,7 +82,8 @@ export function showUser(user) {
  */
 export function showDriveBreadcrumb(
     folderHistory,
-    handleFolderSelection) {
+    handleFolderSelection
+) {
 
     const breadcrumbContainer =
         document.getElementById(
@@ -427,11 +435,11 @@ export function setDriveViewMode(
  * Retorna um ícone local conforme
  * o tipo do item do Google Drive.
  */
+
 /**
  * Retorna um ícone local conforme
  * o tipo do item do Google Drive.
  */
-
 function getDriveItemFallbackIcon(
     driveItem
 ) {
@@ -441,7 +449,7 @@ function getDriveItemFallbackIcon(
         FOLDER_MIME_TYPE
     ) {
 
-        return "images/files-type/folder-icon.svg";
+        return DRIVE_DEFAULT_ICONS.folder;
 
     }
 
@@ -451,20 +459,16 @@ function getDriveItemFallbackIcon(
         )
     ) {
 
-        return "images/files-type/image-icon.svg";
+        return DRIVE_DEFAULT_ICONS.image;
 
     }
 
-    if (
-        driveItem.mimeType ===
-        "application/pdf"
-    ) {
-
-        return "images/files-type/pdf-icon.svg";
-
-    }
-
-    return "images/files-type/file-icon.svg";
+    return (
+        DRIVE_ITEM_ICONS[
+            driveItem.mimeType
+        ] ??
+        DRIVE_DEFAULT_ICONS.file
+    );
 
 }
 
@@ -477,29 +481,6 @@ function createDriveItemButton(
     driveItem
 ) {
 
-
-    console.log({
-        name:
-            driveItem.name,
-
-        mimeType:
-            driveItem.mimeType,
-
-        hasThumbnail:
-            driveItem.hasThumbnail,
-
-        thumbnailLink:
-            driveItem.thumbnailLink,
-
-        canDownload:
-            driveItem.capabilities?.canDownload,
-
-        webContentLink:
-            driveItem.webContentLink,
-
-        iconLink:
-            driveItem.iconLink
-    });
 
 
     /*
@@ -576,12 +557,21 @@ function createDriveItemButton(
         "error",
         () => {
 
+            if (
+                imageElement.dataset.fallbackApplied ===
+                "true"
+            ) {
+
+                return;
+
+            }
+
+            imageElement.dataset.fallbackApplied =
+                "true";
+
             imageElement.src =
                 fallbackImage;
 
-        },
-        {
-            once: true
         }
     );
 
