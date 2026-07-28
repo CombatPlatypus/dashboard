@@ -75,8 +75,7 @@ export function showUser(user) {
  */
 export function showDriveBreadcrumb(
     folderHistory,
-    handleFolderSelection
-) {
+    handleFolderSelection) {
 
     const breadcrumbContainer =
         document.getElementById(
@@ -282,7 +281,6 @@ export function showDriveError(
 
 }
 
-
 /**
  * Renderiza os arquivos e as pastas
  * retornados pela API do Google Drive.
@@ -308,9 +306,9 @@ export function showDriveFiles(
     }
 
     driveFilesContainer.setAttribute(
-    "aria-busy",
-    "false"
-);
+        "aria-busy",
+        "false"
+    );
 
     driveFilesContainer.innerHTML = "";
 
@@ -328,12 +326,6 @@ export function showDriveFiles(
 
             const driveItemButton =
                 createDriveItemButton(
-
-                const previewImage =
-                    driveItem.thumbnailLink ??
-                    driveItem.iconLink ??
-                    "";
-
                     driveItem
                 );
 
@@ -374,6 +366,59 @@ export function showDriveFiles(
             );
 
         }
+    );
+
+}
+
+/**
+ * Altera o modo de exibição
+ * dos arquivos do Google Drive.
+ */
+export function setDriveViewMode(
+    viewMode
+) {
+
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
+
+    if (!driveFilesContainer) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
+        return;
+
+    }
+
+    if (
+        viewMode !== "list" &&
+        viewMode !== "grid"
+    ) {
+
+        console.error(
+            "Modo de exibição inválido:",
+            viewMode
+        );
+
+        return;
+
+    }
+
+    driveFilesContainer.classList.remove(
+        "drive-list-view",
+        "drive-grid-view"
+    );
+
+    driveFilesContainer.classList.add(
+        `drive-${viewMode}-view`
+    );
+
+    localStorage.setItem(
+        "driveViewMode",
+        viewMode
     );
 
 }
@@ -600,24 +645,5 @@ function formatDate(dateValue) {
             timeStyle: "short"
         }
     ).format(date);
-
-}
-
-
-/**
- * Escapa um texto antes de inseri-lo
- * dentro de uma string HTML.
- */
-function escapeHTML(value) {
-
-    const element =
-        document.createElement(
-            "div"
-        );
-
-    element.textContent =
-        String(value);
-
-    return element.innerHTML;
 
 }
