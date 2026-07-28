@@ -125,7 +125,7 @@ export async function listDriveFiles(
 
                         "iconLink,",
                         
-                        "thumbnailLink,"
+                        "thumbnailLink,",
 
                         "modifiedTime",
 
