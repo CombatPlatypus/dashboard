@@ -1,114 +1,430 @@
-import { CONFIG } from "./config.js";
+import {
+    DRIVE_DEFAULT_ICONS,
+    DRIVE_ITEM_ICONS
+} from "./files-types.js";
 
 import {
-    showDriveBreadcrumb,
-    showDriveError,
-    showDriveFiles,
-    showDriveLoading,
-    showUser
-} from "./ui.js";
+    openImageViewer
+} from "./viewer.js";
 
-import {
-    getDriveFolderInformation,
-    listDriveFiles
-} from "./drive.js";
-
-
-export let tokenClient = null;
-export let accessToken = null;
-
-
-// Cada posição armazena o ID e o nome de uma pasta.
-const folderNavigationHistory = [];
+const FOLDER_MIME_TYPE =
+    "application/vnd.google-apps.folder";
 
 
 /**
- * Abre uma pasta do Google Drive, carrega seus arquivos
- * e atualiza o histórico de navegação.
+ * Preenche a área de usuário e ajusta
+ * a interface depois do login.
  */
-export async function openDriveFolder(
-    folderId,
-    addToHistory = true) {
+export function showUser(user) {
 
-    showDriveLoading();
-
-    try {
-
-        const currentFolder =
-            folderNavigationHistory.at(-1);
-
-        let newFolderInformation = null;
-
-        /*
-         * Consulta o nome da pasta apenas quando ela
-         * representa um novo nível da navegação.
-         */
-        if (
-            addToHistory &&
-            currentFolder?.id !== folderId
-        ) {
-
-            newFolderInformation =
-                await getDriveFolderInformation(
-                    accessToken,
-                    folderId
-                );
-
-        }
-
-        const driveItems =
-            await listDriveFiles(
-                accessToken,
-                folderId
-            );
-
-        /*
-         * A pasta só entra no histórico depois que
-         * sua consulta é concluída com sucesso.
-         */
-        if (newFolderInformation) {
-
-            folderNavigationHistory.push({
-
-                id:
-                    newFolderInformation.id,
-
-                name:
-                    newFolderInformation.name
-
-            });
-
-        }
-
-        showDriveFiles(
-            driveItems,
-            openDriveFolder
+    const loginButton =
+        document.getElementById(
+            "loginButton"
         );
 
-        showDriveBreadcrumb(
-            folderNavigationHistory,
-            handleBreadcrumbNavigation
+    const userInfoContainer =
+        document.getElementById(
+            "userInfo"
         );
 
-        updateBackButtonVisibility();
+    const userPhoto =
+        document.getElementById(
+            "userPhoto"
+        );
 
-    }
-    catch (error) {
+    const userName =
+        document.getElementById(
+            "userName"
+        );
+
+    const userEmail =
+        document.getElementById(
+            "userEmail"
+        );
+
+    if (
+        !loginButton ||
+        !userInfoContainer ||
+        !userPhoto ||
+        !userName ||
+        !userEmail
+    ) {
 
         console.error(
-            "Não foi possível abrir a pasta:",
-            error
+            "Elementos da área do usuário não foram encontrados."
         );
 
-        showDriveError(
-            error.message ??
-            "Não foi possível carregar os arquivos."
-        );
+        return;
 
     }
+
+    userPhoto.src =
+        user.picture ?? "";
+
+    userPhoto.alt =
+        user.name
+            ? `Foto de ${user.name}`
+            : "Foto do usuário";
+
+    userName.textContent =
+        user.name ?? "Usuário";
+
+    userEmail.textContent =
+        user.email ?? "";
+
+    loginButton.hidden = true;
+
+    userInfoContainer.hidden = false;
 
 }
 
+/**
+ * Renderiza o caminho atual de navegação
+ * e permite voltar diretamente para uma pasta anterior.
+ */
+export function showDriveBreadcrumb(
+    folderHistory,
+    handleFolderSelection
+) {
+
+    const breadcrumbContainer =
+        document.getElementById(
+            "driveBreadcrumb"
+        );
+
+    if (!breadcrumbContainer) {
+
+        console.error(
+            "Área #driveBreadcrumb não encontrada."
+        );
+
+        return;
+
+    }
+
+    breadcrumbContainer.innerHTML = "";
+
+    folderHistory.forEach(
+        (folder, folderIndex) => {
+
+            const isCurrentFolder =
+                folderIndex ===
+                folderHistory.length - 1;
+
+            if (folderIndex > 0) {
+
+                const separator =
+                    document.createElement(
+                        "span"
+                    );
+
+                separator.classList.add(
+                    "drive-breadcrumb-separator"
+                );
+
+                separator.textContent = ">";
+
+                separator.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                breadcrumbContainer.appendChild(
+                    separator
+                );
+
+            }
+
+            if (isCurrentFolder) {
+
+                const currentFolderElement =
+                    document.createElement(
+                        "span"
+                    );
+
+                currentFolderElement.classList.add(
+                    "drive-breadcrumb-current"
+                );
+
+                currentFolderElement.textContent =
+                    folder.name;
+
+                currentFolderElement.setAttribute(
+                    "aria-current",
+                    "page"
+                );
+
+                breadcrumbContainer.appendChild(
+                    currentFolderElement
+                );
+
+                return;
+
+            }
+
+            const folderButton =
+                document.createElement(
+                    "button"
+                );
+
+            folderButton.type = "button";
+
+            folderButton.classList.add(
+                "drive-breadcrumb-button"
+            );
+
+            folderButton.textContent =
+                folder.name;
+
+            folderButton.addEventListener(
+                "click",
+                () => {
+
+                    handleFolderSelection(
+                        folderIndex
+                    );
+
+                }
+            );
+
+            breadcrumbContainer.appendChild(
+                folderButton
+            );
+
+        }
+    );
+
+}
+
+/**
+ * Exibe o indicador de carregamento
+ * enquanto uma pasta está sendo consultada.
+ */
+export function showDriveLoading() {
+
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
+
+    if (!driveFilesContainer) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
+        return;
+
+    }
+
+    driveFilesContainer.setAttribute(
+        "aria-busy",
+        "true"
+    );
+
+    driveFilesContainer.innerHTML = `
+
+        <div class="drive-loading">
+
+            <span
+                class="drive-loading-spinner"
+                aria-hidden="true"
+            ></span>
+
+            <span>
+                Carregando arquivos...
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/**
+ * Exibe uma mensagem quando não é possível
+ * carregar uma pasta do Google Drive.
+ */
+export function showDriveError(
+    errorMessage
+) {
+
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
+
+    if (!driveFilesContainer) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
+        return;
+
+    }
+
+    driveFilesContainer.setAttribute(
+        "aria-busy",
+        "false"
+    );
+
+    driveFilesContainer.innerHTML = "";
+
+    const errorElement =
+        document.createElement(
+            "p"
+        );
+
+    errorElement.classList.add(
+        "drive-error"
+    );
+
+    errorElement.textContent =
+        errorMessage ??
+        "Não foi possível carregar os arquivos.";
+
+    driveFilesContainer.appendChild(
+        errorElement
+    );
+
+}
+
+/**
+ * Renderiza os arquivos e as pastas
+ * retornados pela API do Google Drive.
+ */
+/**
+ * Renderiza os arquivos e as pastas
+ * retornados pela API do Google Drive.
+ */
+export function showDriveFiles(
+    driveItems,
+    handleFolderOpen
+) {
+
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
+
+    if (!driveFilesContainer) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
+        return;
+
+    }
+
+    driveFilesContainer.setAttribute(
+        "aria-busy",
+        "false"
+    );
+
+    driveFilesContainer.innerHTML = "";
+
+    if (driveItems.length === 0) {
+
+        driveFilesContainer.innerHTML =
+            "<p>Esta pasta está vazia.</p>";
+
+        return;
+
+    }
+
+    driveItems.forEach(
+        (driveItem) => {
+
+            const driveItemButton =
+                createDriveItemButton(
+                    driveItem
+                );
+
+            const isFolder =
+                driveItem.mimeType ===
+                FOLDER_MIME_TYPE;
+
+            if (isFolder) {
+
+                driveItemButton.addEventListener(
+                    "click",
+                    () => {
+
+                        handleFolderOpen(
+                            driveItem.id
+                        );
+
+                    }
+                );
+
+            }
+            else {
+
+                driveItemButton.addEventListener(
+                    "click",
+                    () => {
+
+                        const isImage =
+                            driveItem.mimeType?.startsWith(
+                                "image/"
+                            );
+
+                        if (isImage) {
+
+                            const imageUrl =
+                                getDriveImageUrl(
+                                    driveItem
+                                );
+
+                            if (!imageUrl) {
+
+                                console.error(
+                                    "Não foi possível obter a URL da imagem:",
+                                    driveItem.name
+                                );
+
+                                openDriveFile(
+                                    driveItem.webViewLink
+                                );
+
+                                return;
+
+                            }
+
+                            openImageViewer(
+                                imageUrl,
+                                driveItem.name
+                            );
+
+                            return;
+
+                        }
+
+                        openDriveFile(
+                            driveItem.webViewLink
+                        );
+
+                    }
+                );
+
+            }
+
+            driveFilesContainer.appendChild(
+                driveItemButton
+            );
+
+        }
+    );
+
+}
+
+/**
+ * Altera o modo de exibição
+ * dos arquivos do Google Drive.
+ */
 export function setDriveViewMode(
     viewMode
 ) {
@@ -119,7 +435,27 @@ export function setDriveViewMode(
         );
 
     if (!driveFilesContainer) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
         return;
+
+    }
+
+    if (
+        viewMode !== "list" &&
+        viewMode !== "grid"
+    ) {
+
+        console.error(
+            "Modo de exibição inválido:",
+            viewMode
+        );
+
+        return;
+
     }
 
     driveFilesContainer.classList.remove(
@@ -131,246 +467,342 @@ export function setDriveViewMode(
         `drive-${viewMode}-view`
     );
 
-}
-
-setDriveViewMode("grid");
-
-
-/**
- * Mostra ou oculta o botão de voltar conforme
- * a profundidade atual da navegação.
- */
-function updateBackButtonVisibility() {
-
-    const backButton =
-        document.getElementById(
-            "driveBackButton"
-        );
-
-    if (!backButton) {
-
-        console.error(
-            "Botão de voltar não encontrado."
-        );
-
-        return;
-
-    }
-
-    backButton.hidden =
-        folderNavigationHistory.length <= 1;
-
-}
-
-
-/**
- * Inicializa o cliente OAuth do Google
- * e registra os eventos da navegação.
- */
-function initializeGoogleAuth() {
-
-    if (typeof google === "undefined") {
-
-        console.error(
-            "A biblioteca Google Identity Services não foi carregada."
-        );
-
-        return;
-
-    }
-
-    tokenClient =
-        google.accounts.oauth2.initTokenClient({
-
-            client_id:
-                CONFIG.google.clientId,
-
-            scope:
-                CONFIG.google.scopes.join(" "),
-
-            callback:
-                handleTokenResponse
-
-        });
-
-    const backButton =
-        document.getElementById(
-            "driveBackButton"
-        );
-
-    if (!backButton) {
-
-        console.error(
-            "Botão de voltar não encontrado."
-        );
-
-        return;
-
-    }
-
-    backButton.addEventListener(
-        "click",
-        handleBackButtonClick
-    );
-
-    updateBackButtonVisibility();
-
-}
-
-
-/**
- * Retorna para a pasta imediatamente anterior.
- */
-async function handleBackButtonClick() {
-
-    if (
-        folderNavigationHistory.length <= 1
-    ) {
-
-        return;
-
-    }
-
-    folderNavigationHistory.pop();
-
-    const previousFolder =
-        folderNavigationHistory.at(-1);
-
-    await openDriveFolder(
-        previousFolder.id,
-        false
+    localStorage.setItem(
+        "driveViewMode",
+        viewMode
     );
 
 }
 
+/**
+ * Retorna um ícone local conforme
+ * o tipo do item do Google Drive.
+ */
 
 /**
- * Abre uma pasta selecionada no breadcrumb
- * e remove do histórico os níveis posteriores.
+ * Retorna um ícone local conforme
+ * o tipo do item do Google Drive.
  */
-async function handleBreadcrumbNavigation(
-    folderIndex
+function getDriveItemFallbackIcon(
+    driveItem
 ) {
 
-    const selectedFolder =
-        folderNavigationHistory[
-            folderIndex
-        ];
+    if (
+        driveItem.mimeType ===
+        FOLDER_MIME_TYPE
+    ) {
 
-    if (!selectedFolder) {
-
-        console.error(
-            "Pasta do breadcrumb não encontrada."
-        );
-
-        return;
+        return DRIVE_DEFAULT_ICONS.folder;
 
     }
+
+    if (
+        driveItem.mimeType?.startsWith(
+            "image/"
+        )
+    ) {
+
+        return DRIVE_DEFAULT_ICONS.image;
+
+    }
+
+    return (
+        DRIVE_ITEM_ICONS[
+            driveItem.mimeType
+        ] ??
+        DRIVE_DEFAULT_ICONS.file
+    );
+
+}
+
+
+/**
+ * Cria o botão visual usado para
+ * representar um item do Drive.
+ */
+function createDriveItemButton(
+    driveItem
+) {
+
+
 
     /*
-     * Remove todas as pastas que estavam
-     * depois da pasta selecionada.
+     * Botão principal que representa
+     * o arquivo ou a pasta.
      */
-    folderNavigationHistory.splice(
-        folderIndex + 1
+    const driveItemButton =
+        document.createElement(
+            "button"
+        );
+
+    driveItemButton.type =
+        "button";
+
+    driveItemButton.classList.add(
+        "drive-file"
     );
 
-    await openDriveFolder(
-        selectedFolder.id,
-        false
+
+    const isFolder =
+        driveItem.mimeType ===
+        FOLDER_MIME_TYPE;
+
+    driveItemButton.classList.toggle(
+        "drive-folder",
+        isFolder
     );
+
+    driveItemButton.classList.toggle(
+        "drive-document",
+        !isFolder
+    );
+
+
+    /*
+     * Escolhe a miniatura como imagem principal.
+     *
+     * Caso o arquivo não tenha miniatura,
+     * utiliza o ícone padrão retornado pelo Drive.
+     */
+    const fallbackImage =
+        getDriveItemFallbackIcon(
+            driveItem
+        );
+
+    const isImage =
+        driveItem.mimeType?.startsWith(
+            "image/"
+        );
+
+    const previewImage =
+        isImage && driveItem.thumbnailLink
+            ? driveItem.thumbnailLink
+            : fallbackImage;
+
+    /*
+     * Cria a imagem do arquivo.
+     */
+    const imageElement =
+        document.createElement(
+            "img"
+        );
+
+    imageElement.src =
+        previewImage;
+
+    imageElement.alt = "";
+
+    imageElement.classList.add(
+        "drive-file-icon"
+    );
+
+
+    /*
+     * Se a miniatura não puder ser carregada,
+     * tenta usar o ícone padrão do Drive.
+     */
+    imageElement.addEventListener(
+        "error",
+        () => {
+
+            if (
+                imageElement.dataset.fallbackApplied ===
+                "true"
+            ) {
+
+                return;
+
+            }
+
+            imageElement.dataset.fallbackApplied =
+                "true";
+
+            imageElement.src =
+                fallbackImage;
+
+        }
+    );
+
+
+    /*
+     * Cria o container que agrupa
+     * o nome e a data do arquivo.
+     */
+    const driveItemInformation =
+        document.createElement(
+            "div"
+        );
+
+    driveItemInformation.classList.add(
+        "drive-file-info"
+    );
+
+
+    /*
+     * Cria o nome do arquivo.
+     */
+    const driveItemName =
+        document.createElement(
+            "strong"
+        );
+
+    driveItemName.classList.add(
+        "drive-file-name"
+    );
+
+    driveItemName.textContent =
+        driveItem.name ??
+        "Arquivo sem nome";
+
+
+    /*
+     * Cria a informação de modificação.
+     */
+    const driveItemDate =
+        document.createElement(
+            "span"
+        );
+
+    driveItemDate.classList.add(
+        "drive-file-date"
+    );
+
+    driveItemDate.textContent =
+        `Modificado em: ${
+            formatDate(
+                driveItem.modifiedTime
+            )
+        }`;
+
+
+    /*
+     * Insere o nome e a data
+     * dentro do container de informações.
+     */
+    driveItemInformation.append(
+        driveItemName,
+        driveItemDate
+    );
+
+
+    /*
+     * Insere a imagem e as informações
+     * dentro do botão principal.
+     */
+    driveItemButton.append(
+        imageElement,
+        driveItemInformation
+    );
+
+
+    return driveItemButton;
 
 }
 
 
 /**
- * Processa a resposta do Google após
- * a solicitação de autorização.
+ * Abre um arquivo do Drive
+ * em uma nova aba.
  */
-async function handleTokenResponse(response) {
+function openDriveFile(fileUrl) {
 
-    if (response.error) {
+    if (!fileUrl) {
 
         console.error(
-            "Erro durante a autorização:",
-            response.error
+            "Link do arquivo não informado."
         );
 
         return;
 
     }
 
-    accessToken =
-        response.access_token;
+    window.open(
+        fileUrl,
+        "_blank",
+        "noopener,noreferrer"
+    );
 
-    await initializeUserSession();
+}
+
+/**
+ * Retorna a melhor URL disponível
+ * para abrir uma imagem no viewer.
+ */
+function getDriveImageUrl(
+    driveItem
+) {
+
+    if (driveItem.webContentLink) {
+
+        return driveItem.webContentLink;
+
+    }
+
+    if (driveItem.thumbnailLink) {
+
+        return getLargerThumbnailUrl(
+            driveItem.thumbnailLink
+        );
+
+    }
+
+    return null;
+
+}
+
+/**
+ * Solicita uma versão maior da miniatura
+ * retornada pelo Google Drive.
+ */
+function getLargerThumbnailUrl(
+    thumbnailUrl
+) {
+
+    if (!thumbnailUrl) {
+
+        return null;
+
+    }
+
+    return thumbnailUrl.replace(
+        /=s\d+$/,
+        "=s1600"
+    );
 
 }
 
 
 /**
- * Carrega o usuário e abre
- * a pasta inicial configurada.
+ * Converte uma data ISO
+ * para o formato brasileiro.
  */
-async function initializeUserSession() {
+function formatDate(dateValue) {
 
-    try {
+    if (!dateValue) {
 
-        folderNavigationHistory.length = 0;
-
-        await loadUserInformation();
-
-        await openDriveFolder(
-            CONFIG.google.folderId
-        );
+        return "Data não disponível";
 
     }
-    catch (error) {
 
-        console.error(
-            "Erro ao carregar os dados da sessão:",
-            error
-        );
+    const date =
+        new Date(dateValue);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "Data não disponível";
 
     }
+
+    return new Intl.DateTimeFormat(
+        "pt-BR",
+        {
+            dateStyle: "short",
+            timeStyle: "short"
+        }
+    ).format(date);
 
 }
-
-
-/**
- * Consulta as informações básicas
- * do usuário autenticado.
- */
-async function loadUserInformation() {
-
-    const response =
-        await fetch(
-            "https://www.googleapis.com/oauth2/v3/userinfo",
-            {
-                headers: {
-                    Authorization:
-                        `Bearer ${accessToken}`
-                }
-            }
-        );
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Erro ao consultar usuário: ${response.status}`
-        );
-
-    }
-
-    const user =
-        await response.json();
-
-    showUser(user);
-
-}
-
-// Inicializa o OAuth depois que a página estiver carregada.
-window.addEventListener(
-    "load",
-    initializeGoogleAuth
-);
