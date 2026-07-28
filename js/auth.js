@@ -1,4 +1,5 @@
 import { CONFIG } from "./config.js";
+import { showUser } from "./ui.js";
 
 export let tokenClient = null;
 export let accessToken = null;
@@ -63,10 +64,7 @@ async function loadUserInformation() {
 
         const user = await response.json();
 
-        console.log("Usuário autenticado:", {
-            name: user.name,
-            email: user.email
-        });
+        showUser(user);
 
     }
     catch (error) {
