@@ -1,8 +1,11 @@
 import {
-    DRIVE_ITEM_ICONS,
-    DRIVE_DEFAULT_ICONS
-} from "./files-types.js";
+    DRIVE_DEFAULT_ICONS,
+    DRIVE_ITEM_ICONS
+} from "./files-type.js";
 
+import {
+    openImageViewer
+} from "./viewer.js";
 
 const FOLDER_MIME_TYPE =
     "application/vnd.google-apps.folder";
@@ -359,6 +362,42 @@ export function showDriveFiles(
                     "click",
                     () => {
 
+                        const isImage =
+                            driveItem.mimeType?.startsWith(
+                                "image/"
+                            );
+
+                        if (isImage) {
+
+                            const imageUrl =
+                                getDriveImageUrl(
+                                    driveItem
+                                );
+
+                            if (!imageUrl) {
+
+                                console.error(
+                                    "Não foi possível obter a URL da imagem:",
+                                    driveItem.name
+                                );
+
+                                openDriveFile(
+                                    driveItem.webViewLink
+                                );
+
+                                return;
+
+                            }
+
+                            openImageViewer(
+                                imageUrl,
+                                driveItem.name
+                            );
+
+                            return;
+
+                        }
+
                         openDriveFile(
                             driveItem.webViewLink
                         );
@@ -367,15 +406,6 @@ export function showDriveFiles(
                 );
 
             }
-
-            driveFilesContainer.appendChild(
-                driveItemButton
-            );
-
-        }
-    );
-
-}
 
 /**
  * Altera o modo de exibição
@@ -676,6 +706,53 @@ function openDriveFile(fileUrl) {
         fileUrl,
         "_blank",
         "noopener,noreferrer"
+    );
+
+}
+
+/**
+ * Retorna a melhor URL disponível
+ * para abrir uma imagem no viewer.
+ */
+function getDriveImageUrl(
+    driveItem
+) {
+
+    if (driveItem.webContentLink) {
+
+        return driveItem.webContentLink;
+
+    }
+
+    if (driveItem.thumbnailLink) {
+
+        return getLargerThumbnailUrl(
+            driveItem.thumbnailLink
+        );
+
+    }
+
+    return null;
+
+}
+
+/**
+ * Solicita uma versão maior da miniatura
+ * retornada pelo Google Drive.
+ */
+function getLargerThumbnailUrl(
+    thumbnailUrl
+) {
+
+    if (!thumbnailUrl) {
+
+        return null;
+
+    }
+
+    return thumbnailUrl.replace(
+        /=s\d+$/,
+        "=s1600"
     );
 
 }
