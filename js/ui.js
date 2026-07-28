@@ -27,6 +27,16 @@ export function showDriveFiles(files, handleFolderOpen) {
     const driveFiles =
         document.getElementById("driveFiles");
 
+    if (!driveFiles) {
+
+        console.error(
+            "Área #driveFiles não encontrada."
+        );
+
+        return;
+
+    }
+    
     driveFiles.innerHTML = "";
 
     if (files.length === 0) {
