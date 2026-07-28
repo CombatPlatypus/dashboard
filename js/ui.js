@@ -69,6 +69,124 @@ export function showUser(user) {
 
 }
 
+/**
+ * Renderiza o caminho atual de navegação
+ * e permite voltar diretamente para uma pasta anterior.
+ */
+export function showDriveBreadcrumb(
+    folderHistory,
+    handleFolderSelection
+) {
+
+    const breadcrumbContainer =
+        document.getElementById(
+            "driveBreadcrumb"
+        );
+
+    if (!breadcrumbContainer) {
+
+        console.error(
+            "Área #driveBreadcrumb não encontrada."
+        );
+
+        return;
+
+    }
+
+    breadcrumbContainer.innerHTML = "";
+
+    folderHistory.forEach(
+        (folder, folderIndex) => {
+
+            const isCurrentFolder =
+                folderIndex ===
+                folderHistory.length - 1;
+
+            if (folderIndex > 0) {
+
+                const separator =
+                    document.createElement(
+                        "span"
+                    );
+
+                separator.classList.add(
+                    "drive-breadcrumb-separator"
+                );
+
+                separator.textContent = ">";
+
+                separator.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                breadcrumbContainer.appendChild(
+                    separator
+                );
+
+            }
+
+            if (isCurrentFolder) {
+
+                const currentFolderElement =
+                    document.createElement(
+                        "span"
+                    );
+
+                currentFolderElement.classList.add(
+                    "drive-breadcrumb-current"
+                );
+
+                currentFolderElement.textContent =
+                    folder.name;
+
+                currentFolderElement.setAttribute(
+                    "aria-current",
+                    "page"
+                );
+
+                breadcrumbContainer.appendChild(
+                    currentFolderElement
+                );
+
+                return;
+
+            }
+
+            const folderButton =
+                document.createElement(
+                    "button"
+                );
+
+            folderButton.type = "button";
+
+            folderButton.classList.add(
+                "drive-breadcrumb-button"
+            );
+
+            folderButton.textContent =
+                folder.name;
+
+            folderButton.addEventListener(
+                "click",
+                () => {
+
+                    handleFolderSelection(
+                        folderIndex
+                    );
+
+                }
+            );
+
+            breadcrumbContainer.appendChild(
+                folderButton
+            );
+
+        }
+    );
+
+}
+
 
 /**
  * Renderiza os arquivos e as pastas
@@ -272,6 +390,8 @@ function formatDate(dateValue) {
     ).format(date);
 
 }
+
+
 /**
  * Escapa um texto antes de inseri-lo
  * dentro de uma string HTML.
