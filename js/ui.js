@@ -70,8 +70,6 @@ export function showDriveFiles(files) {
     });
 
 }
-
-
 function formatDate(date) {
 
     return new Intl.DateTimeFormat("pt-BR", {
@@ -82,8 +80,6 @@ function formatDate(date) {
     }).format(new Date(date));
 
 }
-
-
 function escapeHTML(value) {
 
     const element = document.createElement("div");
