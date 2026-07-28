@@ -1,12 +1,19 @@
-import { openDriveFolder } from "./auth.js";
-
 export function showUser(user) {
 
-    const loginButton = document.getElementById("loginButton");
-    const userInfo = document.getElementById("userInfo");
-    const userPhoto = document.getElementById("userPhoto");
-    const userName = document.getElementById("userName");
-    const userEmail = document.getElementById("userEmail");
+    const loginButton =
+        document.getElementById("loginButton");
+
+    const userInfo =
+        document.getElementById("userInfo");
+
+    const userPhoto =
+        document.getElementById("userPhoto");
+
+    const userName =
+        document.getElementById("userName");
+
+    const userEmail =
+        document.getElementById("userEmail");
 
     userPhoto.src = user.picture;
     userName.textContent = user.name;
@@ -22,7 +29,10 @@ const FOLDER_MIME_TYPE =
     "application/vnd.google-apps.folder";
 
 
-export function showDriveFiles(files, handleFolderOpen) {
+export function showDriveFiles(
+    files,
+    handleFolderOpen
+) {
 
     const driveFiles =
         document.getElementById("driveFiles");
@@ -36,7 +46,7 @@ export function showDriveFiles(files, handleFolderOpen) {
         return;
 
     }
-    
+
     driveFiles.innerHTML = "";
 
     if (files.length === 0) {
@@ -54,7 +64,10 @@ export function showDriveFiles(files, handleFolderOpen) {
             document.createElement("button");
 
         fileElement.type = "button";
-        fileElement.classList.add("drive-file");
+
+        fileElement.classList.add(
+            "drive-file"
+        );
 
         fileElement.innerHTML = `
             <img
@@ -77,11 +90,16 @@ export function showDriveFiles(files, handleFolderOpen) {
             </div>
         `;
 
-        if (file.mimeType === FOLDER_MIME_TYPE) {
+        if (
+            file.mimeType ===
+            FOLDER_MIME_TYPE
+        ) {
 
             fileElement.addEventListener(
                 "click",
-                () => handleFolderOpen(file.id)
+                () => {
+                    handleFolderOpen(file.id);
+                }
             );
 
         }
@@ -102,26 +120,32 @@ export function showDriveFiles(files, handleFolderOpen) {
 
         }
 
-        driveFiles.appendChild(fileElement);
+        driveFiles.appendChild(
+            fileElement
+        );
 
     });
+
 }
+
 
 function formatDate(date) {
 
-    return new Intl.DateTimeFormat("pt-BR", {
-
-        dateStyle: "short",
-        timeStyle: "short"
-
-    }).format(new Date(date));
+    return new Intl.DateTimeFormat(
+        "pt-BR",
+        {
+            dateStyle: "short",
+            timeStyle: "short"
+        }
+    ).format(new Date(date));
 
 }
 
 
 function escapeHTML(value) {
 
-    const element = document.createElement("div");
+    const element =
+        document.createElement("div");
 
     element.textContent = value;
 
