@@ -1,43 +1,90 @@
-export function showUser(user) {
-
-    const loginButton =
-        document.getElementById("loginButton");
-
-    const userInfo =
-        document.getElementById("userInfo");
-
-    const userPhoto =
-        document.getElementById("userPhoto");
-
-    const userName =
-        document.getElementById("userName");
-
-    const userEmail =
-        document.getElementById("userEmail");
-
-    userPhoto.src = user.picture;
-    userName.textContent = user.name;
-    userEmail.textContent = user.email;
-
-    loginButton.hidden = true;
-    userInfo.hidden = false;
-
-}
-
-
 const FOLDER_MIME_TYPE =
     "application/vnd.google-apps.folder";
 
 
+/**
+ * Preenche a área de usuário e ajusta
+ * a interface depois do login.
+ */
+export function showUser(user) {
+
+    const loginButton =
+        document.getElementById(
+            "loginButton"
+        );
+
+    const userInfoContainer =
+        document.getElementById(
+            "userInfo"
+        );
+
+    const userPhoto =
+        document.getElementById(
+            "userPhoto"
+        );
+
+    const userName =
+        document.getElementById(
+            "userName"
+        );
+
+    const userEmail =
+        document.getElementById(
+            "userEmail"
+        );
+
+    if (
+        !loginButton ||
+        !userInfoContainer ||
+        !userPhoto ||
+        !userName ||
+        !userEmail
+    ) {
+
+        console.error(
+            "Elementos da área do usuário não foram encontrados."
+        );
+
+        return;
+
+    }
+
+    userPhoto.src =
+        user.picture ?? "";
+
+    userPhoto.alt =
+        user.name
+            ? `Foto de ${user.name}`
+            : "Foto do usuário";
+
+    userName.textContent =
+        user.name ?? "Usuário";
+
+    userEmail.textContent =
+        user.email ?? "";
+
+    loginButton.hidden = true;
+
+    userInfoContainer.hidden = false;
+
+}
+
+
+/**
+ * Renderiza os arquivos e as pastas
+ * retornados pela API do Google Drive.
+ */
 export function showDriveFiles(
-    files,
+    driveItems,
     handleFolderOpen
 ) {
 
-    const driveFiles =
-        document.getElementById("driveFiles");
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
 
-    if (!driveFiles) {
+    if (!driveFilesContainer) {
 
         console.error(
             "Área #driveFiles não encontrada."
@@ -47,89 +94,174 @@ export function showDriveFiles(
 
     }
 
-    driveFiles.innerHTML = "";
+    driveFilesContainer.innerHTML = "";
 
-    if (files.length === 0) {
+    if (driveItems.length === 0) {
 
-        driveFiles.innerHTML =
+        driveFilesContainer.innerHTML =
             "<p>Esta pasta está vazia.</p>";
 
         return;
 
     }
 
-    files.forEach((file) => {
+    driveItems.forEach(
+        (driveItem) => {
 
-        const fileElement =
-            document.createElement("button");
+            const driveItemButton =
+                createDriveItemButton(
+                    driveItem
+                );
 
-        fileElement.type = "button";
+            if (
+                driveItem.mimeType ===
+                FOLDER_MIME_TYPE
+            ) {
 
-        fileElement.classList.add(
-            "drive-file"
-        );
+                driveItemButton.addEventListener(
+                    "click",
+                    () => {
 
-        fileElement.innerHTML = `
-            <img
-                src="${file.iconLink}"
-                alt=""
-                class="drive-file-icon"
-            >
+                        handleFolderOpen(
+                            driveItem.id
+                        );
 
-            <div class="drive-file-info">
+                    }
+                );
 
-                <strong class="drive-file-name">
-                    ${escapeHTML(file.name)}
-                </strong>
+            }
+            else {
 
-                <span class="drive-file-date">
-                    Modificado em:
-                    ${formatDate(file.modifiedTime)}
-                </span>
+                driveItemButton.addEventListener(
+                    "click",
+                    () => {
 
-            </div>
-        `;
+                        openDriveFile(
+                            driveItem.webViewLink
+                        );
 
-        if (
-            file.mimeType ===
-            FOLDER_MIME_TYPE
-        ) {
+                    }
+                );
 
-            fileElement.addEventListener(
-                "click",
-                () => {
-                    handleFolderOpen(file.id);
-                }
+            }
+
+            driveFilesContainer.appendChild(
+                driveItemButton
             );
 
         }
-        else {
-
-            fileElement.addEventListener(
-                "click",
-                () => {
-
-                    window.open(
-                        file.webViewLink,
-                        "_blank",
-                        "noopener,noreferrer"
-                    );
-
-                }
-            );
-
-        }
-
-        driveFiles.appendChild(
-            fileElement
-        );
-
-    });
+    );
 
 }
 
 
-function formatDate(date) {
+/**
+ * Cria o botão visual usado para
+ * representar um item do Drive.
+ */
+function createDriveItemButton(
+    driveItem
+) {
+
+    const driveItemButton =
+        document.createElement(
+            "button"
+        );
+
+    driveItemButton.type = "button";
+
+    driveItemButton.classList.add(
+        "drive-file"
+    );
+
+    driveItemButton.innerHTML = `
+
+        <img
+            src="${escapeHTML(
+                driveItem.iconLink ?? ""
+            )}"
+            alt=""
+            class="drive-file-icon"
+        >
+
+        <div class="drive-file-info">
+
+            <strong class="drive-file-name">
+
+                ${escapeHTML(
+                    driveItem.name ??
+                    "Arquivo sem nome"
+                )}
+
+            </strong>
+
+            <span class="drive-file-date">
+
+                Modificado em:
+                ${formatDate(
+                    driveItem.modifiedTime
+                )}
+
+            </span>
+
+        </div>
+
+    `;
+
+    return driveItemButton;
+
+}
+
+
+/**
+ * Abre um arquivo do Drive
+ * em uma nova aba.
+ */
+function openDriveFile(fileUrl) {
+
+    if (!fileUrl) {
+
+        console.error(
+            "Link do arquivo não informado."
+        );
+
+        return;
+
+    }
+
+    window.open(
+        fileUrl,
+        "_blank",
+        "noopener,noreferrer"
+    );
+
+}
+
+
+/**
+ * Converte uma data ISO
+ * para o formato brasileiro.
+ */
+function formatDate(dateValue) {
+
+    if (!dateValue) {
+
+        return "Data não disponível";
+
+    }
+
+    const date =
+        new Date(dateValue);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "Data não disponível";
+
+    }
 
     return new Intl.DateTimeFormat(
         "pt-BR",
@@ -137,17 +269,24 @@ function formatDate(date) {
             dateStyle: "short",
             timeStyle: "short"
         }
-    ).format(new Date(date));
+    ).format(date);
 
 }
 
 
+/**
+ * Escapa um texto antes de inseri-lo
+ * dentro de uma string HTML.
+ */
 function escapeHTML(value) {
 
     const element =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
-    element.textContent = value;
+    element.textContent =
+        String(value);
 
     return element.innerHTML;
 
