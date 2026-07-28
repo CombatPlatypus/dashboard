@@ -187,7 +187,6 @@ export function showDriveBreadcrumb(
 
 }
 
-
 /**
  * Renderiza os arquivos e as pastas
  * retornados pela API do Google Drive.
