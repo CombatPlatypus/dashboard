@@ -427,6 +427,11 @@ export function setDriveViewMode(
  * Retorna um ícone local conforme
  * o tipo do item do Google Drive.
  */
+/**
+ * Retorna um ícone local conforme
+ * o tipo do item do Google Drive.
+ */
+
 function getDriveItemFallbackIcon(
     driveItem
 ) {
@@ -436,7 +441,7 @@ function getDriveItemFallbackIcon(
         FOLDER_MIME_TYPE
     ) {
 
-        return "images/file-types/folder.svg";
+        return "images/file-types/folder-icon.svg";
 
     }
 
@@ -446,7 +451,7 @@ function getDriveItemFallbackIcon(
         )
     ) {
 
-        return "images/file-types/image.svg";
+        return "images/file-types/image-icon.svg";
 
     }
 
@@ -455,11 +460,11 @@ function getDriveItemFallbackIcon(
         "application/pdf"
     ) {
 
-        return "images/file-types/pdf.svg";
+        return "images/file-types/pdf-icon.svg";
 
     }
 
-    return "images/file-types/file.svg";
+    return "images/file-types/file-icon.svg";
 
 }
 
