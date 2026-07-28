@@ -1,0 +1,323 @@
+<!doctype html>
+<html class="no-js" lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="nofollow, noindex, noimageindex, noarchive, nocache, nosnippet, notranslate" />
+
+        <title>Planilhas Dashboard</title>
+
+        <!-- ARQUIVOS CSS E ICONE -->
+
+        <link rel="icon" href="images/spreadsheets-icon.svg">
+        <link rel="stylesheet" href="css/foundation.css">
+
+        <style>
+
+            /* TABS */
+
+            .tabs {
+                width: max-content;
+                column-gap: 10px;
+                row-gap: 10px;
+            }
+            .tabs-title {
+                display: block;
+            }
+            .tabs .tabs-title .flex-box-center {
+                max-width: max-content;
+                align-items: center;
+                column-gap: 10px;
+            }
+            .tabs-title > a {
+                border: 2px solid #525252;
+            }
+            .tabs-title a img {
+                width: 40px;
+            }
+            .tabs-title label {
+                cursor: pointer;
+            }
+            .tabs-title>a:hover {
+                background: #2e2e2e;
+            }
+            .tabs-title>a:focus, .tabs-title>a[aria-selected='true'] {
+                background-color: #2e2e2e
+            }
+            .tabs-content {
+                width: 100%;
+            }
+
+            /* ESTILO DO DASHBOARD */
+
+            .main-menu .standard-width {
+                max-width: 1024px;
+                align-items: center;
+            }
+            .main-menu h3, .main-menu p {
+                margin: 0;
+            }
+            .main-menu p {
+                font-size: 14px;
+            }
+
+            /* ESTRUTURA PRINCIPAL */
+
+            .main-structure {
+                height: 100vh;
+            }
+            .main-structure .tabs-content {
+                margin: auto;
+            }
+            .main-structure .container-1 .tabs-content {
+                background-color: #1f1f1f;    
+                border-radius: 5px;
+            }
+            .main-structure .tabs-content #Drive {
+                background-color: #ffffff;    
+                border-radius: 5px;
+            }
+            .main-structure .flex-box-between {
+                width: 100%;
+                margin: auto;
+            }
+            .main-structure .container-1 {
+                width: 84%;
+            }
+            .main-structure .container-2 {
+                width: 15%;
+                overflow: auto;
+                padding-right: 10px;
+            }
+            .main-structure .container-2:-webkit-scrollbar-track {
+                background-color: transparent;
+            }
+            .main-structure .container-2::-webkit-scrollbar {
+                width: 5px;
+                background: transparent;
+            }
+            .main-structure .container-2::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                background: #525252;
+            }
+
+            .main-structure .tabs, .main-structure .tabs .tabs-title {
+                width: 100% !important;
+            }
+            .main-structure .tabs .tabs-title label {
+                font-size: 14px;
+                user-select: none;
+            }
+            .main-structure .container-1 .tabs-content, .main-structure .tabs-panel, .main-structure .flex-box-between, .main-structure .container-1, .main-structure .container-2, iframe {
+                height: 100% !important;
+            }
+
+            iframe {
+                width: 100%;
+                height: auto;
+                border-radius: 5px;
+            }
+
+            .link-button {
+                border: 2px solid #525252;
+            }
+            .link-button:hover {
+                background: #2e2e2e;
+            }
+            .link-button label{
+                cursor: pointer;
+            }
+            .link-button .flex-box-center{
+                align-items: center;
+                column-gap: 10px;
+            }
+            
+        </style>
+    </head>	
+    <body class="dark-theme">
+
+        <!-- MENU PRINCIPAL -->
+
+        <nav class="main-menu">
+            <div class="standard-width flex-box-between">
+                <div class="flex-box-between">
+                    <img src="images/shopee-logo.svg">
+
+                    <div style="padding-top: 10px;">
+                        <h3>Dashboard do Invetário</h3>
+                        <p><i>Um agregado de ferramentas.</i></p>
+                    </div>
+                </div>
+
+                <ul class="flex-box-start tabs" data-tabs id="switch-1">
+                    <li class="tabs-title is-active">
+                        <a href="#Spreadsheets">
+                            <div class="flex-box-center">
+                                <img src="images/spreadsheets-icon.svg">
+                                <label>Planilhas</label>
+                            </div>
+                        </a>
+                    </li> 
+
+                    <li class="tabs-title">
+                        <a href="#Drive">
+                            <div class="flex-box-center">
+                                <img src="images/drive-icon.svg">
+                                <label>Avarias</label>
+                            </div>
+                        </a>
+                    </li> 
+
+                    <a href="https://seatalkweb.com" target="_blank" class="link-button">
+                        <div class="flex-box-center">
+                            <img src="images/seatalk-icon.svg">
+                            <label>SeaTalk</label>
+                        </div>
+                    </a>
+                </ul> 
+            </div>        
+        </nav>
+
+        <!-- CONTEÚDO DA PÁGINA -->
+
+        <div class="main-structure standard-width flex-box-center">
+            <div class="tabs-content" data-tabs-content="switch-1" style="height: 95%;">
+
+                <div class="tabs-panel is-active" id="Spreadsheets">
+                    <div class="flex-box-between">
+                        <div class="container-1">
+                            <div class="tabs-content" data-tabs-content="switch">
+                                <div class="tabs-panel is-active" id="spreadsheet-1">
+
+                                    <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe>
+                                </div>
+
+                                <div class="tabs-panel" id="spreadsheet-2"></div>
+                                <div class="tabs-panel" id="spreadsheet-3"></div>
+                                <div class="tabs-panel" id="spreadsheet-4"></div>
+                                <div class="tabs-panel" id="spreadsheet-5"></div>
+                                <div class="tabs-panel" id="spreadsheet-6"></div>
+                                <div class="tabs-panel" id="spreadsheet-7"></div>
+                                <div class="tabs-panel" id="spreadsheet-8"></div>
+                                <div class="tabs-panel" id="spreadsheet-9"></div>
+                                <div class="tabs-panel" id="spreadsheet-10"></div>
+                                <div class="tabs-panel" id="spreadsheet-11"></div>
+                                <div class="tabs-panel" id="spreadsheet-12"></div>
+                                <div class="tabs-panel" id="spreadsheet-13"></div>
+                                <div class="tabs-panel" id="spreadsheet-14"></div>
+                                <div class="tabs-panel" id="spreadsheet-15"></div>
+                            </div>
+                        </div>
+
+                        <div class="container-2">
+                            <ul class="tabs flex-box-column" data-tabs id="switch">
+                                <li class="tabs-title is-active">
+                                    <a href="#spreadsheet-1">
+                                        <label>Planilha 1</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-2">
+                                        <label>Planilha 2</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-3">
+                                        <label>Planilha 3</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-4">
+                                        <label>Planilha 4</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-5">
+                                        <label>Planilha 5</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-6">
+                                        <label>Planilha 6</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-7">
+                                        <label>Planilha 7</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-8">
+                                        <label>Planilha 8</label>
+                                    </a>
+                                </li> 
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-9">
+                                        <label>Planilha 9</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-10">
+                                        <label>Planilha 10</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-11">
+                                        <label>Planilha 11</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-12">
+                                        <label>Planilha 12</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-13">
+                                        <label>Planilha 13</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-14">
+                                        <label>Planilha 14</label>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spreadsheet-15">
+                                        <label>Planilha 15</label>
+                                    </a>
+                                </li> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tabs-panel" id="Drive">
+                    <iframe src="https://drive.google.com/embeddedfolderview?id=1M58jlgKTsbMAg8wjfKTxPdDTLsyY4CQ0#list"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARQUIVOS JS -->  
+
+        <script async src="js/pace.min.js"></script>
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script defer src="js/foundation.min.js"></script>
+        <script defer src="js/app.js"></script>
+    </body>
+</html>
