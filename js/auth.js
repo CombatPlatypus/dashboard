@@ -76,8 +76,6 @@ async function initializeUserSession() {
     }
 
 }
-
-
 async function loadUserInformation() {
 
     const response = await fetch(
