@@ -28,11 +28,10 @@ const folderNavigationHistory = [];
  */
 export async function openDriveFolder(
     folderId,
-    addToHistory = true
-) {
+    addToHistory = true) {
 
     showDriveLoading();
-    
+
     try {
 
         const currentFolder =
@@ -109,6 +108,33 @@ export async function openDriveFolder(
     }
 
 }
+
+export function setDriveViewMode(
+    viewMode
+) {
+
+    const driveFilesContainer =
+        document.getElementById(
+            "driveFiles"
+        );
+
+    if (!driveFilesContainer) {
+        return;
+    }
+
+    driveFilesContainer.classList.remove(
+        "drive-list-view",
+        "drive-grid-view"
+    );
+
+    driveFilesContainer.classList.add(
+        `drive-${viewMode}-view`
+    );
+
+}
+
+setDriveViewMode("grid");
+
 
 /**
  * Mostra ou oculta o botão de voltar conforme
