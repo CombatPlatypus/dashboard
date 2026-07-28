@@ -193,8 +193,52 @@
                 user-select: none;
             }
 
-            /* DRIVE */
+            /* CARREGAMENTO DO GOOGLE DRIVE */
 
+            .drive-loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                column-gap: 12px;
+
+                min-height: 120px;
+
+                font-size: 14px;
+            }
+
+            .drive-loading-spinner {
+                width: 24px;
+                height: 24px;
+
+                border: 3px solid rgba(255, 255, 255, 0.25);
+                border-top-color: currentColor;
+                border-radius: 50%;
+
+                animation: drive-spinner-rotation 0.8s linear infinite;
+            }
+
+            .drive-error {
+                padding: 15px;
+
+                border: 1px solid #d9534f;
+                border-radius: 5px;
+
+                color: #ff8a85;
+            }
+
+            @keyframes drive-spinner-rotation {
+
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(360deg);
+                }
+
+            }
+
+            /* DRIVE */
 
             .drive-section {
                 padding: 20px;
@@ -459,7 +503,11 @@
                                 ></nav>
                             </div>
 
-                            <div id="driveFiles">
+                            <div
+                                id="driveFiles"
+                                aria-live="polite"
+                                aria-busy="false"
+                            >
                                 <p>Entre com sua conta Google para visualizar os arquivos.</p>
                             </div>
 
