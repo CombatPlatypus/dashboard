@@ -1,8 +1,12 @@
+import { CONFIG } from "./config.js";
+
 export async function listDriveFiles(accessToken) {
+
+    const folderId = CONFIG.google.folderId;
 
     const parameters = new URLSearchParams({
 
-        pageSize: "20",
+        pageSize: "100",
 
         fields: [
             "files(",
@@ -15,14 +19,14 @@ export async function listDriveFiles(accessToken) {
             ")"
         ].join(""),
 
-        orderBy: "modifiedTime desc",
+        orderBy: "name",
 
-        q: "trashed = false"
+        q: `'${folderId}' in parents and trashed = false`
 
     });
 
     const url =
-        `https://www.googleapis.com/drive/v3/files?${parameters}`;
+        `https://www.googleapis.com/drive/v3/files?${parameters.toString()}`;
 
     const response = await fetch(url, {
 
@@ -34,10 +38,10 @@ export async function listDriveFiles(accessToken) {
 
     if (!response.ok) {
 
-        const error = await response.json();
+        const errorData = await response.json();
 
         throw new Error(
-            error.error?.message ??
+            errorData.error?.message ??
             `Erro ao consultar o Drive: ${response.status}`
         );
 
