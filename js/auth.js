@@ -8,6 +8,44 @@ import { listDriveFiles } from "./drive.js";
 export let tokenClient = null;
 export let accessToken = null;
 
+const folderHistory = [];
+
+
+export async function openDriveFolder(
+    folderId,
+    addToHistory = true
+) {
+
+    try {
+
+        if (addToHistory) {
+            folderHistory.push(folderId);
+        }
+
+        const files = await listDriveFiles(
+            accessToken,
+            folderId
+        );
+
+        showDriveFiles(
+            files,
+            openDriveFolder
+        );
+
+        updateBackButton();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Não foi possível abrir a pasta:",
+            error
+        );
+
+    }
+
+}
+
 
 function initializeGoogleAuth() {
 
@@ -34,8 +72,6 @@ function initializeGoogleAuth() {
     console.log("Cliente OAuth inicializado.");
 
 }
-
-
 async function handleTokenResponse(response) {
 
     if (response.error) {
@@ -62,9 +98,9 @@ async function initializeUserSession() {
 
         await loadUserInformation();
 
-        const files = await listDriveFiles(accessToken);
-
-        showDriveFiles(files);
+        await openDriveFolder(
+            CONFIG.google.folderId
+        );
 
     }
     catch (error) {
@@ -75,6 +111,7 @@ async function initializeUserSession() {
         );
 
     }
+
 }
 async function loadUserInformation() {
 
@@ -101,6 +138,35 @@ async function loadUserInformation() {
 
 }
 
+function updateBackButton() {
+
+    const backButton =
+        document.getElementById("driveBackButton");
+
+    backButton.hidden =
+        folderHistory.length <= 1;
+
+}
+
+document
+    .getElementById("driveBackButton")
+    .addEventListener("click", async () => {
+
+        if (folderHistory.length <= 1) {
+            return;
+        }
+
+        folderHistory.pop();
+
+        const previousFolder =
+            folderHistory.at(-1);
+
+        await openDriveFolder(
+            previousFolder,
+            false
+        );
+
+    });
 
 window.addEventListener(
     "load",
