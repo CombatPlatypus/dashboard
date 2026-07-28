@@ -1,23 +1,36 @@
 import { CONFIG } from "./config.js";
+
 import {
     showUser,
     showDriveFiles
 } from "./ui.js";
+
 import { listDriveFiles } from "./drive.js";
+
 
 export let tokenClient = null;
 export let accessToken = null;
 
+
 const folderHistory = [];
+
 
 export async function openDriveFolder(
     folderId,
-    addToHistory = true) {
+    addToHistory = true
+) {
 
     try {
 
         if (addToHistory) {
-            folderHistory.push(folderId);
+
+            const currentFolder =
+                folderHistory.at(-1);
+
+            if (currentFolder !== folderId) {
+                folderHistory.push(folderId);
+            }
+
         }
 
         const files = await listDriveFiles(
@@ -43,6 +56,29 @@ export async function openDriveFolder(
     }
 
 }
+
+
+function updateBackButton() {
+
+    const backButton =
+        document.getElementById("driveBackButton");
+
+    if (!backButton) {
+
+        console.error(
+            "Botão de voltar não encontrado."
+        );
+
+        return;
+
+    }
+
+    backButton.hidden =
+        folderHistory.length <= 1;
+
+}
+
+
 function initializeGoogleAuth() {
 
     if (typeof google === "undefined") {
@@ -52,21 +88,67 @@ function initializeGoogleAuth() {
         );
 
         return;
+
     }
 
-    tokenClient = google.accounts.oauth2.initTokenClient({
+    tokenClient =
+        google.accounts.oauth2.initTokenClient({
 
-        client_id: CONFIG.google.clientId,
+            client_id: CONFIG.google.clientId,
 
-        scope: CONFIG.google.scopes.join(" "),
+            scope:
+                CONFIG.google.scopes.join(" "),
 
-        callback: handleTokenResponse
+            callback: handleTokenResponse
 
-    });
+        });
 
-    console.log("Cliente OAuth inicializado.");
+    const backButton =
+        document.getElementById("driveBackButton");
+
+    if (!backButton) {
+
+        console.error(
+            "Botão de voltar não encontrado."
+        );
+
+        return;
+
+    }
+
+    backButton.addEventListener(
+        "click",
+        handleBackButton
+    );
+
+    updateBackButton();
+
+    console.log(
+        "Cliente OAuth inicializado."
+    );
 
 }
+
+
+async function handleBackButton() {
+
+    if (folderHistory.length <= 1) {
+        return;
+    }
+
+    folderHistory.pop();
+
+    const previousFolder =
+        folderHistory.at(-1);
+
+    await openDriveFolder(
+        previousFolder,
+        false
+    );
+
+}
+
+
 async function handleTokenResponse(response) {
 
     if (response.error) {
@@ -80,16 +162,23 @@ async function handleTokenResponse(response) {
 
     }
 
-    accessToken = response.access_token;
+    accessToken =
+        response.access_token;
 
-    console.log("Autorização concluída com sucesso.");
+    console.log(
+        "Autorização concluída com sucesso."
+    );
 
     await initializeUserSession();
 
 }
+
+
 async function initializeUserSession() {
 
     try {
+
+        folderHistory.length = 0;
 
         await loadUserInformation();
 
@@ -108,13 +197,16 @@ async function initializeUserSession() {
     }
 
 }
+
+
 async function loadUserInformation() {
 
     const response = await fetch(
         "https://www.googleapis.com/oauth2/v3/userinfo",
         {
             headers: {
-                Authorization: `Bearer ${accessToken}`
+                Authorization:
+                    `Bearer ${accessToken}`
             }
         }
     );
@@ -127,42 +219,15 @@ async function loadUserInformation() {
 
     }
 
-    const user = await response.json();
+    const user =
+        await response.json();
 
     showUser(user);
 
 }
-function updateBackButton() {
 
-    const backButton =
-        document.getElementById("driveBackButton");
-
-    backButton.hidden =
-        folderHistory.length <= 1;
-
-}
 
 window.addEventListener(
     "load",
     initializeGoogleAuth
 );
-
-document
-    .getElementById("driveBackButton")
-    .addEventListener("click", async () => {
-
-        if (folderHistory.length <= 1) {
-            return;
-        }
-
-        folderHistory.pop();
-
-        const previousFolder =
-            folderHistory.at(-1);
-
-        await openDriveFolder(
-            previousFolder,
-            false
-        );
-
-    });
