@@ -1,3 +1,5 @@
+// Configurações centralizadas da integração
+// com os serviços do Google.
 export const CONFIG = {
 
     google: {
@@ -9,10 +11,15 @@ export const CONFIG = {
             "1SVNfsh32gbuELXgC5tSaJuuBDk8iiojr",
 
         scopes: [
+
             "openid",
+
             "email",
+
             "profile",
+
             "https://www.googleapis.com/auth/drive.metadata.readonly"
+
         ]
 
     }
