@@ -525,10 +525,15 @@ function createDriveItemButton(
             driveItem
         );
 
-    const previewImage =
-        driveItem.thumbnailLink ??
-        fallbackImage;
+    const isImage =
+        driveItem.mimeType?.startsWith(
+            "image/"
+        );
 
+    const previewImage =
+        isImage && driveItem.thumbnailLink
+            ? driveItem.thumbnailLink
+            : fallbackImage;
 
     /*
      * Cria a imagem do arquivo.
@@ -674,6 +679,8 @@ function openDriveFile(fileUrl) {
     );
 
 }
+
+
 /**
  * Converte uma data ISO
  * para o formato brasileiro.
