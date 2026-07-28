@@ -32,12 +32,6 @@ export async function openDriveFolder(
 ) {
 
     showDriveLoading();
-
-    // Atraso temporário apenas para testar o carregamento.
-    await new Promise(
-        (resolve) => setTimeout(resolve, 1500)
-    );
-
     
     try {
 
