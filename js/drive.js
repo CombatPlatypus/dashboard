@@ -1,8 +1,4 @@
-import { CONFIG } from "./config.js";
-
-export async function listDriveFiles(accessToken) {
-
-    const folderId = CONFIG.google.folderId;
+export async function listDriveFiles(accessToken, folderId) {
 
     const parameters = new URLSearchParams({
 
@@ -19,7 +15,7 @@ export async function listDriveFiles(accessToken) {
             ")"
         ].join(""),
 
-        orderBy: "name",
+        orderBy: "folder,name",
 
         q: `'${folderId}' in parents and trashed = false`
 
