@@ -1,7 +1,7 @@
 import {
     DRIVE_DEFAULT_ICONS,
     DRIVE_ITEM_ICONS
-} from "./files-type.js";
+} from "./files-types.js";
 
 import {
     openImageViewer
