@@ -56,8 +56,6 @@ async function handleTokenResponse(response) {
     await initializeUserSession();
 
 }
-
-
 async function initializeUserSession() {
 
     try {
@@ -78,8 +76,6 @@ async function initializeUserSession() {
 
     }
 }
-
-
 async function loadUserInformation() {
 
     const response = await fetch(
