@@ -11,7 +11,9 @@ export const CONFIG = {
         scopes: [
             "openid",
             "email",
-            "profile"
+            "profile",
+
+            "https://www.googleapis.com/auth/drive.metadata.readonly"
         ]
 
     }
