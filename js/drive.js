@@ -3,6 +3,74 @@ const DRIVE_FILES_ENDPOINT =
 
 
 /**
+ * Consulta as informações básicas de uma pasta.
+ *
+ * O nome retornado é utilizado no breadcrumb
+ * e no histórico de navegação.
+ */
+export async function getDriveFolderInformation(
+    accessToken,
+    folderId
+) {
+
+    if (!accessToken) {
+
+        throw new Error(
+            "Token de acesso não informado."
+        );
+
+    }
+
+    if (!folderId) {
+
+        throw new Error(
+            "ID da pasta não informado."
+        );
+
+    }
+
+    const queryParameters =
+        new URLSearchParams({
+
+            fields:
+                "id,name,mimeType"
+
+        });
+
+    const requestUrl =
+        `${DRIVE_FILES_ENDPOINT}/${encodeURIComponent(folderId)}` +
+        `?${queryParameters.toString()}`;
+
+    const response =
+        await fetch(
+            requestUrl,
+            {
+                headers: {
+                    Authorization:
+                        `Bearer ${accessToken}`
+                }
+            }
+        );
+
+    if (!response.ok) {
+
+        const errorMessage =
+            await getDriveErrorMessage(
+                response
+            );
+
+        throw new Error(
+            errorMessage
+        );
+
+    }
+
+    return response.json();
+
+}
+
+
+/**
  * Lista todos os itens diretamente contidos
  * em uma pasta do Google Drive.
  *
