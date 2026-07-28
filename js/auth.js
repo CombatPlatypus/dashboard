@@ -368,6 +368,8 @@ async function loadUserInformation() {
     showUser(user);
 
 }
+
+
 // Inicializa o OAuth depois que a página estiver carregada.
 window.addEventListener(
     "load",
