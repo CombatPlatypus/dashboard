@@ -423,6 +423,46 @@ export function setDriveViewMode(
 
 }
 
+/**
+ * Retorna um ícone local conforme
+ * o tipo do item do Google Drive.
+ */
+function getDriveItemFallbackIcon(
+    driveItem
+) {
+
+    if (
+        driveItem.mimeType ===
+        FOLDER_MIME_TYPE
+    ) {
+
+        return "images/file-types/folder.svg";
+
+    }
+
+    if (
+        driveItem.mimeType?.startsWith(
+            "image/"
+        )
+    ) {
+
+        return "images/file-types/image.svg";
+
+    }
+
+    if (
+        driveItem.mimeType ===
+        "application/pdf"
+    ) {
+
+        return "images/file-types/pdf.svg";
+
+    }
+
+    return "images/file-types/file.svg";
+
+}
+
 
 /**
  * Cria o botão visual usado para
@@ -478,10 +518,14 @@ function createDriveItemButton(
      * Caso o arquivo não tenha miniatura,
      * utiliza o ícone padrão retornado pelo Drive.
      */
+    const fallbackImage =
+        getDriveItemFallbackIcon(
+            driveItem
+        );
+
     const previewImage =
         driveItem.thumbnailLink ??
-        driveItem.iconLink ??
-        "";
+        fallbackImage;
 
 
     /*
@@ -510,23 +554,8 @@ function createDriveItemButton(
         "error",
         () => {
 
-            const fallbackImage =
-                driveItem.iconLink ??
-                "";
-
-            /*
-             * Evita tentar carregar novamente
-             * exatamente o mesmo endereço.
-             */
-            if (
-                imageElement.src !==
-                fallbackImage
-            ) {
-
-                imageElement.src =
-                    fallbackImage;
-
-            }
+            imageElement.src =
+                fallbackImage;
 
         },
         {
