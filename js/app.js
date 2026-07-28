@@ -108,8 +108,6 @@ else {
     );
 
 }
-
-
 /*
  * Recupera a última visualização escolhida.
  * Caso não exista preferência, utiliza lista.
