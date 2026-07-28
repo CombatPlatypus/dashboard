@@ -602,6 +602,8 @@ function formatDate(dateValue) {
     ).format(date);
 
 }
+
+
 /**
  * Escapa um texto antes de inseri-lo
  * dentro de uma string HTML.
