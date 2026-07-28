@@ -75,7 +75,7 @@
                 border-radius: 5px;
             }
             .main-structure .tabs-content #Drive {
-                background-color: #ffffff;    
+                /* background-color: #ffffff;     */
                 border-radius: 5px;
             }
             .main-structure .flex-box-between {
@@ -190,7 +190,7 @@
                             <div class="tabs-content" data-tabs-content="switch">
                                 <div class="tabs-panel is-active" id="spreadsheet-1">
 
-                                    <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe>
+                                    <!-- <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe> -->
                                 </div>
 
                                 <div class="tabs-panel" id="spreadsheet-2"></div>
@@ -308,7 +308,14 @@
                 </div>
 
                 <div class="tabs-panel" id="Drive">
-                   
+                    <!-- <iframe src="https://drive.google.com/embeddedfolderview?id=1M58jlgKTsbMAg8wjfKTxPdDTLsyY4CQ0#list"></iframe> -->
+
+                    <button class="button" id="loginButton">
+                        Entrar com Google
+                    </button>
+
+                    <div id="userInfo"></div>
+
                 </div>
             </div>
         </div>
@@ -318,6 +325,13 @@
         <script async src="js/pace.min.js"></script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script defer src="js/foundation.min.js"></script>
-        <script defer src="js/app.js"></script>
+
+        <!-- GOOGLE IDENTITY SERVICES -->
+
+        <script src="https://accounts.google.com/gsi/client"></script>
+
+        <!-- PONTO DE ENTRADA DA APLICAÇÃO -->
+
+        <script type="module" src="js/app.js"></script>
     </body>
 </html>
