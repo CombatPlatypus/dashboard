@@ -328,6 +328,12 @@ export function showDriveFiles(
 
             const driveItemButton =
                 createDriveItemButton(
+
+                const previewImage =
+                    driveItem.thumbnailLink ??
+                    driveItem.iconLink ??
+                    "";
+
                     driveItem
                 );
 
@@ -381,50 +387,156 @@ function createDriveItemButton(
     driveItem
 ) {
 
+    /*
+     * Botão principal que representa
+     * o arquivo ou a pasta.
+     */
     const driveItemButton =
         document.createElement(
             "button"
         );
 
-    driveItemButton.type = "button";
+    driveItemButton.type =
+        "button";
 
     driveItemButton.classList.add(
         "drive-file"
     );
 
-    driveItemButton.innerHTML = `
 
-        <img
-            src="${escapeHTML(
-                driveItem.iconLink ?? ""
-            )}"
-            alt=""
-            class="drive-file-icon"
-        >
+    /*
+     * Escolhe a miniatura como imagem principal.
+     *
+     * Caso o arquivo não tenha miniatura,
+     * utiliza o ícone padrão retornado pelo Drive.
+     */
+    const previewImage =
+        driveItem.thumbnailLink ??
+        driveItem.iconLink ??
+        "";
 
-        <div class="drive-file-info">
 
-            <strong class="drive-file-name">
+    /*
+     * Cria a imagem do arquivo.
+     */
+    const imageElement =
+        document.createElement(
+            "img"
+        );
 
-                ${escapeHTML(
-                    driveItem.name ??
-                    "Arquivo sem nome"
-                )}
+    imageElement.src =
+        previewImage;
 
-            </strong>
+    imageElement.alt = "";
 
-            <span class="drive-file-date">
+    imageElement.classList.add(
+        "drive-file-icon"
+    );
 
-                Modificado em:
-                ${formatDate(
-                    driveItem.modifiedTime
-                )}
 
-            </span>
+    /*
+     * Se a miniatura não puder ser carregada,
+     * tenta usar o ícone padrão do Drive.
+     */
+    imageElement.addEventListener(
+        "error",
+        () => {
 
-        </div>
+            const fallbackImage =
+                driveItem.iconLink ??
+                "";
 
-    `;
+            /*
+             * Evita tentar carregar novamente
+             * exatamente o mesmo endereço.
+             */
+            if (
+                imageElement.src !==
+                fallbackImage
+            ) {
+
+                imageElement.src =
+                    fallbackImage;
+
+            }
+
+        },
+        {
+            once: true
+        }
+    );
+
+
+    /*
+     * Cria o container que agrupa
+     * o nome e a data do arquivo.
+     */
+    const driveItemInformation =
+        document.createElement(
+            "div"
+        );
+
+    driveItemInformation.classList.add(
+        "drive-file-info"
+    );
+
+
+    /*
+     * Cria o nome do arquivo.
+     */
+    const driveItemName =
+        document.createElement(
+            "strong"
+        );
+
+    driveItemName.classList.add(
+        "drive-file-name"
+    );
+
+    driveItemName.textContent =
+        driveItem.name ??
+        "Arquivo sem nome";
+
+
+    /*
+     * Cria a informação de modificação.
+     */
+    const driveItemDate =
+        document.createElement(
+            "span"
+        );
+
+    driveItemDate.classList.add(
+        "drive-file-date"
+    );
+
+    driveItemDate.textContent =
+        `Modificado em: ${
+            formatDate(
+                driveItem.modifiedTime
+            )
+        }`;
+
+
+    /*
+     * Insere o nome e a data
+     * dentro do container de informações.
+     */
+    driveItemInformation.append(
+        driveItemName,
+        driveItemDate
+    );
+
+
+    /*
+     * Insere a imagem e as informações
+     * dentro do botão principal.
+     */
+    driveItemButton.append(
+        imageElement,
+        driveItemInformation
+    );
+
 
     return driveItemButton;
 
