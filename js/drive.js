@@ -110,27 +110,16 @@ export async function listDriveFiles(
                 pageSize: "100",
 
                 fields: [
-
                     "nextPageToken,",
-
                     "files(",
-
                         "id,",
-
                         "name,",
-
                         "mimeType,",
-
                         "webViewLink,",
-
                         "iconLink,",
-                        
                         "thumbnailLink,",
-
                         "modifiedTime",
-
                     ")"
-
                 ].join(""),
 
                 orderBy:
