@@ -345,7 +345,7 @@
 
                 <ul class="flex-box-start tabs" data-tabs id="switch-1">
                     <li class="tabs-title is-active">
-                        <a href="#Spreadsheets">
+                        <a href="#spreadsheets">
                             <div class="flex-box-center">
                                 <img src="images/files-type/sheets-icon.svg">
                                 <label>Planilhas</label>
@@ -354,7 +354,7 @@
                     </li> 
 
                     <li class="tabs-title">
-                        <a href="#Drive">
+                        <a href="#drive">
                             <div class="flex-box-center">
                                 <img src="images/drive-icon.svg">
                                 <label>Avarias</label>
@@ -377,7 +377,7 @@
         <div class="main-structure standard-width flex-box-center">
             <div class="tabs-content" data-tabs-content="switch-1" style="height: 95%;">
 
-                <div class="tabs-panel is-active" id="Spreadsheets">
+                <div class="tabs-panel is-active" id="spreadsheets">
                     <div class="flex-box-between">
                         <div class="container-1">
                             <div class="tabs-content" data-tabs-content="switch">
@@ -499,7 +499,7 @@
                     </div>
                 </div>
 
-                <div class="tabs-panel" id="Drive">
+                <div class="tabs-panel" id="drive">
                     <div class="drive-style">
 
                         <!-- AVISO DE LOGIN -->
@@ -551,49 +551,18 @@
 
         <!-- MODAL -->  
 
-        <div
-            id="imageViewer"
-            class="image-viewer"
-            hidden
-            aria-hidden="true"
-        >
-
-            <button
-                id="closeImageViewer"
-                class="image-viewer-close"
-                type="button"
-                aria-label="Fechar visualização da imagem"
-            >
-                ×
-            </button>
+        <div id="imageViewer" class="image-viewer" hidden aria-hidden="true">
+            <button id="closeImageViewer" class="image-viewer-close" type="button" aria-label="Fechar visualização da imagem">×</button>
 
             <div class="image-viewer-content">
+                <div id="imageViewerLoading" class="image-viewer-loading" aria-label="Carregando imagem">
+                    <span  class="image-viewer-spinner" aria-hidden="true"></span>
 
-                <div
-                    id="imageViewerLoading"
-                    class="image-viewer-loading"
-                    aria-label="Carregando imagem"
-                >
-                    <span
-                        class="image-viewer-spinner"
-                        aria-hidden="true"
-                    ></span>
-
-                    <span>
-                        Carregando imagem...
-                    </span>
-
+                    <span>Carregando imagem...</span>
                 </div>
 
-                <img
-                    id="viewerImage"
-                    class="image-viewer-image"
-                    alt=""
-                    hidden
-                >
-
+                <img id="viewerImage" class="image-viewer-image" alt="" hidden >
             </div>
-
         </div>
         
         <!-- ARQUIVOS JS -->  
