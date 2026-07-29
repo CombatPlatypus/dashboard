@@ -408,6 +408,8 @@ export function showDriveFiles(
 
                                 }
 
+console.log(driveItem);
+
                                 openImageViewer(
                                     imageUrl,
                                     driveItem.name
@@ -746,10 +748,68 @@ function getDriveImageUrl(
     driveItem
 ) {
 
-    return (
-        driveItem.thumbnailLink ??
-        null
-    );
+    if (!driveItem.thumbnailLink) {
+
+        return null;
+
+    }
+
+    let imageUrl =
+        driveItem.thumbnailLink;
+
+    /*
+     * Formato parecido com:
+     * ...=s220
+     * ...=s220-c
+     */
+    if (/=s\d+(-c)?/.test(imageUrl)) {
+
+        return imageUrl.replace(
+            /=s\d+(-c)?/,
+            "=s1600"
+        );
+
+    }
+
+    /*
+     * Formato parecido com:
+     * ...?sz=w220
+     */
+    try {
+
+        const url =
+            new URL(imageUrl);
+
+        if (
+            url.searchParams.has(
+                "sz"
+            )
+        ) {
+
+            url.searchParams.set(
+                "sz",
+                "w1600"
+            );
+
+            return url.toString();
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "URL da miniatura inválida:",
+            error
+        );
+
+    }
+
+    /*
+     * Se nenhum formato for reconhecido,
+     * usa a miniatura original.
+     */
+    return imageUrl;
 
 }
 
