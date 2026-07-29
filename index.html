@@ -17,6 +17,7 @@
 
             .drive-style {
                 height: 100%;
+                padding: 35px;
                 display: -webkit-flex;
                 display: flex;
                 -webkit-flex-direction: column;
@@ -145,6 +146,20 @@
                 display: flex;
                 flex-direction: column;
                 row-gap: 10px;
+                height: 500px;
+                overflow: auto;
+                padding-right: 15px;
+            }
+            #driveFiles:-webkit-scrollbar-track {
+                background-color: transparent;
+            }
+            #driveFiles::-webkit-scrollbar {
+                width: 5px;
+                background: transparent;
+            }
+            #driveFiles::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                background: #525252;
             }
             .drive-file {
                 display: flex;
@@ -203,7 +218,6 @@
                 flex-direction: column;
                 align-items: stretch;
                 padding: 20px;
-                overflow: hidden;
                 background-color: #1f1f1f;
                 border: 2px solid #525252;
                 border-radius: 5px;
@@ -510,40 +524,40 @@
                             <p>Primeiro você precisa estar com sua conta google conectada.</p>
                             <button class="button" id="loginButton">Entrar com Google</button>
                         </div>
+                    </div>
 
-                        <!-- CONTEÚDO PÓS LOGIN -->
+                    <!-- CONTEÚDO PÓS LOGIN -->
 
-                        <div id="userInfo" hidden>
-                            <div class="who-is flex-box-between">
-                                <img id="userPhoto" src="" alt="Foto do usuário">
+                    <div id="userInfo" hidden>
+                        <div class="who-is flex-box-between">
+                            <img id="userPhoto" src="" alt="Foto do usuário">
 
-                                <div>
-                                    <h4 id="userName"></h4>
-                                    <p id="userEmail"></p>
-                                </div>
+                            <div>
+                                <h4 id="userName"></h4>
+                                <p id="userEmail"></p>
                             </div>
-                            
-                            <hr>
-
-                            <section class="drive-section">
-                                <h2>Arquivos do Google Drive</h2>
-                                <div class="drive-toolbar">
-                                    <button type="button" id="driveBackButton" hidden>Voltar / </button>
-                                    <nav id="driveBreadcrumb" class="drive-breadcrumb" aria-label="Caminho da pasta"></nav>
-                                </div>
-
-                                <div class="drive-view-controls">
-                                    <button type="button" id="driveListViewButton"class="button">Exibir Lista</button>
-                                    <button type="button" id="driveGridViewButton" class="button">Exibir Grid</button>
-                                </div>
-
-                                <div id="driveFiles" aria-live="polite" aria-busy="false">
-
-                                    <!-- ARQUIVOS QUE VÊEM DO DRIVE -->
-
-                                </div>
-                            </section>
                         </div>
+                        
+                        <hr>
+
+                        <section class="drive-section">
+                            <h2>Arquivos do Google Drive</h2>
+                            <div class="drive-toolbar">
+                                <button type="button" id="driveBackButton" hidden>Voltar / </button>
+                                <nav id="driveBreadcrumb" class="drive-breadcrumb" aria-label="Caminho da pasta"></nav>
+                            </div>
+
+                            <div class="drive-view-controls">
+                                <button type="button" id="driveListViewButton"class="button">Exibir Lista</button>
+                                <button type="button" id="driveGridViewButton" class="button">Exibir Grid</button>
+                            </div>
+
+                            <div id="driveFiles" aria-live="polite" aria-busy="false">
+
+                                <!-- ARQUIVOS QUE VÊEM DO DRIVE -->
+
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
