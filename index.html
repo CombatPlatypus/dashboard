@@ -755,34 +755,51 @@ body.image-viewer-open {
         </div>
 
         <!-- ARQUIVOS JS -->  
+<div
+    id="imageViewer"
+    class="image-viewer"
+    hidden
+    aria-hidden="true"
+>
 
-<div class="image-viewer-content">
-
-    <div
-        id="imageViewerLoading"
-        class="image-viewer-loading"
-        aria-label="Carregando imagem"
+    <button
+        id="closeImageViewer"
+        class="image-viewer-close"
+        type="button"
+        aria-label="Fechar visualização da imagem"
     >
-        <span
-            class="image-viewer-spinner"
-            aria-hidden="true"
-        ></span>
+        ×
+    </button>
 
-        <span>
-            Carregando imagem...
-        </span>
+    <div class="image-viewer-content">
+
+        <div
+            id="imageViewerLoading"
+            class="image-viewer-loading"
+            aria-label="Carregando imagem"
+        >
+            <span
+                class="image-viewer-spinner"
+                aria-hidden="true"
+            ></span>
+
+            <span>
+                Carregando imagem...
+            </span>
+
+        </div>
+
+        <img
+            id="viewerImage"
+            class="image-viewer-image"
+            src=""
+            alt=""
+            hidden
+        >
+
     </div>
 
-    <img
-        id="viewerImage"
-        class="image-viewer-image"
-        src=""
-        alt=""
-        hidden
-    >
-
 </div>
-
         <!-- ARQUIVOS JS -->  
 
         <script async src="js/pace.min.js"></script>
