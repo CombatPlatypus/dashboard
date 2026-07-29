@@ -1,4 +1,10 @@
-import { CONFIG } from "./config.js";
+// IMPORTA AS CONFIGURAÇÕES DA APLICAÇÃO
+
+import {
+    CONFIG
+} from "./config.js";
+
+// IMPORTA AS FUNÇÕES RESPONSÁVEIS PELA INTERFACE
 
 import {
     showDriveBreadcrumb,
@@ -8,41 +14,48 @@ import {
     showUser
 } from "./ui.js";
 
+// IMPORTA AS FUNÇÕES RESPONSÁVEIS PELA API DO GOOGLE DRIVE
+
 import {
     getDriveFolderInformation,
     listDriveFiles
 } from "./drive.js";
 
+// ARMAZENA O CLIENTE DE AUTENTICAÇÃO E O TOKEN DE ACESSO
 
-export let tokenClient = null;
-export let accessToken = null;
+export let tokenClient =
+    null;
 
+export let accessToken =
+    null;
 
-// Cada posição armazena o ID e o nome de uma pasta.
-const folderNavigationHistory = [];
+// ARMAZENA O ID E O NOME DAS PASTAS PRESENTES NO HISTÓRICO DE NAVEGAÇÃO
 
+const folderNavigationHistory =
+    [];
 
-/**
- * Abre uma pasta do Google Drive, carrega seus arquivos
- * e atualiza o histórico de navegação.
- */
+// ABRE UMA PASTA DO GOOGLE DRIVE E ATUALIZA O HISTÓRICO DE NAVEGAÇÃO
+
 export async function openDriveFolder(
     folderId,
-    addToHistory = true) {
+    addToHistory = true
+) {
 
     showDriveLoading();
 
     try {
 
         const currentFolder =
-            folderNavigationHistory.at(-1);
+            folderNavigationHistory.at(
+                -1
+            );
 
-        let newFolderInformation = null;
+        let newFolderInformation =
+            null;
 
-        /*
-         * Consulta o nome da pasta apenas quando ela
-         * representa um novo nível da navegação.
-         */
+
+        // CONSULTA AS INFORMAÇÕES SOMENTE QUANDO A PASTA REPRESENTA UM NOVO NÍVEL
+
         if (
             addToHistory &&
             currentFolder?.id !== folderId
@@ -53,8 +66,9 @@ export async function openDriveFolder(
                     accessToken,
                     folderId
                 );
-
         }
+
+        // CONSULTA OS ARQUIVOS PRESENTES NA PASTA
 
         const driveItems =
             await listDriveFiles(
@@ -62,33 +76,34 @@ export async function openDriveFolder(
                 folderId
             );
 
-        /*
-         * A pasta só entra no histórico depois que
-         * sua consulta é concluída com sucesso.
-         */
+        // ADICIONA A PASTA AO HISTÓRICO APÓS A CONSULTA SER CONCLUÍDA
+
         if (newFolderInformation) {
 
             folderNavigationHistory.push({
-
                 id:
                     newFolderInformation.id,
 
                 name:
                     newFolderInformation.name
-
             });
-
         }
+
+        // EXIBE OS ARQUIVOS ENCONTRADOS NA PASTA
 
         showDriveFiles(
             driveItems,
             openDriveFolder
         );
 
+        // ATUALIZA O CAMINHO DE NAVEGAÇÃO
+
         showDriveBreadcrumb(
             folderNavigationHistory,
             handleBreadcrumbNavigation
         );
+
+        // ATUALIZA A VISIBILIDADE DO BOTÃO DE VOLTAR
 
         updateBackButtonVisibility();
 
@@ -104,42 +119,11 @@ export async function openDriveFolder(
             error.message ??
             "Não foi possível carregar os arquivos."
         );
-
     }
-
 }
 
-export function setDriveViewMode(
-    viewMode
-) {
+// MOSTRA OU OCULTA O BOTÃO DE VOLTAR CONFORME A PROFUNDIDADE DA NAVEGAÇÃO
 
-    const driveFilesContainer =
-        document.getElementById(
-            "driveFiles"
-        );
-
-    if (!driveFilesContainer) {
-        return;
-    }
-
-    driveFilesContainer.classList.remove(
-        "drive-list-view",
-        "drive-grid-view"
-    );
-
-    driveFilesContainer.classList.add(
-        `drive-${viewMode}-view`
-    );
-
-}
-
-setDriveViewMode("grid");
-
-
-/**
- * Mostra ou oculta o botão de voltar conforme
- * a profundidade atual da navegação.
- */
 function updateBackButtonVisibility() {
 
     const backButton =
@@ -154,7 +138,6 @@ function updateBackButtonVisibility() {
         );
 
         return;
-
     }
 
     backButton.hidden =
@@ -162,35 +145,34 @@ function updateBackButtonVisibility() {
 
 }
 
+// INICIALIZA O CLIENTE OAUTH DO GOOGLE E OS EVENTOS DE NAVEGAÇÃO
 
-/**
- * Inicializa o cliente OAuth do Google
- * e registra os eventos da navegação.
- */
 function initializeGoogleAuth() {
 
-    if (typeof google === "undefined") {
+    if (
+        typeof google ===
+        "undefined"
+    ) {
 
         console.error(
             "A biblioteca Google Identity Services não foi carregada."
         );
 
         return;
-
     }
 
     tokenClient =
         google.accounts.oauth2.initTokenClient({
-
             client_id:
                 CONFIG.google.clientId,
 
             scope:
-                CONFIG.google.scopes.join(" "),
+                CONFIG.google.scopes.join(
+                    " "
+                ),
 
             callback:
                 handleTokenResponse
-
         });
 
     const backButton =
@@ -205,7 +187,6 @@ function initializeGoogleAuth() {
         );
 
         return;
-
     }
 
     backButton.addEventListener(
@@ -214,13 +195,10 @@ function initializeGoogleAuth() {
     );
 
     updateBackButtonVisibility();
-
 }
 
+// RETORNA PARA A PASTA IMEDIATAMENTE ANTERIOR
 
-/**
- * Retorna para a pasta imediatamente anterior.
- */
 async function handleBackButtonClick() {
 
     if (
@@ -228,26 +206,23 @@ async function handleBackButtonClick() {
     ) {
 
         return;
-
     }
 
     folderNavigationHistory.pop();
 
     const previousFolder =
-        folderNavigationHistory.at(-1);
+        folderNavigationHistory.at(
+            -1
+        );
 
     await openDriveFolder(
         previousFolder.id,
         false
     );
-
 }
 
+// ABRE UMA PASTA DO BREADCRUMB E REMOVE OS NÍVEIS POSTERIORES DO HISTÓRICO
 
-/**
- * Abre uma pasta selecionada no breadcrumb
- * e remove do histórico os níveis posteriores.
- */
 async function handleBreadcrumbNavigation(
     folderIndex
 ) {
@@ -264,13 +239,10 @@ async function handleBreadcrumbNavigation(
         );
 
         return;
-
     }
 
-    /*
-     * Remove todas as pastas que estavam
-     * depois da pasta selecionada.
-     */
+    // REMOVE AS PASTAS LOCALIZADAS DEPOIS DA PASTA SELECIONADA
+
     folderNavigationHistory.splice(
         folderIndex + 1
     );
@@ -279,15 +251,13 @@ async function handleBreadcrumbNavigation(
         selectedFolder.id,
         false
     );
-
 }
 
+// PROCESSA A RESPOSTA DO GOOGLE APÓS A SOLICITAÇÃO DE AUTORIZAÇÃO
 
-/**
- * Processa a resposta do Google após
- * a solicitação de autorização.
- */
-async function handleTokenResponse(response) {
+async function handleTokenResponse(
+    response
+) {
 
     if (response.error) {
 
@@ -297,33 +267,28 @@ async function handleTokenResponse(response) {
         );
 
         return;
-
     }
 
     accessToken =
         response.access_token;
 
     await initializeUserSession();
-
 }
 
+// CARREGA O USUÁRIO AUTENTICADO E ABRE A PASTA INICIAL
 
-/**
- * Carrega o usuário e abre
- * a pasta inicial configurada.
- */
 async function initializeUserSession() {
 
     try {
 
-        folderNavigationHistory.length = 0;
+        folderNavigationHistory.length =
+            0;
 
         await loadUserInformation();
 
         await openDriveFolder(
             CONFIG.google.folderId
         );
-
     }
     catch (error) {
 
@@ -332,15 +297,15 @@ async function initializeUserSession() {
             error
         );
 
+        showDriveError(
+            error.message ??
+            "Não foi possível iniciar a sessão."
+        );
     }
-
 }
 
+// CONSULTA AS INFORMAÇÕES BÁSICAS DO USUÁRIO AUTENTICADO
 
-/**
- * Consulta as informações básicas
- * do usuário autenticado.
- */
 async function loadUserInformation() {
 
     const response =
@@ -361,15 +326,16 @@ async function loadUserInformation() {
         );
 
     }
-
     const user =
         await response.json();
 
-    showUser(user);
-
+    showUser(
+        user
+    );
 }
 
-// Inicializa o OAuth depois que a página estiver carregada.
+// INICIALIZA A AUTENTICAÇÃO DEPOIS QUE A PÁGINA FOR CARREGADA
+
 window.addEventListener(
     "load",
     initializeGoogleAuth
