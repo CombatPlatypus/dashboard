@@ -146,7 +146,6 @@
                 display: flex;
                 flex-direction: column;
                 row-gap: 10px;
-                height: 500px;
                 overflow: auto;
                 padding-right: 15px;
             }
@@ -516,7 +515,7 @@
                 <div class="tabs-panel" id="drive">
                     
                     <!-- AVISO DE LOGIN -->
-
+9
                     <div class="login-warning">
                         <img src="images/login-icon.svg">
                         <h2>Autentificação de Usuário</h2>
@@ -549,13 +548,15 @@
                                 <button type="button" id="driveListViewButton"class="button">Exibir Lista</button>
                                 <button type="button" id="driveGridViewButton" class="button">Exibir Grid</button>
                             </div>
+                        </section>
 
-                            <div id="driveFiles" aria-live="polite" aria-busy="false">
+                        <div style="height: 100vh;">
+                            <div id="driveFiles" aria-live="polite" aria-busy="false" style="height: 95%;">
 
                                 <!-- ARQUIVOS QUE VÊEM DO DRIVE -->
 
                             </div>
-                        </section>
+                        </div>
                     </div>
                 </div>
             </div>
