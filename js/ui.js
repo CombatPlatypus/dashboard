@@ -1,20 +1,23 @@
+// IMPORTA OS ÍCONES UTILIZADOS PELOS ITENS DO GOOGLE DRIVE
+
 import {
     DRIVE_DEFAULT_ICONS,
     DRIVE_ITEM_ICONS
 } from "./files-types.js";
 
+// IMPORTA O VISUALIZADOR INTERNO DE IMAGENS
+
 import {
     openImageViewer
 } from "./viewer.js";
 
+// DEFINE O MIME TYPE UTILIZADO PELAS PASTAS DO GOOGLE DRIVE
+
 const FOLDER_MIME_TYPE =
     "application/vnd.google-apps.folder";
 
+// EXIBE AS INFORMAÇÕES DO USUÁRIO AUTENTICADO
 
-/**
- * Preenche a área de usuário e ajusta
- * a interface depois do login.
- */
 export function showUser(user) {
 
     const loginButton =
@@ -49,13 +52,11 @@ export function showUser(user) {
         !userName ||
         !userEmail
     ) {
-
         console.error(
             "Elementos da área do usuário não foram encontrados."
         );
 
         return;
-
     }
 
     userPhoto.src =
@@ -72,16 +73,16 @@ export function showUser(user) {
     userEmail.textContent =
         user.email ?? "";
 
-    loginButton.hidden = true;
+    loginButton.hidden =
+        true;
 
-    userInfoContainer.hidden = false;
+    userInfoContainer.hidden =
+        false;
 
 }
 
-/**
- * Renderiza o caminho atual de navegação
- * e permite voltar diretamente para uma pasta anterior.
- */
+// EXIBE O CAMINHO DE NAVEGAÇÃO DA PASTA ATUAL
+
 export function showDriveBreadcrumb(
     folderHistory,
     handleFolderSelection
@@ -99,10 +100,10 @@ export function showDriveBreadcrumb(
         );
 
         return;
-
     }
 
-    breadcrumbContainer.innerHTML = "";
+    breadcrumbContainer.innerHTML =
+        "";
 
     folderHistory.forEach(
         (folder, folderIndex) => {
@@ -122,7 +123,8 @@ export function showDriveBreadcrumb(
                     "drive-breadcrumb-separator"
                 );
 
-                separator.textContent = ">";
+                separator.textContent =
+                    ">";
 
                 separator.setAttribute(
                     "aria-hidden",
@@ -132,7 +134,6 @@ export function showDriveBreadcrumb(
                 breadcrumbContainer.appendChild(
                     separator
                 );
-
             }
 
             if (isCurrentFolder) {
@@ -159,7 +160,6 @@ export function showDriveBreadcrumb(
                 );
 
                 return;
-
             }
 
             const folderButton =
@@ -167,7 +167,8 @@ export function showDriveBreadcrumb(
                     "button"
                 );
 
-            folderButton.type = "button";
+            folderButton.type =
+                "button";
 
             folderButton.classList.add(
                 "drive-breadcrumb-button"
@@ -183,7 +184,6 @@ export function showDriveBreadcrumb(
                     handleFolderSelection(
                         folderIndex
                     );
-
                 }
             );
 
@@ -193,13 +193,10 @@ export function showDriveBreadcrumb(
 
         }
     );
-
 }
 
-/**
- * Exibe o indicador de carregamento
- * enquanto uma pasta está sendo consultada.
- */
+// EXIBE O INDICADOR DE CARREGAMENTO DOS ARQUIVOS
+
 export function showDriveLoading() {
 
     const driveFilesContainer =
@@ -214,7 +211,6 @@ export function showDriveLoading() {
         );
 
         return;
-
     }
 
     driveFilesContainer.setAttribute(
@@ -236,16 +232,11 @@ export function showDriveLoading() {
             </span>
 
         </div>
-
     `;
-
 }
 
+// EXIBE UMA MENSAGEM DE ERRO NO CONTAINER DOS ARQUIVOS
 
-/**
- * Exibe uma mensagem quando não é possível
- * carregar uma pasta do Google Drive.
- */
 export function showDriveError(
     errorMessage
 ) {
@@ -262,7 +253,6 @@ export function showDriveError(
         );
 
         return;
-
     }
 
     driveFilesContainer.setAttribute(
@@ -270,7 +260,8 @@ export function showDriveError(
         "false"
     );
 
-    driveFilesContainer.innerHTML = "";
+    driveFilesContainer.innerHTML =
+        "";
 
     const errorElement =
         document.createElement(
@@ -288,17 +279,10 @@ export function showDriveError(
     driveFilesContainer.appendChild(
         errorElement
     );
-
 }
 
-/**
- * Renderiza os arquivos e as pastas
- * retornados pela API do Google Drive.
- */
-/**
- * Renderiza os arquivos e as pastas
- * retornados pela API do Google Drive.
- */
+// EXIBE OS ARQUIVOS E AS PASTAS RETORNADOS PELO GOOGLE DRIVE
+
 export function showDriveFiles(
     driveItems,
     handleFolderOpen
@@ -316,7 +300,6 @@ export function showDriveFiles(
         );
 
         return;
-
     }
 
     driveFilesContainer.setAttribute(
@@ -324,7 +307,8 @@ export function showDriveFiles(
         "false"
     );
 
-    driveFilesContainer.innerHTML = "";
+    driveFilesContainer.innerHTML =
+        "";
 
     if (driveItems.length === 0) {
 
@@ -332,7 +316,6 @@ export function showDriveFiles(
             "<p>Esta pasta está vazia.</p>";
 
         return;
-
     }
 
     driveItems.forEach(
@@ -356,7 +339,6 @@ export function showDriveFiles(
                         handleFolderOpen(
                             driveItem.id
                         );
-
                     }
                 );
 
@@ -372,52 +354,35 @@ export function showDriveFiles(
                                 "image/"
                             );
 
-                            if (isImage) {
+                        if (isImage) {
 
-                                console.log(
-                                    "Imagem clicada:",
-                                    {
-                                        name:
-                                            driveItem.name,
-
-                                        mimeType:
-                                            driveItem.mimeType,
-
-                                        thumbnailLink:
-                                            driveItem.thumbnailLink
-                                    }
+                            const imageUrl =
+                                getDriveImageUrl(
+                                    driveItem
                                 );
 
-                                const imageUrl =
-                                    getDriveImageUrl(
-                                        driveItem
-                                    );
+                            if (!imageUrl) {
 
-                                if (!imageUrl) {
-
-                                    console.error(
-                                        "Não foi possível obter a URL da imagem:",
-                                        driveItem.name
-                                    );
-
-                                    openDriveFile(
-                                        driveItem.webViewLink
-                                    );
-
-                                    return;
-
-                                }
-
-console.log(driveItem);
-
-                                openImageViewer(
-                                    imageUrl,
+                                console.error(
+                                    "Não foi possível obter a URL da imagem:",
                                     driveItem.name
+                                );
+
+                                openDriveFile(
+                                    driveItem.webViewLink
                                 );
 
                                 return;
 
                             }
+
+                            openImageViewer(
+                                imageUrl,
+                                driveItem.name
+                            );
+
+                            return;
+                        }
 
                         openDriveFile(
                             driveItem.webViewLink
@@ -437,10 +402,8 @@ console.log(driveItem);
 
 }
 
-/**
- * Altera o modo de exibição
- * dos arquivos do Google Drive.
- */
+// ALTERA O MODO DE EXIBIÇÃO DOS ARQUIVOS
+
 export function setDriveViewMode(
     viewMode
 ) {
@@ -457,7 +420,6 @@ export function setDriveViewMode(
         );
 
         return;
-
     }
 
     if (
@@ -471,7 +433,6 @@ export function setDriveViewMode(
         );
 
         return;
-
     }
 
     driveFilesContainer.classList.remove(
@@ -490,15 +451,8 @@ export function setDriveViewMode(
 
 }
 
-/**
- * Retorna um ícone local conforme
- * o tipo do item do Google Drive.
- */
+// RETORNA O ÍCONE CORRESPONDENTE AO TIPO DO ITEM
 
-/**
- * Retorna um ícone local conforme
- * o tipo do item do Google Drive.
- */
 function getDriveItemFallbackIcon(
     driveItem
 ) {
@@ -531,21 +485,12 @@ function getDriveItemFallbackIcon(
 
 }
 
+// CRIA O BOTÃO VISUAL DE UM ARQUIVO OU PASTA
 
-/**
- * Cria o botão visual usado para
- * representar um item do Drive.
- */
 function createDriveItemButton(
     driveItem
 ) {
 
-
-
-    /*
-     * Botão principal que representa
-     * o arquivo ou a pasta.
-     */
     const driveItemButton =
         document.createElement(
             "button"
@@ -558,6 +503,7 @@ function createDriveItemButton(
         "drive-file"
     );
 
+    // VERIFICA SE O ITEM É UMA PASTA
 
     const isFolder =
         driveItem.mimeType ===
@@ -573,13 +519,8 @@ function createDriveItemButton(
         !isFolder
     );
 
+    // DEFINE A IMAGEM DE REPRESENTAÇÃO DO ITEM
 
-    /*
-     * Escolhe a miniatura como imagem principal.
-     *
-     * Caso o arquivo não tenha miniatura,
-     * utiliza o ícone padrão retornado pelo Drive.
-     */
     const fallbackImage =
         getDriveItemFallbackIcon(
             driveItem
@@ -591,13 +532,13 @@ function createDriveItemButton(
         );
 
     const previewImage =
-        isImage && driveItem.thumbnailLink
+        isImage &&
+        driveItem.thumbnailLink
             ? driveItem.thumbnailLink
             : fallbackImage;
 
-    /*
-     * Cria a imagem do arquivo.
-     */
+    // CRIA A IMAGEM DE REPRESENTAÇÃO DO ITEM
+
     const imageElement =
         document.createElement(
             "img"
@@ -606,17 +547,15 @@ function createDriveItemButton(
     imageElement.src =
         previewImage;
 
-    imageElement.alt = "";
+    imageElement.alt =
+        "";
 
     imageElement.classList.add(
         "drive-file-icon"
     );
 
+    // APLICA O ÍCONE PADRÃO CASO A MINIATURA NÃO SEJA CARREGADA
 
-    /*
-     * Se a miniatura não puder ser carregada,
-     * tenta usar o ícone padrão do Drive.
-     */
     imageElement.addEventListener(
         "error",
         () => {
@@ -627,7 +566,6 @@ function createDriveItemButton(
             ) {
 
                 return;
-
             }
 
             imageElement.dataset.fallbackApplied =
@@ -639,11 +577,8 @@ function createDriveItemButton(
         }
     );
 
+    // CRIA O CONTAINER DAS INFORMAÇÕES DO ITEM
 
-    /*
-     * Cria o container que agrupa
-     * o nome e a data do arquivo.
-     */
     const driveItemInformation =
         document.createElement(
             "div"
@@ -653,10 +588,8 @@ function createDriveItemButton(
         "drive-file-info"
     );
 
+    // CRIA O NOME DO ITEM
 
-    /*
-     * Cria o nome do arquivo.
-     */
     const driveItemName =
         document.createElement(
             "strong"
@@ -671,9 +604,8 @@ function createDriveItemButton(
         "Arquivo sem nome";
 
 
-    /*
-     * Cria a informação de modificação.
-     */
+    // CRIA A DATA DE MODIFICAÇÃO DO ITEM
+
     const driveItemDate =
         document.createElement(
             "span"
@@ -690,37 +622,29 @@ function createDriveItemButton(
             )
         }`;
 
+    // INSERE O NOME E A DATA NO CONTAINER DE INFORMAÇÕES
 
-    /*
-     * Insere o nome e a data
-     * dentro do container de informações.
-     */
     driveItemInformation.append(
         driveItemName,
         driveItemDate
     );
 
+    // INSERE A IMAGEM E AS INFORMAÇÕES NO BOTÃO DO ITEM
 
-    /*
-     * Insere a imagem e as informações
-     * dentro do botão principal.
-     */
     driveItemButton.append(
         imageElement,
         driveItemInformation
     );
 
-
     return driveItemButton;
-
 }
 
 
-/**
- * Abre um arquivo do Drive
- * em uma nova aba.
- */
-function openDriveFile(fileUrl) {
+// ABRE UM ARQUIVO DO GOOGLE DRIVE EM UMA NOVA GUIA
+
+function openDriveFile(
+    fileUrl
+) {
 
     if (!fileUrl) {
 
@@ -729,7 +653,6 @@ function openDriveFile(fileUrl) {
         );
 
         return;
-
     }
 
     window.open(
@@ -737,13 +660,10 @@ function openDriveFile(fileUrl) {
         "_blank",
         "noopener,noreferrer"
     );
-
 }
 
-/**
- * Retorna a miniatura disponibilizada
- * pelo Google Drive para o viewer.
- */
+// RETORNA A URL UTILIZADA PELO VISUALIZADOR DE IMAGENS
+
 function getDriveImageUrl(
     driveItem
 ) {
@@ -751,34 +671,29 @@ function getDriveImageUrl(
     if (!driveItem.thumbnailLink) {
 
         return null;
-
     }
 
-    let imageUrl =
+    const imageUrl =
         driveItem.thumbnailLink;
 
-    /*
-     * Formato parecido com:
-     * ...=s220
-     * ...=s220-c
-     */
+    // AUMENTA O TAMANHO DAS URLS QUE UTILIZAM O PADRÃO S220
+
     if (/=s\d+(-c)?/.test(imageUrl)) {
 
         return imageUrl.replace(
             /=s\d+(-c)?/,
             "=s1600"
         );
-
     }
 
-    /*
-     * Formato parecido com:
-     * ...?sz=w220
-     */
+    // AUMENTA O TAMANHO DAS URLS QUE UTILIZAM O PARÂMETRO SZ
+
     try {
 
         const url =
-            new URL(imageUrl);
+            new URL(
+                imageUrl
+            );
 
         if (
             url.searchParams.has(
@@ -792,9 +707,7 @@ function getDriveImageUrl(
             );
 
             return url.toString();
-
         }
-
     }
     catch (error) {
 
@@ -802,31 +715,28 @@ function getDriveImageUrl(
             "URL da miniatura inválida:",
             error
         );
-
     }
 
-    /*
-     * Se nenhum formato for reconhecido,
-     * usa a miniatura original.
-     */
-    return imageUrl;
+    // RETORNA A URL ORIGINAL CASO O FORMATO NÃO SEJA RECONHECIDO
 
+    return imageUrl;
 }
 
-/**
- * Converte uma data ISO
- * para o formato brasileiro.
- */
-function formatDate(dateValue) {
+// CONVERTE UMA DATA ISO PARA O FORMATO BRASILEIRO
+
+function formatDate(
+    dateValue
+) {
 
     if (!dateValue) {
 
         return "Data não disponível";
-
     }
 
     const date =
-        new Date(dateValue);
+        new Date(
+            dateValue
+        );
 
     if (
         Number.isNaN(
@@ -835,15 +745,18 @@ function formatDate(dateValue) {
     ) {
 
         return "Data não disponível";
-
     }
 
     return new Intl.DateTimeFormat(
         "pt-BR",
         {
-            dateStyle: "short",
-            timeStyle: "short"
-        }
-    ).format(date);
+            dateStyle:
+                "short",
 
+            timeStyle:
+                "short"
+        }
+    ).format(
+        date
+    );
 }
