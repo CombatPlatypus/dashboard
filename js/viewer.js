@@ -210,7 +210,7 @@ export function initializeImageViewer() {
                 imageViewer
             ) {
 
-                closeImageViewer();
+                
 
             }
 
@@ -242,7 +242,8 @@ export function initializeImageViewer() {
                 viewerImage.src
             );
 
-            closeImageViewer();
+            viewerImage.hidden =
+                true;
 
         }
     );
@@ -256,7 +257,7 @@ export function initializeImageViewer() {
                 !imageViewer.hidden
             ) {
 
-                closeImageViewer();
+                
 
             }
 
