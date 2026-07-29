@@ -813,7 +813,6 @@ function getDriveImageUrl(
 
 }
 
-
 /**
  * Converte uma data ISO
  * para o formato brasileiro.
