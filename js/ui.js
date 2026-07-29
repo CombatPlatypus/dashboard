@@ -372,36 +372,50 @@ export function showDriveFiles(
                                 "image/"
                             );
 
-                        if (isImage) {
+                            if (isImage) {
 
-                            const imageUrl =
-                                getDriveImageUrl(
-                                    driveItem
+                                console.log(
+                                    "Imagem clicada:",
+                                    {
+                                        name:
+                                            driveItem.name,
+
+                                        mimeType:
+                                            driveItem.mimeType,
+
+                                        thumbnailLink:
+                                            driveItem.thumbnailLink
+                                    }
                                 );
 
-                            if (!imageUrl) {
+                                const imageUrl =
+                                    getDriveImageUrl(
+                                        driveItem
+                                    );
 
-                                console.error(
-                                    "Não foi possível obter a URL da imagem:",
+                                if (!imageUrl) {
+
+                                    console.error(
+                                        "Não foi possível obter a URL da imagem:",
+                                        driveItem.name
+                                    );
+
+                                    openDriveFile(
+                                        driveItem.webViewLink
+                                    );
+
+                                    return;
+
+                                }
+
+                                openImageViewer(
+                                    imageUrl,
                                     driveItem.name
-                                );
-
-                                openDriveFile(
-                                    driveItem.webViewLink
                                 );
 
                                 return;
 
                             }
-
-                            openImageViewer(
-                                imageUrl,
-                                driveItem.name
-                            );
-
-                            return;
-
-                        }
 
                         openDriveFile(
                             driveItem.webViewLink
@@ -725,39 +739,16 @@ function openDriveFile(fileUrl) {
 }
 
 /**
- * Retorna a URL da imagem para
- * exibição dentro do viewer.
+ * Retorna a miniatura disponibilizada
+ * pelo Google Drive para o viewer.
  */
-
 function getDriveImageUrl(
     driveItem
 ) {
 
-    if (!driveItem.thumbnailLink) {
-
-        return null;
-
-    }
-
-    return getLargerThumbnailUrl(
-        driveItem.thumbnailLink
-    );
-
-}
-
-function getLargerThumbnailUrl(
-    thumbnailUrl
-) {
-
-    if (!thumbnailUrl) {
-
-        return null;
-
-    }
-
-    return thumbnailUrl.replace(
-        /=s\d+(-c)?/,
-        "=s1600"
+    return (
+        driveItem.thumbnailLink ??
+        null
     );
 
 }
