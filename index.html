@@ -23,6 +23,8 @@
                 flex-direction: column;
                 -webkit-align-items: stretch;
                 align-items: stretch;
+                background-color: #1f1f1f;
+                border-radius: 5px;
             }
             .login-warning {
                 width: max-content;
@@ -30,7 +32,7 @@
                 margin: auto;
             }
             .login-warning img {
-                width: 60px;
+                width: 200px;
             }
             .login-warning button {
                 width: 450px;
@@ -40,15 +42,13 @@
             /* BARRA DE NAVEGAÇÃO DO DRIVE */
 
             .drive-toolbar {
+                width: max-content;
+                margin: 0 auto;
                 display: flex;
                 align-items: center;
                 column-gap: 15px;
                 row-gap: 10px;
-                margin-bottom: 15px;
                 flex-wrap: wrap;
-            }
-            .drive-toolbar .button {
-                margin: 0;
             }
             .drive-breadcrumb {
                 display: flex;
@@ -57,23 +57,21 @@
                 row-gap: 5px;
                 flex-wrap: wrap;
             }
-            .drive-breadcrumb-button {
-                padding: 0;
-                color: inherit;
-                font-size: 14px;
-                background: transparent;
+            .drive-toolbar .button, .drive-breadcrumb-current, .drive-breadcrumb-separator {
                 border: none;
                 cursor: pointer;
+                color: #e4e6eb;
+                font-size: 15px;
+                letter-spacing: 1px;
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 400;
+                text-rendering: optimizeLegibility;
+                line-height: 1.6;
             }
-            .drive-breadcrumb-button:hover {
-                text-decoration: underline;
-            }
-            .drive-breadcrumb-current {
-                font-size: 14px;
-                font-weight: bold;
+           .drive-breadcrumb-current, .drive-breadcrumb-separator {
+                cursor: default !important;
             }
             .drive-breadcrumb-separator {
-                font-size: 14px;
                 opacity: 0.6;
                 user-select: none;
             }
@@ -113,9 +111,11 @@
 
             /* DRIVE */
 
-            .drive-section {
-                padding: 20px;
+            .drive-section h2 {
+                margin-bottom: 20px;
+                text-align: center;
             }
+            
             #driveFiles {
                 display: flex;
                 flex-direction: column;
@@ -496,58 +496,21 @@
                         
                         <hr>
 
-                        <div class="drive-view-controls">
-
-                            <button
-                                type="button"
-                                id="driveListViewButton"
-                                class="button"
-                            >
-                                Lista
-                            </button>
-
-                            <button
-                                type="button"
-                                id="driveGridViewButton"
-                                class="button"
-                            >
-                                Grade
-                            </button>
-
-                        </div>
-
-                        <hr>
-
                         <section class="drive-section">
-
                             <h2>Arquivos do Google Drive</h2>
-
                             <div class="drive-toolbar">
-
-                                <button
-                                    class="button"
-                                    type="button"
-                                    id="driveBackButton"
-                                    hidden
-                                >
-                                    ← Voltar
-                                </button>
-
-                                <nav
-                                    id="driveBreadcrumb"
-                                    class="drive-breadcrumb"
-                                    aria-label="Caminho da pasta"
-                                ></nav>
+                                <button class="button" type="button" id="driveBackButton" hidden>Voltar / </button>
+                                <nav id="driveBreadcrumb" class="drive-breadcrumb" aria-label="Caminho da pasta"></nav>
                             </div>
 
-                            <div
-                                id="driveFiles"
-                                aria-live="polite"
-                                aria-busy="false"
-                            >
+                            <div class="drive-view-controls">
+                                <button type="button" id="driveListViewButton"class="button">Lista</button>
+                                <button type="button" id="driveGridViewButton" class="button">Grade</button>
+                            </div>
+
+                            <div id="driveFiles" aria-live="polite" aria-busy="false">
                                 <p>Entre com sua conta Google para visualizar os arquivos.</p>
                             </div>
-
                         </section>
 
                     </div>
