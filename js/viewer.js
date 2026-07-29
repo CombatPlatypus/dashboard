@@ -1,7 +1,5 @@
-/**
- * Elementos utilizados pelo
- * visualizador de imagens.
- */
+// RETORNA OS ELEMENTOS UTILIZADOS PELO VISUALIZADOR DE IMAGENS
+
 function getImageViewerElements() {
 
     const imageViewer =
@@ -42,7 +40,6 @@ function getImageViewerElements() {
         );
 
         return null;
-
     }
 
     return {
@@ -51,14 +48,10 @@ function getImageViewerElements() {
         imageViewerLoading,
         closeImageViewerButton
     };
-
 }
 
+// ABRE O VISUALIZADOR COM A IMAGEM INFORMADA
 
-/**
- * Abre o visualizador com
- * a imagem informada.
- */
 export function openImageViewer(
     imageUrl,
     imageName = "Imagem"
@@ -71,7 +64,6 @@ export function openImageViewer(
         );
 
         return;
-
     }
 
     const viewerElements =
@@ -80,7 +72,6 @@ export function openImageViewer(
     if (!viewerElements) {
 
         return;
-
     }
 
     const {
@@ -110,21 +101,15 @@ export function openImageViewer(
         "image-viewer-open"
     );
 
-    /*
-     * Definido por último para iniciar
-     * o carregamento somente após o
-     * viewer estar preparado.
-     */
+    // INICIA O CARREGAMENTO DA IMAGEM APÓS PREPARAR O VISUALIZADOR
+
     viewerImage.src =
         imageUrl;
 
 }
 
+// FECHA O VISUALIZADOR E LIMPA A IMAGEM CARREGADA
 
-/**
- * Fecha o visualizador e limpa
- * a imagem carregada.
- */
 export function closeImageViewer() {
 
     const viewerElements =
@@ -133,7 +118,6 @@ export function closeImageViewer() {
     if (!viewerElements) {
 
         return;
-
     }
 
     const {
@@ -153,10 +137,8 @@ export function closeImageViewer() {
     viewerImage.hidden =
         true;
 
-    /*
-     * Limpa a URL depois de esconder
-     * a imagem para evitar o ícone quebrado.
-     */
+    // REMOVE A URL DA IMAGEM DEPOIS DE ESCONDER O ELEMENTO
+
     viewerImage.removeAttribute(
         "src"
     );
@@ -173,11 +155,8 @@ export function closeImageViewer() {
 
 }
 
+// INICIALIZA OS EVENTOS DO VISUALIZADOR DE IMAGENS
 
-/**
- * Configura os eventos usados
- * pelo visualizador de imagens.
- */
 export function initializeImageViewer() {
 
     const viewerElements =
@@ -186,7 +165,6 @@ export function initializeImageViewer() {
     if (!viewerElements) {
 
         return;
-
     }
 
     const {
@@ -196,10 +174,15 @@ export function initializeImageViewer() {
         closeImageViewerButton
     } = viewerElements;
 
+
+    // FECHA O VISUALIZADOR PELO BOTÃO
+
     closeImageViewerButton.addEventListener(
         "click",
         closeImageViewer
     );
+
+    // FECHA O VISUALIZADOR AO CLICAR NO FUNDO
 
     imageViewer.addEventListener(
         "click",
@@ -210,12 +193,13 @@ export function initializeImageViewer() {
                 imageViewer
             ) {
 
-                
+                closeImageViewer();
 
             }
-
         }
     );
+
+    // EXIBE A IMAGEM DEPOIS QUE O CARREGAMENTO FOR CONCLUÍDO
 
     viewerImage.addEventListener(
         "load",
@@ -226,9 +210,10 @@ export function initializeImageViewer() {
 
             viewerImage.hidden =
                 false;
-
         }
     );
+
+    // TRATA ERROS DURANTE O CARREGAMENTO DA IMAGEM
 
     viewerImage.addEventListener(
         "error",
@@ -244,9 +229,10 @@ export function initializeImageViewer() {
 
             viewerImage.hidden =
                 true;
-
         }
     );
+
+    // FECHA O VISUALIZADOR AO PRESSIONAR A TECLA ESCAPE
 
     document.addEventListener(
         "keydown",
@@ -257,10 +243,10 @@ export function initializeImageViewer() {
                 !imageViewer.hidden
             ) {
 
-                
+                closeImageViewer();
+
             }
 
         }
     );
-
 }
