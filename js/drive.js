@@ -3,7 +3,6 @@
 const DRIVE_FILES_ENDPOINT =
     "https://www.googleapis.com/drive/v3/files";
 
-
 // CONSULTA AS INFORMAÇÕES BÁSICAS DE UMA PASTA
 
 export async function getDriveFolderInformation(
@@ -32,7 +31,6 @@ export async function getDriveFolderInformation(
 
             fields:
                 "id,name,mimeType"
-
         });
 
     // MONTA A URL DA REQUISIÇÃO
