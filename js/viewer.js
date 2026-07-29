@@ -153,6 +153,7 @@ export function initializeImageViewer() {
 
     const {
         imageViewer,
+        viewerImage,
         closeImageViewerButton
     } = viewerElements;
 
@@ -173,6 +174,20 @@ export function initializeImageViewer() {
                 closeImageViewer();
 
             }
+
+        }
+    );
+
+    viewerImage.addEventListener(
+        "error",
+        () => {
+
+            console.error(
+                "Não foi possível carregar a imagem no viewer:",
+                viewerImage.src
+            );
+
+            closeImageViewer();
 
         }
     );
