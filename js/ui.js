@@ -725,35 +725,26 @@ function openDriveFile(fileUrl) {
 }
 
 /**
- * Retorna a melhor URL disponível
- * para abrir uma imagem no viewer.
+ * Retorna a URL da imagem para
+ * exibição dentro do viewer.
  */
+
 function getDriveImageUrl(
     driveItem
 ) {
 
-    if (driveItem.webContentLink) {
+    if (!driveItem.thumbnailLink) {
 
-        return driveItem.webContentLink;
-
-    }
-
-    if (driveItem.thumbnailLink) {
-
-        return getLargerThumbnailUrl(
-            driveItem.thumbnailLink
-        );
+        return null;
 
     }
 
-    return null;
+    return getLargerThumbnailUrl(
+        driveItem.thumbnailLink
+    );
 
 }
 
-/**
- * Solicita uma versão maior da miniatura
- * retornada pelo Google Drive.
- */
 function getLargerThumbnailUrl(
     thumbnailUrl
 ) {
@@ -765,7 +756,7 @@ function getLargerThumbnailUrl(
     }
 
     return thumbnailUrl.replace(
-        /=s\d+$/,
+        /=s\d+(-c)?/,
         "=s1600"
     );
 
