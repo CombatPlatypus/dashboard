@@ -1,13 +1,11 @@
+// DEFINE O ENDPOINT PRINCIPAL DA API DO GOOGLE DRIVE
+
 const DRIVE_FILES_ENDPOINT =
     "https://www.googleapis.com/drive/v3/files";
 
 
-/**
- * Consulta as informações básicas de uma pasta.
- *
- * O nome retornado é utilizado no breadcrumb
- * e no histórico de navegação.
- */
+// CONSULTA AS INFORMAÇÕES BÁSICAS DE UMA PASTA
+
 export async function getDriveFolderInformation(
     accessToken,
     folderId
@@ -18,7 +16,6 @@ export async function getDriveFolderInformation(
         throw new Error(
             "Token de acesso não informado."
         );
-
     }
 
     if (!folderId) {
@@ -26,8 +23,9 @@ export async function getDriveFolderInformation(
         throw new Error(
             "ID da pasta não informado."
         );
-
     }
+
+    // DEFINE OS PARÂMETROS DA CONSULTA
 
     const queryParameters =
         new URLSearchParams({
@@ -37,9 +35,13 @@ export async function getDriveFolderInformation(
 
         });
 
+    // MONTA A URL DA REQUISIÇÃO
+
     const requestUrl =
         `${DRIVE_FILES_ENDPOINT}/${encodeURIComponent(folderId)}` +
         `?${queryParameters.toString()}`;
+
+    // REALIZA A REQUISIÇÃO À API
 
     const response =
         await fetch(
@@ -52,6 +54,8 @@ export async function getDriveFolderInformation(
             }
         );
 
+    // TRATA POSSÍVEIS ERROS DA REQUISIÇÃO
+
     if (!response.ok) {
 
         const errorMessage =
@@ -62,21 +66,13 @@ export async function getDriveFolderInformation(
         throw new Error(
             errorMessage
         );
-
     }
 
     return response.json();
-
 }
 
+// LISTA TODOS OS ARQUIVOS E PASTAS DE UM DIRETÓRIO
 
-/**
- * Lista todos os itens diretamente contidos
- * em uma pasta do Google Drive.
- *
- * A paginação é processada automaticamente
- * até não haver mais resultados.
- */
 export async function listDriveFiles(
     accessToken,
     folderId
@@ -87,7 +83,6 @@ export async function listDriveFiles(
         throw new Error(
             "Token de acesso não informado."
         );
-
     }
 
     if (!folderId) {
@@ -95,7 +90,6 @@ export async function listDriveFiles(
         throw new Error(
             "ID da pasta não informado."
         );
-
     }
 
     const driveItems = [];
@@ -104,10 +98,13 @@ export async function listDriveFiles(
 
     do {
 
+        // DEFINE OS PARÂMETROS DA CONSULTA
+
         const queryParameters =
             new URLSearchParams({
 
-                pageSize: "100",
+                pageSize:
+                    "100",
 
                 fields: [
 
@@ -116,23 +113,14 @@ export async function listDriveFiles(
                     "files(",
 
                         "id,",
-
                         "name,",
-
                         "mimeType,",
-
                         "webViewLink,",
-
                         "webContentLink,",
-
                         "iconLink,",
-
                         "hasThumbnail,",
-
                         "thumbnailLink,",
-
                         "capabilities(canDownload),",
-
                         "modifiedTime",
 
                     ")"
@@ -147,17 +135,22 @@ export async function listDriveFiles(
 
             });
 
+        // ADICIONA O TOKEN DA PRÓXIMA PÁGINA QUANDO NECESSÁRIO
+
         if (nextPageToken) {
 
             queryParameters.set(
                 "pageToken",
                 nextPageToken
             );
-
         }
+
+        // MONTA A URL DA REQUISIÇÃO
 
         const requestUrl =
             `${DRIVE_FILES_ENDPOINT}?${queryParameters.toString()}`;
+
+        // REALIZA A REQUISIÇÃO À API
 
         const response =
             await fetch(
@@ -170,6 +163,8 @@ export async function listDriveFiles(
                 }
             );
 
+        // TRATA POSSÍVEIS ERROS DA REQUISIÇÃO
+
         if (!response.ok) {
 
             const errorMessage =
@@ -180,8 +175,9 @@ export async function listDriveFiles(
             throw new Error(
                 errorMessage
             );
-
         }
+
+        // PROCESSA A RESPOSTA DA API
 
         const responseData =
             await response.json();
@@ -198,15 +194,10 @@ export async function listDriveFiles(
     while (nextPageToken);
 
     return driveItems;
-
 }
 
-/**
- * Obtém a mensagem de erro retornada pela API.
- *
- * Caso não seja possível ler a resposta,
- * utiliza uma mensagem padrão.
- */
+// OBTÉM A MENSAGEM DE ERRO RETORNADA PELA API
+
 async function getDriveErrorMessage(
     response
 ) {
@@ -215,7 +206,6 @@ async function getDriveErrorMessage(
         `Erro ao consultar o Drive: ${response.status}`;
 
     try {
-
         const errorData =
             await response.json();
 
@@ -223,12 +213,10 @@ async function getDriveErrorMessage(
             errorData.error?.message ??
             defaultMessage
         );
-
     }
     catch {
 
         return defaultMessage;
 
     }
-
 }
