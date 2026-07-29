@@ -1,17 +1,30 @@
-// Inicializa os componentes JavaScript do Foundation.
+// INICIALIZA OS COMPONENTES JAVASCRIPT DO FOUNDATION
+
 $(document).foundation();
 
-import { tokenClient } from "./auth.js";
+// IMPORTA O CLIENTE DE AUTENTICAÇÃO DO GOOGLE
+
+import {
+    tokenClient
+} from "./auth.js";
+
+// IMPORTA O CONTROLE DO MODO DE EXIBIÇÃO DOS ARQUIVOS
 
 import {
     setDriveViewMode
 } from "./ui.js";
 
+// IMPORTA A INICIALIZAÇÃO DO VISUALIZADOR DE IMAGENS
+
 import {
     initializeImageViewer
 } from "./viewer.js";
 
+// INICIALIZA O VISUALIZADOR DE IMAGENS
+
 initializeImageViewer();
+
+// RECUPERA OS ELEMENTOS PRINCIPAIS DA INTERFACE
 
 const loginButton =
     document.getElementById(
@@ -28,11 +41,8 @@ const driveGridViewButton =
         "driveGridViewButton"
     );
 
+// SOLICITA AO GOOGLE UM TOKEN DE ACESSO
 
-/**
- * Solicita ao Google um token de acesso
- * quando o usuário clica em entrar.
- */
 function handleLoginButtonClick() {
 
     if (!tokenClient) {
@@ -42,22 +52,20 @@ function handleLoginButtonClick() {
         );
 
         return;
-
     }
 
     tokenClient.requestAccessToken({
         prompt: "consent"
     });
-
 }
 
+// CONFIGURA O EVENTO DO BOTÃO DE LOGIN
 
 if (!loginButton) {
 
     console.error(
         "Botão de login não encontrado."
     );
-
 }
 else {
 
@@ -68,13 +76,13 @@ else {
 
 }
 
+// CONFIGURA O EVENTO DO BOTÃO DE VISUALIZAÇÃO EM LISTA
 
 if (!driveListViewButton) {
 
     console.error(
         "Botão de visualização em lista não encontrado."
     );
-
 }
 else {
 
@@ -88,16 +96,15 @@ else {
 
         }
     );
-
 }
 
+// CONFIGURA O EVENTO DO BOTÃO DE VISUALIZAÇÃO EM GRADE
 
 if (!driveGridViewButton) {
 
     console.error(
         "Botão de visualização em grade não encontrado."
     );
-
 }
 else {
 
@@ -111,16 +118,16 @@ else {
 
         }
     );
-
 }
-/*
- * Recupera a última visualização escolhida.
- * Caso não exista preferência, utiliza lista.
- */
+
+// RECUPERA O ÚLTIMO MODO DE EXIBIÇÃO SALVO
+
 const savedDriveViewMode =
     localStorage.getItem(
         "driveViewMode"
     ) ?? "list";
+
+// APLICA O MODO DE EXIBIÇÃO SALVO
 
 setDriveViewMode(
     savedDriveViewMode
