@@ -16,14 +16,8 @@
         <style>
 
             .drive-style {
+                width: 100%;
                 padding: 35px;
-                display: -webkit-flex;
-                display: flex;
-                -webkit-flex-direction: column;
-                flex-direction: column;
-                -webkit-align-items: stretch;
-                align-items: stretch;
-                background-color: #1f1f1f;
                 border-radius: 5px;
             }
             .login-warning {
@@ -37,7 +31,6 @@
             .login-warning button {
                 width: 450px;
             }
-
 
             /* BARRA DE NAVEGAÇÃO DO DRIVE */
 
@@ -515,8 +508,8 @@
                     
                     <!-- AVISO DE LOGIN -->
 
-                    <div class="is-connected drive-style flex-box-column" style="height: 100vh;">
-                        <div style="height: 95%; margin: auto;">
+                    <div class="is-connected" style="height: 100vh;">
+                        <div class="drive-style flex-box-column" style="height: 95%;">
 
                             <div class="login-warning">
                                 <img src="images/login-icon.svg">
@@ -556,7 +549,7 @@
                         </section>
 
                         <div class="flex-box-column" style="height: 100vh;">
-                            <div style="height: 95%; margin: auto;">
+                            <div style="width: 100%; height: 95%; margin: auto;">
                                 <div id="driveFiles" aria-live="polite" aria-busy="false">
 
                                     <!-- ARQUIVOS QUE VÊEM DO DRIVE -->
