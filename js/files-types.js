@@ -1,12 +1,8 @@
-/**
- * Mapeia MIME Types para os ícones
- * utilizados pelo explorador de arquivos.
- */
+// MAPEIA OS MIME TYPES PARA OS ÍCONES DO EXPLORADOR
+
 export const DRIVE_ITEM_ICONS = {
 
-    /* ==========================
-     * GOOGLE WORKSPACE
-     * ========================== */
+    // GOOGLE WORKSPACE
 
     "application/vnd.google-apps.document":
         "images/files-type/docs-icon.svg",
@@ -26,18 +22,12 @@ export const DRIVE_ITEM_ICONS = {
     "application/vnd.google-apps.script":
         "images/files-type/file-icon.svg",
 
-
-    /* ==========================
-     * PDF
-     * ========================== */
+    // PDF
 
     "application/pdf":
         "images/files-type/pdf-icon.svg",
 
-
-    /* ==========================
-     * MICROSOFT OFFICE
-     * ========================== */
+    // MICROSOFT OFFICE
 
     "application/msword":
         "images/files-type/doc-icon.svg",
@@ -57,10 +47,7 @@ export const DRIVE_ITEM_ICONS = {
     "application/vnd.openxmlformats-officedocument.presentationml.presentation":
         "images/files-type/slides-icon.svg",
 
-
-    /* ==========================
-     * ARQUIVOS COMPACTADOS
-     * ========================== */
+    // ARQUIVOS COMPACTADOS
 
     "application/zip":
         "images/files-type/compact-icon.svg",
@@ -83,10 +70,7 @@ export const DRIVE_ITEM_ICONS = {
     "application/gzip":
         "images/files-type/compact-icon.svg",
 
-
-    /* ==========================
-     * TEXTO
-     * ========================== */
+    // ARQUIVOS DE TEXTO
 
     "text/plain":
         "images/files-type/txt-icon.svg",
@@ -94,10 +78,7 @@ export const DRIVE_ITEM_ICONS = {
     "text/markdown":
         "images/files-type/txt-icon.svg",
 
-
-    /* ==========================
-     * HTML / CSS / JS
-     * ========================== */
+    // HTML, CSS E JAVASCRIPT
 
     "text/html":
         "images/files-type/code-icon.svg",
@@ -120,10 +101,7 @@ export const DRIVE_ITEM_ICONS = {
     "text/xml":
         "images/files-type/code-icon.svg",
 
-
-    /* ==========================
-     * CÓDIGO
-     * ========================== */
+    // LINGUAGENS DE PROGRAMAÇÃO
 
     "text/x-php":
         "images/files-type/code-icon.svg",
@@ -152,10 +130,7 @@ export const DRIVE_ITEM_ICONS = {
     "application/x-sh":
         "images/files-type/code-icon.svg",
 
-
-    /* ==========================
-     * IMAGENS
-     * ========================== */
+    // IMAGENS
 
     "image/jpeg":
         "images/files-type/image-icon.svg",
@@ -178,10 +153,7 @@ export const DRIVE_ITEM_ICONS = {
     "image/tiff":
         "images/files-type/image-icon.svg",
 
-
-    /* ==========================
-     * ÁUDIO
-     * ========================== */
+    // ÁUDIO
 
     "audio/mpeg":
         "images/files-type/audio-icon.svg",
@@ -198,10 +170,7 @@ export const DRIVE_ITEM_ICONS = {
     "audio/flac":
         "images/files-type/audio-icon.svg",
 
-
-    /* ==========================
-     * VÍDEO
-     * ========================== */
+    // VÍDEO
 
     "video/mp4":
         "images/files-type/video-icon.svg",
@@ -218,10 +187,7 @@ export const DRIVE_ITEM_ICONS = {
     "video/webm":
         "images/files-type/video-icon.svg",
 
-
-    /* ==========================
-     * EXECUTÁVEIS
-     * ========================== */
+    // EXECUTÁVEIS
 
     "application/x-msdownload":
         "images/files-type/exe-icon.svg",
@@ -231,10 +197,8 @@ export const DRIVE_ITEM_ICONS = {
 
 };
 
+// DEFINE OS ÍCONES PADRÃO UTILIZADOS PELO EXPLORADOR
 
-/**
- * Caminhos dos ícones genéricos.
- */
 export const DRIVE_DEFAULT_ICONS = {
 
     folder:
@@ -245,5 +209,4 @@ export const DRIVE_DEFAULT_ICONS = {
 
     file:
         "images/files-type/file-icon.svg"
-
 };
