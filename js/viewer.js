@@ -19,9 +19,16 @@ function getImageViewerElements() {
             "closeImageViewer"
         );
 
+    const imageViewerLoading =
+        document.getElementById(
+            "imageViewerLoading"
+        );
+
+
     if (
         !imageViewer ||
         !viewerImage ||
+        !imageViewerLoading ||
         !closeImageViewerButton
     ) {
 
@@ -42,9 +49,6 @@ function getImageViewerElements() {
 }
 
 
-/**
- * Abre o visualizador com a imagem informada.
- */
 export function openImageViewer(
     imageUrl,
     imageName = "Imagem"
@@ -71,11 +75,15 @@ export function openImageViewer(
 
     const {
         imageViewer,
-        viewerImage
+        viewerImage,
+        imageViewerLoading
     } = viewerElements;
 
-    viewerImage.src =
-        imageUrl;
+    imageViewerLoading.hidden =
+        false;
+
+    viewerImage.hidden =
+        true;
 
     viewerImage.alt =
         imageName;
@@ -92,9 +100,10 @@ export function openImageViewer(
         "image-viewer-open"
     );
 
+    viewerImage.src =
+        imageUrl;
+
 }
-
-
 /**
  * Fecha o visualizador e limpa
  * a imagem carregada.
@@ -112,7 +121,8 @@ export function closeImageViewer() {
 
     const {
         imageViewer,
-        viewerImage
+        viewerImage,
+        imageViewerLoading
     } = viewerElements;
 
     imageViewer.hidden =
@@ -123,11 +133,17 @@ export function closeImageViewer() {
         "true"
     );
 
+    viewerImage.hidden =
+        true;
+
     viewerImage.src =
         "";
 
     viewerImage.alt =
         "";
+
+    imageViewerLoading.hidden =
+        false;
 
     document.body.classList.remove(
         "image-viewer-open"
@@ -154,8 +170,11 @@ export function initializeImageViewer() {
     const {
         imageViewer,
         viewerImage,
+        imageViewerLoading,
         closeImageViewerButton
     } = viewerElements;
+
+    
 
     closeImageViewerButton.addEventListener(
         "click",
@@ -177,6 +196,38 @@ export function initializeImageViewer() {
 
         }
     );
+
+    viewerImage.addEventListener(
+        "load",
+        () => {
+
+            imageViewerLoading.hidden =
+                true;
+
+            viewerImage.hidden =
+                false;
+
+        }
+    );
+
+
+    viewerImage.addEventListener(
+        "error",
+        () => {
+
+            imageViewerLoading.hidden =
+                true;
+
+            console.error(
+                "Não foi possível carregar a imagem no viewer:",
+                viewerImage.src
+            );
+
+            closeImageViewer();
+
+        }
+    );
+
 
     viewerImage.addEventListener(
         "error",
@@ -202,6 +253,7 @@ export function initializeImageViewer() {
             ) {
 
                 closeImageViewer();
+
             }
 
         }
