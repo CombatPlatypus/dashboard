@@ -406,7 +406,7 @@
 }
 
 .image-viewer[hidden] {
-    display: none;
+    display: none !important;
 }
 
 .image-viewer-content {
@@ -500,6 +500,7 @@ body.image-viewer-open {
 .image-viewer-image[hidden] {
     display: none;
 }
+
 
                         
         </style>
@@ -789,13 +790,12 @@ body.image-viewer-open {
 
         </div>
 
-        <img
-            id="viewerImage"
-            class="image-viewer-image"
-            src=""
-            alt=""
-            hidden
-        >
+<img
+    id="viewerImage"
+    class="image-viewer-image"
+    alt=""
+    hidden
+>
 
     </div>
 
