@@ -121,13 +121,23 @@
                 }
             }
 
+            /* INFORMAÇÕES DO USUÁRIO */
+
+            #userInfo .who-is {
+                width: max-content;
+                column-gap: 20px;
+                align-items: center;
+            }
+            #userPhoto {
+                border-radius: 5px;
+            }
+
             /* DRIVE */
 
             .drive-section h2 {
                 margin-bottom: 20px;
                 text-align: center;
             }
-            
             #driveFiles {
                 display: flex;
                 flex-direction: column;
@@ -497,12 +507,12 @@
                     </div>
 
                     <div id="userInfo" hidden>
-                        <div class="standard-width flex-box-between">
+                        <div class="who-is flex-box-between">
                             <img id="userPhoto" src="" alt="Foto do usuário">
 
                             <div>
-                                <strong id="userName"></strong>
-                                <span id="userEmail"></span>
+                                <h4 id="userName"></h4>
+                                <p id="userEmail"></p>
                             </div>
                         </div>
                         
@@ -521,12 +531,12 @@
                             </div>
 
                             <div id="driveFiles" aria-live="polite" aria-busy="false">
-                                <p>Entre com sua conta Google para visualizar os arquivos.</p>
+
+                                <!-- ARQUIVOS QUE VÊEM DO DRIVE -->
+
                             </div>
                         </section>
-
                     </div>
-
                 </div>
             </div>
         </div>
