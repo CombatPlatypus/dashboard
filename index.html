@@ -15,131 +15,6 @@
 
         <style>
 
-            /* TABS */
-
-            .tabs {
-                width: max-content;
-                column-gap: 10px;
-                row-gap: 10px;
-            }
-            .tabs-title {
-                display: block;
-            }
-            .tabs .tabs-title .flex-box-center {
-                max-width: max-content;
-                align-items: center;
-                column-gap: 10px;
-            }
-            .tabs-title > a {
-                border: 2px solid #525252;
-            }
-            .tabs-title a img {
-                width: 40px;
-            }
-            .tabs-title label {
-                cursor: pointer;
-            }
-            .tabs-title>a:hover {
-                background: #2e2e2e;
-            }
-            .tabs-title>a:focus, .tabs-title>a[aria-selected='true'] {
-                background-color: #2e2e2e
-            }
-            .tabs-content {
-                width: 100%;
-            }
-
-            /* ESTILO DO DASHBOARD */
-
-            .main-menu .standard-width {
-                max-width: 1024px;
-                align-items: center;
-            }
-            .main-menu h3, .main-menu p {
-                margin: 0;
-            }
-            .main-menu p {
-                font-size: 14px;
-            }
-
-            /* ESTRUTURA PRINCIPAL */
-
-            .main-structure {
-                height: 100vh;
-            }
-            .main-structure .tabs-content {
-                margin: auto;
-            }
-            .main-structure .container-1 .tabs-content {
-                background-color: #1f1f1f;    
-                border-radius: 5px;
-            }
-            .main-structure .tabs-content #Drive {
-                /* background-color: #ffffff;     */
-                border-radius: 5px;
-            }
-            .main-structure .flex-box-between {
-                width: 100%;
-                margin: auto;
-            }
-            .main-structure .container-1 {
-                width: 84%;
-            }
-            .main-structure .container-2 {
-                width: 15%;
-                overflow: auto;
-                padding-right: 10px;
-            }
-            .main-structure .container-2:-webkit-scrollbar-track {
-                background-color: transparent;
-            }
-            .main-structure .container-2::-webkit-scrollbar {
-                width: 5px;
-                background: transparent;
-            }
-            .main-structure .container-2::-webkit-scrollbar-thumb {
-                border-radius: 5px;
-                background: #525252;
-            }
-
-            .main-structure .tabs, .main-structure .tabs .tabs-title {
-                width: 100% !important;
-            }
-            .main-structure .tabs .tabs-title label {
-                font-size: 14px;
-                user-select: none;
-            }
-            .main-structure .container-1 .tabs-content, .main-structure .tabs-panel, .main-structure .flex-box-between, .main-structure .container-1, .main-structure .container-2, iframe {
-                height: 100% !important;
-            }
-
-            iframe {
-                width: 100%;
-                height: auto;
-                border-radius: 5px;
-            }
-
-            .link-button {
-                border: 2px solid #525252;
-            }
-            .link-button:hover {
-                background: #2e2e2e;
-            }
-            .link-button label{
-                cursor: pointer;
-            }
-            .link-button .flex-box-center{
-                align-items: center;
-                column-gap: 10px;
-            }
-
-            [hidden] {
-                display: none !important;
-            }
-
-
-
-
             /* BARRA DE NAVEGAÇÃO DO DRIVE */
 
             .drive-toolbar {
@@ -147,46 +22,34 @@
                 align-items: center;
                 column-gap: 15px;
                 row-gap: 10px;
-
                 margin-bottom: 15px;
-
                 flex-wrap: wrap;
             }
-
             .drive-toolbar .button {
                 margin: 0;
             }
-
             .drive-breadcrumb {
                 display: flex;
                 align-items: center;
                 column-gap: 8px;
                 row-gap: 5px;
-
                 flex-wrap: wrap;
             }
-
             .drive-breadcrumb-button {
                 padding: 0;
-
                 color: inherit;
                 font-size: 14px;
-
                 background: transparent;
                 border: none;
-
                 cursor: pointer;
             }
-
             .drive-breadcrumb-button:hover {
                 text-decoration: underline;
             }
-
             .drive-breadcrumb-current {
                 font-size: 14px;
                 font-weight: bold;
             }
-
             .drive-breadcrumb-separator {
                 font-size: 14px;
                 opacity: 0.6;
@@ -200,42 +63,30 @@
                 align-items: center;
                 justify-content: center;
                 column-gap: 12px;
-
                 min-height: 120px;
-
                 font-size: 14px;
             }
-
             .drive-loading-spinner {
                 width: 24px;
                 height: 24px;
-
                 border: 3px solid rgba(255, 255, 255, 0.25);
                 border-top-color: currentColor;
                 border-radius: 50%;
-
                 animation: drive-spinner-rotation 0.8s linear infinite;
             }
-
             .drive-error {
                 padding: 15px;
-
                 border: 1px solid #d9534f;
                 border-radius: 5px;
-
                 color: #ff8a85;
             }
-
             @keyframes drive-spinner-rotation {
-
                 from {
                     transform: rotate(0deg);
                 }
-
                 to {
                     transform: rotate(360deg);
                 }
-
             }
 
             /* DRIVE */
@@ -243,266 +94,190 @@
             .drive-section {
                 padding: 20px;
             }
-
             #driveFiles {
                 display: flex;
                 flex-direction: column;
                 row-gap: 10px;
             }
-
             .drive-file {
                 display: flex;
                 align-items: center;
                 column-gap: 12px;
-
                 padding: 12px;
-
                 color: inherit;
                 text-decoration: none;
-
                 border: 1px solid #ddd;
                 border-radius: 6px;
             }
-
             .drive-file:hover {
                 background-color: #f5f5f5;
             }
-
             .drive-file-icon {
                 width: 32px;
                 height: 32px;
                 object-fit: contain;
             }
-
             .drive-file-info {
                 display: flex;
                 flex-direction: column;
                 row-gap: 4px;
             }
-
             .drive-file-name {
                 font-size: 15px;
             }
-
             .drive-file-date {
                 font-size: 12px;
                 opacity: 0.7;
             }
-
-
-
-#driveFiles.drive-list-view {
-    display: flex;
-    flex-direction: column;
-    row-gap: 10px;
-}
-
-#driveFiles.drive-list-view .drive-file {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-    padding: 12px;
-}
-
-#driveFiles.drive-list-view .drive-file-icon {
-    width: 32px;
-    height: 32px;
-
-    object-fit: contain;
-}
-
-
+            #driveFiles.drive-list-view {
+                display: flex;
+                flex-direction: column;
+                row-gap: 10px;
+            }
+            #driveFiles.drive-list-view .drive-file {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                text-align: left;
+                padding: 12px;
+            }
+            #driveFiles.drive-list-view .drive-file-icon {
+                width: 32px;
+                height: 32px;
+                object-fit: contain;
+            }
             #driveFiles.drive-grid-view {
-    display: grid;
+                display: grid;
+                grid-template-columns: repeat(auto-fill,minmax(220px, 1fr));
+                gap: 18px;
+            }
+            #driveFiles.drive-grid-view .drive-file {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 20px;
+                overflow: hidden;
+                background-color: #1f1f1f;
+                border: 1px solid #1f1f1f;
+                border-radius: 5px;
+            }
+            #driveFiles.drive-grid-view .drive-file:hover {
+                background-color: #2a2b2e;
+            }
+            #driveFiles.drive-grid-view .drive-file-icon {
+                width: 100%;
+                height: 150px;
+                border-radius: 5px;
+            }
+            #driveFiles.drive-grid-view .drive-file-info {
+                width: 100%;
+                padding: 10px 6px 6px;
+                row-gap: 5px;
+            }
+            #driveFiles.drive-grid-view .drive-file-name {
+                display: block;
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                font-size: 14px;
+            }
 
-    grid-template-columns:
-        repeat(
-            auto-fill,
-            minmax(220px, 1fr)
-        );
+            #driveFiles.drive-grid-view .drive-file-date {
+                font-size: 11px;
+                opacity: 0.65;
+            }
+            #driveFiles.drive-grid-view .drive-folder .drive-file-icon {
+                width: 80px;
+                height: 100px;
+                margin: 25px auto 10px;
+                object-fit: contain;
+            }
+            #driveFiles.drive-grid-view .drive-folder {
+                justify-content: center;
+            }
 
-    gap: 18px;
-}
+            /*  VISUALIZADOR DE IMAGENS */
 
-#driveFiles.drive-grid-view .drive-file {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 20px;
-    overflow: hidden;
-    background-color: #1f1f1f;
-    border: 1px solid #1f1f1f;
-    border-radius: 5px;
-}
+            .image-viewer {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 30px;
+                background-color: rgba(0, 0, 0, 0.88);
+            }
+            .image-viewer[hidden] {
+                display: none !important;
+            }
+            .image-viewer-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+            }
+            .image-viewer-image {
+                display: block;
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                user-select: none;
+                -webkit-user-drag: none;
+            }
+            .image-viewer-close {
+                position: absolute;
+                top: 20px;
+                right: 24px;
+                z-index: 1;
+                width: 44px;
+                height: 44px;
+                border: none;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.12);
+                color: #ffffff;
+                font-size: 32px;
+                line-height: 1;
+                cursor: pointer;
+            }
+            .image-viewer-close:hover {
+                background-color: rgba(255, 255, 255, 0.22);
+            }
+            body.image-viewer-open {
+                overflow: hidden;
+            }
+            .image-viewer-loading {
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                color: #ffffff;
+            }
+            .image-viewer-loading[hidden] {
+                display: none;
+            }
 
-#driveFiles.drive-grid-view .drive-file:hover {
-    background-color: #2a2b2e;
-}
-
-#driveFiles.drive-grid-view .drive-file-icon {
-    width: 100%;
-    height: 150px;
-
-    border-radius: 5px;
-}
-
-#driveFiles.drive-grid-view .drive-file-info {
-    width: 100%;
-
-    padding: 10px 6px 6px;
-
-    row-gap: 5px;
-}
-
-#driveFiles.drive-grid-view .drive-file-name {
-    display: block;
-
-    width: 100%;
-
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-
-    font-size: 14px;
-}
-
-#driveFiles.drive-grid-view .drive-file-date {
-    font-size: 11px;
-    opacity: 0.65;
-}
-
-
-#driveFiles.drive-grid-view .drive-folder .drive-file-icon {
-    width: 80px;
-    height: 100px;
-
-    margin: 25px auto 10px;
-
-    object-fit: contain;
-}
-
-#driveFiles.drive-grid-view .drive-folder {
-    justify-content: center;
-}
-
-
-/* ==========================
- * VISUALIZADOR DE IMAGENS
- * ========================== */
-
-.image-viewer {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 30px;
-
-    background-color: rgba(0, 0, 0, 0.88);
-}
-
-.image-viewer[hidden] {
-    display: none !important;
-}
-
-.image-viewer-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 100%;
-    height: 100%;
-}
-
-.image-viewer-image {
-    display: block;
-
-    max-width: 100%;
-    max-height: 100%;
-
-    object-fit: contain;
-
-    user-select: none;
-    -webkit-user-drag: none;
-}
-
-.image-viewer-close {
-    position: absolute;
-    top: 20px;
-    right: 24px;
-
-    z-index: 1;
-
-    width: 44px;
-    height: 44px;
-
-    border: none;
-    border-radius: 50%;
-
-    background-color: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
-
-    font-size: 32px;
-    line-height: 1;
-
-    cursor: pointer;
-}
-
-.image-viewer-close:hover {
-    background-color: rgba(255, 255, 255, 0.22);
-}
-
-body.image-viewer-open {
-    overflow: hidden;
-}
-
-
-.image-viewer-loading {
-    position: absolute;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    gap: 14px;
-
-    color: #ffffff;
-}
-
-.image-viewer-loading[hidden] {
-    display: none;
-}
-
-.image-viewer-spinner {
-    width: 42px;
-    height: 42px;
-
-    border: 4px solid rgba(255, 255, 255, 0.25);
-    border-top-color: #ffffff;
-    border-radius: 50%;
-
-    animation: image-viewer-spin 0.8s linear infinite;
-}
-
-@keyframes image-viewer-spin {
-
-    to {
-        transform: rotate(360deg);
-    }
-
-}
-
-.image-viewer-image[hidden] {
-    display: none;
-}
-
-
-                        
+            .image-viewer-spinner {
+                width: 42px;
+                height: 42px;
+                border: 4px solid rgba(255, 255, 255, 0.25);
+                border-top-color: #ffffff;
+                border-radius: 50%;
+                animation: image-viewer-spin 0.8s linear infinite;
+            }
+            @keyframes image-viewer-spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .image-viewer-image[hidden] {
+                display: none;
+            }
+                     
         </style>
     </head>	
     <body class="dark-theme">
@@ -677,7 +452,6 @@ body.image-viewer-open {
                 </div>
 
                 <div class="tabs-panel" id="Drive">
-
                     <button class="button" id="loginButton">
                         Entrar com Google
                     </button>
@@ -755,51 +529,53 @@ body.image-viewer-open {
             </div>
         </div>
 
-        <!-- ARQUIVOS JS -->  
-<div
-    id="imageViewer"
-    class="image-viewer"
-    hidden
-    aria-hidden="true"
->
-
-    <button
-        id="closeImageViewer"
-        class="image-viewer-close"
-        type="button"
-        aria-label="Fechar visualização da imagem"
-    >
-        ×
-    </button>
-
-    <div class="image-viewer-content">
+        <!-- MODAL -->  
 
         <div
-            id="imageViewerLoading"
-            class="image-viewer-loading"
-            aria-label="Carregando imagem"
+            id="imageViewer"
+            class="image-viewer"
+            hidden
+            aria-hidden="true"
         >
-            <span
-                class="image-viewer-spinner"
-                aria-hidden="true"
-            ></span>
 
-            <span>
-                Carregando imagem...
-            </span>
+            <button
+                id="closeImageViewer"
+                class="image-viewer-close"
+                type="button"
+                aria-label="Fechar visualização da imagem"
+            >
+                ×
+            </button>
+
+            <div class="image-viewer-content">
+
+                <div
+                    id="imageViewerLoading"
+                    class="image-viewer-loading"
+                    aria-label="Carregando imagem"
+                >
+                    <span
+                        class="image-viewer-spinner"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span>
+                        Carregando imagem...
+                    </span>
+
+                </div>
+
+                <img
+                    id="viewerImage"
+                    class="image-viewer-image"
+                    alt=""
+                    hidden
+                >
+
+            </div>
 
         </div>
-
-<img
-    id="viewerImage"
-    class="image-viewer-image"
-    alt=""
-    hidden
->
-
-    </div>
-
-</div>
+        
         <!-- ARQUIVOS JS -->  
 
         <script async src="js/pace.min.js"></script>
