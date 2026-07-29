@@ -30,6 +30,11 @@ export function showUser(user) {
             "userInfo"
         );
 
+    const loginWarning =
+        document.querySelector(
+        ".login-warning"
+    );
+
     const userPhoto =
         document.getElementById(
             "userPhoto"
@@ -50,7 +55,8 @@ export function showUser(user) {
         !userInfoContainer ||
         !userPhoto ||
         !userName ||
-        !userEmail
+        !userEmail ||
+        !loginWarning
     ) {
         console.error(
             "Elementos da área do usuário não foram encontrados."
@@ -76,9 +82,11 @@ export function showUser(user) {
     loginButton.hidden =
         true;
 
+    loginWarning.style.display =
+        "none";
+
     userInfoContainer.hidden =
         false;
-
 }
 
 // EXIBE O CAMINHO DE NAVEGAÇÃO DA PASTA ATUAL
@@ -660,6 +668,7 @@ function openDriveFile(
         "_blank",
         "noopener,noreferrer"
     );
+
 }
 
 // RETORNA A URL UTILIZADA PELO VISUALIZADOR DE IMAGENS
@@ -684,6 +693,7 @@ function getDriveImageUrl(
             /=s\d+(-c)?/,
             "=s1600"
         );
+
     }
 
     // AUMENTA O TAMANHO DAS URLS QUE UTILIZAM O PARÂMETRO SZ
@@ -707,7 +717,9 @@ function getDriveImageUrl(
             );
 
             return url.toString();
+
         }
+
     }
     catch (error) {
 
@@ -715,6 +727,7 @@ function getDriveImageUrl(
             "URL da miniatura inválida:",
             error
         );
+
     }
 
     // RETORNA A URL ORIGINAL CASO O FORMATO NÃO SEJA RECONHECIDO
@@ -731,6 +744,7 @@ function formatDate(
     if (!dateValue) {
 
         return "Data não disponível";
+
     }
 
     const date =
@@ -745,6 +759,7 @@ function formatDate(
     ) {
 
         return "Data não disponível";
+
     }
 
     return new Intl.DateTimeFormat(
