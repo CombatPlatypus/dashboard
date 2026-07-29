@@ -30,9 +30,9 @@ export function showUser(user) {
             "userInfo"
         );
 
-    const loginWarning =
+    const isConnected =
         document.querySelector(
-        ".login-warning"
+        ".is-connected"
     );
 
     const userPhoto =
@@ -56,7 +56,7 @@ export function showUser(user) {
         !userPhoto ||
         !userName ||
         !userEmail ||
-        !loginWarning
+        !isConnected
     ) {
         console.error(
             "Elementos da área do usuário não foram encontrados."
@@ -82,7 +82,7 @@ export function showUser(user) {
     loginButton.hidden =
         true;
 
-    loginWarning.style.display =
+    isConnected.style.display =
         "none";
 
     userInfoContainer.hidden =
