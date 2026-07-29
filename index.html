@@ -15,6 +15,25 @@
 
         <style>
 
+            .drive-style {
+                height: 100%;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-flex-direction: column;
+                flex-direction: column;
+                -webkit-align-items: stretch;
+                align-items: stretch;
+            }
+            .login-warning {
+                width: max-content;
+                text-align: center;
+                margin: auto;
+            }
+            .login-warning button {
+                width: 450px;
+            }
+
+
             /* BARRA DE NAVEGAÇÃO DO DRIVE */
 
             .drive-toolbar {
@@ -453,15 +472,15 @@
 
                 <div class="tabs-panel" id="Drive">
 
-
-                    <div class="login-warning">
-                        <h2>Autentificação de Usuário</h2>
-                        <p>Primeiro você precisa estar com sua conta google conectada.</p>
-                        <button class="button" id="loginButton">Entrar com Google</button>
+                    <div class="drive-style">
+                        <div class="login-warning">
+                            <h2>Autentificação de Usuário</h2>
+                            <p>Primeiro você precisa estar com sua conta google conectada.</p>
+                            <button class="button" id="loginButton">Entrar com Google</button>
+                        </div>
                     </div>
 
                     <div id="userInfo" hidden>
-
                         <div class="standard-width flex-box-between">
                             <img id="userPhoto" src="" alt="Foto do usuário">
 
