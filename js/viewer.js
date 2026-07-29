@@ -24,7 +24,6 @@ function getImageViewerElements() {
             "imageViewerLoading"
         );
 
-
     if (
         !imageViewer ||
         !viewerImage ||
@@ -33,7 +32,13 @@ function getImageViewerElements() {
     ) {
 
         console.error(
-            "Elementos do visualizador de imagens não foram encontrados."
+            "Elementos do visualizador de imagens não foram encontrados.",
+            {
+                imageViewer,
+                viewerImage,
+                imageViewerLoading,
+                closeImageViewerButton
+            }
         );
 
         return null;
@@ -43,12 +48,17 @@ function getImageViewerElements() {
     return {
         imageViewer,
         viewerImage,
+        imageViewerLoading,
         closeImageViewerButton
     };
 
 }
 
 
+/**
+ * Abre o visualizador com
+ * a imagem informada.
+ */
 export function openImageViewer(
     imageUrl,
     imageName = "Imagem"
@@ -100,10 +110,17 @@ export function openImageViewer(
         "image-viewer-open"
     );
 
+    /*
+     * Definido por último para iniciar
+     * o carregamento somente após o
+     * viewer estar preparado.
+     */
     viewerImage.src =
         imageUrl;
 
 }
+
+
 /**
  * Fecha o visualizador e limpa
  * a imagem carregada.
@@ -136,8 +153,13 @@ export function closeImageViewer() {
     viewerImage.hidden =
         true;
 
-    viewerImage.src =
-        "";
+    /*
+     * Limpa a URL depois de esconder
+     * a imagem para evitar o ícone quebrado.
+     */
+    viewerImage.removeAttribute(
+        "src"
+    );
 
     viewerImage.alt =
         "";
@@ -154,7 +176,7 @@ export function closeImageViewer() {
 
 /**
  * Configura os eventos usados
- * para fechar o visualizador.
+ * pelo visualizador de imagens.
  */
 export function initializeImageViewer() {
 
@@ -173,8 +195,6 @@ export function initializeImageViewer() {
         imageViewerLoading,
         closeImageViewerButton
     } = viewerElements;
-
-    
 
     closeImageViewerButton.addEventListener(
         "click",
@@ -210,28 +230,12 @@ export function initializeImageViewer() {
         }
     );
 
-
     viewerImage.addEventListener(
         "error",
         () => {
 
             imageViewerLoading.hidden =
                 true;
-
-            console.error(
-                "Não foi possível carregar a imagem no viewer:",
-                viewerImage.src
-            );
-
-            closeImageViewer();
-
-        }
-    );
-
-
-    viewerImage.addEventListener(
-        "error",
-        () => {
 
             console.error(
                 "Não foi possível carregar a imagem no viewer:",
