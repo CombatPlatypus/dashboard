@@ -982,7 +982,7 @@ iframe {
     font-size: 14px;
     user-select: none;
 }
-.main-structure .container-1 .tabs-content, .main-structure .tabs-panel, .main-structure .flex-box-between, .main-structure .container-1, .main-structure .container-2, iframe {
+.main-structure .tabs-content #spreadsheets, .main-structure .tabs-content #spreadsheets div, iframe, .main-structure .tabs-content #drive {
     height: 100% !important;
 }
 /* TEMAS */
