@@ -912,6 +912,9 @@ a.thumbnail image {
 .main-menu .link-button {
     border: 2px solid #525252;
 }
+.main-menu .link-button img {
+    width: 40px;
+}
 .main-menu .link-button:hover {
     background: #2e2e2e;
 }
