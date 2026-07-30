@@ -991,6 +991,7 @@ iframe {
 }
 .main-structure .tabs-content #spreadsheets .spreadsheets-links {
     width: 50px;
+    row-gap: 10px;    
 }
 .main-structure .tabs-content #spreadsheets .spreadsheets-links li {
     text-align: center;
