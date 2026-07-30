@@ -929,7 +929,7 @@ a.thumbnail image {
 /* BASE ESTRUTURAL */
 
 .standard-width {
-    max-width: 100%;
+    max-width: 1346px;
     height: auto;
     margin: 0 auto;
     padding: 0px 10px;
@@ -957,7 +957,7 @@ iframe {
     margin: auto;
 }
 .main-structure .container-1 {
-    width: 84%;
+    width: 1076px;
 }
 .main-structure .container-2 {
     width: 220px;
@@ -989,7 +989,6 @@ iframe {
 .main-structure .tabs-content #spreadsheets, .main-structure .tabs-content #spreadsheets div, iframe, .main-structure .tabs-content #drive {
     height: 100% !important;
 }
-
 .main-structure .tabs-content #spreadsheets .spreadsheets-links {
     width: 50px;
 }
@@ -998,12 +997,16 @@ iframe {
 }
 .main-structure .tabs-content #spreadsheets .spreadsheets-links a {
     display: block;
-    padding: 15px;
+    padding: 10px;
     line-height: 1;
     outline: none;
     border-radius: 5px;
     border: 2px solid #525252;
 }
+.main-structure .tabs-content #spreadsheets .spreadsheets-links a:hover {
+    background: #2e2e2e;
+}
+
 /* TEMAS */
 
 .dark-theme {
