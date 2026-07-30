@@ -929,7 +929,7 @@ a.thumbnail image {
 /* BASE ESTRUTURAL */
 
 .standard-width {
-    max-width: 1420px;
+    max-width: 100%;
     height: auto;
     margin: 0 auto;
     padding: 0px 10px;
@@ -960,9 +960,10 @@ iframe {
     width: 84%;
 }
 .main-structure .container-2 {
-    width: 15%;
+    width: 220px;
     overflow: auto;
     padding-right: 10px;
+    column-gap: 10px;
 }
 .main-structure .container-2:-webkit-scrollbar-track {
     background-color: transparent;
@@ -975,7 +976,10 @@ iframe {
     border-radius: 5px;
     background: #525252;
 }
-.main-structure .tabs, .main-structure .tabs .tabs-title {
+.main-structure .tabs {
+    width: 150px !important;
+}
+.main-structure .tabs .tabs-title {
     width: 100% !important;
 }
 .main-structure .tabs .tabs-title label {
@@ -984,6 +988,18 @@ iframe {
 }
 .main-structure .tabs-content #spreadsheets, .main-structure .tabs-content #spreadsheets div, iframe, .main-structure .tabs-content #drive {
     height: 100% !important;
+}
+
+.main-structure .tabs-content #spreadsheets .spreadsheets-links {
+    width: 50px;
+}
+.main-structure .tabs-content #spreadsheets .spreadsheets-links a {
+    display: block;
+    padding: 15px;
+    line-height: 1;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid #525252;
 }
 /* TEMAS */
 
