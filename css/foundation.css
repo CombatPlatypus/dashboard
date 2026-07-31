@@ -937,10 +937,7 @@ a.thumbnail image {
 iframe {
     width: 100%;
     height: 100%;
-    border-radius: 5px;
-}
-.main-structure .tabs-content {
-    margin: auto;
+    border: none;
 }
 .main-structure .container-1 .tabs-content {
     background-color: #1f1f1f;    
@@ -1000,6 +997,9 @@ iframe {
 }
 .main-structure  #spreadsheets .tabs-panel {
     height: 100%;
+    background-color: #1f1f1f;
+    border: solid 2px #525252;
+    border-radius: 5px;
 }
 
 /* TEMAS */
