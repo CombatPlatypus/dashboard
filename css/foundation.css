@@ -980,7 +980,6 @@ iframe {
     width: 100%;
 }
 .main-structure .tabs .tabs-title {
-    width: 100%;
     column-gap: 10px;
 }
 .main-structure .tabs .tabs-title a {
