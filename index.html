@@ -338,7 +338,26 @@
             .image-viewer-image[hidden] {
                 display: none;
             }
-                     
+
+
+            /*  */
+
+
+            .main-structure .tabs {
+                width: 100%;
+                margin: 30px 0;
+                flex-wrap: wrap-reverse;
+                justify-content: center;
+                column-gap: 10px;
+                row-gap: 10px;
+            }
+            .main-structure .tabs .main-spreadsheet {
+                width: 254px;
+                background-color: #e4e6eb;
+                border: 2px solid #a3a5a9;
+            }
+        
+
         </style>
     </head>	
     <body class="dark-theme">
@@ -370,7 +389,7 @@
                         <a href="#drive">
                             <div class="flex-box-center">
                                 <img src="images/drive-icon.svg">
-                                <label>Avarias</label>
+                                <label>Drive da Equipe</label>
                             </div>
                         </a>
                     </li> 
@@ -391,153 +410,221 @@
             <div class="tabs-content" data-tabs-content="switch-1" style="height: 97%;">
 
                 <div class="tabs-panel is-active" id="spreadsheets">
-                    <div class="flex-box-between">
-                        <div class="container-1">
-                            <div class="tabs-content" data-tabs-content="switch">
-                                <div class="tabs-panel is-active" id="spreadsheet-1">
-                                    <!-- <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe> -->
-                                    
-                                </div>
+                    <ul class="tabs flex-box-center" data-tabs id="switch">
+                        <li class="tabs-title flex-box-center">
+                            <a href="#spreadsheet-1">
+                                <label>Carga no Piso</label>
+                            </a>
 
-                                <div class="tabs-panel" id="spreadsheet-2">
-                                    
-                                </div>
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
 
-                                <div class="tabs-panel" id="spreadsheet-3">
-                                </div>
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-2">
+                                <label>Insucessos</label>
+                            </a>
 
-                                <!-- <div class="tabs-panel" id="spreadsheet-4"></div>
-                                <div class="tabs-panel" id="spreadsheet-5"></div>
-                                <div class="tabs-panel" id="spreadsheet-6"></div>
-                                <div class="tabs-panel" id="spreadsheet-7"></div>
-                                <div class="tabs-panel" id="spreadsheet-8"></div>
-                                <div class="tabs-panel" id="spreadsheet-9"></div>
-                                <div class="tabs-panel" id="spreadsheet-10"></div>
-                                <div class="tabs-panel" id="spreadsheet-11"></div>
-                                <div class="tabs-panel" id="spreadsheet-12"></div>
-                                <div class="tabs-panel" id="spreadsheet-13"></div>
-                                <div class="tabs-panel" id="spreadsheet-14"></div>
-                                <div class="tabs-panel" id="spreadsheet-15"></div> -->
-                            </div>
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('hhttps://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-3">
+                                <label>LHs</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-4">
+                                <label>Reversas</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-5">
+                                <label>Motoristas</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-6">
+                                <label>Rotas no Piso</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-7">
+                                <label>Checklist</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-8">
+                                <label>Gastos</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-9">
+                                <label>Equipamentos</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-10">
+                                <label>Planjementos</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-11">
+                                <label>Backlogs</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-12">
+                                <label>Desempenho</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-13">
+                                <label>Pacotes Off</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title flex-box-start">
+                            <a href="#spreadsheet-14">
+                                <label>Avarias</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title is-active flex-box-start">
+                            <a class="main-spreadsheet" href="#spreadsheet-15">
+                                <label>Resumo da Operação</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+                        
+                        <li class="tabs-title is-active flex-box-start">
+                            <a href="#spreadsheet-16">
+                                <label>Estoque</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+
+                        <li class="tabs-title is-active flex-box-start">
+                            <a href="#spreadsheet-17">
+                                <label>Mapa de Calor</label>
+                            </a>
+
+                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
+                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
+                                <img src="images/arrow-icon.svg">
+                            </button>
+                        </li> 
+                        
+                    </ul>
+
+                    <div class="tabs-content" data-tabs-content="switch">
+                        <div class="tabs-panel is-active" id="spreadsheet-1">
+                            <!-- <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe> -->
+                            
                         </div>
 
-                        <div class="container-2">
-                            <ul class="tabs flex-box-column" data-tabs id="switch">
-
-                                <hr>
-
-                                <h4>Divisão 1</h4>
-
-                                <hr>
-
-                                <li class="tabs-title is-active flex-box-start">
-                                    <a href="#spreadsheet-1">
-                                        <label>Planilha 1</label>
-                                    </a>
-
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                        window.open('https://github.com', '_blank', 'noopener,noreferrer')">
-                                        <img src="images/arrow-icon.svg">
-                                    </button>
-                                </li> 
-
-                                <li class="tabs-title flex-box-start">
-                                    <a href="#spreadsheet-2">
-                                        <label>Planilha 2</label>
-                                    </a>
-
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                        window.open('https://github.com', '_blank', 'noopener,noreferrer')">
-                                        <img src="images/arrow-icon.svg">
-                                    </button>
-                                </li> 
-
-                                <li class="tabs-title flex-box-start">
-                                    <a href="#spreadsheet-3">
-                                        <label>Planilha 3</label>
-                                    </a>
-
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                        window.open('https://github.com', '_blank', 'noopener,noreferrer')">
-                                        <img src="images/arrow-icon.svg">
-                                    </button>
-                                </li> 
-
-                                <hr>
-<!-- 
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-4">
-                                        <label>Planilha 4</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-5">
-                                        <label>Planilha 5</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-6">
-                                        <label>Planilha 6</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-7">
-                                        <label>Planilha 7</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-8">
-                                        <label>Planilha 8</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-9">
-                                        <label>Planilha 9</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-10">
-                                        <label>Planilha 10</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-11">
-                                        <label>Planilha 11</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-12">
-                                        <label>Planilha 12</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-13">
-                                        <label>Planilha 13</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-14">
-                                        <label>Planilha 14</label>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spreadsheet-15">
-                                        <label>Planilha 15</label>
-                                    </a>
-                                </li>  -->
-                            </ul>                            
+                        <div class="tabs-panel" id="spreadsheet-2">
+                            
                         </div>
+
+                        <div class="tabs-panel" id="spreadsheet-3">
+                        </div>
+
+                        <!-- <div class="tabs-panel" id="spreadsheet-4"></div>
+                        <div class="tabs-panel" id="spreadsheet-5"></div>
+                        <div class="tabs-panel" id="spreadsheet-6"></div>
+                        <div class="tabs-panel" id="spreadsheet-7"></div>
+                        <div class="tabs-panel" id="spreadsheet-8"></div>
+                        <div class="tabs-panel" id="spreadsheet-9"></div>
+                        <div class="tabs-panel" id="spreadsheet-10"></div>
+                        <div class="tabs-panel" id="spreadsheet-11"></div>
+                        <div class="tabs-panel" id="spreadsheet-12"></div>
+                        <div class="tabs-panel" id="spreadsheet-13"></div>
+                        <div class="tabs-panel" id="spreadsheet-14"></div>
+                        <div class="tabs-panel" id="spreadsheet-15"></div> -->
                     </div>
                 </div>
 
