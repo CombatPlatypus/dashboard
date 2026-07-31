@@ -986,9 +986,6 @@ iframe {
     font-size: 14px;
     user-select: none;
 }
-.main-structure .tabs-content #spreadsheets, .main-structure .tabs-content #spreadsheets div, iframe, .main-structure .tabs-content #drive {
-    height: 100% !important;
-}
 .main-structure .tabs-content #spreadsheets .spreadsheets-links {
     width: 50px;
     display: block;
