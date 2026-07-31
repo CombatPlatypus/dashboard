@@ -15,25 +15,6 @@
 
         <style>
 
-            .drive-style {
-                width: 100%;
-                padding: 35px;
-                border-radius: 5px;
-                background-color: #1f1f1f;
-                border: 2px solid #525252;
-            }
-            .login-warning {
-                width: max-content;
-                text-align: center;
-                margin: auto;
-            }
-            .login-warning img {
-                width: 200px;
-            }
-            .login-warning button {
-                width: 450px;
-            }
-
             /* BARRA DE NAVEGAÇÃO DO DRIVE */
 
             .drive-toolbar {
@@ -341,23 +322,7 @@
 
             /*  */
 
-            .main-structure .tabs {
-                width: 100%;
-                margin: 30px 0px 15px 0;
-                flex-wrap: wrap-reverse;
-                justify-content: center;
-                column-gap: 10px;
-                row-gap: 10px;
-            }
-            .main-structure .tabs .main-spreadsheet {
-                width: 254px !important;
-                background-color: #e4e6eb;
-                border: 2px solid #a3a5a9;
-            }
-            .main-structure .tabs .main-spreadsheet label {
-                color: #000;
-            }
-        
+
 
         </style>
     </head>	
@@ -636,16 +601,15 @@
                     
                     <!-- AVISO DE LOGIN -->
 
-                    <div class="is-connected flex-box-column" style="height: 100vh;">
-                        <div class="drive-style flex-box-column" style="height: 97%; margin: auto;">
+                    <div class="drive-style is-connected">
+                        <div class="login-warning flex-box-between">
+                            <img src="images/login-icon.svg">
 
-                            <div class="login-warning">
-                                <img src="images/login-icon.svg">
+                            <div>
                                 <h2>Autentificação de Usuário</h2>
                                 <p>Primeiro você precisa estar com sua conta google conectada.</p>
-                                <button class="button" id="loginButton">Entrar com Google</button>
+                                <button class="button" id="loginButton">Conectar Google Drive</button>
                             </div>
-
                         </div>
                     </div>
 
