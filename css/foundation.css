@@ -1057,7 +1057,6 @@ iframe {
 
 .drive-toolbar {
     width: max-content;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     column-gap: 15px;
@@ -1161,6 +1160,7 @@ iframe {
     border-radius: 5px;
     padding: 30px;
     margin-top: 30px;
+    column-gap: 15px;
 }
 .drive-section h2 {
     margin-bottom: 20px;
