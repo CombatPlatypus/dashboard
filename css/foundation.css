@@ -936,7 +936,7 @@ a.thumbnail image {
 }
 iframe {
     width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 5px;
 }
 .main-structure .tabs-content {
@@ -997,6 +997,9 @@ iframe {
 }
 .main-structure .tabs-content #spreadsheets .spreadsheets-links:hover {
     background: #2e2e2e;
+}
+.main-structure  #spreadsheets .tabs-panel {
+    height: 100%;
 }
 
 /* TEMAS */
