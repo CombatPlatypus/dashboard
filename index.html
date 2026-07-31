@@ -308,14 +308,8 @@
                             <h4 id="userName"></h4>
                             <p id="userEmail"></p>
                         </div>
-                        
-                        <section class="drive-section">
-                            <h2>Arquivos do Google Drive</h2>
-                            <div class="drive-toolbar">
-                                <button type="button" id="driveBackButton" hidden>Voltar / </button>
-                                <nav id="driveBreadcrumb" class="drive-breadcrumb" aria-label="Caminho da pasta"></nav>
-                            </div>
 
+                        <section class="drive-section flex-box-start">
                             <div class="drive-view-controls">
                                 <button type="button" id="driveListViewButton" class="button">
                                     <img src="images/list-icon.svg">
@@ -324,6 +318,15 @@
                                 <button type="button" id="driveGridViewButton" class="button">
                                     <img src="images/grid-icon.svg">
                                 </button>
+                            </div>
+
+                            <div>
+                                <h4>Onde você está.</h4>
+
+                                <div class="drive-toolbar">
+                                    <button type="button" id="driveBackButton" hidden>Voltar / </button>
+                                    <nav id="driveBreadcrumb" class="drive-breadcrumb" aria-label="Caminho da pasta"></nav>
+                                </div>
                             </div>
                         </section>
 
