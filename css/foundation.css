@@ -1375,21 +1375,24 @@ body.image-viewer-open {
 .image-viewer-image[hidden] {
     display: none;
 }
+
 .drive-login {
-    width: 100%;
+    width: 1150px;
     height: 97%;
     background-color: #1f1f1f;
     border: solid 2px #525252;
     border-radius: 5px;
     padding: 35px;
-}
-.drive-login .container-1, .drive-login .container-2 {
-    width: 49%;
+    margin-top: 30px;
 }
 .drive-login .container-1 {
     border-right: 2px solid #525252;
     margin-right: 10px;
     text-align: center;
+    width: max-content;
+}
+.drive-login .container-2 {
+    width: max-content;
 }
 .drive-login .container-1 img {
     width: 250px;
@@ -1403,7 +1406,7 @@ body.image-viewer-open {
     margin-top: 30px;
 }
 .drive-login .container-2 button {
-    width: 90%;
+    width: 100%;
 }
 .drive-login ul, .drive-login ul label {
     margin-bottom: 20px;
