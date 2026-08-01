@@ -2,7 +2,7 @@
     xmlns="http://www.w3.org/2000/svg"
     width="500"
     height="500"
-    viewBox="0 0 700 700"
+    viewBox="80 80 540 540"
     role="img"
     aria-labelledby="driveIllustrationTitle driveIllustrationDescription"
 >
@@ -33,6 +33,8 @@
         </filter>
     </defs>
 
+    <!-- ÓRBITAS EXTERNAS -->
+
     <circle
         cx="350"
         cy="350"
@@ -40,7 +42,7 @@
         fill="none"
         stroke="#e4e6eb"
         stroke-width="2"
-        opacity="0.12"
+        opacity="0.35"
     />
 
     <circle
@@ -50,43 +52,23 @@
         fill="none"
         stroke="#e4e6eb"
         stroke-width="2"
-        opacity="0.18"
+        opacity="0.5"
     />
+
+    <!-- PONTOS DECORATIVOS -->
 
     <g
         fill="#e4e6eb"
-        opacity="0.65"
+        opacity="0.75"
     >
-        <circle
-            cx="125"
-            cy="360"
-            r="4"
-        />
-
-        <circle
-            cx="568"
-            cy="426"
-            r="5"
-        />
-
-        <circle
-            cx="506"
-            cy="170"
-            r="3"
-        />
-
-        <circle
-            cx="206"
-            cy="548"
-            r="3"
-        />
-
-        <circle
-            cx="180"
-            cy="205"
-            r="2.5"
-        />
+        <circle cx="125" cy="360" r="4" />
+        <circle cx="568" cy="426" r="5" />
+        <circle cx="506" cy="170" r="3" />
+        <circle cx="206" cy="548" r="3" />
+        <circle cx="180" cy="205" r="2.5" />
     </g>
+
+    <!-- CÍRCULO CENTRAL -->
 
     <circle
         cx="350"
@@ -95,8 +77,10 @@
         fill="none"
         stroke="#e4e6eb"
         stroke-width="2"
-        opacity="0.22"
+        opacity="1"
     />
+
+    <!-- LOGO CENTRAL DO GOOGLE DRIVE -->
 
     <g
         transform="translate(260 260) scale(0.35)"
@@ -135,6 +119,8 @@
             fill="#e4e6eb"
         />
     </g>
+
+    <!-- ÍCONE DE PASTA -->
 
     <g
         transform="translate(108 132)"
@@ -183,6 +169,8 @@
         />
     </g>
 
+    <!-- ÍCONE DE IMAGEM -->
+
     <g
         transform="translate(470 132)"
         filter="url(#softShadow)"
@@ -227,6 +215,8 @@
             fill="#e4e6eb"
         />
     </g>
+
+    <!-- ÍCONE DE DOCUMENTO -->
 
     <g
         transform="translate(108 470)"
@@ -286,6 +276,8 @@
             stroke-linecap="round"
         />
     </g>
+
+    <!-- ÍCONE DE SEGURANÇA -->
 
     <g
         transform="translate(470 470)"
