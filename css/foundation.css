@@ -1161,10 +1161,10 @@ iframe {
     padding: 30px;
     margin-top: 30px;
     column-gap: 15px;
+    align-items: center;
 }
-.drive-section h2 {
-    margin-bottom: 20px;
-    text-align: center;
+.drive-section h4 {
+    margin-bottom: 0px;
 }
 #driveFiles {
     display: flex;
