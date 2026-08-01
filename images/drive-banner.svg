@@ -1,0 +1,340 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="500"
+    height="500"
+    viewBox="0 0 700 700"
+    role="img"
+    aria-labelledby="driveIllustrationTitle driveIllustrationDescription"
+>
+    <title id="driveIllustrationTitle">
+        Integração com o Google Drive
+    </title>
+
+    <desc id="driveIllustrationDescription">
+        Logo do Google Drive cercado por ícones de pasta,
+        imagem, documento e segurança.
+    </desc>
+
+    <defs>
+        <filter
+            id="softShadow"
+            x="-40%"
+            y="-40%"
+            width="180%"
+            height="180%"
+        >
+            <feDropShadow
+                dx="0"
+                dy="5"
+                stdDeviation="8"
+                flood-color="#000000"
+                flood-opacity="0.4"
+            />
+        </filter>
+    </defs>
+
+    <circle
+        cx="350"
+        cy="350"
+        r="215"
+        fill="none"
+        stroke="#e4e6eb"
+        stroke-width="2"
+        opacity="0.12"
+    />
+
+    <circle
+        cx="350"
+        cy="350"
+        r="170"
+        fill="none"
+        stroke="#e4e6eb"
+        stroke-width="2"
+        opacity="0.18"
+    />
+
+    <g
+        fill="#e4e6eb"
+        opacity="0.65"
+    >
+        <circle
+            cx="125"
+            cy="360"
+            r="4"
+        />
+
+        <circle
+            cx="568"
+            cy="426"
+            r="5"
+        />
+
+        <circle
+            cx="506"
+            cy="170"
+            r="3"
+        />
+
+        <circle
+            cx="206"
+            cy="548"
+            r="3"
+        />
+
+        <circle
+            cx="180"
+            cy="205"
+            r="2.5"
+        />
+    </g>
+
+    <circle
+        cx="350"
+        cy="350"
+        r="120"
+        fill="none"
+        stroke="#e4e6eb"
+        stroke-width="2"
+        opacity="0.22"
+    />
+
+    <g
+        transform="translate(260 260) scale(0.35)"
+        filter="url(#softShadow)"
+    >
+        <path
+            d="
+                M323.303 31
+                H189.504
+                c-5.361 0-10.313 2.856-12.993 7.5
+                s-2.681 10.356 0 15
+                L319.553 301
+                h168.726
+                L336.281 38.485
+                A15.01 15.01 0 0 0 323.303 31
+
+                M154.034 75.947
+                2.023 338.485
+                a14.99 14.99 0 0 0-.22 14.648
+                l64.805 120
+                a14.99 14.99 0 0 0 12.979 7.866
+                h.22
+                a15.01 15.01 0 0 0 12.993-7.5
+                l145.494-251.757
+                z
+
+                M509.88 338.31
+                a14.99 14.99 0 0 0-12.876-7.31
+                h-286.41
+                l-86.678 150
+                H432.2
+                a15 15 0 0 0 13.198-7.866
+                l64.805-120
+                a15.03 15.03 0 0 0-.323-14.824
+            "
+            fill="#e4e6eb"
+        />
+    </g>
+
+    <g
+        transform="translate(108 132)"
+        filter="url(#softShadow)"
+    >
+        <circle
+            cx="62"
+            cy="62"
+            r="57"
+            fill="#1f1f1f"
+            stroke="#e4e6eb"
+            stroke-width="2"
+            opacity="0.95"
+        />
+
+        <path
+            d="
+                M31 45
+                H54
+                L64 55
+                H93
+                Q100 55 100 62
+                V87
+                Q100 94 93 94
+                H31
+                Q24 94 24 87
+                V52
+                Q24 45 31 45
+                Z
+            "
+            fill="#e4e6eb"
+        />
+
+        <path
+            d="
+                M26 59
+                H98
+                V87
+                Q98 92 92 92
+                H32
+                Q26 92 26 86
+                Z
+            "
+            fill="#e4e6eb"
+            opacity="0.72"
+        />
+    </g>
+
+    <g
+        transform="translate(470 132)"
+        filter="url(#softShadow)"
+    >
+        <circle
+            cx="62"
+            cy="62"
+            r="57"
+            fill="#1f1f1f"
+            stroke="#e4e6eb"
+            stroke-width="2"
+            opacity="0.95"
+        />
+
+        <rect
+            x="27"
+            y="31"
+            width="70"
+            height="62"
+            rx="7"
+            fill="none"
+            stroke="#e4e6eb"
+            stroke-width="7"
+        />
+
+        <circle
+            cx="77"
+            cy="49"
+            r="8"
+            fill="#e4e6eb"
+        />
+
+        <path
+            d="
+                M32 84
+                L50 64
+                L63 76
+                L73 67
+                L92 88
+                Z
+            "
+            fill="#e4e6eb"
+        />
+    </g>
+
+    <g
+        transform="translate(108 470)"
+        filter="url(#softShadow)"
+    >
+        <circle
+            cx="62"
+            cy="62"
+            r="57"
+            fill="#1f1f1f"
+            stroke="#e4e6eb"
+            stroke-width="2"
+            opacity="0.95"
+        />
+
+        <path
+            d="
+                M37 26
+                H73
+                L93 46
+                V98
+                H37
+                Z
+            "
+            fill="#e4e6eb"
+        />
+
+        <path
+            d="
+                M73 26
+                V47
+                H93
+                Z
+            "
+            fill="#1f1f1f"
+            opacity="0.45"
+        />
+
+        <path
+            d="M48 60 H82"
+            stroke="#1f1f1f"
+            stroke-width="6"
+            stroke-linecap="round"
+        />
+
+        <path
+            d="M48 73 H82"
+            stroke="#1f1f1f"
+            stroke-width="6"
+            stroke-linecap="round"
+        />
+
+        <path
+            d="M48 86 H70"
+            stroke="#1f1f1f"
+            stroke-width="6"
+            stroke-linecap="round"
+        />
+    </g>
+
+    <g
+        transform="translate(470 470)"
+        filter="url(#softShadow)"
+    >
+        <circle
+            cx="62"
+            cy="62"
+            r="57"
+            fill="#1f1f1f"
+            stroke="#e4e6eb"
+            stroke-width="2"
+            opacity="0.95"
+        />
+
+        <rect
+            x="31"
+            y="52"
+            width="62"
+            height="49"
+            rx="8"
+            fill="#e4e6eb"
+        />
+
+        <path
+            d="
+                M43 52
+                V42
+                C43 17 81 17 81 42
+                V52
+            "
+            fill="none"
+            stroke="#e4e6eb"
+            stroke-width="10"
+            stroke-linecap="round"
+        />
+
+        <circle
+            cx="62"
+            cy="73"
+            r="8"
+            fill="#1f1f1f"
+        />
+
+        <path
+            d="M62 79 V90"
+            stroke="#1f1f1f"
+            stroke-width="7"
+            stroke-linecap="round"
+        />
+    </g>
+</svg>
