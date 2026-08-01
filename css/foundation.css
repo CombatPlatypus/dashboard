@@ -1387,15 +1387,16 @@ body.image-viewer-open {
 }
 .drive-login .container-1 {
     border-right: 2px solid #525252;
-    margin-right: 10px;
+    margin-right: 35px;
     text-align: center;
-    width: max-content;
+    width: 49%;
+    padding-right: 35px;
 }
 .drive-login .container-2 {
-    width: max-content;
+    width: 513px;
 }
 .drive-login .container-1 img {
-    width: 250px;
+    width: 410px;
 }
 .drive-login .container-2 p {
     width: 475px;
