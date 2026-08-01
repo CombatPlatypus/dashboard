@@ -1161,6 +1161,9 @@ iframe {
    margin: 0;
 }
 
+#userInfo {
+    padding-top: 30px;
+}
 #userInfo .flex-box-start {
     background-color: #1f1f1f;
     border: 2px solid #525252;
