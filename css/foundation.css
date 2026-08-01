@@ -1393,7 +1393,7 @@ body.image-viewer-open {
     text-align: center;
 }
 .drive-login .container-1 img {
-    width: 200px;
+    width: 250px;
 }
 .drive-login .container-2 p {
     width: 475px;
@@ -1401,6 +1401,7 @@ body.image-viewer-open {
 .drive-login .container-2 .pre-button {
     height: 55px;
     overflow: hidden;
+    margin-bottom: 20px;
 }
 .drive-login .container-2 button {
     width: 90%;
