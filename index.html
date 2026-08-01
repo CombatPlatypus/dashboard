@@ -303,32 +303,39 @@
                     <!-- CONTEÚDO PÓS LOGIN -->
 
                     <div id="userInfo" hidden>
-                        <div class="hide">
-                            <img id="userPhoto" src="" alt="Foto do usuário">
-                            <h4 id="userName"></h4>
-                            <p id="userEmail"></p>
-                        </div>
+                        <div class="flex-box-start">
+                            <div class="flex-box-start">
+                                <img id="userPhoto" src="">
 
-                        <section class="drive-section flex-box-start">
-                            <div class="drive-view-controls">
-                                <button type="button" id="driveListViewButton" class="button">
-                                    <img src="images/list-icon.svg">
-                                </button>
-
-                                <button type="button" id="driveGridViewButton" class="button">
-                                    <img src="images/grid-icon.svg">
-                                </button>
-                            </div>
-
-                            <div>
-                                <h4>Onde você está.</h4>
-
-                                <div class="drive-toolbar">
-                                    <button type="button" id="driveBackButton" hidden>Voltar / </button>
-                                    <nav id="driveBreadcrumb" class="drive-breadcrumb" aria-label="Caminho da pasta"></nav>
+                                <div class="">
+                                    <h4 id="userName"></h4>
+                                    <p id="userEmail"></p>
                                 </div>
                             </div>
-                        </section>
+
+                            <div class="flex-box-start drive-section ">
+                                <div class="drive-view-controls">
+                                    <button type="button" id="driveListViewButton" class="button">
+                                        <img src="images/list-icon.svg">
+                                    </button>
+
+                                    <button type="button" id="driveGridViewButton" class="button">
+                                        <img src="images/grid-icon.svg">
+                                    </button>
+                                </div>
+
+                                <div>
+                                    <h4>Onde você está.</h4>
+
+                                    <div class="drive-toolbar">
+                                        <button type="button" id="driveBackButton" hidden>Voltar / </button>
+                                        <nav id="driveBreadcrumb" class="drive-breadcrumb" aria-label="Caminho da pasta"></nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTEÚDO DO DRIVE -->
 
                         <div class="flex-box-column" style="height: 100vh;">
                             <div class="drive-style" style="width: 100%; height: 95%; margin: auto;">
