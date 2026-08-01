@@ -1090,7 +1090,6 @@ iframe {
 }
 .drive-view-controls {
     width: max-content;
-    margin: 30px auto 0px auto;
     height: 56px;
     overflow: hidden;
 }
@@ -1164,7 +1163,7 @@ iframe {
 #userInfo {
     padding-top: 30px;
 }
-#userInfo .flex-box-start {
+#userInfo .flex-box-start .flex-box-start {
     background-color: #1f1f1f;
     border: 2px solid #525252;
     border-radius: 5px;
