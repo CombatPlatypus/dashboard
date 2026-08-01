@@ -1382,7 +1382,7 @@ body.image-viewer-open {
     border-radius: 5px;
 }
 .drive-login .container-1, .drive-login .container-2 {
-    height: 50%;
+    width: 50%;
 }
 .drive-login .container-1 img {
     width: 200px;
