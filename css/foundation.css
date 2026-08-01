@@ -1387,14 +1387,27 @@ body.image-viewer-open {
 .drive-login .container-1 img {
     width: 200px;
 }
-.drive-login .container-2 h2 {
-    margin-bottom: 0;
+
+.drive-login .container-2 p {
+    width: 475px;
+}
+.drive-login .container-2 .pre-button {
+    height: 55px;
+    overflow: hidden;
+}
+.drive-login .container-2 button {
+    width: 90%;
 }
 .drive-login ul, .drive-login ul label {
     margin-bottom: 20px;
 }
 .drive-login ul li  {
     column-gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.drive-login ul li:last-of-type  {
+    margin-bottom: 0px;
 }
 .drive-login ul li img {
     width: 30px;
