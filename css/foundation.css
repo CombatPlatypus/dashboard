@@ -1154,14 +1154,6 @@ iframe {
 
 /* DRIVE */
 
-.profile {
-    background-color: #1f1f1f;
-    border: 2px solid #525252;
-    border-radius: 5px;
-    padding: 30px;
-    column-gap: 15px;
-    align-items: center;
-}
 .profile h4 {
     margin-bottom: 5px;
 }
