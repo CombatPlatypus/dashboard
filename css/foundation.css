@@ -1165,6 +1165,9 @@ iframe {
 #userInfo {
     padding-top: 30px;
 }
+#userInfo .flex-box-start {
+    column-gap: 15px;
+}
 #userInfo .flex-box-start .flex-box-start {
     background-color: #1f1f1f;
     border: 2px solid #525252;
@@ -1426,4 +1429,4 @@ body.image-viewer-open {
 .drive-login ul li p {
     width: max-content !important;
     margin-bottom: 0;
-}
+} 
