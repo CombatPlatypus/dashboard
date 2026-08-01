@@ -733,13 +733,15 @@ label {
     -webkit-justify-content: space-around;
     justify-content: space-around;
 }
-.flex-box-align-center {
+.flex-box-full-center {
     display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: column;
     flex-direction: column;
     -webkit-align-items: stretch;
     align-items: stretch;
+    align-content: center;
+    justify-content: center;
 }
 .flex-box-column {
     display: -webkit-flex;
@@ -1380,14 +1382,19 @@ body.image-viewer-open {
     background-color: #1f1f1f;
     border: solid 2px #525252;
     border-radius: 5px;
+    padding: 35px;
 }
 .drive-login .container-1, .drive-login .container-2 {
     width: 50%;
 }
+.drive-login .container-1 {
+    border-right: 2px solid #525252;
+    margin-right: 10px;
+    text-align: center;
+}
 .drive-login .container-1 img {
     width: 200px;
 }
-
 .drive-login .container-2 p {
     width: 475px;
 }
