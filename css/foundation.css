@@ -1373,3 +1373,23 @@ body.image-viewer-open {
 .image-viewer-image[hidden] {
     display: none;
 }
+
+.drive-login {
+    width: 100%;
+    height: 100%;
+    background-color: #1f1f1f;
+    border: solid 2px #525252;
+    border-radius: 5px;
+}
+.drive-login .container-1, .drive-login .container-2 {
+    height: 50%;
+}
+.drive-login .container-2 h2 {
+    margin-bottom: 0;
+}
+.drive-login ul li img {
+    width: 30px;
+}
+.drive-login ul li p {
+    margin-bottom: 0;
+}
