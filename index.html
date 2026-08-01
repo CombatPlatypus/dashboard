@@ -286,16 +286,46 @@
 
                 <div class="tabs-panel" id="drive">
                     
-                    <!-- AVISO DE LOGIN -->
+                    <!-- CONTEÚDO PRÉ LOGIN -->
 
-                    <div class="drive-style is-connected">
-                        <div class="login-warning flex-box-between">
-                            <img src="images/login-icon.svg">
+                    <div class="login-drive flex-box-between is-connected">
+                        <div>
+                            <img src="images/drive-icon.svg">
+                        </div>
 
-                            <div>
-                                <h2>Autentificação de Usuário</h2>
-                                <p>Primeiro você precisa estar com sua conta google conectada.</p>
-                                <button class="button" id="loginButton">Conectar Google Drive</button>
+                        <div>
+                            <h2>Google Drive</h2>
+                            <p>Conecte a sua conta google para ter acesso aos arquivos compartilhados pelo setor de Inventário.</p>
+
+                            <ul>
+                                <label>Recursos Disponíveis:</label>
+
+                                <li>
+                                    <img src="images/files-type/folder-icon.svg">
+                                    <p>Navegação por pastas</p>
+                                </li>
+
+                                <li>
+                                    <img src="images/files-type/image-icon.svg">
+                                    <p>Visualização de imagens</p>
+                                </li>
+
+                                <li>
+                                    <img src="images/files-type/file-icon.svg">
+                                    <p>Abertura de documentos</p>
+                                </li>
+
+                                <li>
+                                    <img src="images/padlock-icon.svg">
+                                    <p>Acesso somente às pastas autorizadas</p>
+                                </li>
+                            </ul>
+
+                            <button class="button" id="loginButton">Conectar Google Drive</button>
+
+                            <div class="">
+                                <img src="images/login-icon.svg">
+                                <p>Seus dados estão seguros e protegidos.</p>
                             </div>
                         </div>
                     </div>
@@ -313,7 +343,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex-box-start drive-section ">
+                            <div class="flex-box-start drive-section">
                                 <div class="drive-view-controls">
                                     <button type="button" id="driveListViewButton" class="button">
                                         <img src="images/list-icon.svg">
