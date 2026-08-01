@@ -1401,7 +1401,7 @@ body.image-viewer-open {
 .drive-login .container-2 .pre-button {
     height: 55px;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-top: 30px;
 }
 .drive-login .container-2 button {
     width: 90%;
