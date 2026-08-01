@@ -1387,6 +1387,9 @@ body.image-viewer-open {
 .drive-login .container-2 h2 {
     margin-bottom: 0;
 }
+.drive-login ul li  {
+    column-gap: 15px;
+}
 .drive-login ul li img {
     width: 30px;
 }
