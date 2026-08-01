@@ -739,7 +739,7 @@ label {
     -webkit-flex-direction: column;
     flex-direction: column;
     -webkit-align-items: stretch;
-    align-items: stretch;
+    align-items: center;
     align-content: center;
     justify-content: center;
 }
@@ -1421,5 +1421,6 @@ body.image-viewer-open {
     width: 30px;
 }
 .drive-login ul li p {
+    width: max-content !important;
     margin-bottom: 0;
 }
