@@ -1171,6 +1171,9 @@ iframe {
     column-gap: 15px;
     align-items: center;
 }
+.drive-section {
+    width: 882px;
+}
 .drive-section h4 {
     margin-bottom: 0px;
 }
