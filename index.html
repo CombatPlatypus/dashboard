@@ -18,7 +18,7 @@
         <!-- MENU PRINCIPAL -->
 
         <nav class="main-menu">
-            <div class="standard-width flex-box-between">
+            <div class="flex-box-between">
                 <div class="flex-box-between">
                     <img src="images/hub-logo.svg">
 
@@ -29,20 +29,25 @@
                 </div>
 
                 <ul class="flex-box-start tabs" data-tabs id="switch-1">
-                    <li class="tabs-title is-active">
+                    <li class="tabs-title is-active flex-box-center">
                         <a href="#spreadsheets">
                             <div class="flex-box-center">
                                 <img src="images/files-type/sheets-icon.svg">
                                 <label>Planilhas</label>
                             </div>
                         </a>
+
+                        <button id="spreadsheetLayoutButton" class="layout-toggle-button" data-layout="vertical" aria-pressed="false" aria-label="Usar menu horizontal">
+                            <img class="layout-toggle-icon horizontal-layout-icon" src="images/layout-1-icon.svg" alt="" aria-hidden="true">
+                            <img class="layout-toggle-icon vertical-layout-icon" src="images/layout-2-icon.svg" alt="" aria-hidden="true">
+                        </button>
                     </li> 
 
                     <li class="tabs-title">
                         <a href="#drive">
                             <div class="flex-box-center">
                                 <img src="images/drive-icon.svg">
-                                <label>Drive da Equipe</label>
+                                <label>Drive</label>
                             </div>
                         </a>
                     </li> 
@@ -59,227 +64,620 @@
 
         <!-- CONTEÚDO DA PÁGINA -->
 
-        <div class="main-structure standard-width">
+        <div class="main-structure">
             <div class="tabs-content" data-tabs-content="switch-1">
                 <div class="tabs-panel is-active" id="spreadsheets">
 
-                    <!-- MENU DE NAVEGAÇÃO DAS PLANILHAS -->
+                    <div class="spreadsheets-layout">
 
-                    <ul class="tabs flex-box-center" data-tabs id="switch">
-                        <li class="tabs-title flex-box-center">
-                            <a href="#spreadsheet-1">
-                                <label>Carga no Piso</label>
-                            </a>
+                        <!-- MENU DE NAVEGAÇÃO DAS PLANILHAS -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                        <div class="spreadsheets-menu-wrapper">
+                            <ul class="tabs" data-tabs id="switch">
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-2">
-                                <label>Insucessos</label>
-                            </a>
+                                <!-- 1 - RESUMO OPERACIONAL -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('hhttps://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <li class="tabs-title is-active flex-box-center">
+                                    <a class="main-spreadsheet" href="#spreadsheet-1">Resumo Operacional</a>
+                                </li>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-3">
-                                <label>LHs</label>
-                            </a>
+                                <!-- 2 - PACOTES EM ANÁLISE -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <li class="tabs-title flex-box-center horizontal-first-item">
+                                    <a href="#spreadsheet-2">Pacotes em Análise</a>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-4">
-                                <label>Reversas</label>
-                            </a>
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-5">
-                                <label>Motoristas</label>
-                            </a>
+                                <!-- 3 - BACKLOGS E LOGS -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <li class="tabs-title flex-box-center horizontal-second-item">
+                                    <a href="#spreadsheet-3">Backlogs e Logs</a>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-6">
-                                <label>Rotas no Piso</label>
-                            </a>
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-7">
-                                <label>Checklist</label>
-                            </a>
+                                <!-- 4 - CHECKLIST OPERACIONAL -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-4">Checklist Operacional</a>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-8">
-                                <label>Gastos</label>
-                            </a>
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-9">
-                                <label>Equipamentos</label>
-                            </a>
+                                <!-- 5 - CONTROLE OPERACIONAL -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-5">Controle Operacional</a>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-10">
-                                <label>Planjementos</label>
-                            </a>
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-11">
-                                <label>Backlogs</label>
-                            </a>
+                                <!-- 6 - INSUCESSO -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-6">Insucesso</a>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-12">
-                                <label>Desempenho</label>
-                            </a>
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-13">
-                                <label>Pacotes Off</label>
-                            </a>
+                                <!-- 7 - MAPA DE CALOR -->
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-7">Mapa de Calor</a>
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-14">
-                                <label>Avarias</label>
-                            </a>
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
 
-                        <li class="tabs-title is-active flex-box-start">
-                            <a class="main-spreadsheet" href="#spreadsheet-15">
-                                <label>Resumo da Operação</label>
-                            </a>
-                        </li> 
-                        
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-16">
-                                <label>Estoque</label>
-                            </a>
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
+                                <!-- 8 - STUCK ORDERS -->
 
-                        <li class="tabs-title flex-box-start">
-                            <a href="#spreadsheet-17">
-                                <label>Mapa de Calor</label>
-                            </a>
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-8">Stuck Orders</a>
 
-                            <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); 
-                                window.open('https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0', '_blank', 'noopener,noreferrer')">
-                                <img src="images/arrow-icon.svg">
-                            </button>
-                        </li> 
-                    </ul>
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
 
-                    <!-- PLANILHAS -->
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
 
-                    <div class="flex-box-column" style="height: 100vh; justify-content: center;">
-                        <div class="tabs-content" data-tabs-content="switch" style="height: 97%;">
-                            <div class="tabs-panel" id="spreadsheet-1"></div>
-                            <div class="tabs-panel" id="spreadsheet-2"></div>
-                            <div class="tabs-panel" id="spreadsheet-3"></div>
-                            <div class="tabs-panel" id="spreadsheet-4"></div>
-                            <div class="tabs-panel" id="spreadsheet-5"></div>
-                            <div class="tabs-panel" id="spreadsheet-6"></div>
-                            <div class="tabs-panel" id="spreadsheet-7"></div>
-                            <div class="tabs-panel" id="spreadsheet-8"></div>
-                            <div class="tabs-panel" id="spreadsheet-9"></div>
-                            <div class="tabs-panel" id="spreadsheet-10"></div>
-                            <div class="tabs-panel" id="spreadsheet-11"></div>
-                            <div class="tabs-panel" id="spreadsheet-12"></div>
-                            <div class="tabs-panel" id="spreadsheet-13"></div>
+                                <!-- 9 - CONTROLE GERAL -->
 
-                            <div class="tabs-panel" id="spreadsheet-14">
-                                <iframe src="https://docs.google.com/spreadsheets/d/1xsYqR7UbdK2GoCWTEonOC4ClobrwkZ18MlgnK7_tVmE/edit?gid=0#gid=0"></iframe>
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-9">Controle Geral</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 10 - CONTROLE DE ENDEREÇOS -->
+
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-10">Controle de Endereços</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 11 - JUSTIFICATIVAS -->
+
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-11">Justificativas</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 12 - AVARIAS -->
+
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-12">Avarias</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 13 - REVERSA -->
+
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-13">Reversa</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 14 - RESUMO CP -->
+
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-14">Resumo CP</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 15 - ERROS DE ETIQUETAGEM -->
+
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-15">Erros de Etiquetagem</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 16 - AVARIAS APPSHET -->
+
+                                <li class="tabs-title flex-box-center">
+                                    <a href="#spreadsheet-16">Avarias Appshet</a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+
+                                <!-- 17 - PACOTES RETORNADOS -->
+
+                                <li class="tabs-title flex-box-start">
+                                    <a href="#spreadsheet-17">
+                                        Pacotes Retornados
+                                    </a>
+
+                                    <button
+                                        class="spreadsheets-links"
+                                        type="button"
+                                        onclick="
+                                            event.stopPropagation();
+
+                                            window.open(
+                                                'LINK_DA_PLANILHA',
+                                                '_blank',
+                                                'noopener,noreferrer'
+                                            );
+                                        "
+                                    >
+                                        <svg
+                                            class="spreadsheets-link-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                d="M7 17L17 7M9 7H17V15"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- PLANILHAS -->
+
+                        <div class="spreadsheets-view">
+                            <div class="tabs-content" data-tabs-content="switch" style="height: 95%;">
+                                <div class="tabs-panel" id="spreadsheet-1"></div>
+                                <div class="tabs-panel" id="spreadsheet-2"></div>
+                                <div class="tabs-panel" id="spreadsheet-3"></div>
+                                <div class="tabs-panel" id="spreadsheet-4"></div>
+                                <div class="tabs-panel" id="spreadsheet-5"></div>
+                                <div class="tabs-panel" id="spreadsheet-6"></div>
+                                <div class="tabs-panel" id="spreadsheet-7"></div>
+                                <div class="tabs-panel" id="spreadsheet-8"></div>
+                                <div class="tabs-panel" id="spreadsheet-9"></div>
+                                <div class="tabs-panel" id="spreadsheet-10"></div>
+                                <div class="tabs-panel" id="spreadsheet-11"></div>
+                                <div class="tabs-panel" id="spreadsheet-12"></div>
+                                <div class="tabs-panel" id="spreadsheet-13"></div>
+
+                                <div class="tabs-panel" id="spreadsheet-14">
+                                    <iframe src="https://docs.google.com/spreadsheets/d/1xsYqR7UbdK2GoCWTEonOC4ClobrwkZ18MlgnK7_tVmE/edit?gid=0#gid=0"></iframe>
+                                </div>
+
+                                <div class="tabs-panel is-active" id="spreadsheet-15">
+                                    <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe>
+                                </div>
+                                
+                                <div class="tabs-panel" id="spreadsheet-16">
+                                    <iframe src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                                </div>
+
+                                <div class="tabs-panel" id="spreadsheet-17"></div>
                             </div>
-
-                            <div class="tabs-panel is-active" id="spreadsheet-15">
-                                <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe>
-                            </div>
-                            
-                            <div class="tabs-panel" id="spreadsheet-16">
-                                <iframe src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                            </div>
-
-                            <div class="tabs-panel" id="spreadsheet-17"></div>
                         </div>
                     </div>
                 </div>
@@ -401,6 +799,7 @@
         <script async src="js/pace.min.js"></script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script defer src="js/foundation.min.js"></script>
+        <script defer src="js/change-layout.js"></script>
 
         <!-- GOOGLE IDENTITY SERVICES -->
 
