@@ -89,6 +89,63 @@ export function showUser(user) {
         false;
 }
 
+// EXIBE NOVAMENTE A ÁREA DE CONEXÃO QUANDO A SESSÃO NÃO PUDER SER RENOVADA
+
+export function showDriveReconnect() {
+
+    const loginButton =
+        document.getElementById(
+            "loginButton"
+        );
+
+    const userInfoContainer =
+        document.getElementById(
+            "userInfo"
+        );
+
+    const connectionContainer =
+        document.querySelector(
+            ".is-connected"
+        );
+
+    const connectionDescription =
+        connectionContainer?.querySelector(
+            ".drive-login .description p"
+        );
+
+    if (
+        !loginButton ||
+        !userInfoContainer ||
+        !connectionContainer
+    ) {
+
+        console.error(
+            "Elementos da área de reconexão não foram encontrados."
+        );
+
+        return;
+    }
+
+    loginButton.textContent =
+        "Reconectar Google Drive";
+
+    loginButton.hidden =
+        false;
+
+    connectionContainer.style.removeProperty(
+        "display"
+    );
+
+    userInfoContainer.hidden =
+        true;
+
+    if (connectionDescription) {
+
+        connectionDescription.textContent =
+            "A sessão do Google não está mais disponível. Reconecte sua conta para continuar acessando os arquivos.";
+    }
+}
+
 // EXIBE O CAMINHO DE NAVEGAÇÃO DA PASTA ATUAL
 
 export function showDriveBreadcrumb(
