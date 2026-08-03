@@ -1,10 +1,18 @@
 <!doctype html>
 <html class="no-js" lang="pt-br">
+
+    <!-- METADADOS DA PÁGINA -->
+
     <head>
+
+        <!-- TAGS META -->
+
         <meta charset="utf-8" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="robots" content="nofollow, noindex, noimageindex, noarchive, nocache, nosnippet, notranslate" />
+
+        <!-- TÍTULO DA PÁGINA -->
 
         <title>Dashboard do Inventário</title>
 
@@ -13,6 +21,9 @@
         <link rel="icon" href="images/hub-logo.svg">
         <link rel="stylesheet" href="css/foundation.css">
     </head>	
+
+    <!-- CONTEÚDO DA PÁGINA -->
+
     <body class="dark-theme">
 
         <!-- MENU PRINCIPAL -->
@@ -53,16 +64,11 @@
                             <label>SeaTalk</label>
                         </div>
                     </a>
-
-                    <!-- <button id="spreadsheetLayoutButton" class="layout-toggle-button" data-layout="vertical" aria-pressed="false">
-                        <img class="layout-toggle-icon horizontal-layout-icon" src="images/layout-1-icon.svg" aria-hidden="true">
-                        <img class="layout-toggle-icon vertical-layout-icon" src="images/layout-2-icon.svg" aria-hidden="true">
-                    </button> -->
                 </ul> 
             </div>        
         </nav>
 
-        <!-- CONTEÚDO DA PÁGINA -->
+        <!-- ESTRUTURA PRINCIPAL -->
 
         <div class="main-structure">
             <div class="tabs-content" data-tabs-content="switch-1">
@@ -72,283 +78,279 @@
 
                         <!-- MENU DE NAVEGAÇÃO DAS PLANILHAS -->
 
-                        <div class="spreadsheets-menu-wrapper">
-                            <ul class="tabs" data-tabs id="switch">
+                        <ul class="tabs" data-tabs id="switch-spreadsheet">
 
-                                <!-- 1 - RESUMO OPERACIONAL -->
+                            <!-- 1 - RESUMO OPERACIONAL -->
 
-                                <li class="tabs-title is-active flex-box-center">
-                                    <a class="main-spreadsheet" href="#spreadsheet-1">Resumo Operacional</a>
-                                </li>
+                            <li class="tabs-title is-active flex-box-center">
+                                <a class="main-spreadsheet" href="#spreadsheet-1">Resumo Operacional</a>
+                            </li>
 
-                                <!-- 2 - PACOTES EM ANÁLISE -->
+                            <!-- 2 - PACOTES EM ANÁLISE -->
 
-                                <li class="tabs-title flex-box-center horizontal-first-item">
-                                    <a href="#spreadsheet-2">Pacotes em Análise</a>
+                            <li class="tabs-title flex-box-center horizontal-first-item">
+                                <a href="#spreadsheet-2">Pacotes em Análise</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 3 - BACKLOGS E LOGS -->
+                            <!-- 3 - BACKLOGS E LOGS -->
 
-                                <li class="tabs-title flex-box-center horizontal-second-item">
-                                    <a href="#spreadsheet-3">Backlogs e Logs</a>
+                            <li class="tabs-title flex-box-center horizontal-second-item">
+                                <a href="#spreadsheet-3">Backlogs e Logs</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 4 - CHECKLIST OPERACIONAL -->
+                            <!-- 4 - CHECKLIST OPERACIONAL -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-4">Checklist Operacional</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-4">Checklist Operacional</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 5 - CONTROLE OPERACIONAL -->
+                            <!-- 5 - CONTROLE OPERACIONAL -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-5">Controle Operacional</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-5">Controle Operacional</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 6 - INSUCESSO -->
+                            <!-- 6 - INSUCESSO -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-6">Insucesso</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-6">Insucesso</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 7 - MAPA DE CALOR -->
+                            <!-- 7 - MAPA DE CALOR -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-7">Mapa de Calor</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-7">Mapa de Calor</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
 
-                                <!-- 8 - STUCK ORDERS -->
+                            <!-- 8 - STUCK ORDERS -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-8">Stuck Orders</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-8">Stuck Orders</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 9 - CONTROLE GERAL -->
+                            <!-- 9 - CONTROLE GERAL -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-9">Controle Geral</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-9">Controle Geral</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 10 - CONTROLE DE ENDEREÇOS -->
+                            <!-- 10 - CONTROLE DE ENDEREÇOS -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-10">Controle de Endereços</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-10">Controle de Endereços</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 11 - JUSTIFICATIVAS -->
+                            <!-- 11 - JUSTIFICATIVAS -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-11">Justificativas</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-11">Justificativas</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 12 - AVARIAS -->
+                            <!-- 12 - AVARIAS -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-12">Avarias</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-12">Avarias</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 13 - REVERSA -->
+                            <!-- 13 - REVERSA -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-13">Reversa</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-13">Reversa</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 14 - RESUMO CP -->
+                            <!-- 14 - RESUMO CP -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-14">Resumo CP</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-14">Resumo CP</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 15 - ERROS DE ETIQUETAGEM -->
+                            <!-- 15 - ERROS DE ETIQUETAGEM -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-15">Erros de Etiquetagem</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-15">Erros de Etiquetagem</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 16 - AVARIAS APPSHET -->
+                            <!-- 16 - AVARIAS APPSHET -->
 
-                                <li class="tabs-title flex-box-center">
-                                    <a href="#spreadsheet-16">Avarias Appshet</a>
+                            <li class="tabs-title flex-box-center">
+                                <a href="#spreadsheet-16">Avarias Appshet</a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
 
-                                <!-- 17 - PACOTES RETORNADOS -->
+                            <!-- 17 - PACOTES RETORNADOS -->
 
-                                <li class="tabs-title flex-box-start">
-                                    <a href="#spreadsheet-17">
-                                        Pacotes Retornados
-                                    </a>
+                            <li class="tabs-title flex-box-start">
+                                <a href="#spreadsheet-17">
+                                    Pacotes Retornados
+                                </a>
 
-                                    <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
-                                        <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
+                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </li>
+                        </ul>
 
                         <!-- PLANILHAS -->
 
-                        <div class="spreadsheets-view">
-                            <div class="tabs-content" data-tabs-content="switch" style="height: 95%;">
-                                <div class="tabs-panel is-active keep-loaded" id="spreadsheet-1">
-                                    <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe>
-                                </div>
+                        <div class="tabs-content" data-tabs-content="switch-spreadsheet">
+                            <div class="tabs-panel is-active keep-loaded" id="spreadsheet-1">
+                                <iframe src="https://docs.google.com/spreadsheets/d/1D6GyvOktGAepJlrFEnSf9yaswMgdllr6qlGkZ1Kj9ew/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-2">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1xsYqR7UbdK2GoCWTEonOC4ClobrwkZ18MlgnK7_tVmE/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-2">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1xsYqR7UbdK2GoCWTEonOC4ClobrwkZ18MlgnK7_tVmE/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-3">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-3">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-4">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-4">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-5">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-5">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-6">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-6">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-7">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-7">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-8">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-8">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-9">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-9">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-10">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-10">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-11">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-11">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-12">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-12">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-13">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-13">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-14">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-14">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-15">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-15">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-16">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-16">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                            </div>
 
-                                <div class="tabs-panel" id="spreadsheet-17">
-                                    <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
-                                </div>
+                            <div class="tabs-panel" id="spreadsheet-17">
+                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
                             </div>
                         </div>
                     </div>
@@ -358,47 +360,42 @@
                     
                     <!-- CONTEÚDO PRÉ LOGIN -->
 
-                    <div class="flex-box-full-center is-connected">
-                        <div class="drive-login flex-box-between">
-                            <div class="container-1 flex-box-full-center">
-                                <img src="images/drive-banner.svg">
-                            </div>
-
-                            <div class="container-2">
+                    <div class="is-connected">
+                        <div class="drive-login">
+                            <div class="description">
                                 <div class="flex-box-start">
                                     <img src="images/cloud-icon.svg">
                                     <h2>Google Drive</h2>
                                 </div>
-
                                 <p>Conecte a sua conta google para ter acesso aos arquivos compartilhados pelo setor de Inventário.</p>
+                            </div>
 
-                                <ul>
-                                    <label>Recursos Disponíveis:</label>
+                            <ul>
+                                <label>Recursos Disponíveis:</label>
 
-                                    <li class="flex-box-start">
-                                        <img src="images/files-type/folder-icon.svg">
-                                        <p>Navegação por pastas</p>
-                                    </li>
+                                <li class="flex-box-start">
+                                    <img src="images/files-type/folder-icon.svg">
+                                    <p>Navegação por pastas</p>
+                                </li>
 
-                                    <li class="flex-box-start">
-                                        <img src="images/files-type/image-icon.svg">
-                                        <p>Visualização de imagens</p>
-                                    </li>
+                                <li class="flex-box-start">
+                                    <img src="images/files-type/image-icon.svg">
+                                    <p>Visualização de imagens</p>
+                                </li>
 
-                                    <li class="flex-box-start">
-                                        <img src="images/files-type/file-icon.svg">
-                                        <p>Abertura de documentos</p>
-                                    </li>
+                                <li class="flex-box-start">
+                                    <img src="images/files-type/file-icon.svg">
+                                    <p>Abertura de documentos</p>
+                                </li>
 
-                                    <li class="flex-box-start">
-                                        <img src="images/padlock-icon.svg">
-                                        <p>Acesso somente às pastas autorizadas</p>
-                                    </li>
-                                </ul>
+                                <li class="flex-box-start">
+                                    <img src="images/padlock-icon.svg">
+                                    <p>Acesso somente às pastas autorizadas</p>
+                                </li>
+                            </ul>
 
-                                <div class="pre-button">
-                                    <button class="button" id="loginButton">Conectar Google Drive</button>
-                                </div>
+                            <div class="pre-button">
+                                <button class="button" id="loginButton">Conectar Google Drive</button>
                             </div>
                         </div>
                     </div>
@@ -416,7 +413,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex-box-start drive-section">
+                            <div class="flex-box-start drive-nav">
                                 <div class="drive-view-controls">
                                     <button type="button" id="driveListViewButton" class="button">
                                         <img src="images/list-icon.svg">
@@ -440,13 +437,11 @@
 
                         <!-- CONTEÚDO DO DRIVE -->
 
-                        <div class="flex-box-column" style="height: 100vh;">
-                            <div class="drive-style" style="width: 100%; height: 95%; margin: auto;">
-                                <div id="driveFiles" aria-live="polite" aria-busy="false">
+                        <div id="#driveFiles-Style">
+                            <div id="driveFiles" aria-live="polite" aria-busy="false">
 
-                                    <!-- ARQUIVOS QUE VÊEM DO DRIVE -->
+                                <!-- ARQUIVOS QUE VÊEM DO DRIVE -->
 
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -475,7 +470,6 @@
         <script async src="js/pace.min.js"></script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script defer src="js/foundation.min.js"></script>
-        <script defer src="js/change-layout.js"></script>
         <script defer src="js/load-spreadsheets.js"></script>
 
         <!-- GOOGLE IDENTITY SERVICES -->
