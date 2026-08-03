@@ -1090,14 +1090,14 @@ a.thumbnail image {
         column-gap: 15px;
         align-items: center;
         border-bottom: 2px solid #525252;
-        padding-bottom: 20px;
-        margin-bottom: 20px;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
     }
     #drive .drive-login ul li:last-of-type  {
         margin-bottom: 0px;
     }
     #drive .drive-login ul li img {
-        width: 30px;
+        width: 25px;
     }
     #drive .drive-login ul li p {
         width: max-content !important;
