@@ -1,12 +1,13 @@
-
 $(document).ready(
     function () {
 
+        const spreadsheetTabs =
+            $("#switch-spreadsheet");
+
         const spreadsheetPanels =
             document.querySelectorAll(
-                ".spreadsheets-view .tabs-panel"
+                "#spreadsheets .tabs-panel"
             );
-
 
         // DESCARREGA UMA PLANILHA QUE NÃO ESTÁ MAIS ATIVA
 
@@ -21,7 +22,6 @@ $(document).ready(
             ) {
 
                 return;
-
             }
 
             const spreadsheetIframe =
@@ -32,15 +32,12 @@ $(document).ready(
             if (!spreadsheetIframe) {
 
                 return;
-
             }
 
             spreadsheetIframe.removeAttribute(
                 "src"
             );
-
         }
-
 
         // CARREGA A PLANILHA QUE ACABOU DE SER ATIVADA
 
@@ -55,7 +52,6 @@ $(document).ready(
             ) {
 
                 return;
-
             }
 
             const spreadsheetIframe =
@@ -71,25 +67,13 @@ $(document).ready(
             ) {
 
                 return;
-
             }
-
-            /*
-             * ESPERA O FOUNDATION MOSTRAR O PAINEL
-             * ANTES DE INICIAR O GOOGLE SHEETS
-             */
 
             requestAnimationFrame(
                 function () {
 
                     setTimeout(
                         function () {
-
-                            /*
-                             * EVITA CARREGAR A PLANILHA CASO
-                             * O USUÁRIO TENHA TROCADO DE ABA
-                             * MUITO RAPIDAMENTE
-                             */
 
                             if (
                                 !spreadsheetPanel.classList.contains(
@@ -98,12 +82,10 @@ $(document).ready(
                             ) {
 
                                 return;
-
                             }
 
                             spreadsheetIframe.src =
                                 spreadsheetIframe.dataset.src;
-
                         },
                         80
                     );
@@ -117,15 +99,17 @@ $(document).ready(
 
             const activeSpreadsheetPanel =
                 document.querySelector(
-                    ".spreadsheets-view .tabs-panel.is-active"
+                    "#spreadsheets .tabs-panel.is-active"
                 );
 
             if (!activeSpreadsheetPanel) {
 
+                console.error(
+                    "Nenhum painel de planilha ativo foi encontrado."
+                );
+
                 return;
             }
-
-            // DESCARREGA TODAS AS PLANILHAS INATIVAS
 
             spreadsheetPanels.forEach(
                 function (spreadsheetPanel) {
@@ -138,17 +122,13 @@ $(document).ready(
                         unloadSpreadsheet(
                             spreadsheetPanel
                         );
-
                     }
                 }
             );
 
-            // CARREGA SOMENTE A PLANILHA ATIVA
-
             loadSpreadsheet(
                 activeSpreadsheetPanel
             );
-
         }
 
         // GARANTE O ESTADO CORRETO AO ABRIR A PÁGINA
@@ -157,7 +137,7 @@ $(document).ready(
 
         // EXECUTA DEPOIS DE CADA TROCA DE ABA
 
-        $("#switch").on(
+        spreadsheetTabs.on(
             "change.zf.tabs",
             function () {
 
