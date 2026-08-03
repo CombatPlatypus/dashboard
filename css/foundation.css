@@ -1181,6 +1181,11 @@ a.thumbnail image {
     }
     #userInfo .drive-nav {
         flex: 1 1 0;
+        padding: 35px;
+        border-radius: 5px;
+        background-color: #1f1f1f;
+        border: 2px solid #525252;
+        align-items: center;
     }
     #userInfo .drive-nav h4 {
         margin-bottom: 0px;
