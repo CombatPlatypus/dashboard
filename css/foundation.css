@@ -1147,12 +1147,6 @@ a.thumbnail image {
 
     /* INFORMAÇÕES DO USUÁRIO */
 
-    #userPhoto {
-        border-radius: 5px;
-    }
-    #userInfo {
-        padding-top: 30px;
-    }
     #userInfo .who-is {
         width: max-content;
         column-gap: 20px;
