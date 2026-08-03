@@ -1062,26 +1062,26 @@ a.thumbnail image {
     }
     #drive .drive-login {
         width: max-content;
-        height: 100%;
-        overflow: auto;
+        height: auto;
         background-color: #1f1f1f;
         border: solid 2px #525252;
         border-radius: 5px;
         padding: 35px;
     }
-    #drive .drive-login .description {
+    #drive .drive-login .description .flex-box-start {
         column-gap: 15px;
         align-items: center;
         margin-bottom: 10px;
     }
-    #drive .drive-login .description img {
+    #drive .drive-login .description .flex-box-start img {
         width: 40px;
     }
-    #drive .drive-login .description h2 {
+    #drive .drive-login .description .flex-box-start h2 {
         margin-bottom: 0;
     }
     #drive .drive-login .description p {
         width: 475px;
+        text-align: center;
     }
     #drive .drive-login ul, #drive .drive-login ul h4 {
         margin-bottom: 20px;
@@ -1108,7 +1108,7 @@ a.thumbnail image {
         overflow: hidden;
         margin-top: 30px;
     }
-    #drive .drive-login .pre-button {
+    #drive .drive-login .pre-button .button {
         width: 100%;
     }
 
