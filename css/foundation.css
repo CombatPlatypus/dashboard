@@ -1068,19 +1068,19 @@ a.thumbnail image {
         border-radius: 5px;
         padding: 35px;
     }
-    #drive .drive-login .description .flex-box-start {
+    #drive .drive-login .description .flex-box-center {
         column-gap: 15px;
         align-items: center;
         margin-bottom: 10px;
     }
-    #drive .drive-login .description .flex-box-start img {
+    #drive .drive-login .description .flex-box-center img {
         width: 40px;
     }
-    #drive .drive-login .description .flex-box-start h2 {
+    #drive .drive-login .description .flex-box-center h2 {
         margin-bottom: 0;
     }
     #drive .drive-login .description p {
-        width: 475px;
+        width: 470px;
         text-align: center;
     }
     #drive .drive-login ul, #drive .drive-login ul h4 {
