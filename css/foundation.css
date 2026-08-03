@@ -1523,6 +1523,17 @@ body.image-viewer-open {
 .drive-login .container-2 {
     width: 513px;
 }
+.drive-login .flex-box-start {
+    column-gap: 15px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.drive-login .flex-box-start img {
+    width: 40px;
+}
+.drive-login .flex-box-start h2 {
+    margin-bottom: 0;
+}
 .drive-login .container-1 img {
     width: 410px;
 }
