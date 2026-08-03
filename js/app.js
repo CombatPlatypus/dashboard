@@ -5,7 +5,8 @@ $(document).foundation();
 // IMPORTA O CLIENTE DE AUTENTICAÇÃO DO GOOGLE
 
 import {
-    tokenClient
+    requestDriveConnection,
+    runDriveActionWithValidToken
 } from "./auth.js";
 
 // IMPORTA O CONTROLE DO MODO DE EXIBIÇÃO DOS ARQUIVOS
@@ -41,22 +42,16 @@ const driveGridViewButton =
         "driveGridViewButton"
     );
 
+const driveTabButton =
+    document.getElementById(
+        "driveTabButton"
+    );
+
 // SOLICITA AO GOOGLE UM TOKEN DE ACESSO
 
 function handleLoginButtonClick() {
 
-    if (!tokenClient) {
-
-        console.error(
-            "O cliente de autenticação ainda não foi inicializado."
-        );
-
-        return;
-    }
-
-    tokenClient.requestAccessToken({
-        prompt: "consent"
-    });
+    requestDriveConnection();
 }
 
 // CONFIGURA O EVENTO DO BOTÃO DE LOGIN
@@ -90,10 +85,18 @@ else {
         "click",
         () => {
 
-            setDriveViewMode(
-                "list"
-            );
+            runDriveActionWithValidToken(
+                () => {
 
+                    setDriveViewMode(
+                        "list"
+                    );
+                },
+                {
+                    reloadCurrentFolderAfterRenewal:
+                        true
+                }
+            );
         }
     );
 }
@@ -112,10 +115,43 @@ else {
         "click",
         () => {
 
-            setDriveViewMode(
-                "grid"
-            );
+            runDriveActionWithValidToken(
+                () => {
 
+                    setDriveViewMode(
+                        "grid"
+                    );
+                },
+                {
+                    reloadCurrentFolderAfterRenewal:
+                        true
+                }
+            );
+        }
+    );
+}
+
+// EVENTO DA ABA PRINCIPAL DO DRIVE
+
+if (!driveTabButton) {
+
+    console.error(
+        "Botão da aba Drive não encontrado."
+    );
+}
+else {
+
+    driveTabButton.addEventListener(
+        "click",
+        () => {
+
+            runDriveActionWithValidToken(
+                () => {},
+                {
+                    reloadCurrentFolderAfterRenewal:
+                        true
+                }
+            );
         }
     );
 }
