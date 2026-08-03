@@ -74,7 +74,6 @@ $(document).ready(
 
             }
 
-
             /*
              * ESPERA O FOUNDATION MOSTRAR O PAINEL
              * ANTES DE INICIAR O GOOGLE SHEETS
@@ -108,12 +107,9 @@ $(document).ready(
                         },
                         80
                     );
-
                 }
             );
-
         }
-
 
         // SINCRONIZA OS IFRAMES COM A ABA ATIVA
 
@@ -127,9 +123,7 @@ $(document).ready(
             if (!activeSpreadsheetPanel) {
 
                 return;
-
             }
-
 
             // DESCARREGA TODAS AS PLANILHAS INATIVAS
 
@@ -146,10 +140,8 @@ $(document).ready(
                         );
 
                     }
-
                 }
             );
-
 
             // CARREGA SOMENTE A PLANILHA ATIVA
 
@@ -159,11 +151,9 @@ $(document).ready(
 
         }
 
-
         // GARANTE O ESTADO CORRETO AO ABRIR A PÁGINA
 
         updateSpreadsheetIframes();
-
 
         // EXECUTA DEPOIS DE CADA TROCA DE ABA
 
