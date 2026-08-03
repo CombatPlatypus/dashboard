@@ -11,6 +11,7 @@ import {
     showDriveError,
     showDriveFiles,
     showDriveLoading,
+    showDriveReconnect,
     showUser
 } from "./ui.js";
 
@@ -34,13 +35,236 @@ export let accessToken =
 const folderNavigationHistory =
     [];
 
+// CONSIDERA O TOKEN EXPIRADO UM MINUTO ANTES DO LIMITE REAL
+
+const TOKEN_EXPIRATION_MARGIN_MS =
+    60 * 1000;
+
+// ARMAZENA O MOMENTO EXATO EM QUE O TOKEN EXPIRA
+
+let accessTokenExpiresAt =
+    0;
+
+// INDICA SE O USUÁRIO JÁ INICIOU UMA SESSÃO NESTA PÁGINA
+
+let hasDriveSession =
+    false;
+
+// IMPEDE DUAS SOLICITAÇÕES DE TOKEN AO MESMO TEMPO
+
+let tokenRequestInProgress =
+    false;
+
+// ARMAZENA A AÇÃO QUE DEVERÁ SER RETOMADA DEPOIS DA RENOVAÇÃO
+
+let pendingDriveAction =
+    null;
+
+// VERIFICA SE O TOKEN ATUAL AINDA PODE SER UTILIZADO
+
+function hasValidAccessToken() {
+
+    return (
+        Boolean(
+            accessToken
+        ) &&
+        Date.now() <
+            accessTokenExpiresAt -
+            TOKEN_EXPIRATION_MARGIN_MS
+    );
+}
+
+// SOLICITA UM NOVO TOKEN AO GOOGLE
+
+function requestNewAccessToken(
+    prompt
+) {
+
+    if (!tokenClient) {
+
+        console.error(
+            "O cliente de autenticação ainda não foi inicializado."
+        );
+
+        finishDriveSession();
+
+        return;
+    }
+
+    if (tokenRequestInProgress) {
+
+        return;
+    }
+
+    tokenRequestInProgress =
+        true;
+
+    try {
+
+        tokenClient.requestAccessToken({
+            prompt
+        });
+
+    }
+    catch (error) {
+
+        handleTokenRequestFailure(
+            error
+        );
+    }
+}
+
+// INICIA OU REINICIA A CONEXÃO DE FORMA EXPLÍCITA
+
+export function requestDriveConnection() {
+
+    pendingDriveAction =
+        initializeUserSession;
+
+    requestNewAccessToken(
+        "consent"
+    );
+}
+
+// EXECUTA UMA AÇÃO SOMENTE QUANDO HOUVER UM TOKEN VÁLIDO
+
+export function runDriveActionWithValidToken(
+    action,
+    {
+        reloadCurrentFolderAfterRenewal = false
+    } = {}
+) {
+
+    if (
+        typeof action !==
+        "function"
+    ) {
+
+        console.error(
+            "Ação do Google Drive inválida."
+        );
+
+        return;
+    }
+
+    // NÃO TENTA CONECTAR AUTOMATICAMENTE ANTES DO PRIMEIRO LOGIN
+
+    if (!hasDriveSession) {
+
+        return;
+    }
+
+    // TOKEN AINDA VÁLIDO: EXECUTA A AÇÃO IMEDIATAMENTE
+
+    if (hasValidAccessToken()) {
+
+        return action();
+    }
+
+    // TOKEN EXPIRADO: GUARDA A AÇÃO PARA EXECUTÁ-LA DEPOIS
+
+    pendingDriveAction =
+        async () => {
+
+            if (
+                reloadCurrentFolderAfterRenewal
+            ) {
+
+                await reloadCurrentDriveFolder();
+            }
+
+            return action();
+        };
+
+    showDriveLoading();
+
+    // NÃO PERMITE QUE O GOOGLE MOSTRE TELAS NESTA RENOVAÇÃO
+
+    requestNewAccessToken(
+        "none"
+    );
+}
+
+// RECARREGA A PASTA ATUAL SEM ALTERAR O HISTÓRICO
+
+async function reloadCurrentDriveFolder() {
+
+    const currentFolder =
+        folderNavigationHistory.at(
+            -1
+        );
+
+    if (!currentFolder) {
+
+        return;
+    }
+
+    await loadDriveFolder(
+        currentFolder.id,
+        false
+    );
+}
+
+// FINALIZA A SESSÃO LOCAL E EXIBE A OPÇÃO DE RECONEXÃO
+
+function finishDriveSession() {
+
+    accessToken =
+        null;
+
+    accessTokenExpiresAt =
+        0;
+
+    hasDriveSession =
+        false;
+
+    tokenRequestInProgress =
+        false;
+
+    pendingDriveAction =
+        null;
+
+    showDriveReconnect();
+}
+
+// TRATA ERROS DO FLUXO DE AUTORIZAÇÃO
+
+function handleTokenRequestFailure(
+    error
+) {
+
+    console.error(
+        "Não foi possível renovar a autorização do Google:",
+        error
+    );
+
+    finishDriveSession();
+}
+
 // ABRE UMA PASTA DO GOOGLE DRIVE E ATUALIZA O HISTÓRICO DE NAVEGAÇÃO
 
-export async function openDriveFolder(
+export function openDriveFolder(
     folderId,
     addToHistory = true
 ) {
 
+    return runDriveActionWithValidToken(
+        () => {
+
+            return loadDriveFolder(
+                folderId,
+                addToHistory
+            );
+        }
+    );
+}
+
+// CARREGA A PASTA DEPOIS QUE O TOKEN JÁ FOI VALIDADO
+
+async function loadDriveFolder(
+    folderId,
+    addToHistory = true
+) {
     showDriveLoading();
 
     try {
@@ -115,6 +339,16 @@ export async function openDriveFolder(
             error
         );
 
+        if (
+            error.status ===
+            401
+        ) {
+
+            finishDriveSession();
+
+            return;
+        }
+
         showDriveError(
             error.message ??
             "Não foi possível carregar os arquivos."
@@ -172,7 +406,10 @@ function initializeGoogleAuth() {
                 ),
 
             callback:
-                handleTokenResponse
+                handleTokenResponse,
+
+            error_callback:
+                handleTokenRequestFailure
         });
 
     const backButton =
@@ -199,57 +436,65 @@ function initializeGoogleAuth() {
 
 // RETORNA PARA A PASTA IMEDIATAMENTE ANTERIOR
 
-async function handleBackButtonClick() {
+function handleBackButtonClick() {
 
-    if (
-        folderNavigationHistory.length <= 1
-    ) {
+    return runDriveActionWithValidToken(
+        async () => {
 
-        return;
-    }
+            if (
+                folderNavigationHistory.length <= 1
+            ) {
 
-    folderNavigationHistory.pop();
+                return;
+            }
 
-    const previousFolder =
-        folderNavigationHistory.at(
-            -1
-        );
+            folderNavigationHistory.pop();
 
-    await openDriveFolder(
-        previousFolder.id,
-        false
+            const previousFolder =
+                folderNavigationHistory.at(
+                    -1
+                );
+
+            await loadDriveFolder(
+                previousFolder.id,
+                false
+            );
+        }
     );
 }
 
 // ABRE UMA PASTA DO BREADCRUMB E REMOVE OS NÍVEIS POSTERIORES DO HISTÓRICO
 
-async function handleBreadcrumbNavigation(
+function handleBreadcrumbNavigation(
     folderIndex
 ) {
 
-    const selectedFolder =
-        folderNavigationHistory[
-            folderIndex
-        ];
+    return runDriveActionWithValidToken(
+        async () => {
 
-    if (!selectedFolder) {
+            const selectedFolder =
+                folderNavigationHistory[
+                    folderIndex
+                ];
 
-        console.error(
-            "Pasta do breadcrumb não encontrada."
-        );
+            if (!selectedFolder) {
 
-        return;
-    }
+                console.error(
+                    "Pasta do breadcrumb não encontrada."
+                );
 
-    // REMOVE AS PASTAS LOCALIZADAS DEPOIS DA PASTA SELECIONADA
+                return;
+            }
 
-    folderNavigationHistory.splice(
-        folderIndex + 1
-    );
+            folderNavigationHistory.splice(
+                folderIndex + 1
+            );
 
-    await openDriveFolder(
-        selectedFolder.id,
-        false
+            await loadDriveFolder(
+                selectedFolder.id,
+                false
+            );
+        }
     );
 }
 
@@ -259,11 +504,16 @@ async function handleTokenResponse(
     response
 ) {
 
-    if (response.error) {
+    tokenRequestInProgress =
+        false;
 
-        console.error(
-            "Erro durante a autorização:",
-            response.error
+    if (
+        response.error ||
+        !response.access_token
+    ) {
+
+        handleTokenRequestFailure(
+            response
         );
 
         return;
@@ -272,7 +522,62 @@ async function handleTokenResponse(
     accessToken =
         response.access_token;
 
-    await initializeUserSession();
+    const expiresInSeconds =
+        Number(
+            response.expires_in
+        );
+
+    accessTokenExpiresAt =
+        Date.now() +
+        (
+            Number.isFinite(
+                expiresInSeconds
+            )
+                ? expiresInSeconds * 1000
+                : 0
+        );
+
+    hasDriveSession =
+        true;
+
+    const actionToResume =
+        pendingDriveAction;
+
+    pendingDriveAction =
+        null;
+
+    if (!actionToResume) {
+
+        return;
+    }
+
+    try {
+
+        await actionToResume();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Não foi possível retomar a ação do Google Drive:",
+            error
+        );
+
+        if (
+            error.status ===
+            401
+        ) {
+
+            finishDriveSession();
+
+            return;
+        }
+
+        showDriveError(
+            error.message ??
+            "Não foi possível concluir a operação."
+        );
+    }
 }
 
 // CARREGA O USUÁRIO AUTENTICADO E ABRE A PASTA INICIAL
@@ -286,7 +591,7 @@ async function initializeUserSession() {
 
         await loadUserInformation();
 
-        await openDriveFolder(
+        await loadDriveFolder(
             CONFIG.google.folderId
         );
     }
@@ -296,6 +601,16 @@ async function initializeUserSession() {
             "Erro ao carregar os dados da sessão:",
             error
         );
+
+        if (
+            error.status ===
+            401
+        ) {
+
+            finishDriveSession();
+
+            return;
+        }
 
         showDriveError(
             error.message ??
@@ -321,10 +636,15 @@ async function loadUserInformation() {
 
     if (!response.ok) {
 
-        throw new Error(
-            `Erro ao consultar usuário: ${response.status}`
-        );
+        const error =
+            new Error(
+                `Erro ao consultar usuário: ${response.status}`
+            );
 
+        error.status =
+            response.status;
+
+        throw error;
     }
     const user =
         await response.json();
