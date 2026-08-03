@@ -3,6 +3,27 @@
 const DRIVE_FILES_ENDPOINT =
     "https://www.googleapis.com/drive/v3/files";
 
+// REPRESENTA UM ERRO RETORNADO PELA API DO GOOGLE DRIVE
+
+export class DriveApiError extends Error {
+
+    constructor(
+        message,
+        status
+    ) {
+
+        super(
+            message
+        );
+
+        this.name =
+            "DriveApiError";
+
+        this.status =
+            status;
+    }
+}
+
 // CONSULTA AS INFORMAÇÕES BÁSICAS DE UMA PASTA
 
 export async function getDriveFolderInformation(
@@ -31,6 +52,7 @@ export async function getDriveFolderInformation(
 
             fields:
                 "id,name,mimeType"
+
         });
 
     // MONTA A URL DA REQUISIÇÃO
@@ -61,8 +83,9 @@ export async function getDriveFolderInformation(
                 response
             );
 
-        throw new Error(
-            errorMessage
+        throw new DriveApiError(
+            errorMessage,
+            response.status
         );
     }
 
@@ -170,8 +193,9 @@ export async function listDriveFiles(
                     response
                 );
 
-            throw new Error(
-                errorMessage
+            throw new DriveApiError(
+                errorMessage,
+                response.status
             );
         }
 
