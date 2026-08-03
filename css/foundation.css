@@ -1163,7 +1163,6 @@ a.thumbnail image {
     }
     #userInfo .flex-box-start {
         column-gap: 15px;
-        margin-bottom: 5px;
     }
     #userInfo .profile {
         flex: 0 0 max-content;
