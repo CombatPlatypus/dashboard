@@ -9,20 +9,12 @@ $(document).ready(
                 "#spreadsheets .tabs-panel"
             );
 
-        // DESCARREGA UMA PLANILHA QUE NÃO ESTÁ MAIS ATIVA
+
+        // DESCARREGA UMA PLANILHA INATIVA
 
         function unloadSpreadsheet(
             spreadsheetPanel
         ) {
-
-            if (
-                spreadsheetPanel.classList.contains(
-                    "keep-loaded"
-                )
-            ) {
-
-                return;
-            }
 
             const spreadsheetIframe =
                 spreadsheetPanel.querySelector(
@@ -32,27 +24,21 @@ $(document).ready(
             if (!spreadsheetIframe) {
 
                 return;
+
             }
 
             spreadsheetIframe.removeAttribute(
                 "src"
             );
+
         }
 
-        // CARREGA A PLANILHA QUE ACABOU DE SER ATIVADA
+
+        // CARREGA A PLANILHA ATIVA
 
         function loadSpreadsheet(
             spreadsheetPanel
         ) {
-
-            if (
-                spreadsheetPanel.classList.contains(
-                    "keep-loaded"
-                )
-            ) {
-
-                return;
-            }
 
             const spreadsheetIframe =
                 spreadsheetPanel.querySelector(
@@ -67,6 +53,7 @@ $(document).ready(
             ) {
 
                 return;
+
             }
 
             requestAnimationFrame(
@@ -82,18 +69,23 @@ $(document).ready(
                             ) {
 
                                 return;
+
                             }
 
                             spreadsheetIframe.src =
                                 spreadsheetIframe.dataset.src;
+
                         },
                         80
                     );
+
                 }
             );
+
         }
 
-        // SINCRONIZA OS IFRAMES COM A ABA ATIVA
+
+        // MANTÉM SOMENTE A PLANILHA ATIVA CARREGADA
 
         function updateSpreadsheetIframes() {
 
@@ -104,11 +96,8 @@ $(document).ready(
 
             if (!activeSpreadsheetPanel) {
 
-                console.error(
-                    "Nenhum painel de planilha ativo foi encontrado."
-                );
-
                 return;
+
             }
 
             spreadsheetPanels.forEach(
@@ -122,20 +111,25 @@ $(document).ready(
                         unloadSpreadsheet(
                             spreadsheetPanel
                         );
+
                     }
+
                 }
             );
 
             loadSpreadsheet(
                 activeSpreadsheetPanel
             );
+
         }
 
-        // GARANTE O ESTADO CORRETO AO ABRIR A PÁGINA
+
+        // CARREGA A PLANILHA INICIAL
 
         updateSpreadsheetIframes();
 
-        // EXECUTA DEPOIS DE CADA TROCA DE ABA
+
+        // ATUALIZA DEPOIS DE CADA TROCA DE ABA
 
         spreadsheetTabs.on(
             "change.zf.tabs",
