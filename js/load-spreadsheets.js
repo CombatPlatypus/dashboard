@@ -1,479 +1,976 @@
-// IMPORTA AS CONFIGURAÇÕES DA APLICAÇÃO
-
 import {
     CONFIG
 } from "./config.js";
 
 
-// INICIALIZA O CONTROLE DAS PLANILHAS
+const KEY_PATTERN =
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-async function initializeSpreadsheets() {
+const SPREADSHEET_ID_PATTERN =
+    /^[A-Za-z0-9_-]+$/;
 
-        const spreadsheetTabs =
-            $("#switch-spreadsheet");
+const GID_PATTERN =
+    /^\d+$/;
 
-        const spreadsheetPanels =
-            document.querySelectorAll(
-                "#spreadsheets .tabs-panel"
-            );
-
-        const configuredSpreadsheetButtons =
-            document.querySelectorAll(
-                "#spreadsheets .spreadsheets-links[data-spreadsheet-key]"
-            );
+const VISIBLE_VALUES =
+    new Set([
+        "sim",
+        "true",
+        "1",
+        "yes"
+    ]);
 
 
-        // MONTA O ENDEREÇO DE UMA PLANILHA
+/* NORMALIZA OS TEXTOS DA CONFIGURAÇÃO */
 
-        function createSpreadsheetUrl(
-            spreadsheetId,
+function normalizeText(
+    value
+) {
+
+    return String(
+        value ?? ""
+    ).trim();
+}
+
+
+/* VERIFICA SE A PLANILHA DEVE APARECER */
+
+function shouldDisplaySpreadsheet(
+    value
+) {
+
+    const normalizedValue =
+        normalizeText(
+            value
+        )
+            .normalize(
+                "NFD"
+            )
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .toLowerCase();
+
+    return VISIBLE_VALUES.has(
+        normalizedValue
+    );
+}
+
+
+/* MONTA O LINK DA PLANILHA */
+
+function createSpreadsheetUrl(
+    spreadsheetId,
+    gid
+) {
+
+    return (
+        "https://docs.google.com/spreadsheets/d/" +
+        encodeURIComponent(
+            spreadsheetId
+        ) +
+        "/edit?gid=" +
+        encodeURIComponent(
             gid
+        ) +
+        "#gid=" +
+        encodeURIComponent(
+            gid
+        )
+    );
+}
+
+
+/* CONSULTA A PLANILHA DE CONFIGURAÇÃO */
+
+async function getSpreadsheetConfigurations() {
+
+    const spreadsheetId =
+        encodeURIComponent(
+            CONFIG.google.linksSpreadsheetId
+        );
+
+    const spreadsheetRange =
+        encodeURIComponent(
+            CONFIG.google.linksSpreadsheetRange
+        );
+
+    const requestUrl =
+        `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}` +
+        `/values/${spreadsheetRange}?majorDimension=ROWS`;
+
+    const response =
+        await fetch(
+            requestUrl,
+            {
+                cache:
+                    "no-store",
+
+                headers: {
+                    "x-goog-api-key":
+                        CONFIG.google.sheetsApiKey
+                }
+            }
+        );
+
+    if (!response.ok) {
+
+        let errorMessage =
+            `Erro ao consultar configuração: ${response.status}`;
+
+        try {
+
+            const errorData =
+                await response.json();
+
+            errorMessage =
+                errorData.error?.message ??
+                errorMessage;
+
+        }
+        catch {
+
+            // MANTÉM A MENSAGEM PADRÃO
+
+        }
+
+        throw new Error(
+            errorMessage
+        );
+    }
+
+    const responseData =
+        await response.json();
+
+    const rows =
+        responseData.values ??
+        [];
+
+    const configurations =
+        [];
+
+    const registeredKeys =
+        new Set();
+
+
+    rows.forEach(
+        function (
+            row,
+            rowIndex
+        ) {
+
+            const sheetRowNumber =
+                rowIndex + 2;
+
+
+            // COLUNA G — APARECE NO DASH
+
+            if (
+                !shouldDisplaySpreadsheet(
+                    row[6]
+                )
+            ) {
+
+                return;
+            }
+
+
+            // COLUNAS A ATÉ F
+
+            const key =
+                normalizeText(
+                    row[0]
+                );
+
+            const targetSpreadsheetId =
+                normalizeText(
+                    row[1]
+                );
+
+            const gid =
+                normalizeText(
+                    row[2]
+                ) || "0";
+
+            const spreadsheetName =
+                normalizeText(
+                    row[3]
+                );
+
+            const menuName =
+                normalizeText(
+                    row[4]
+                ) || spreadsheetName;
+
+            const menuPosition =
+                Number(
+                    normalizeText(
+                        row[5]
+                    )
+                );
+
+
+            // VALIDA A CHAVE
+
+            if (
+                !KEY_PATTERN.test(
+                    key
+                )
+            ) {
+
+                console.warn(
+                    `Linha ${sheetRowNumber} ignorada: chave inválida.`
+                );
+
+                return;
+            }
+
+
+            // IMPEDE CHAVES DUPLICADAS
+
+            if (
+                registeredKeys.has(
+                    key
+                )
+            ) {
+
+                console.warn(
+                    `Linha ${sheetRowNumber} ignorada: chave "${key}" duplicada.`
+                );
+
+                return;
+            }
+
+
+            // VALIDA O ID DA PLANILHA
+
+            if (
+                !SPREADSHEET_ID_PATTERN.test(
+                    targetSpreadsheetId
+                )
+            ) {
+
+                console.warn(
+                    `Linha ${sheetRowNumber} ignorada: ID inválido para "${key}".`
+                );
+
+                return;
+            }
+
+
+            // VALIDA O GID
+
+            if (
+                !GID_PATTERN.test(
+                    gid
+                )
+            ) {
+
+                console.warn(
+                    `Linha ${sheetRowNumber} ignorada: GID inválido para "${key}".`
+                );
+
+                return;
+            }
+
+
+            // VALIDA O NOME MOSTRADO NO MENU
+
+            if (!menuName) {
+
+                console.warn(
+                    `Linha ${sheetRowNumber} ignorada: nome do menu não informado.`
+                );
+
+                return;
+            }
+
+
+            // VALIDA A POSIÇÃO
+
+            if (
+                !Number.isInteger(
+                    menuPosition
+                ) ||
+                menuPosition < 1
+            ) {
+
+                console.warn(
+                    `Linha ${sheetRowNumber} ignorada: posição do menu inválida.`
+                );
+
+                return;
+            }
+
+
+            registeredKeys.add(
+                key
+            );
+
+
+            configurations.push({
+
+                key,
+
+                spreadsheetId:
+                    targetSpreadsheetId,
+
+                gid,
+
+                spreadsheetName:
+                    spreadsheetName ||
+                    menuName,
+
+                menuName,
+
+                menuPosition,
+
+                sheetRowNumber,
+
+                url:
+                    createSpreadsheetUrl(
+                        targetSpreadsheetId,
+                        gid
+                    )
+            });
+        }
+    );
+
+
+    // ORDENA PELA COLUNA F
+
+    configurations.sort(
+        function (
+            firstSpreadsheet,
+            secondSpreadsheet
         ) {
 
             return (
-                "https://docs.google.com/spreadsheets/d/" +
-                encodeURIComponent(
-                    spreadsheetId
-                ) +
-                "/edit?gid=" +
-                encodeURIComponent(
-                    gid
-                ) +
-                "#gid=" +
-                encodeURIComponent(
-                    gid
-                )
+                firstSpreadsheet.menuPosition -
+                secondSpreadsheet.menuPosition ||
+
+                firstSpreadsheet.sheetRowNumber -
+                secondSpreadsheet.sheetRowNumber
             );
         }
+    );
 
 
-        // CONSULTA A PLANILHA PÚBLICA DE CONFIGURAÇÃO
+    if (
+        configurations.length ===
+        0
+    ) {
 
-        async function getSpreadsheetConfiguration() {
+        throw new Error(
+            "A configuração não retornou nenhuma planilha visível e válida."
+        );
+    }
 
-            const spreadsheetId =
-                encodeURIComponent(
-                    CONFIG.google.linksSpreadsheetId
-                );
 
-            const spreadsheetRange =
-                encodeURIComponent(
-                    CONFIG.google.linksSpreadsheetRange
-                );
+    return configurations;
+}
 
-            const requestUrl =
-                `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}` +
-                `/values/${spreadsheetRange}?majorDimension=ROWS`;
 
-            const response =
-                await fetch(
-                    requestUrl,
-                    {
-                        cache:
-                            "no-store",
+/* CRIA O ÍCONE DO BOTÃO EXTERNO */
 
-                        headers: {
-                            "x-goog-api-key":
-                                CONFIG.google.sheetsApiKey
-                        }
-                    }
-                );
+function createSpreadsheetLinkIcon() {
 
-            if (!response.ok) {
+    const svgNamespace =
+        "http://www.w3.org/2000/svg";
 
-                let errorMessage =
-                    `Erro ao consultar configuração: ${response.status}`;
+    const icon =
+        document.createElementNS(
+            svgNamespace,
+            "svg"
+        );
 
-                try {
+    const path =
+        document.createElementNS(
+            svgNamespace,
+            "path"
+        );
 
-                    const errorData =
-                        await response.json();
 
-                    errorMessage =
-                        errorData.error?.message ??
-                        errorMessage;
+    icon.classList.add(
+        "spreadsheets-link-icon"
+    );
 
-                }
-                catch {
+    icon.setAttribute(
+        "viewBox",
+        "0 0 24 24"
+    );
 
-                    // MANTÉM A MENSAGEM PADRÃO
+    icon.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
-                }
 
-                throw new Error(
-                    errorMessage
-                );
-            }
+    path.setAttribute(
+        "d",
+        "M7 17L17 7M9 7H17V15"
+    );
 
-            const responseData =
-                await response.json();
+    path.setAttribute(
+        "fill",
+        "none"
+    );
 
-            const spreadsheetConfiguration =
-                new Map();
+    path.setAttribute(
+        "stroke",
+        "currentColor"
+    );
 
-            const rows =
-                responseData.values ??
-                [];
+    path.setAttribute(
+        "stroke-width",
+        "2.5"
+    );
 
-            rows.forEach(
-                function (row) {
+    path.setAttribute(
+        "stroke-linecap",
+        "round"
+    );
 
-                    const spreadsheetKey =
-                        String(
-                            row[0] ?? ""
-                        ).trim();
+    path.setAttribute(
+        "stroke-linejoin",
+        "round"
+    );
 
-                    const targetSpreadsheetId =
-                        String(
-                            row[1] ?? ""
-                        ).trim();
 
-                    const targetSpreadsheetGid =
-                        String(
-                            row[2] ?? "0"
-                        ).trim() || "0";
+    icon.appendChild(
+        path
+    );
 
-                    if (
-                        !spreadsheetKey ||
-                        !targetSpreadsheetId
-                    ) {
 
-                        console.warn(
-                            "Linha de configuração ignorada por estar incompleta:",
-                            row
-                        );
+    return icon;
+}
 
-                        return;
-                    }
 
-                    if (
-                        !/^[A-Za-z0-9_-]+$/.test(
-                            targetSpreadsheetId
-                        )
-                    ) {
+/* CRIA UMA OPÇÃO DO MENU */
 
-                        console.warn(
-                            `ID inválido para "${spreadsheetKey}".`
-                        );
+function createSpreadsheetTab(
+    configuration,
+    index,
+    panelId
+) {
 
-                        return;
-                    }
+    const isInitialSpreadsheet =
+        index === 0;
 
-                    if (
-                        !/^\d+$/.test(
-                            targetSpreadsheetGid
-                        )
-                    ) {
+    const tabItem =
+        document.createElement(
+            "li"
+        );
 
-                        console.warn(
-                            `GID inválido para "${spreadsheetKey}".`
-                        );
+    const tabLink =
+        document.createElement(
+            "a"
+        );
 
-                        return;
-                    }
 
-                    spreadsheetConfiguration.set(
-                        spreadsheetKey,
-                        {
-                            spreadsheetId:
-                                targetSpreadsheetId,
+    tabItem.classList.add(
+        "tabs-title",
+        "flex-box-center"
+    );
 
-                            gid:
-                                targetSpreadsheetGid
-                        }
-                    );
-                }
+    tabItem.classList.toggle(
+        "is-active",
+        isInitialSpreadsheet
+    );
+
+
+    // PRESERVA AS CLASSES DO LAYOUT ATUAL
+
+    if (index === 1) {
+
+        tabItem.classList.add(
+            "horizontal-first-item"
+        );
+    }
+
+    if (index === 2) {
+
+        tabItem.classList.add(
+            "horizontal-second-item"
+        );
+    }
+
+
+    tabLink.setAttribute(
+        "href",
+        `#${panelId}`
+    );
+
+    tabLink.textContent =
+        configuration.menuName;
+
+    tabLink.classList.toggle(
+        "main-spreadsheet",
+        isInitialSpreadsheet
+    );
+
+
+    tabItem.appendChild(
+        tabLink
+    );
+
+
+    // A PRIMEIRA PLANILHA CONTINUA SEM BOTÃO EXTERNO
+
+    if (!isInitialSpreadsheet) {
+
+        const spreadsheetButton =
+            document.createElement(
+                "button"
             );
 
-            if (
-                spreadsheetConfiguration.size ===
-                0
-            ) {
+        spreadsheetButton.type =
+            "button";
 
-                throw new Error(
-                    "A planilha de configuração não retornou nenhum link válido."
-                );
-            }
+        spreadsheetButton.classList.add(
+            "spreadsheets-links"
+        );
 
-            return spreadsheetConfiguration;
-        }
+        spreadsheetButton.dataset.spreadsheetKey =
+            configuration.key;
 
+        spreadsheetButton.dataset.url =
+            configuration.url;
 
-        // APLICA OS LINKS OBTIDOS AOS BOTÕES E IFRAMES
+        spreadsheetButton.setAttribute(
+            "aria-label",
+            `Abrir ${configuration.menuName} em uma nova aba`
+        );
 
-        function applySpreadsheetConfiguration(
-            spreadsheetConfiguration
-        ) {
 
-            const configuredElements =
-                document.querySelectorAll(
-                    "#spreadsheets [data-spreadsheet-key]"
-                );
+        spreadsheetButton.appendChild(
+            createSpreadsheetLinkIcon()
+        );
 
-            configuredElements.forEach(
-                function (configuredElement) {
 
-                    const spreadsheetKey =
-                        configuredElement.dataset
-                            .spreadsheetKey;
+        spreadsheetButton.addEventListener(
+            "click",
+            function (event) {
 
-                    const spreadsheetData =
-                        spreadsheetConfiguration.get(
-                            spreadsheetKey
-                        );
+                event.stopPropagation();
 
-                    if (!spreadsheetData) {
-
-                        console.error(
-                            `Configuração não encontrada para "${spreadsheetKey}".`
-                        );
-
-                        if (
-                            configuredElement instanceof
-                            HTMLButtonElement
-                        ) {
-
-                            configuredElement.disabled =
-                                true;
-                        }
-
-                        return;
-                    }
-
-                    const spreadsheetUrl =
-                        createSpreadsheetUrl(
-                            spreadsheetData.spreadsheetId,
-                            spreadsheetData.gid
-                        );
-
-                    if (
-                        configuredElement instanceof
-                        HTMLIFrameElement
-                    ) {
-
-                        configuredElement.dataset.src =
-                            spreadsheetUrl;
-                    }
-
-                    if (
-                        configuredElement instanceof
-                        HTMLButtonElement
-                    ) {
-
-                        configuredElement.dataset.url =
-                            spreadsheetUrl;
-
-                        configuredElement.disabled =
-                            false;
-                    }
-                }
-            );
-        }
-
-
-        // CONFIGURA OS CLIQUES DOS BOTÕES DINÂMICOS
-
-        function initializeConfiguredSpreadsheetButtons() {
-
-            configuredSpreadsheetButtons.forEach(
-                function (spreadsheetButton) {
-
-                    // PERMANECE DESATIVADO ATÉ A CONFIGURAÇÃO SER CARREGADA
-
-                    spreadsheetButton.disabled =
-                        true;
-
-                    spreadsheetButton.addEventListener(
-                        "click",
-                        function (event) {
-
-                            event.stopPropagation();
-
-                            const spreadsheetUrl =
-                                spreadsheetButton.dataset
-                                    .url;
-
-                            if (!spreadsheetUrl) {
-
-                                console.error(
-                                    "Link da planilha ainda não está disponível."
-                                );
-
-                                return;
-                            }
-
-                            window.open(
-                                spreadsheetUrl,
-                                "_blank",
-                                "noopener,noreferrer"
-                            );
-                        }
-                    );
-                }
-            );
-        }
-
-
-        // DESCARREGA UMA PLANILHA INATIVA
-
-        function unloadSpreadsheet(
-            spreadsheetPanel
-        ) {
-
-            const spreadsheetIframe =
-                spreadsheetPanel.querySelector(
-                    "iframe[src]"
-                );
-
-            if (!spreadsheetIframe) {
-
-                return;
-            }
-
-            spreadsheetIframe.removeAttribute(
-                "src"
-            );
-        }
-
-
-        // CARREGA A PLANILHA ATIVA
-
-        function loadSpreadsheet(
-            spreadsheetPanel
-        ) {
-
-            const spreadsheetIframe =
-                spreadsheetPanel.querySelector(
-                    "iframe[data-src]"
-                );
-
-            if (
-                !spreadsheetIframe ||
-                spreadsheetIframe.hasAttribute(
-                    "src"
-                )
-            ) {
-
-                return;
-            }
-
-            requestAnimationFrame(
-                function () {
-
-                    setTimeout(
-                        function () {
-
-                            if (
-                                !spreadsheetPanel.classList.contains(
-                                    "is-active"
-                                )
-                            ) {
-
-                                return;
-                            }
-
-                            spreadsheetIframe.src =
-                                spreadsheetIframe.dataset
-                                    .src;
-
-                        },
-                        80
-                    );
-                }
-            );
-        }
-
-
-        // MANTÉM SOMENTE A PLANILHA ATIVA CARREGADA
-
-        function updateSpreadsheetIframes() {
-
-            const activeSpreadsheetPanel =
-                document.querySelector(
-                    "#spreadsheets .tabs-panel.is-active"
-                );
-
-            if (!activeSpreadsheetPanel) {
-
-                return;
-            }
-
-            spreadsheetPanels.forEach(
-                function (spreadsheetPanel) {
-
-                    if (
-                        spreadsheetPanel !==
-                        activeSpreadsheetPanel
-                    ) {
-
-                        unloadSpreadsheet(
-                            spreadsheetPanel
-                        );
-                    }
-                }
-            );
-
-            loadSpreadsheet(
-                activeSpreadsheetPanel
-            );
-        }
-
-
-        // CONFIGURA OS DOIS BOTÕES DE TESTE
-
-        initializeConfiguredSpreadsheetButtons();
-
-
-        // ATUALIZA DEPOIS DE CADA TROCA DE ABA
-
-        spreadsheetTabs.on(
-            "change.zf.tabs",
-            function () {
-
-                requestAnimationFrame(
-                    updateSpreadsheetIframes
+                window.open(
+                    configuration.url,
+                    "_blank",
+                    "noopener,noreferrer"
                 );
             }
         );
 
 
-        // CARREGA A PLANILHA INICIAL, QUE CONTINUA FIXA
+        tabItem.appendChild(
+            spreadsheetButton
+        );
+    }
 
-        updateSpreadsheetIframes();
 
-
-        // CONSULTA E APLICA OS LINKS DINÂMICOS
-
-        try {
-
-            const spreadsheetConfiguration =
-                await getSpreadsheetConfiguration();
-
-            applySpreadsheetConfiguration(
-                spreadsheetConfiguration
-            );
-
-            // CARREGA A PLANILHA DINÂMICA CASO O USUÁRIO JÁ TENHA ABERTO SUA ABA
-
-            updateSpreadsheetIframes();
-
-        }
-        catch (error) {
-
-            console.error(
-                "Não foi possível carregar os links das planilhas:",
-                error
-            );
-
-            configuredSpreadsheetButtons.forEach(
-                function (spreadsheetButton) {
-
-                    spreadsheetButton.disabled =
-                        true;
-                }
-            );
-        }
+    return tabItem;
 }
+
+
+/* CRIA O PAINEL E O IFRAME */
+
+function createSpreadsheetPanel(
+    configuration,
+    index,
+    panelId
+) {
+
+    const isInitialSpreadsheet =
+        index === 0;
+
+    const panel =
+        document.createElement(
+            "div"
+        );
+
+    const iframe =
+        document.createElement(
+            "iframe"
+        );
+
+
+    panel.id =
+        panelId;
+
+    panel.classList.add(
+        "tabs-panel"
+    );
+
+
+    if (isInitialSpreadsheet) {
+
+        panel.classList.add(
+            "is-active",
+            "keep-loaded"
+        );
+    }
+
+
+    iframe.dataset.spreadsheetKey =
+        configuration.key;
+
+    iframe.dataset.src =
+        configuration.url;
+
+    iframe.title =
+        configuration.spreadsheetName;
+
+    iframe.setAttribute(
+        "loading",
+        "lazy"
+    );
+
+
+    panel.appendChild(
+        iframe
+    );
+
+
+    return panel;
+}
+
+
+/* MONTA TODO O HTML DAS PLANILHAS */
+
+function renderSpreadsheetInterface(
+    configurations,
+    tabsElement,
+    panelsElement
+) {
+
+    const tabsFragment =
+        document.createDocumentFragment();
+
+    const panelsFragment =
+        document.createDocumentFragment();
+
+
+    configurations.forEach(
+        function (
+            configuration,
+            index
+        ) {
+
+            const panelId =
+                `spreadsheet-${index + 1}`;
+
+
+            tabsFragment.appendChild(
+                createSpreadsheetTab(
+                    configuration,
+                    index,
+                    panelId
+                )
+            );
+
+
+            panelsFragment.appendChild(
+                createSpreadsheetPanel(
+                    configuration,
+                    index,
+                    panelId
+                )
+            );
+        }
+    );
+
+
+    tabsElement.replaceChildren(
+        tabsFragment
+    );
+
+    panelsElement.replaceChildren(
+        panelsFragment
+    );
+}
+
+
+/* ATUALIZA O FOUNDATION APÓS CRIAR AS ABAS */
+
+function initializeFoundationTabs(
+    tabsElement
+) {
+
+    const foundationTabs =
+        $(
+            tabsElement
+        );
+
+
+    if (
+        foundationTabs.data(
+            "zfPlugin"
+        )
+    ) {
+
+        Foundation.reInit(
+            foundationTabs
+        );
+
+        return;
+    }
+
+
+    foundationTabs.foundation();
+}
+
+
+/* CONFIGURA O CARREGAMENTO SELETIVO */
+
+function initializeSpreadsheetNavigation(
+    tabsElement,
+    panelsElement
+) {
+
+    const panels =
+        panelsElement.querySelectorAll(
+            ".tabs-panel"
+        );
+
+
+    function unloadSpreadsheet(
+        panel
+    ) {
+
+        const iframe =
+            panel.querySelector(
+                "iframe[src]"
+            );
+
+
+        if (iframe) {
+
+            iframe.removeAttribute(
+                "src"
+            );
+        }
+    }
+
+
+    function loadSpreadsheet(
+        panel
+    ) {
+
+        const iframe =
+            panel.querySelector(
+                "iframe[data-src]"
+            );
+
+
+        if (
+            !iframe ||
+            iframe.hasAttribute(
+                "src"
+            )
+        ) {
+
+            return;
+        }
+
+
+        requestAnimationFrame(
+            function () {
+
+                setTimeout(
+                    function () {
+
+                        if (
+                            !panel.classList.contains(
+                                "is-active"
+                            )
+                        ) {
+
+                            return;
+                        }
+
+
+                        iframe.src =
+                            iframe.dataset.src;
+
+                    },
+                    80
+                );
+            }
+        );
+    }
+
+
+    function updateSpreadsheetIframes() {
+
+        const activePanel =
+            panelsElement.querySelector(
+                ".tabs-panel.is-active"
+            );
+
+
+        if (!activePanel) {
+
+            return;
+        }
+
+
+        panels.forEach(
+            function (panel) {
+
+                if (
+                    panel !==
+                    activePanel
+                ) {
+
+                    unloadSpreadsheet(
+                        panel
+                    );
+                }
+            }
+        );
+
+
+        loadSpreadsheet(
+            activePanel
+        );
+    }
+
+
+    $(
+        tabsElement
+    ).on(
+        "change.zf.tabs",
+        function () {
+
+            requestAnimationFrame(
+                updateSpreadsheetIframes
+            );
+        }
+    );
+
+
+    updateSpreadsheetIframes();
+}
+
+
+/* EXIBE UMA MENSAGEM DE ERRO */
+
+function showSpreadsheetConfigurationError(
+    tabsElement,
+    panelsElement
+) {
+
+    const errorMessage =
+        document.createElement(
+            "p"
+        );
+
+
+    errorMessage.classList.add(
+        "spreadsheet-configuration-error"
+    );
+
+    errorMessage.textContent =
+        "Não foi possível carregar as planilhas do dashboard.";
+
+
+    tabsElement.replaceChildren();
+
+    panelsElement.replaceChildren(
+        errorMessage
+    );
+}
+
+
+/* INICIALIZA AS PLANILHAS */
+
+async function initializeSpreadsheets() {
+
+    const tabsElement =
+        document.getElementById(
+            "switch-spreadsheet"
+        );
+
+    const panelsElement =
+        document.getElementById(
+            "spreadsheetPanels"
+        );
+
+
+    if (
+        !tabsElement ||
+        !panelsElement
+    ) {
+
+        throw new Error(
+            "Os elementos do menu de planilhas não foram encontrados."
+        );
+    }
+
+
+    tabsElement.setAttribute(
+        "aria-busy",
+        "true"
+    );
+
+    panelsElement.setAttribute(
+        "aria-busy",
+        "true"
+    );
+
+
+    try {
+
+        const configurations =
+            await getSpreadsheetConfigurations();
+
+
+        renderSpreadsheetInterface(
+            configurations,
+            tabsElement,
+            panelsElement
+        );
+
+
+        initializeFoundationTabs(
+            tabsElement
+        );
+
+
+        initializeSpreadsheetNavigation(
+            tabsElement,
+            panelsElement
+        );
+
+    }
+    catch (error) {
+
+        showSpreadsheetConfigurationError(
+            tabsElement,
+            panelsElement
+        );
+
+        throw error;
+
+    }
+    finally {
+
+        tabsElement.setAttribute(
+            "aria-busy",
+            "false"
+        );
+
+        panelsElement.setAttribute(
+            "aria-busy",
+            "false"
+        );
+    }
+}
+
+
+/* EXECUTA A INICIALIZAÇÃO */
 
 initializeSpreadsheets().catch(
     function (error) {
