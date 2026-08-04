@@ -19,7 +19,8 @@ import {
 
 import {
     getDriveFolderInformation,
-    listDriveFiles
+    listDriveFiles,
+    listSharedWithMeFiles
 } from "./drive.js";
 
 // ARMAZENA O CLIENTE DE AUTENTICAÇÃO E O TOKEN DE ACESSO
@@ -34,6 +35,20 @@ export let accessToken =
 
 const folderNavigationHistory =
     [];
+
+// DEFINE OS TIPOS DE LOCALIZAÇÃO UTILIZADOS NO HISTÓRICO
+
+const SHARED_WITH_ME_LOCATION_TYPE =
+    "shared-with-me";
+
+const FOLDER_LOCATION_TYPE =
+    "folder";
+
+
+// DEFINE O NOME DA RAIZ VIRTUAL
+
+const SHARED_WITH_ME_LOCATION_NAME =
+    "Compartilhados comigo";
 
 // CONSIDERA O TOKEN EXPIRADO UM MINUTO ANTES DO LIMITE REAL
 
@@ -170,7 +185,7 @@ export function runDriveActionWithValidToken(
                 reloadCurrentFolderAfterRenewal
             ) {
 
-                await reloadCurrentDriveFolder();
+                await reloadCurrentDriveLocation();
             }
 
             return action();
@@ -187,21 +202,47 @@ export function runDriveActionWithValidToken(
 
 // RECARREGA A PASTA ATUAL SEM ALTERAR O HISTÓRICO
 
-async function reloadCurrentDriveFolder() {
+// RECARREGA A LOCALIZAÇÃO ATUAL SEM ALTERAR O HISTÓRICO
 
-    const currentFolder =
+async function reloadCurrentDriveLocation() {
+
+    const currentLocation =
         folderNavigationHistory.at(
             -1
         );
 
-    if (!currentFolder) {
+    if (!currentLocation) {
 
         return;
     }
 
-    await loadDriveFolder(
-        currentFolder.id,
+    await loadDriveLocation(
+        currentLocation,
         false
+    );
+}
+
+
+// CARREGA UMA PASTA REAL OU A RAIZ VIRTUAL
+
+async function loadDriveLocation(
+    location,
+    addToHistory = false
+) {
+
+    if (
+        location.type ===
+        SHARED_WITH_ME_LOCATION_TYPE
+    ) {
+
+        return loadSharedWithMe(
+            addToHistory
+        );
+    }
+
+    return loadDriveFolder(
+        location.id,
+        addToHistory
     );
 }
 
@@ -259,6 +300,76 @@ export function openDriveFolder(
     );
 }
 
+// CARREGA A RAIZ VIRTUAL "COMPARTILHADOS COMIGO"
+
+async function loadSharedWithMe(
+    resetHistory = false
+) {
+
+    showDriveLoading();
+
+    try {
+
+        const driveItems =
+            await listSharedWithMeFiles(
+                accessToken
+            );
+
+        if (resetHistory) {
+
+            folderNavigationHistory.length =
+                0;
+
+            folderNavigationHistory.push({
+
+                id:
+                    null,
+
+                name:
+                    SHARED_WITH_ME_LOCATION_NAME,
+
+                type:
+                    SHARED_WITH_ME_LOCATION_TYPE
+            });
+        }
+
+        showDriveFiles(
+            driveItems,
+            openDriveFolder
+        );
+
+        showDriveBreadcrumb(
+            folderNavigationHistory,
+            handleBreadcrumbNavigation
+        );
+
+        updateBackButtonVisibility();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Não foi possível carregar os itens compartilhados:",
+            error
+        );
+
+        if (
+            error.status ===
+            401
+        ) {
+
+            finishDriveSession();
+
+            return;
+        }
+
+        showDriveError(
+            error.message ??
+            "Não foi possível carregar os itens compartilhados."
+        );
+    }
+}
+
 // CARREGA A PASTA DEPOIS QUE O TOKEN JÁ FOI VALIDADO
 
 async function loadDriveFolder(
@@ -305,11 +416,15 @@ async function loadDriveFolder(
         if (newFolderInformation) {
 
             folderNavigationHistory.push({
+
                 id:
                     newFolderInformation.id,
 
                 name:
-                    newFolderInformation.name
+                    newFolderInformation.name,
+
+                type:
+                    FOLDER_LOCATION_TYPE
             });
         }
 
@@ -455,8 +570,8 @@ function handleBackButtonClick() {
                     -1
                 );
 
-            await loadDriveFolder(
-                previousFolder.id,
+            await loadDriveLocation(
+                previousFolder,
                 false
             );
         }
@@ -490,8 +605,8 @@ function handleBreadcrumbNavigation(
                 folderIndex + 1
             );
 
-            await loadDriveFolder(
-                selectedFolder.id,
+            await loadDriveLocation(
+                selectedFolder,
                 false
             );
         }
@@ -591,8 +706,8 @@ async function initializeUserSession() {
 
         await loadUserInformation();
 
-        await loadDriveFolder(
-            CONFIG.google.folderId
+        await loadSharedWithMe(
+            true
         );
     }
     catch (error) {
