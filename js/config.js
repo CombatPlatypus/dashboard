@@ -17,7 +17,7 @@ export const CONFIG = {
             "1IS4QDnMenXTi07FhiL-nFINrEjLppAfZhSlogZq22hY", // ID DA PLANILHA COM OS LINKS
 
         linksSpreadsheetRange:
-            "Planilhas!A2:C", // DETERMINA OS CAMPOS ONDE SERÁ BUSCADO AS INFORMAÇÕES DOS LINKS
+            "Planilhas!A2:G", // DETERMINA OS CAMPOS ONDE SERÁ BUSCADO AS INFORMAÇÕES DOS LINKS
 
         scopes: [
             "openid",
