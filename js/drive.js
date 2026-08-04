@@ -3,7 +3,25 @@
 const DRIVE_FILES_ENDPOINT =
     "https://www.googleapis.com/drive/v3/files";
 
-// REPRESENTA UM ERRO RETORNADO PELA API DO GOOGLE DRIVE
+
+// DEFINE OS CAMPOS RETORNADOS PARA CADA ITEM
+
+const DRIVE_ITEM_FIELDS =
+    [
+        "id,",
+        "name,",
+        "mimeType,",
+        "webViewLink,",
+        "webContentLink,",
+        "iconLink,",
+        "hasThumbnail,",
+        "thumbnailLink,",
+        "capabilities(canDownload),",
+        "modifiedTime"
+    ].join("");
+
+
+// REPRESENTA UM ERRO RETORNADO PELA API
 
 export class DriveApiError extends Error {
 
@@ -24,6 +42,7 @@ export class DriveApiError extends Error {
     }
 }
 
+
 // CONSULTA AS INFORMAÇÕES BÁSICAS DE UMA PASTA
 
 export async function getDriveFolderInformation(
@@ -31,12 +50,9 @@ export async function getDriveFolderInformation(
     folderId
 ) {
 
-    if (!accessToken) {
-
-        throw new Error(
-            "Token de acesso não informado."
-        );
-    }
+    validateAccessToken(
+        accessToken
+    );
 
     if (!folderId) {
 
@@ -45,23 +61,19 @@ export async function getDriveFolderInformation(
         );
     }
 
-    // DEFINE OS PARÂMETROS DA CONSULTA
-
     const queryParameters =
         new URLSearchParams({
 
             fields:
-                "id,name,mimeType"
+                "id,name,mimeType",
 
+            supportsAllDrives:
+                "true"
         });
-
-    // MONTA A URL DA REQUISIÇÃO
 
     const requestUrl =
         `${DRIVE_FILES_ENDPOINT}/${encodeURIComponent(folderId)}` +
         `?${queryParameters.toString()}`;
-
-    // REALIZA A REQUISIÇÃO À API
 
     const response =
         await fetch(
@@ -74,37 +86,23 @@ export async function getDriveFolderInformation(
             }
         );
 
-    // TRATA POSSÍVEIS ERROS DA REQUISIÇÃO
-
     if (!response.ok) {
 
-        const errorMessage =
-            await getDriveErrorMessage(
-                response
-            );
-
-        throw new DriveApiError(
-            errorMessage,
-            response.status
+        await throwDriveApiError(
+            response
         );
     }
 
     return response.json();
 }
 
-// LISTA TODOS OS ARQUIVOS E PASTAS DE UM DIRETÓRIO
 
-export async function listDriveFiles(
+// LISTA OS ARQUIVOS DE UMA PASTA REAL
+
+export function listDriveFiles(
     accessToken,
     folderId
 ) {
-
-    if (!accessToken) {
-
-        throw new Error(
-            "Token de acesso não informado."
-        );
-    }
 
     if (!folderId) {
 
@@ -113,13 +111,47 @@ export async function listDriveFiles(
         );
     }
 
-    const driveItems = [];
+    return listDriveItems(
+        accessToken,
+        `'${folderId}' in parents and trashed = false`,
+        "folder,name_natural"
+    );
+}
 
-    let nextPageToken = null;
+
+// LISTA OS ITENS DA ÁREA "COMPARTILHADOS COMIGO"
+
+export function listSharedWithMeFiles(
+    accessToken
+) {
+
+    return listDriveItems(
+        accessToken,
+        "sharedWithMe and trashed = false",
+        "sharedWithMeTime desc,name_natural"
+    );
+}
+
+
+// EXECUTA UMA LISTAGEM PAGINADA NA API
+
+async function listDriveItems(
+    accessToken,
+    query,
+    orderBy
+) {
+
+    validateAccessToken(
+        accessToken
+    );
+
+    const driveItems =
+        [];
+
+    let nextPageToken =
+        null;
 
     do {
-
-        // DEFINE OS PARÂMETROS DA CONSULTA
 
         const queryParameters =
             new URLSearchParams({
@@ -127,36 +159,26 @@ export async function listDriveFiles(
                 pageSize:
                     "100",
 
-                fields: [
+                fields:
+                    `nextPageToken,files(${DRIVE_ITEM_FIELDS})`,
 
-                    "nextPageToken,",
-
-                    "files(",
-
-                        "id,",
-                        "name,",
-                        "mimeType,",
-                        "webViewLink,",
-                        "webContentLink,",
-                        "iconLink,",
-                        "hasThumbnail,",
-                        "thumbnailLink,",
-                        "capabilities(canDownload),",
-                        "modifiedTime",
-
-                    ")"
-
-                ].join(""),
-
-                orderBy:
-                    "folder,name",
+                orderBy,
 
                 q:
-                    `'${folderId}' in parents and trashed = false`
+                    query,
 
+                spaces:
+                    "drive",
+
+                corpora:
+                    "user",
+
+                includeItemsFromAllDrives:
+                    "true",
+
+                supportsAllDrives:
+                    "true"
             });
-
-        // ADICIONA O TOKEN DA PRÓXIMA PÁGINA QUANDO NECESSÁRIO
 
         if (nextPageToken) {
 
@@ -166,12 +188,8 @@ export async function listDriveFiles(
             );
         }
 
-        // MONTA A URL DA REQUISIÇÃO
-
         const requestUrl =
             `${DRIVE_FILES_ENDPOINT}?${queryParameters.toString()}`;
-
-        // REALIZA A REQUISIÇÃO À API
 
         const response =
             await fetch(
@@ -184,22 +202,12 @@ export async function listDriveFiles(
                 }
             );
 
-        // TRATA POSSÍVEIS ERROS DA REQUISIÇÃO
-
         if (!response.ok) {
 
-            const errorMessage =
-                await getDriveErrorMessage(
-                    response
-                );
-
-            throw new DriveApiError(
-                errorMessage,
-                response.status
+            await throwDriveApiError(
+                response
             );
         }
-
-        // PROCESSA A RESPOSTA DA API
 
         const responseData =
             await response.json();
@@ -218,6 +226,40 @@ export async function listDriveFiles(
     return driveItems;
 }
 
+
+// VALIDA A EXISTÊNCIA DO TOKEN
+
+function validateAccessToken(
+    accessToken
+) {
+
+    if (!accessToken) {
+
+        throw new Error(
+            "Token de acesso não informado."
+        );
+    }
+}
+
+
+// CRIA E DISPARA UM ERRO DA API
+
+async function throwDriveApiError(
+    response
+) {
+
+    const errorMessage =
+        await getDriveErrorMessage(
+            response
+        );
+
+    throw new DriveApiError(
+        errorMessage,
+        response.status
+    );
+}
+
+
 // OBTÉM A MENSAGEM DE ERRO RETORNADA PELA API
 
 async function getDriveErrorMessage(
@@ -228,6 +270,7 @@ async function getDriveErrorMessage(
         `Erro ao consultar o Drive: ${response.status}`;
 
     try {
+
         const errorData =
             await response.json();
 
@@ -235,10 +278,10 @@ async function getDriveErrorMessage(
             errorData.error?.message ??
             defaultMessage
         );
+
     }
     catch {
 
         return defaultMessage;
-
     }
 }
