@@ -142,7 +142,7 @@ export function showDriveReconnect() {
     if (connectionDescription) {
 
         connectionDescription.textContent =
-            "A sessão do Google não está mais disponível. Reconecte sua conta para continuar acessando os arquivos.";
+            "A sessão do Google não está mais disponível. Reconecte-se para continuar acessando os arquivos. ";
     }
 }
 
