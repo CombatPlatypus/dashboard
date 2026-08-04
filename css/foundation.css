@@ -1191,7 +1191,7 @@ a.thumbnail image {
         width: max-content;
         display: flex;
         align-items: center;
-        column-gap: 15px;
+        column-gap: 5px;
         row-gap: 10px;
         flex-wrap: wrap;
     }
