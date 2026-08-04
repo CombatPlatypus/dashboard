@@ -1317,6 +1317,7 @@ a.thumbnail image {
         display: grid;
         grid-template-columns: repeat(auto-fill,minmax(220px, 1fr));
         gap: 18px;
+        align-content: start;
     }
     #driveFiles.drive-grid-view .drive-file {
         display: flex;
