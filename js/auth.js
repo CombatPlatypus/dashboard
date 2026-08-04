@@ -48,7 +48,7 @@ const FOLDER_LOCATION_TYPE =
 // DEFINE O NOME DA RAIZ VIRTUAL
 
 const SHARED_WITH_ME_LOCATION_NAME =
-    "Compartilhados comigo";
+    "Compartilhados Comigo";
 
 // CONSIDERA O TOKEN EXPIRADO UM MINUTO ANTES DO LIMITE REAL
 
