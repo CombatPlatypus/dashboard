@@ -91,7 +91,7 @@
                             <li class="tabs-title flex-box-center horizontal-first-item">
                                 <a href="#spreadsheet-2">Pacotes em Análise</a>
 
-                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                <button class="spreadsheets-links" type="button" data-spreadsheet-key="pacotes-analise">
                                     <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
                                         <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -103,7 +103,7 @@
                             <li class="tabs-title flex-box-center horizontal-second-item">
                                 <a href="#spreadsheet-3">Backlogs e Logs</a>
 
-                                <button class="spreadsheets-links" type="button" onclick="event.stopPropagation(); window.open('LINK_DA_PLANILHA','_blank','noopener,noreferrer');">
+                                <button class="spreadsheets-links" type="button" data-spreadsheet-key="backlogs-e-logs">
                                     <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
                                         <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -290,11 +290,11 @@
                             </div>
 
                             <div class="tabs-panel" id="spreadsheet-2">
-                                <iframe data-src="https://docs.google.com/spreadsheets/d/1xsYqR7UbdK2GoCWTEonOC4ClobrwkZ18MlgnK7_tVmE/edit?gid=0#gid=0"></iframe>
+                                <iframe data-spreadsheet-key="pacotes-analise"></iframe>
                             </div>
 
                             <div class="tabs-panel" id="spreadsheet-3">
-                                <iframe data-src="https://docs.google.com/spreadsheets/d/1h3nCXHug6WrWAtzV37fHcyBZp077dbmA1CGSh2OBjqI/edit?gid=0#gid=0"></iframe>
+                                <iframe data-spreadsheet-key="backlogs-e-logs"></iframe>
                             </div>
 
                             <div class="tabs-panel" id="spreadsheet-4">
@@ -470,7 +470,7 @@
         <script async src="js/pace.min.js"></script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script defer src="js/foundation.min.js"></script>
-        <script defer src="js/load-spreadsheets.js"></script>
+        <script type="module" src="js/load-spreadsheets.js"></script>
 
         <!-- GOOGLE IDENTITY SERVICES -->
 
