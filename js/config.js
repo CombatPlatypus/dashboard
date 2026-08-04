@@ -10,6 +10,15 @@ export const CONFIG = {
         folderId:
             "1xnyeHACpXe5r0g5cKixaHAFEflh6SWf0", // ID DA PASTA DO DRIVE A SER MOSTRADA
 
+        sheetsApiKey:
+            "AIzaSyCATqioFrLxHy6STfRks_WGqmg0ynXq5nY", // CHAVE DA API DO SHEETS
+
+        linksSpreadsheetId:
+            "1IS4QDnMenXTi07FhiL-nFINrEjLppAfZhSlogZq22hY", // ID DA PLANILHA COM OS LINKS
+
+        linksSpreadsheetRange:
+            "Planilhas!A2:C", // DETERMINA OS CAMPOS ONDE SERÁ BUSCADO AS INFORMAÇÕES DOS LINKS
+
         scopes: [
             "openid",
             "email",
