@@ -7,8 +7,7 @@ import {
 
 // INICIALIZA O CONTROLE DAS PLANILHAS
 
-$(document).ready(
-    async function () {
+async function initializeSpreadsheets() {
 
         const spreadsheetTabs =
             $("#switch-spreadsheet");
@@ -474,6 +473,14 @@ $(document).ready(
                 }
             );
         }
+}
 
+initializeSpreadsheets().catch(
+    function (error) {
+
+        console.error(
+            "Erro ao inicializar o controle das planilhas:",
+            error
+        );
     }
 );
