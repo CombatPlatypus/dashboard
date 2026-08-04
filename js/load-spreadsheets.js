@@ -154,6 +154,11 @@ async function getSpreadsheetConfigurations() {
         new Set();
 
 
+    /*
+     * AS LINHAS SÃO PERCORRIDAS DE CIMA PARA BAIXO.
+     * ESSA SERÁ TAMBÉM A ORDEM DO MENU.
+     */
+
     rows.forEach(
         function (
             row,
@@ -164,11 +169,11 @@ async function getSpreadsheetConfigurations() {
                 rowIndex + 2;
 
 
-            // COLUNA G — APARECE NO DASH
+            // COLUNA F — APARECE NO DASH
 
             if (
                 !shouldDisplaySpreadsheet(
-                    row[6]
+                    row[5]
                 )
             ) {
 
@@ -176,7 +181,7 @@ async function getSpreadsheetConfigurations() {
             }
 
 
-            // COLUNAS A ATÉ F
+            // COLUNAS A ATÉ E
 
             const key =
                 normalizeText(
@@ -202,13 +207,6 @@ async function getSpreadsheetConfigurations() {
                 normalizeText(
                     row[4]
                 ) || spreadsheetName;
-
-            const menuPosition =
-                Number(
-                    normalizeText(
-                        row[5]
-                    )
-                );
 
 
             // VALIDA A CHAVE
@@ -287,23 +285,6 @@ async function getSpreadsheetConfigurations() {
             }
 
 
-            // VALIDA A POSIÇÃO
-
-            if (
-                !Number.isInteger(
-                    menuPosition
-                ) ||
-                menuPosition < 1
-            ) {
-
-                console.warn(
-                    `Linha ${sheetRowNumber} ignorada: posição do menu inválida.`
-                );
-
-                return;
-            }
-
-
             registeredKeys.add(
                 key
             );
@@ -324,35 +305,12 @@ async function getSpreadsheetConfigurations() {
 
                 menuName,
 
-                menuPosition,
-
-                sheetRowNumber,
-
                 url:
                     createSpreadsheetUrl(
                         targetSpreadsheetId,
                         gid
                     )
             });
-        }
-    );
-
-
-    // ORDENA PELA COLUNA F
-
-    configurations.sort(
-        function (
-            firstSpreadsheet,
-            secondSpreadsheet
-        ) {
-
-            return (
-                firstSpreadsheet.menuPosition -
-                secondSpreadsheet.menuPosition ||
-
-                firstSpreadsheet.sheetRowNumber -
-                secondSpreadsheet.sheetRowNumber
-            );
         }
     );
 
