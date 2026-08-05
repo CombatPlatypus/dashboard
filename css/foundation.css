@@ -1004,6 +1004,9 @@ a.thumbnail image {
 .main-structure .tabs-title:hover {
     background: #2e2e2e;
 }
+.main-structure .tabs-title.is-active{
+    background: #2e2e2e;
+}
 .main-structure .tabs-title:focus, .main-structure .tabs-title[aria-selected='true'] {
     background-color: #2e2e2e
 }
