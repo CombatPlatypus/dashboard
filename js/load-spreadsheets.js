@@ -566,7 +566,6 @@ function createSpreadsheetPanel(
 
         panel.classList.add(
             "is-active",
-            "keep-loaded"
         );
     }
 
