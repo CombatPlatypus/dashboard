@@ -192,6 +192,16 @@
                                                 <span id="statisticsVisibleColumnCount">
                                                     0 de 0
                                                 </span>
+
+                                                <label for="statisticsPreviewLimit">Exibir até</label>
+
+                                                <select id="statisticsPreviewLimit" class="standard-select">
+                                                    <option value="50">50 linhas</option>
+                                                    <option value="100">100 linhas</option>
+                                                    <option value="250">250 linhas</option>
+                                                    <option value="500">500 linhas</option>
+                                                    <option value="all" selected>Todas as linhas</option>
+                                                </select>
                                             </div>
 
                                             <div class="statistics-visible-columns-actions">
@@ -233,7 +243,7 @@
                                             <div class="statistics-column-actions">
                                                 <button id="statisticsSelectAllColumns" class="statistics-analysis-action" type="button">Analisar Tudo</button>
 
-                                                <button id="statisticsClearColumns" class="statistics-analysis-action" type="button">Limpar seleção</button>
+                                                <button id="statisticsClearColumns" class="statistics-analysis-action" type="button">Limpar Seleção</button>
                                             </div>
                                         </div>
 
@@ -291,13 +301,13 @@
                                                 <option value="">Selecione uma coluna</option>
                                             </select>
 
-                                            <h4>Tipo de Cálculo</h4>
+                                            <h4>Calcular Usando</h4>
 
                                             <select id="statisticsChartValue" class="standard-select">
                                                 <option value="">Selecione uma coluna</option>
                                             </select>
 
-                                            <h4>Calcular Usando</h4>
+                                            <h4>Tipo de Cálculo</h4>
 
                                             <select id="statisticsChartOperation" class="standard-select">
                                                 <option value="count">Contar Registros</option>
@@ -347,11 +357,17 @@
                                             <h4>Cores</h4>
 
                                             <div id="statisticsChartColors" class="flex-box-start">
-                                                <button type="button" class="color-1" data-chart-color="#fb5330" aria-label="Cor verde" aria-pressed="true"></button>
-                                                <button type="button" class="color-2" data-chart-color="#e4e6eb" aria-label="Cor azul" aria-pressed="false"></button>
-                                                <button type="button" class="color-3" data-chart-color="#f2a900" aria-label="Cor amarela" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#ff5533" aria-label="Cor coral" aria-pressed="true"></button>
+                                                <button type="button" data-chart-color="#dfe3e8" aria-label="Cor cinza claro" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#f2a900" aria-label="Cor amarela" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#3478d4" aria-label="Cor azul" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#1abc9c" aria-label="Cor turquesa" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#8e5cd9" aria-label="Cor roxa" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#e85d9e" aria-label="Cor rosa" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#3dbfd9" aria-label="Cor ciano" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#62b44b" aria-label="Cor verde" aria-pressed="false"></button>
+                                                <button type="button" data-chart-color="#9c755f" aria-label="Cor marrom" aria-pressed="false"></button>
                                             </div>
-
                                         </div>
 
                                     </div>
@@ -367,6 +383,11 @@
                                         </div>
 
                                         <div class="chart-box">
+                                            <div class="chart-empty" id="statisticsChartEmpty">
+                                                <h4>Nenhum gráfico gerado</h4>
+                                                <p>Configure os dados para visualizar o gráfico.</p>
+                                            </div>
+
                                             <canvas id="statisticsChartCanvas">Seu navegador não suporta gráficos em canvas.</canvas>
                                         </div>
                                     </div>
