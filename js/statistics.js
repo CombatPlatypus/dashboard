@@ -30,6 +30,10 @@ const previewSummary = document.getElementById(
     "statisticsPreviewSummary",
 );
 
+const previewLimit = document.getElementById(
+    "statisticsPreviewLimit",
+);
+
 const table = document.getElementById("statisticsLocalTable");
 
 /* ELEMENTOS DO CONTROLE DE COLUNAS VISÍVEIS */
@@ -89,6 +93,7 @@ const analysisEmpty = document.getElementById(
 /* ELEMENTOS DA MONTAGEM DE GRÁFICOS */
 
 const chartPanel = document.getElementById("statisticsChartPanel");
+const chartEmpty = document.getElementById("statisticsChartEmpty");
 const chartSummary = document.getElementById("statisticsChartSummary");
 const chartCategory = document.getElementById("statisticsChartCategory");
 const chartValue = document.getElementById("statisticsChartValue");
@@ -136,7 +141,7 @@ const chartState = {
 
     type: "bar",
 
-    color: "#fb5330",
+    color: "#ff5533",
 };
 
 /* FUNDO DO GRÁFICO E DA IMAGEM PNG */
@@ -171,7 +176,7 @@ function createEmptyColumnFilter() {
     return {
         text: "",
 
-        duplicatesOnly: false,
+        occurrence: "all",
 
         numericOperator: "",
 
@@ -195,7 +200,7 @@ function isColumnFilterActive(filter) {
 
     return (
         hasTextFilter ||
-        filter.duplicatesOnly ||
+        filter.occurrence !== "all" ||
         hasNumericFilter
     );
 }
@@ -235,7 +240,7 @@ function createColumnValueCounts(columnIndex) {
 
 /* CRIA UMA OPÇÃO DO FILTRO NUMÉRICO */
 
-function createNumericFilterOption(
+function createFilterOption(
     value,
     label,
 ) {
@@ -2426,62 +2431,83 @@ function renderTableHeader() {
             filterInput,
         );
 
-        /* FILTRO DE DUPLICIDADE */
+        /* FILTRO POR FREQUÊNCIA */
 
         if (
             columnProfile.type !==
             "empty"
         ) {
-            const duplicateLabel =
+            const occurrenceFilter =
                 document.createElement(
-                    "label",
+                    "select",
                 );
 
-            const duplicateCheckbox =
-                document.createElement(
-                    "input",
-                );
-
-            const duplicateText =
-                document.createElement(
-                    "span",
-                );
-
-            duplicateLabel.classList.add(
-                "statistics-duplicate-filter",
+            occurrenceFilter.classList.add(
+                "statistics-occurrence-filter",
+                "standard-select",
             );
 
-            duplicateCheckbox.type =
-                "checkbox";
+            occurrenceFilter.append(
+                createFilterOption(
+                    "all",
+                    "Todos os valores",
+                ),
 
-            duplicateCheckbox.checked =
-                columnFilter.duplicatesOnly;
+                createFilterOption(
+                    "duplicates",
+                    "Somente duplicados",
+                ),
 
-            duplicateCheckbox.setAttribute(
+                createFilterOption(
+                    "unique",
+                    "Somente únicos",
+                ),
+
+                createFilterOption(
+                    "empty",
+                    "Somente células vazias",
+                ),
+            );
+
+            occurrenceFilter.value =
+                columnFilter.occurrence;
+
+            occurrenceFilter.setAttribute(
                 "aria-label",
-                `Mostrar somente duplicados da coluna ${headerValue}`,
+                `Filtrar valores duplicados, únicos ou vazios da coluna ${headerValue}`,
             );
 
-            duplicateText.textContent =
-                "Somente duplicados";
-
-            duplicateCheckbox.addEventListener(
-                "change",
+            const updateOccurrenceFilter =
                 function () {
-                    columnFilter.duplicatesOnly =
-                        duplicateCheckbox.checked;
+                    columnFilter.occurrence =
+                        occurrenceFilter.value;
 
                     renderTableBody();
-                },
-            );
+                };
 
-            duplicateLabel.append(
-                duplicateCheckbox,
-                duplicateText,
-            );
+            if (
+                window.jQuery &&
+                typeof window.jQuery
+                    .fn.select2 ===
+                    "function"
+            ) {
+                window
+                    .jQuery(
+                        occurrenceFilter,
+                    )
+                    .on(
+                        "change.statisticsOccurrenceFilter",
+                        updateOccurrenceFilter,
+                    );
+            } else {
+                occurrenceFilter.addEventListener(
+                    "change",
+                    updateOccurrenceFilter,
+                );
+            }
 
             advancedFilters.appendChild(
-                duplicateLabel,
+                occurrenceFilter,
             );
         }
 
@@ -2519,37 +2545,37 @@ function renderTableHeader() {
                 "100%";
 
             numericOperator.append(
-                createNumericFilterOption(
+                createFilterOption(
                     "",
                     "Comparar...",
                 ),
 
-                createNumericFilterOption(
+                createFilterOption(
                     "greaterThan",
                     "Maior que",
                 ),
 
-                createNumericFilterOption(
+                createFilterOption(
                     "greaterThanOrEqual",
                     "Maior ou igual",
                 ),
 
-                createNumericFilterOption(
+                createFilterOption(
                     "lessThan",
                     "Menor que",
                 ),
 
-                createNumericFilterOption(
+                createFilterOption(
                     "lessThanOrEqual",
                     "Menor ou igual",
                 ),
 
-                createNumericFilterOption(
+                createFilterOption(
                     "equal",
                     "Igual a",
                 ),
 
-                createNumericFilterOption(
+                createFilterOption(
                     "notEqual",
                     "Diferente de",
                 ),
@@ -2720,10 +2746,11 @@ function getFilteredRows() {
                         return false;
                     }
 
-                    /* FILTRO DE DUPLICIDADE */
+                    /* FILTRO POR FREQUÊNCIA */
 
                     if (
-                        columnFilter.duplicatesOnly
+                        columnFilter.occurrence !==
+                        "all"
                     ) {
                         const valueCounts =
                             tableState.columnValueCounts[
@@ -2735,9 +2762,37 @@ function getFilteredRows() {
                                 normalizedCellValue,
                             ) ?? 0;
 
+                        const isEmpty =
+                            normalizedCellValue === "";
+
+                        const isDuplicate =
+                            !isEmpty &&
+                            valueCount > 1;
+
+                        const isUnique =
+                            !isEmpty &&
+                            valueCount === 1;
+
                         if (
-                            !normalizedCellValue ||
-                            valueCount <= 1
+                            columnFilter.occurrence ===
+                                "empty" &&
+                            !isEmpty
+                        ) {
+                            return false;
+                        }
+
+                        if (
+                            columnFilter.occurrence ===
+                                "duplicates" &&
+                            !isDuplicate
+                        ) {
+                            return false;
+                        }
+
+                        if (
+                            columnFilter.occurrence ===
+                                "unique" &&
+                            !isUnique
                         ) {
                             return false;
                         }
@@ -2841,6 +2896,23 @@ function getSortedRows(rows) {
     return sortedRows;
 }
 
+/* RETORNA O LIMITE DE LINHAS DA PRÉVIA */
+
+function getPreviewRowLimit() {
+    if (previewLimit.value === "all") {
+        return null;
+    }
+
+    const selectedLimit = Number(
+        previewLimit.value,
+    );
+
+    return Number.isInteger(selectedLimit) &&
+        selectedLimit > 0
+        ? selectedLimit
+        : null;
+}
+
 /* MONTA AS LINHAS VISÍVEIS */
 
 function renderTableBody() {
@@ -2855,8 +2927,16 @@ function renderTableBody() {
             filteredRows,
         );
 
+    const rowLimit =
+        getPreviewRowLimit();
+
     const visibleRows =
-        sortedRows;
+        rowLimit === null
+            ? sortedRows
+            : sortedRows.slice(
+                0,
+                rowLimit,
+            );
 
     const visibleColumnIndexes =
         getVisibleColumnIndexes();
@@ -2965,6 +3045,18 @@ function renderTableBody() {
     const filteredRowCount =
         filteredRows.length;
 
+    const visibleRowCount =
+        visibleRows.length;
+
+    const hasLimitedPreview =
+        visibleRowCount <
+        filteredRowCount;
+
+    const previewLimitMessage =
+        hasLimitedPreview
+            ? ` - Exibindo ${visibleRowCount}`
+            : "";
+
     const isFiltered =
         tableState.filters.some(
             isColumnFilterActive,
@@ -2976,7 +3068,7 @@ function renderTableBody() {
             : `${totalRows} linhas`;
 
     previewSummary.textContent =
-        `Página: ${tableState.sheetName} / ${rowCountMessage} -`;
+        `Página: ${tableState.sheetName} / ${rowCountMessage}${previewLimitMessage} -`;
 
     const downloadsDisabled =
         !tableState.sourceFileName ||
@@ -3191,6 +3283,13 @@ function destroyChart() {
     chartDownloadButton.disabled = true;
 }
 
+/* MOSTRA OU OCULTA O ESTADO VAZIO */
+
+function setChartEmptyState(empty) {
+    chartEmpty.hidden =
+        !empty;
+}
+
 /* MARCA O BOTÃO ATIVO */
 
 function setActiveChartButton(container, activeButton) {
@@ -3234,6 +3333,26 @@ function createChartColorPalette(quantity) {
     );
 }
 
+/* APLICA AS CORES NOS BOTÕES */
+
+function prepareChartColorButtons() {
+    chartColors
+        .querySelectorAll(
+            "[data-chart-color]",
+        )
+        .forEach(
+            function (button) {
+                const buttonColor =
+                    button.dataset.chartColor;
+
+                if (buttonColor) {
+                    button.style.backgroundColor =
+                        buttonColor;
+                }
+            },
+        );
+}
+
 /* MONTA A APARÊNCIA DO CONJUNTO DE DADOS */
 
 function createChartDataset(chartData) {
@@ -3256,6 +3375,8 @@ function createChartDataset(chartData) {
             borderWidth: 2,
 
             hoverOffset: 8,
+
+            radius: "50%",
         };
     }
 
@@ -3294,9 +3415,65 @@ function createChartDataset(chartData) {
     };
 }
 
+/* CALCULA O INTERVALO DO EIXO VERTICAL */
+
+function getChartStepSize(values) {
+    const largestValue =
+        Math.max(
+            ...values.map(
+                function (value) {
+                    return Math.abs(
+                        Number(value),
+                    );
+                },
+            ),
+            0,
+        );
+
+    if (largestValue === 0) {
+        return 1;
+    }
+
+    const approximateStep =
+        largestValue / 12;
+
+    const magnitude =
+        10 **
+        Math.floor(
+            Math.log10(
+                approximateStep,
+            ),
+        );
+
+    const normalizedStep =
+        approximateStep /
+        magnitude;
+
+    let multiplier;
+
+    if (normalizedStep <= 1) {
+        multiplier = 1;
+    } else if (normalizedStep <= 2) {
+        multiplier = 2;
+    } else if (normalizedStep <= 2.5) {
+        multiplier = 2.5;
+    } else if (normalizedStep <= 5) {
+        multiplier = 5;
+    } else {
+        multiplier = 10;
+    }
+
+    return multiplier * magnitude;
+}
+
 /* MONTA OS EIXOS DOS GRÁFICOS */
 
-function createChartScales() {
+function createChartScales(chartData) {
+    const stepSize =
+        getChartStepSize(
+            chartData.values,
+        );
+
     return {
         x: {
             ticks: {
@@ -3321,10 +3498,14 @@ function createChartScales() {
         y: {
             beginAtZero: true,
 
+            grace: "5%",
+
             ticks: {
                 color: "#e4e6eb",
 
                 padding: 12,
+
+                stepSize,
 
                 callback(value) {
                     return formatAnalysisNumber(Number(value));
@@ -3347,7 +3528,7 @@ function createChartScales() {
 function renderChart() {
     if (!window.Chart || !tableState.rows.length) {
         destroyChart();
-        chartDownloadButton.disabled = true;
+        setChartEmptyState(true);
         return;
     }
 
@@ -3355,7 +3536,7 @@ function renderChart() {
 
     if (!chartData || !chartData.labels.length) {
         destroyChart();
-        chartDownloadButton.disabled = true;
+        setChartEmptyState(true);
         return;
     }
 
@@ -3419,11 +3600,17 @@ function renderChart() {
                     displayColors: pieChart,
                 },
             },
-            scales: pieChart ? undefined : createChartScales(),
+            scales:
+                pieChart
+                    ? undefined
+                    : createChartScales(
+                        chartData,
+                    ),
         },
         plugins: [chartBackgroundPlugin],
     });
 
+    setChartEmptyState(false);
     chartDownloadButton.disabled = false;
 }
 
@@ -3541,7 +3728,9 @@ function showChartPanel() {
 function clearChartPanel() {
 
     destroyChart();
-
+    
+    setChartEmptyState(true);
+    
     const categoryPlaceholder = document.createElement("option");
 
     const valuePlaceholder = document.createElement("option");
@@ -4264,6 +4453,7 @@ function initializeStatisticsImporter() {
         !fileStatus ||
         !preview ||
         !previewSummary ||
+        !previewLimit ||
         !table ||
         !visibleColumns ||
         !visibleColumnCount ||
@@ -4285,6 +4475,7 @@ function initializeStatisticsImporter() {
         !chartOperation ||
         !chartTypes ||
         !chartColors ||
+        !chartEmpty ||
         !chartCanvas ||
         !chartDownloadButton
     ) {
@@ -4312,6 +4503,8 @@ function initializeStatisticsImporter() {
 
         chartDownloadButton.disabled = true;
     }
+
+    prepareChartColorButtons();
 
     const handleChartOperationChange = function () {
         updateChartValueField();
@@ -4425,6 +4618,31 @@ function initializeStatisticsImporter() {
         );
     }
 
+    const handlePreviewLimitChange = function () {
+        if (!tableState.rows.length) {
+            return;
+        }
+
+        renderTableBody();
+    };
+
+    if (
+        window.jQuery &&
+        typeof window.jQuery.fn.select2 === "function"
+    ) {
+        window
+            .jQuery(previewLimit)
+            .on(
+                "change.statisticsPreviewLimit",
+                handlePreviewLimitChange,
+            );
+    } else {
+        previewLimit.addEventListener(
+            "change",
+            handlePreviewLimitChange,
+        );
+    }
+    
     downloadCsvButton.addEventListener(
         "click",
         function () {
