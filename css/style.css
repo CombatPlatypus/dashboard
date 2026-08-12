@@ -1886,7 +1886,6 @@ a.thumbnail image {
             width: 100%;
             margin-bottom: 20px;
         }
-
         #statisticsPreviewSummary {
             flex: 0 0 auto;
             color: #b9bcc1;
@@ -1906,7 +1905,6 @@ a.thumbnail image {
             border: 1px solid #525252;
             border-radius: 5px;
         }
-
 
         /* CABEÇALHO DO SELETOR */
 
@@ -1928,6 +1926,16 @@ a.thumbnail image {
         .statistics-visible-columns-title h4 {
             margin: 0;
             font-size: 14px;
+        }
+        .statistics-visible-columns-title label {
+            margin-left: 5px;
+            margin-right: 5px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        #statisticsPreviewLimit,
+        #statisticsPreviewLimit + .select2 {
+            width: 150px !important;
         }
         #statisticsPreviewSummary {
             color: #e4e6eb;
@@ -2121,6 +2129,18 @@ a.thumbnail image {
             border: 1px solid #525252;
             border-radius: 5px;
         }
+        .statistics-table-container::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+        .statistics-table-container::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+            background-color: transparent;
+        }
+        .statistics-table-container::-webkit-scrollbar-thumb {
+            background-color: #525252;
+            border-radius: 5px;
+        }
         .statistics-local-table {
             min-width: 650px;
             color: #e4e6eb;
@@ -2234,35 +2254,13 @@ a.thumbnail image {
 
         /* FILTRO DE DUPLICIDADE */
 
-        .statistics-duplicate-filter {
-            min-height: 34px;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            flex: 0 0 auto;
-            color: #e4e6eb;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-            white-space: nowrap;
-            cursor: pointer;
-            user-select: none;
+        .statistics-occurrence-filter {
+            width: 100%;
         }
 
-        .statistics-duplicate-filter:hover {
-            color: #ffffff;
-        }
-
-        .statistics-duplicate-filter input[type="checkbox"] {
-            width: 13px;
-            height: 13px;
-            margin: 0;
-            flex: 0 0 auto;
-            cursor: pointer;
-            accent-color: #e4e6eb;
+        .statistics-advanced-filters > .select2-container {
+            min-width: 155px;
+            flex: 1 1 170px;
         }
 
         /* FILTRO NUMÉRICO */
@@ -2457,6 +2455,7 @@ a.thumbnail image {
     .operation-choice h4 {
         width: 100%;
         font-size: 13px;
+        margin: 0;
     }
 
     .operation-choice select,
@@ -2508,31 +2507,22 @@ a.thumbnail image {
         font-size: 13px;
     }
 
-    .colors-change div {
+    .colors-change > div {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
         gap: 10px;
     }
-
     .colors-change button {
         width: 35px;
         height: 35px;
         padding: 0;
-        border: 3px solid #383838;
+        border: 2px solid #525252;
+        border-radius: 3px;
+        cursor: pointer;
     }
-
     .colors-change button[aria-pressed="true"] {
         border-color: #e4e6eb;
-    }
-
-    .colors-change .color-1 {
-        background-color: #fb5330;
-    }
-
-    .colors-change .color-2 {
-        background-color: #e4e6eb;
-    }
-
-    .colors-change .color-3 {
-        background-color: #f2a900;
     }
 
     .chart-view {
@@ -2564,9 +2554,44 @@ a.thumbnail image {
     }
 
     .chart-box {
-        flex: 1 1 0;
-        min-height: 450px;
         position: relative;
+        background-color: #18191a;
+    }
+    .chart-empty {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+        overflow: hidden;
+        text-align: center;
+        background-color: #18191a;
+    }
+
+    .chart-empty::before {
+        content: "";
+        position: absolute;
+        inset: 80px 20px 60px 70px;
+        background-image:
+            linear-gradient(to right, rgba(82, 82, 82, 0.35) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(82, 82, 82, 0.35) 1px, transparent 1px);
+        background-size:
+            10% 100%,
+            100% 16.6667%;
+        border-left: 1px solid #8b8d91;
+        border-bottom: 1px solid #8b8d91;
+    }
+
+    .chart-empty > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .chart-empty[hidden] {
+        display: none;
     }
 
     .chart-box canvas {
