@@ -1045,9 +1045,9 @@ input[type='search'] {
 [type='checkbox'] + label[for], [type='radio'] + label[for] {
     cursor: pointer;
 }
-label > [type='checkbox'], label > [type='radio'] {
+/* label > [type='checkbox'], label > [type='radio'] {
     margin-right: 0.5rem;
-}
+} */
 [type='file'] {
     width: 100%;
 }
@@ -1549,7 +1549,11 @@ a.thumbnail image {
         display: flex;
     }
     .main-structure #statistics .tabs-panel.is-active {
+        flex: 1 1 0;
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
     }
     .main-structure #statistics.no-file #statistics-margin {
         margin-bottom: 0;
@@ -2386,12 +2390,20 @@ a.thumbnail image {
         display: block;
     }
 
-    /* GRÁFICOS */
+/* GRÁFICOS */
 
+    #statistics-3 {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+    }
     .charts-panel {
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
     }
-
     .charts-panel[hidden] {
         display: none;
     }
@@ -2424,17 +2436,32 @@ a.thumbnail image {
 
     .charts-body {
         width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        flex-wrap: nowrap;
         align-items: stretch;
+        overflow: hidden;
     }
+
+    .charts-body > * {
+        min-width: 0;
+    }
+
     .charts-control {
         flex: 0 0 500px;
+        width: 500px;
+        min-width: 0;
+        max-width: 500px;
         padding-top: 30px;
         padding-right: 30px;
+        overflow: hidden;
         border-right: 2px solid #525252;
     }
+
     .charts-control p {
         margin: 0;
     }
+
     .charts-control > h4 {
         margin-bottom: 15px;
     }
@@ -2445,24 +2472,55 @@ a.thumbnail image {
         border-top: 2px solid #525252;
     }
 
+    .charts-control > label {
+        width: max-content;
+        gap: 10px;
+        align-items: center;
+        margin-top: 20px;
+        cursor: pointer;
+    }
     .operation-choice {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
         display: flex;
-        flex-direction: column;
+        padding: 15px 15px 0;
         row-gap: 10px;
-        padding: 15px 15px 0 15px;
+        overflow: hidden;
+        flex-direction: column;
+    }
+
+    .operation-choice > * {
+        min-width: 0;
+        max-width: 100%;
     }
 
     .operation-choice h4 {
         width: 100%;
-        font-size: 13px;
         margin: 0;
+        font-size: 13px;
     }
 
-    .operation-choice select,
+    .operation-choice select:not(.select2-hidden-accessible),
     .operation-choice .select2-container {
         width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
     }
 
+    .operation-choice > .select2-hidden-accessible {
+        width: 1px !important;
+        min-width: 1px !important;
+        max-width: 1px !important;
+        height: 1px !important;
+    }
+
+    .operation-choice .select2-selection,
+    .operation-choice .select2-selection__rendered {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
     .types-of-charts {
         gap: 10px;
         align-items: flex-start;
@@ -2483,8 +2541,8 @@ a.thumbnail image {
     }
 
     .types-of-charts button[aria-pressed="true"] {
-        border-color: #e4e6eb;
         background-color: #242424;
+        border-color: #e4e6eb;
     }
 
     .types-of-charts img {
@@ -2493,8 +2551,8 @@ a.thumbnail image {
 
     .types-of-charts h4 {
         margin-top: 8px;
-        font-size: 13px;
         margin-bottom: 0;
+        font-size: 13px;
     }
 
     .colors-change {
@@ -2509,65 +2567,84 @@ a.thumbnail image {
 
     .colors-change > div {
         display: flex;
+        gap: 10px;
         align-items: center;
         flex-wrap: wrap;
-        gap: 10px;
     }
+
     .colors-change button {
         width: 35px;
         height: 35px;
         padding: 0;
+        cursor: pointer;
         border: 2px solid #525252;
         border-radius: 3px;
-        cursor: pointer;
     }
+
     .colors-change button[aria-pressed="true"] {
         border-color: #e4e6eb;
     }
 
     .chart-view {
         flex: 1 1 0;
+        width: 0;
         min-width: 0;
         min-height: 525px;
         display: flex;
         padding: 20px;
         row-gap: 20px;
+        overflow: hidden;
         flex-direction: column;
     }
-
+    .charts-panel,
+    .charts-body,
+    .chart-view,
+    .chart-box {
+        max-width: 100%;
+    }
     .chart-view > div:first-child {
         align-items: center;
     }
-
     .chart-view h3 {
         margin-bottom: 0;
     }
-
-    .chart-view .flex-box-between div  {
-        max-height: 42px;
+    .chart-view .flex-box-between div {
+        max-height: 40px;
         overflow: hidden;
     }
-
     .chart-view button {
-        min-height: 42px;
+        min-height: 40px;
+        font-size: 14px;
         padding: 10px 15px;
     }
-
     .chart-box {
+        flex: 0 0 603px;
+        width: 100%;
+        min-width: 0;
+        height: 603px;
+        max-height: 603px;
         position: relative;
+        overflow: hidden;
         background-color: #18191a;
+    }
+
+    .chart-box canvas {
+        display: block;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
     }
     .chart-empty {
         position: absolute;
         inset: 0;
         z-index: 2;
         display: flex;
+        gap: 10px;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
-        gap: 10px;
         overflow: hidden;
         text-align: center;
+        flex-direction: column;
         background-color: #18191a;
     }
 
@@ -2576,8 +2653,8 @@ a.thumbnail image {
         position: absolute;
         inset: 80px 20px 60px 70px;
         background-image:
-            linear-gradient(to right, rgba(82, 82, 82, 0.35) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(82, 82, 82, 0.35) 1px, transparent 1px);
+            linear-gradient(to right, #292a2b 1px, transparent 1px),
+            linear-gradient(to bottom, #292a2b 1px, transparent 1px);
         background-size:
             10% 100%,
             100% 16.6667%;
@@ -2594,11 +2671,15 @@ a.thumbnail image {
         display: none;
     }
 
-    .chart-box canvas {
-        width: 100%;
-        height: 100%;
+    .main-structure #statistics .tabs-panel.is-active,
+    #statistics-3,
+    .charts-panel,
+    .charts-body,
+    .chart-view,
+    .chart-box {
+        min-width: 0;
+        max-width: 100%;
     }
-
 
 /* TABELAS */
 
