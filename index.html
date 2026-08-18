@@ -16,10 +16,421 @@
 
         <title>Dashboard do Inventário</title>
 
-        <!-- ARQUIVOS CSS E ICONE -->
+        <!-- ICONE DO DASHBOARD -->
 
         <link rel="icon" href="images/geral-icons/hub-logo.svg">
-        <link rel="stylesheet" href="css/style.css">
+
+        <!-- ARQUIVOS CSS -->
+
+        <link rel="stylesheet" href="css/font-face.css">
+        <link rel="stylesheet" href="css/reset-style.css">
+        <link rel="stylesheet" href="css/dashboard-style.css">
+        <link rel="stylesheet" href="css/hub-spreadsheets.css">
+        <link rel="stylesheet" href="css/data-analysis.css">
+
+        <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
+
+        <style>
+
+            /* ESTRUTURA GERAL DO REPORTS */
+
+            #report-choice {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+            #report-choice .tabs-title {
+                width: 100%;
+            }
+            #report-choice .tabs-title h4 {
+                margin: 10px 0;
+            }
+            #report-choice .tabs-title p {
+                margin-bottom: 0;
+                text-align: center;
+            }
+            #reports > .tabs-content {
+                padding: 25px;
+                background-color: #1f1f1f;
+                border: 2px solid #525252;
+                border-radius: 5px;
+            }
+
+            /* HEADER DOS REPORTS */
+
+            #reports > .tabs-content > .tabs-panel > .flex-box-between {
+                width: 100%;
+                padding-bottom: 20px;
+                align-items: center;
+                border-bottom: 2px solid #525252;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-between div {
+                gap: 10px;
+                align-items: center;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-between img {
+                width: 35px;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-between h3,
+            #reports > .tabs-content > .tabs-panel > .flex-box-between p {
+                margin-bottom: 0;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-between p {
+                width: max-content;
+                height: auto;
+                font-size: 13px;
+            }
+
+            /* CONTROLE DOS REPORTS */
+
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls {
+                flex: 0 0 350px;
+                row-gap: 15px;
+                margin-right: 25px;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group {
+                padding: 0 0 15px 0;
+                border-bottom: 2px solid #525252;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group:last-of-type {
+                padding: 0 0 0 0;
+                border-bottom: none;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .tabs {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                padding-bottom: 15px;
+                border-bottom: 2px solid #525252;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .tabs .tabs-title {
+                width: 100%;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .tabs .tabs-title:last-child:nth-child(odd) {
+                grid-column: 1 / -1;
+            }
+
+            /* CONTROLE DOS REPORTS - DOIS INPUTS DENTRO DE UMA FLEX-BOX-START */
+
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .flex-box-start {
+                column-gap: 10px;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group .flex-box-start input:first-of-type {
+                flex: 1 1 0;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group .flex-box-start input:last-of-type {
+                flex: 0 0 86px;
+                text-align: center;
+            }
+
+            /* CONTROLE DOS REPORTS - COMPORTAMENTO GERAL DOS INPUTS NO INPUT GROUP */
+
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group > input {
+                margin: 15px 0;
+            }
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group > input:last-of-type {
+                margin: 15px 0 0 0;
+            }
+
+            /* CONTROLE DO PLANEJAMENTO - LISTA DINÂMICA DE LHS */
+
+                #planning .planning-lh-toolbar {
+                    margin-bottom: 20px;
+                    max-height: 40px;
+                    overflow: hidden;
+                }
+                #planning .planning-lh-toolbar button {
+                   width: 100%;
+                }
+                #planning .planning-lh-toolbar .button,
+                #planning .planning-lh-remove {
+                    min-height: 38px;
+                    padding: 8px 12px;
+                    font-size: 12px;
+                }
+                #planning .planning-lh-list {
+                    row-gap: 15px;
+                    max-height: 664px;
+                    overflow: auto;
+                    padding-right: 15px;
+                }
+                #planning .planning-lh-list::-webkit-scrollbar-track {
+                    background-color: transparent;
+                }
+                #planning .planning-lh-list::-webkit-scrollbar {
+                    width: 5px;
+                    height: 5px;
+                    background-color: transparent;
+                }
+                #planning .planning-lh-list::-webkit-scrollbar-thumb {
+                    border-radius: 5px;
+                    background-color: #525252;
+                }
+                #planning .planning-lh-item-header {
+                    align-items: center;
+                    flex-wrap: nowrap;
+                    margin-bottom: 15px;
+                }
+                #planning .planning-lh-item > input {
+                    margin: 15px 0 0 0;
+                }
+                #planning .planning-lh-remove {
+                    color: #e4e6eb;
+                    background-color: #141414;
+                    border: 1px solid #525252;
+                    border-bottom: 4px solid #525252;
+                }
+
+            /* CONTROLE DO PLANEJAMENTO - SEGREGAÇÃO */
+
+                #planning .planning-lh-item-actions {
+                    align-items: center;
+                    flex-wrap: nowrap;
+                    column-gap: 10px;
+                }
+                #planning .planning-lh-segregate-toggle {
+                    display: flex;
+                    align-items: center;
+                    column-gap: 6px;
+                    margin: 0;
+                    font-size: 12px;
+                    color: #e4e6eb;
+                    cursor: pointer;
+                    user-select: none;
+                }
+                #planning .planning-lh-segregate-toggle input {
+                    margin: 0;
+                    cursor: pointer;
+                }
+                #planning .planning-lh-segregate-quantity:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+
+            /* CONTROLE DO PLANEJAMENTO - DADOS GERAIS */
+
+                #planning .planning-general-controls h4,
+                #planning .planning-pool-controls h4 {
+                    margin-bottom: 15px;
+                }
+                #planning .planning-general-fields {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 10px;
+                }
+                #planning .planning-control-field {
+                    display: block;
+                    margin: 0;
+                }
+                #planning .planning-control-field span {
+                    display: block;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    color: #e4e6eb;
+                }
+                #planning .planning-control-field input {
+                    text-align: center;
+                }
+
+            /* CONTROLE DO PLANEJAMENTO - COLLECTION POOL */
+
+                #planning .planning-pool-control-list {
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr);
+                    gap: 10px;
+                }
+                #planning .planning-pool-control {
+                    display: flex;
+                    align-items: center;
+                    column-gap: 8px;
+                    margin: 0;
+                    font-size: 12px;
+                    color: #e4e6eb;
+                    cursor: pointer;
+                    user-select: none;
+                }
+                #planning .planning-pool-control input {
+                    margin: 0;
+                    cursor: pointer;
+                }
+
+            /* CONTROLE DOS REPORTS - AJUSTES ESPECIFICOS DEPENDENDO DO RELATÓRIO EM QUESTÃO */
+
+
+
+            /* PREVIA DOS REPORTS */
+            
+            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-preview {
+                flex: 1 1 0;
+                border-left: 2px solid #525252;
+            }
+
+            /* PRÉVIA DO PLANEJAMENTO */
+
+                #planning .report-preview {
+                    min-width: 0;
+                    padding-left: 25px;
+                }
+
+                /* ESTRUTURA DA PLANILHA */
+
+                    #planning .planning-sheet-preview {
+                        width: 100%;
+                        padding: 20px;
+                        color: #e4e6eb;
+                        background-color: #141414;
+                        border: 1px solid #525252;
+                        border-radius: 5px;
+                    }
+                    #planning .planning-sheet-title {
+                        padding: 12px 20px;
+                        margin-bottom: 20px;
+                        text-align: center;
+                        background-color: #2e2e2e;
+                        border: 1px solid #525252;
+                    }
+                    #planning .planning-sheet-title h2 {
+                        margin-bottom: 0;
+                        font-size: 20px;
+                        text-transform: uppercase;
+                        letter-spacing: 1.5px;
+                    }
+                    #planning .planning-sheet-layout {
+                        display: grid;
+                        grid-template-columns: minmax(0, 3fr) minmax(300px, 2fr);
+                        gap: 20px;
+                        align-items: start;
+                    }
+                    #planning .planning-sheet-main,
+                    #planning .planning-sheet-sidebar {
+                        min-width: 0;
+                    }
+                    #planning .planning-sheet-section {
+                        width: 100%;
+                        margin-bottom: 20px;
+                    }
+                    #planning .planning-sheet-section:last-child {
+                        margin-bottom: 0;
+                    }
+
+
+                /* TABELAS */
+
+                    #planning .planning-sheet-table {
+                        width: 100%;
+                        margin: 0;
+                        table-layout: fixed;
+                        border-collapse: collapse;
+                        background-color: #1f1f1f;
+                    }
+                    #planning .planning-sheet-table th,
+                    #planning .planning-sheet-table td {
+                        height: 38px;
+                        padding: 8px 10px;
+                        font-size: 12px;
+                        color: #e4e6eb;
+                        border: 1px solid #525252;
+                        overflow-wrap: anywhere;
+                    }
+                    #planning .planning-sheet-table th {
+                        font-weight: 600;
+                        text-align: center;
+                        background-color: #2e2e2e;
+                    }
+                    #planning .planning-sheet-table tbody tr:nth-child(even) {
+                        background-color: #1b1b1b;
+                    }
+                    #planning .planning-sheet-table td {
+                        text-align: left;
+                    }
+                    #planning .planning-sheet-table .planning-empty-row td {
+                        color: #8b8d91;
+                        text-align: center;
+                    }
+
+                    /* COLUNAS DAS TABELAS */
+
+                        #planning .planning-main-table th:nth-child(3),
+                        #planning .planning-main-table td:nth-child(3) {
+                            width: 90px;
+                            text-align: center;
+                        }
+                        #planning .planning-segregated-table th:nth-child(3),
+                        #planning .planning-segregated-table td:nth-child(3),
+                        #planning .planning-segregated-table th:nth-child(4),
+                        #planning .planning-segregated-table td:nth-child(4) {
+                            width: 90px;
+                            text-align: center;
+                        }
+                        #planning .planning-pool-table td:nth-child(2) {
+                            width: 75px;
+                            text-align: center;
+                        }
+                        #planning .planning-routing-table th:nth-child(3),
+                        #planning .planning-routing-table td:nth-child(3) {
+                            width: 75px;
+                            text-align: center;
+                        }
+                        #planning .planning-cp-summary-table td:nth-child(2),
+                        #planning .planning-pool-lh-table th:nth-child(2),
+                        #planning .planning-pool-lh-table td:nth-child(2) {
+                            width: 85px;
+                            text-align: center;
+                        }
+
+                    /* TABELAS DO RESUMO DO CP */
+
+                        #planning .planning-cp-tables {
+                            display: grid;
+                            grid-template-columns: minmax(0, 1fr);
+                            gap: 20px;
+                            align-items: start;
+                        }
+
+
+                    /* INDICADORES */
+
+                        #planning .planning-sheet-metrics {
+                            display: grid;
+                            grid-template-columns: repeat(3, minmax(0, 1fr));
+                            gap: 10px;
+                            margin-bottom: 20px;
+                        }
+                        #planning .planning-sheet-metrics > div {
+                            min-width: 0;
+                            text-align: center;
+                            border: 1px solid #525252;
+                        }
+                        #planning .planning-sheet-metrics h4 {
+                            padding: 8px;
+                            margin-bottom: 0;
+                            font-size: 12px;
+                            background-color: #2e2e2e;
+                            border-bottom: 1px solid #525252;
+                        }
+                        #planning .planning-sheet-metrics strong {
+                            display: block;
+                            padding: 10px;
+                            font-size: 15px;
+                        }
+
+                /* RESPONSIVIDADE */
+
+                    @media screen and (max-width: 1500px) {
+                        #planning .planning-sheet-layout {
+                            grid-template-columns: minmax(0, 1fr);
+                        }
+                    }
+
+                    @media screen and (max-width: 800px) {
+                        #planning .planning-sheet-metrics {
+                            grid-template-columns: minmax(0, 1fr);
+                        }
+                    }
+
+        </style>
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -48,6 +459,15 @@
                             </div>
                         </a>
                     </li> 
+
+                    <!-- <li class="tabs-title">
+                        <a href="#reports">
+                            <div class="flex-box-center">
+                                <img src="images/geral-icons/statistics-icon.svg">
+                                <h4>Relatórios</h4>
+                            </div>
+                        </a>
+                    </li>  -->
 
                     <li class="tabs-title">
                         <a href="#statistics">
@@ -87,7 +507,7 @@
         <div class="main-structure">
             <div class="tabs-content" data-tabs-content="switch-1">
 
-                <!-- PAINEL PLANILHAS -->
+                <!-- PLANILHAS -->
 
                 <div class="tabs-panel is-active" id="spreadsheets">
                     <div class="spreadsheets-layout">
@@ -103,69 +523,477 @@
                     </div>
                 </div>
 
-                <!-- PAINEL ANÁLISE DE PLANILHAS -->
+                <!-- REPORTS -->
+
+                <div class="tabs-panel" id="reports">
+                    <ul class="tabs" data-tabs id="report-choice">
+                        <li class="tabs-title is-active">
+                            <a href="#planning">
+                                <div class="flex-box-full-center">
+                                    <img src="images/geral-icons/sheets-icon.svg">
+                                    <h4>Planejamento</h4>
+                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
+                                </div>
+                            </a>
+                        </li> 
+
+                        <li class="tabs-title">
+                            <a href="#receipt">
+                                <div class="flex-box-full-center">
+                                    <img src="images/geral-icons/statistics-icon.svg">
+                                    <h4>Recebimento</h4>
+                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
+                                </div>
+                            </a>
+                        </li> 
+
+                        <li class="tabs-title">
+                            <a href="#rlosses-rate">
+                                <div class="flex-box-full-center">
+                                    <img src="images/geral-icons/statistics-icon.svg">
+                                    <h4>Taxa de Perdas</h4>
+                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
+                                </div>
+                            </a>
+                        </li> 
+
+                        <li class="tabs-title">
+                            <a href="#rlosses-rate">
+                                <div class="flex-box-full-center">
+                                    <img src="images/geral-icons/statistics-icon.svg">
+                                    <h4>Mapa de Calor</h4>
+                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
+                                </div>
+                            </a>
+                        </li> 
+                    </ul> 
+
+                    <div class="tabs-content" data-tabs-content="report-choice">
+                        <div class="tabs-panel is-active" id="planning">
+
+                            <!-- CONTEÚDO DO RELATÓRIO -->
+
+                            <div class="flex-box-start">
+
+                                <!-- CONTROLES DO RELATÓRIO -->
+
+                                <div class="report-controls flex-box-column">
+
+                                    <!-- MENU OPÇÕES DO RELATÓRIO EM QUESTÃO -->
+
+                                    <ul class="flex-box-start tabs" data-tabs id="planning-choice">
+                                        <li class="tabs-title is-active">
+                                            <a href="#lhs-list">
+                                                <h4>Lista de LHs</h4>
+                                            </a>
+                                        </li> 
+
+                                        <li class="tabs-title">
+                                            <a href="#collection-pool">
+                                                <h4>Collection Pool</h4>
+                                            </a>
+                                        </li> 
+
+                                        <li class="tabs-title">
+                                            <a href="#geral-data">
+                                                <h4>Dados Gerais</h4>
+                                            </a>
+                                        </li> 
+                                    </ul> 
+
+                                    <!-- CONTROLES SEPERADOS POR TIPO -->
+
+                                    <div class="tabs-content" data-tabs-content="planning-choice">
+                                        <div class="tabs-panel is-active" id="lhs-list">
+
+                                            <!-- LISTA DE LHS -->
+
+                                            <div class="planning-lh-toolbar">
+                                                <button class="button" id="planningAddLh">Adicionar LH</button>
+                                            </div>
+
+                                            <div class="planning-lh-list flex-box-column" id="planningLhList"></div>
+                                        </div>
+
+                                        <div class="tabs-panel" id="collection-pool">
+
+                                            <!-- CONTROLES DA COLLECTION POOL -->
+
+                                            <div class="input-group planning-pool-controls" id="planningPoolControls">
+                                                <h4>Collection Pool</h4>
+
+                                                <div class="planning-pool-control-list">
+                                                    <label class="planning-pool-control">
+                                                        <input
+                                                            type="checkbox"
+                                                            data-planning-pool-field="bulky"
+                                                            checked
+                                                        >
+
+                                                        <span>Volumosos</span>
+                                                    </label>
+
+                                                    <label class="planning-pool-control">
+                                                        <input
+                                                            type="checkbox"
+                                                            data-planning-pool-field="office"
+                                                            checked
+                                                        >
+
+                                                        <span>Roteirizar Office?</span>
+                                                    </label>
+
+                                                    <label class="planning-pool-control">
+                                                        <input
+                                                            type="checkbox"
+                                                            data-planning-pool-field="backlog"
+                                                            checked
+                                                        >
+
+                                                        <span>Roteirizar Backlog?</span>
+                                                    </label>
+
+                                                    <label class="planning-pool-control">
+                                                        <input
+                                                            type="checkbox"
+                                                            data-planning-pool-field="home"
+                                                            checked
+                                                        >
+
+                                                        <span>Roteirizar Home?</span>
+                                                    </label>
+
+                                                    <label class="planning-pool-control">
+                                                        <input
+                                                            type="checkbox"
+                                                            data-planning-pool-field="outOfRoute"
+                                                            checked
+                                                        >
+
+                                                        <span>Fora de Rota</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tabs-panel" id="geral-data">
+
+                                            <!-- DADOS GERAIS -->
+
+                                            <div class="input-group planning-general-controls" id="planningGeneralControls">
+                                                <h4>Dados Gerais</h4>
+
+                                                <div class="planning-general-fields">
+                                                    <input type="text" inputmode="numeric" maxlength="5" placeholder="SPR" data-planning-field="averageSpr">
+                                                    <input type="text" inputmode="numeric" maxlength="6" placeholder="CAP" data-planning-field="dailyCapacity">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- PPÉVIA DO RELATÓRIO -->
+
+                                <div class="report-preview">
+
+                                    <!-- PRÉVIA DO PLANEJAMENTO -->
+
+                                    <section class="planning-sheet-preview" id="planningSheetPreview">
+
+                                        <!-- TÍTULO -->
+
+                                        <div class="planning-sheet-title">
+                                            <h2>Planejamento de Roteirização</h2>
+                                        </div>
+
+                                        <div class="planning-sheet-layout">
+
+                                            <!-- COLUNA PRINCIPAL -->
+
+                                            <div class="planning-sheet-main">
+
+                                                <!-- INDICADORES -->
+
+                                                <div class="planning-sheet-metrics">
+                                                    <div>
+                                                        <h4>Volume Estimado</h4>
+                                                        <strong id="planningEstimatedVolume">0</strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>SPR Médio Final</h4>
+                                                        <strong id="planningPreviewAverageSpr">0</strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>CAP do Dia</h4>
+                                                        <strong id="planningPreviewDailyCapacity">0</strong>
+                                                    </div>
+                                                </div>
+
+                                                <!-- LISTA DE LHS -->
+
+                                                <div class="planning-sheet-section">
+                                                    <table class="planning-sheet-table planning-main-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>LHs a Roteirizar</th>
+                                                                <th>Origem</th>
+                                                                <th>QTD</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody id="planningPreviewLhBody">
+                                                            <tr class="planning-empty-row">
+                                                                <td colspan="3">Nenhum LH informado.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- LHS PARA SEGREGAR -->
+
+                                                <div class="planning-sheet-section">
+                                                    <table class="planning-sheet-table planning-segregated-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>LHs a Segregar</th>
+                                                                <th>Origem</th>
+                                                                <th>QTD</th>
+                                                                <th>Segregar</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody id="planningPreviewSegregatedBody">
+                                                            <tr class="planning-empty-row">
+                                                                <td colspan="4">Nenhum LH para segregar.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- TOS PARA ROTEIRIZAR -->
+
+                                                <div class="planning-sheet-section">
+                                                    <table class="planning-sheet-table planning-routing-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>TOs para Roteirizar</th>
+                                                                <th>LH</th>
+                                                                <th>QTD</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody id="planningPreviewRoutingBody">
+                                                            <tr class="planning-empty-row">
+                                                                <td colspan="3">Nenhuma TO para roteirizar.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <!-- COLUNA LATERAL -->
+
+                                            <div class="planning-sheet-sidebar">
+
+                                                <!-- COLLECTION POOL -->
+
+                                                <div class="planning-sheet-section">
+                                                    <table class="planning-sheet-table planning-pool-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th colspan="2">Collection Pool</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Volumosos</td>
+                                                                <td data-planning-pool-preview="bulky">SIM</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Roteirizar Office?</td>
+                                                                <td data-planning-pool-preview="office">SIM</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Roteirizar Backlog?</td>
+                                                                <td data-planning-pool-preview="backlog">SIM</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Roteirizar Home?</td>
+                                                                <td data-planning-pool-preview="home">SIM</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Fora de Rota</td>
+                                                                <td data-planning-pool-preview="outOfRoute">SIM</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- INFORMAÇÕES DO CP -->
+
+                                                <div class="planning-cp-tables">
+
+                                                    <!-- LHS NA POOL -->
+
+                                                    <table class="planning-sheet-table planning-pool-lh-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th colspan="2">LHs na Pool</th>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <th>LH</th>
+                                                                <th>QTD</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody id="planningPreviewPoolLhBody">
+                                                            <tr class="planning-empty-row">
+                                                                <td colspan="2">Nenhum LH na Pool.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                    <!-- RESUMO DO CP -->
+
+                                                    <table class="planning-sheet-table planning-cp-summary-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th colspan="2">Resumo do CP</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Total</td>
+                                                                <td id="planningPreviewCpTotal">0</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Backlog</td>
+                                                                <td id="planningPreviewCpBacklog">0</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>LH Pool</td>
+                                                                <td id="planningPreviewCpLhPool">0</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Volumosos</td>
+                                                                <td id="planningPreviewCpBulky">0</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Erros</td>
+                                                                <td id="planningPreviewCpErrors">0</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Pacotes adicionados</td>
+                                                                <td id="planningPreviewCpAdded">0</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>Pacotes retirados</td>
+                                                                <td id="planningPreviewCpRemoved">0</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANÁLISE -->
 
                 <div class="tabs-panel no-file" id="statistics">
 
+                    <!-- IMPORTAÇÃO LOCAL -->
+
+                    <section class="import-panel">
+                        <div class="flex-box-start">
+                            <img src="images/geral-icons/sheets-icon.svg">
+                            <h3>Exporte do SPX ou uma Planilha.</h3>
+                        </div>
+
+                        <div class="statistics-drop-zone" id="statisticsDropZone">
+                            <img src="images/geral-icons/import-icon.svg">
+                            <h3>Importe os dados para começar.</h3>
+                            <p>Arraste uma planilha ou escolha um arquivo do computador.</p>
+
+                            <div class="flex-box-center">
+                                <h5>.xlsx</h5>
+                                <h5>.xls</h5>
+                                <h5>.csv</h5>
+                            </div>
+                        </div>
+
+                        <p id="statisticsFileStatus">Nenhum arquivo selecionado, escolha um arquivo para começar.</p>
+
+                        <div>
+                            <label class="button statistics-file-button" for="statisticsFileInput">Procurar Arquivo</label>
+                            <input id="statisticsFileInput" type="file" accept=".xlsx,.xls,.csv" style="display: none;">
+                        </div>
+                    </section>
+
                     <div class="flex-box-start" id="statistics-margin">
-
-                        <!-- IMPORTAÇÃO LOCAL -->
-
-                        <section class="import-panel">
-                            <div class="flex-box-start">
-                                <img src="images/geral-icons/import-icon.svg">
-                                <h3>Arquivo Exportado do SPX ou uma Planilha.</h3>
-                            </div>
-
-                            <div class="flex-box-start">
-                                <label class="button statistics-file-button" for="statisticsFileInput">Selecionar arquivo</label>
-                                
-                                <input id="statisticsFileInput" type="file" accept=".xlsx,.xls,.csv" style="display: none;">
-                                <button id="statisticsClearFile" class="button" disabled>Apagar Resultados</button>
-                            </div>
-
-                            <p id="statisticsFileStatus">Nenhum arquivo selecionado.</p>
-
-                            <div class="flex-box-start">
-                                <button class="button" id="statisticsDownloadCsv" type="button" disabled>Baixar Texto</button>
-                                <button class="button" id="statisticsDownloadXlsx" type="button" disabled>Baixar Planilha</button>
-                            </div>
-                        </section>
 
                         <!-- MENU DE NAVEGAÇÃO DO PAINEL -->
 
-                        <ul class="flex-box-start tabs" data-tabs id="statistics-tabs">
-                            <li class="tabs-title is-active">
+                        <ul class="tabs" data-tabs id="statistics-tabs">
+                            <li class="tabs-title">
                                 <a href="#statistics-1">
                                     <h4>Prévia da Planilha</h4>
                                 </a>
                             </li> 
 
-                            <li class="tabs-title">
+                            <li class="tabs-title is-active">
                                 <a href="#statistics-2">
-                                    <h4>Análise da Planilha</h4>
-                                </a>
-                            </li> 
-
-                            <li class="tabs-title">
-                                <a href="#statistics-3">
-                                    <h4>Montagem de Gráficos</h4>
-                                </a>
-                            </li> 
-
-                            <li class="tabs-title">
-                                <a href="#statistics-4">
                                     <h4>Comparação de Dados</h4>
                                 </a>
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#statistics-5">
-                                    <h4>Comparação de Planilhas</h4>
+                                <a href="#statistics-3">
+                                    <h4>Análise da Planilha</h4>
+                                </a>
+                            </li> 
+
+                            <li class="tabs-title">
+                                <a href="#statistics-4">
+                                    <h4>Montagem de Gráficos</h4>
                                 </a>
                             </li> 
                         </ul> 
 
+                        <!-- BOTÕES DE AÇÃO -->
+
+                        <div class="action-buttons flex-box-start">
+                            <button class="button" id="statisticsDownloadCsv" type="button" disabled>
+                                Baixar
+                            </button>
+
+                            <button id="statisticsClearFile" disabled>
+                                <img src="images/geral-icons/trash-basket-icon.svg">
+                            </button>
+                            
+                            <button id="statisticsDownloadXlsx" type="button" disabled style="display: none;">
+                                <img src="images/geral-icons/file-xlsx-icon.svg">
+                            </button>
+                        </div>
                     </div>
 
                     <!-- SEM TITULO POR ENQUANTO -->
@@ -174,46 +1002,62 @@
 
                         <!-- PRÉVIA DA PLANILHA -->
 
-                        <div class="tabs-panel is-active" id="statistics-1">
+                        <div class="tabs-panel" id="statistics-1">
                             <section id="statisticsLocalPreview" hidden>
 
-                                <div class="preview-header">
+                                <!-- HEADER -->
 
-                                    <!-- BOTÕES DE OCULTAR E REVELAR COLUNAS -->
-
-                                    <div id="statisticsVisibleColumnSelector">
-                                        <div class="statistics-visible-columns-header">
-
-                                            <div class="statistics-visible-columns-title">
-
-                                                <h4 id="statisticsPreviewSummary"></h4>
-                                                <h4>Colunas visíveis</h4>
-
-                                                <span id="statisticsVisibleColumnCount">
-                                                    0 de 0
-                                                </span>
-
-                                                <label for="statisticsPreviewLimit">Exibir até</label>
-
-                                                <select id="statisticsPreviewLimit" class="standard-select">
-                                                    <option value="50">50 linhas</option>
-                                                    <option value="100">100 linhas</option>
-                                                    <option value="250">250 linhas</option>
-                                                    <option value="500">500 linhas</option>
-                                                    <option value="all" selected>Todas as linhas</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="statistics-visible-columns-actions">
-                                                <button id="statisticsClearFilters" class="statistics-visible-columns-action" type="button" disabled>Limpar filtros</button>
-                                                <button id="statisticsShowAllColumns" class="statistics-visible-columns-action" type="button">Marcar todas</button>
-                                                <button id="statisticsHideAllColumns" class="statistics-visible-columns-action" type="button">Desmarcar todas</button>
-                                                <button id="statisticsHideEmptyColumns" class="statistics-visible-columns-action" type="button">Ocultar vazias</button>
-                                            </div>
-                                        </div>
-
-                                        <div id="statisticsVisibleColumns"></div>
+                                <div class="module-header flex-box-between">
+                                    <div class="flex-box-start">
+                                        <img src="images/geral-icons/table-icon.svg">
+                                        <h3>Prévia da Planilha</h3>
                                     </div>
+
+                                    <div class="statistics-visible-columns-title statistics-preview-controls">
+                                        <h4 id="statisticsPreviewSummary"></h4>
+
+                                        <label for="statisticsPreviewLimit">
+                                            Exibir até
+                                        </label>
+
+                                        <select id="statisticsPreviewLimit" class="standard-select">
+                                            <option value="50">50 linhas</option>
+                                            <option value="100">100 linhas</option>
+                                            <option value="250">250 linhas</option>
+                                            <option value="500">500 linhas</option>
+                                            <option value="all" selected>Todas as linhas</option>
+                                        </select>
+
+                                        <button class="statistics-visible-columns-toggle" data-toggle="statisticsVisibleColumnSelector">
+                                            <span>Colunas</span>
+
+                                            <span id="statisticsVisibleColumnCount">
+                                                0 de 0
+                                            </span>
+
+                                            <span aria-hidden="true">▾</span>
+                                        </button>
+
+                                        <button id="statisticsClearFilters" class="statistics-visible-columns-action" disabled>
+                                            <img src="images/geral-icons/clean-filter-icon.svg">
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- PAINEL DROPDOWN DAS COLUNAS -->
+
+                                <div class="dropdown-pane statistics-visible-columns-dropdown" id="statisticsVisibleColumnSelector" data-dropdown data-position="bottom" data-alignment="center" data-auto-focus="true" data-close-on-click="true">
+                                    <div class="statistics-visible-columns-header">
+                                        <h4>Controle de Colunas</h4>
+
+                                        <div class="statistics-visible-columns-actions">
+                                            <button id="statisticsShowAllColumns" class="statistics-visible-columns-action">Marcar todas</button>
+                                            <button id="statisticsHideAllColumns" class="statistics-visible-columns-action">Desmarcar todas</button>
+                                            <button id="statisticsHideEmptyColumns" class="statistics-visible-columns-action">Ocultar vazias</button>
+                                        </div>
+                                    </div>
+
+                                    <div id="statisticsVisibleColumns"></div>
                                 </div>
 
                                 <!-- TABELA GERADA DE ACORDO COM A PLANILHA -->
@@ -227,10 +1071,184 @@
                             </section>
                         </div>
 
+                        <!-- COMPARAÇÃO DE DADOS -->
+
+                        <div class="tabs-panel is-active" id="statistics-2">
+                            <section class="comparison" id="statisticsComparisonPanel" hidden>
+
+                                <!-- HEADER -->
+
+                                <div class="flex-box-between">
+                                    <div class="flex-box-start">
+                                        <img src="images/geral-icons/comparison-icon.svg">
+                                        <h3>Comparação de Dados</h3>
+                                    </div>
+
+                                    <p id="statisticsComparisonSummary">Nenhuma planilha carregada.</p>
+                                </div>
+
+                                <!-- CONTEÚDO -->
+
+                                <div class="comparison-body flex-box-start">
+
+                                    <!-- DADOS PARA COMPARAÇÃO -->
+
+                                    <div class="comparison-choice">
+                                        <h4>Dados para Comparar</h4>
+                                        <p>Escolha a coluna e cole os valores para localizar.</p>
+
+                                        <h4>Localize Em:</h4>
+
+                                        <select id="statisticsComparisonColumn" class="standard-select">
+                                            <option value="">Selecione uma coluna</option>
+                                        </select>
+
+                                        <div class="conditional-comparison">
+                                            <div>
+                                                <h4>Se a Coluna:</h4>
+                                                <select id="statisticsComparisonConditionColumn" class="standard-select" style="width: 100%;" disabled>
+                                                    <option value="">Nenhuma condição</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <h4>Tiver o Valor:</h4>
+                                                <select id="statisticsComparisonConditionValue" class="standard-select" style="width: 100%;" disabled>
+                                                    <option value="">Selecione um valor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="comparison-textarea-title flex-box-between">
+                                            <label for="statisticsComparisonInput">Valores para comparar</label>
+                                            <span id="statisticsComparisonLineCount">0 linhas</span>
+                                        </div>
+
+                                        <textarea id="statisticsComparisonInput" rows="15" placeholder="Cole um valor por linha" disabled></textarea>
+
+                                        <div class="textarea-results flex-box-between">
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/circle-green-icon.svg">
+                                                <p><span id="statisticsComparisonValidCount">0</span> Válidos</p>
+                                            </div>
+
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/circle-yellow-icon.svg">
+                                                <p><span id="statisticsComparisonDuplicateCount">0</span> Repetidos</p>
+                                            </div>
+
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/circle-red-icon.svg">
+                                                <p><span id="statisticsComparisonInvalidCount">0</span> Inválidos</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="comparison-actions">
+                                            <button id="statisticsComparisonClear" class="button" type="button" disabled>Limpar Lista</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- RESULTADOS -->
+
+                                    <div class="comparison-results">
+
+                                        <!-- CARDS -->
+
+                                        <div class="comparison-cards">
+                                            <div class="card">
+                                                <h3 id="statisticsComparisonFoundTitle">Encontrados</h3>
+
+                                                <div class="flex-box-start">
+                                                    <img src="images/geral-icons/success-icon.svg">
+                                                    <h3 id="statisticsComparisonFoundCount">0</h3>
+                                                </div>
+                                            </div>
+
+                                            <div class="card" id="statisticsComparisonOutsideCard" hidden>
+                                                <h3>Fora da Condição</h3>
+
+                                                <div class="flex-box-start">
+                                                    <img src="images/geral-icons/alert-icon.svg">
+                                                    <h3 id="statisticsComparisonOutsideCount">0</h3>
+                                                </div>
+                                            </div>
+
+                                            <div class="card">
+                                                <h3>Não Encontrados</h3>
+
+                                                <div class="flex-box-start">
+                                                    <img src="images/geral-icons/error-icon.svg">
+                                                    <h3 id="statisticsComparisonNotFoundCount">0</h3>
+                                                </div>
+                                            </div>
+
+                                            <div class="card">
+                                                <h3>Correspondência</h3>
+
+                                                <div class="flex-box-start">
+                                                    <img src="images/geral-icons/chart-pizza-icon.svg">
+                                                    <h3 id="statisticsComparisonRate">0%</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ESTADO INICIAL -->
+
+                                        <div class="comparison-empty" id="statisticsComparisonEmpty">
+                                            <h4>Esperando por uma comparação...</h4>
+                                        </div>
+
+                                        <!-- PRÉVIA DOS RESULTADOS -->
+
+                                        <div class="comparison-preview" id="statisticsComparisonPreview" hidden>
+                                            <div class="comparison-preview-header flex-box-between">
+                                                <input id="statisticsComparisonSearch" type="search" placeholder="Buscar nos resultados">
+
+                                                <button id="statisticsComparisonExport" class="button" type="button" disabled>Baixar Resultado</button>
+                                            </div>
+
+                                            <div class="comparison-table">
+                                                <div class="statistics-table-container">
+                                                    <table class="statistics-local-table" id="statisticsComparisonTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Valor Informado</th>
+                                                                <th>Status</th>
+                                                                <th>Valor da Condição</th>
+                                                                <th>Ocorrências</th>
+                                                                <th>Linhas</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
                         <!-- ANÁLISE PLANILHA -->
 
-                        <div class="tabs-panel" id="statistics-2">
+                        <div class="tabs-panel" id="statistics-3">
                             <section id="statisticsQuickAnalysis" hidden>
+
+                                <!-- HEADER -->
+
+                                <div class="module-header flex-box-between">
+                                    <div class="flex-box-start">
+                                        <img src="images/geral-icons/magnifier-icon.svg">
+                                        <h3>Análise da Planilha</h3>
+                                    </div>
+
+                                    <p>Linhas Analisadas - <span id="statisticsTotalRecords">0</span></p>
+                                </div>
+
+                                <!-- CONTEÚDO DO MODULO -->
 
                                 <div class="statistics-analysis-top">
                                     <div id="statisticsAnalysisColumnSelector">
@@ -250,11 +1268,6 @@
 
                                         <div id="statisticsAnalysisColumns" class="statistics-column-options"></div>
                                     </div>
-
-                                    <div class="statistics-summary-card statistics-total-records-card">
-                                        <span>Linhas Analisadas</span>
-                                        <strong id="statisticsTotalRecords">0</strong>
-                                    </div>
                                 </div>
 
                                 <div class="statistics-summary-cards">
@@ -269,7 +1282,7 @@
 
                         <!-- GERAÇÃO DE GRÁFICOS -->
 
-                        <div class="tabs-panel" id="statistics-3">
+                        <div class="tabs-panel" id="statistics-4">
                             <section id="statisticsChartPanel" class="charts-panel" hidden>
 
                                 <!-- HEADER -->
@@ -397,11 +1410,6 @@
 
                             </section>
                         </div>
-
-                        <!-- FUTURAS ADICÕES -->
-
-                        <div class="tabs-panel" id="statistics-4"></div>
-                        <div class="tabs-panel" id="statistics-5"></div>
                     </div>
                 </div>
             </div>
@@ -409,18 +1417,66 @@
         
         <!-- ARQUIVOS JS -->  
 
-        <script async src="js/pace.min.js"></script>
-        <script src="js/jquery-3.2.1.min.js"></script>
-        <script defer src="js/foundation.min.js"></script>
-        <script defer src="js/select2.min.js"></script> 
-        <script defer src="js/options-select2.js"></script>
-        <script src="js/xlsx.full.min.js"></script>
-        <script src="js/chart.umd.min.js"></script>
-        <script type="module" src="js/load-spreadsheets.js"></script>
-        <script type="module" src="js/statistics.js"></script>
+            <!-- JS - BARRA DE CARREGAMENTO -->  
 
-        <!-- PONTO DE ENTRADA DA APLICAÇÃO -->
+            <script src="js/pace.min.js" async></script>
 
-        <script type="module" src="js/app.js"></script>
+            <!-- JS - VERSÃO DO JQUERY -->  
+
+            <script src="js/jquery-3.2.1.min.js"></script>
+
+            <!-- JS - RECURSOS DO FOUNDATION -->  
+
+            <script src="js/foundation.min.js" defer></script>
+
+            <!-- JS - SELECT2 -->  
+
+            <script src="js/select2.min.js" defer></script> 
+            <script src="js/options-select2.js" defer></script>
+
+            <!-- JS - BIBLIOTECAS -->  
+
+            <script src="js/xlsx.full.min.js"></script>
+            <script src="js/chart.umd.min.js"></script>
+
+            <!-- JS - PAINEL DE PLANILHAS -->  
+
+            <script type="module" src="js/load-spreadsheets.js"></script>
+
+            <!-- JS - PAINEL DE RELATÓRIOS -->
+
+            <script type="module" src="js/reports/init.js"></script>
+
+            <!-- JS - PAINEL DE ANÁLISE -->  
+
+            <script src="js/data-analysis/core.js" defer></script>
+            <script src="js/data-analysis/import.js" defer></script>
+            <script src="js/data-analysis/table.js" defer></script>
+            <script src="js/data-analysis/analysis.js" defer></script>
+            <script src="js/data-analysis/charts.js" defer></script>
+            <script src="js/data-analysis/comparison.js" defer></script>
+            <script src="js/data-analysis/init.js" defer></script>
+
+            <!-- PONTO DE ENTRADA DA APLICAÇÃO -->
+
+            <script src="js/app.js" defer></script>
+
+            <!-- TEMPORARIO -->  
+
+            <script>
+
+                // FORÇAR MAXLENGTH
+
+                $('input[maxlength], textarea[maxlength]').on('input', function() {
+                    this.value = this.value.slice(0, this.maxLength);
+                });
+
+                // DESABILITAR SCROLL EM INPUTS TIPO NÚMERO
+
+                $('input[type=number]').on('wheel', function(e) {
+                    e.preventDefault();
+                });
+
+            </script>
     </body>
 </html>
