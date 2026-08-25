@@ -25,412 +25,12 @@
         <link rel="stylesheet" href="css/font-face.css">
         <link rel="stylesheet" href="css/reset-style.css">
         <link rel="stylesheet" href="css/dashboard-style.css">
+        <link rel="stylesheet" href="css/reports-style.css">
         <link rel="stylesheet" href="css/hub-spreadsheets.css">
         <link rel="stylesheet" href="css/data-analysis.css">
 
         <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
-
-        <style>
-
-            /* ESTRUTURA GERAL DO REPORTS */
-
-            #report-choice {
-                width: 100%;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 15px;
-                margin-bottom: 30px;
-            }
-            #report-choice .tabs-title {
-                width: 100%;
-            }
-            #report-choice .tabs-title h4 {
-                margin: 10px 0;
-            }
-            #report-choice .tabs-title p {
-                margin-bottom: 0;
-                text-align: center;
-            }
-            #reports > .tabs-content {
-                padding: 25px;
-                background-color: #1f1f1f;
-                border: 2px solid #525252;
-                border-radius: 5px;
-            }
-
-            /* HEADER DOS REPORTS */
-
-            #reports > .tabs-content > .tabs-panel > .flex-box-between {
-                width: 100%;
-                padding-bottom: 20px;
-                align-items: center;
-                border-bottom: 2px solid #525252;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-between div {
-                gap: 10px;
-                align-items: center;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-between img {
-                width: 35px;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-between h3,
-            #reports > .tabs-content > .tabs-panel > .flex-box-between p {
-                margin-bottom: 0;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-between p {
-                width: max-content;
-                height: auto;
-                font-size: 13px;
-            }
-
-            /* CONTROLE DOS REPORTS */
-
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls {
-                flex: 0 0 350px;
-                row-gap: 15px;
-                margin-right: 25px;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group {
-                padding: 0 0 15px 0;
-                border-bottom: 2px solid #525252;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group:last-of-type {
-                padding: 0 0 0 0;
-                border-bottom: none;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .tabs {
-                width: 100%;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                padding-bottom: 15px;
-                border-bottom: 2px solid #525252;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .tabs .tabs-title {
-                width: 100%;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .tabs .tabs-title:last-child:nth-child(odd) {
-                grid-column: 1 / -1;
-            }
-
-            /* CONTROLE DOS REPORTS - DOIS INPUTS DENTRO DE UMA FLEX-BOX-START */
-
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .flex-box-start {
-                column-gap: 10px;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group .flex-box-start input:first-of-type {
-                flex: 1 1 0;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group .flex-box-start input:last-of-type {
-                flex: 0 0 86px;
-                text-align: center;
-            }
-
-            /* CONTROLE DOS REPORTS - COMPORTAMENTO GERAL DOS INPUTS NO INPUT GROUP */
-
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group > input {
-                margin: 15px 0;
-            }
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-controls .input-group > input:last-of-type {
-                margin: 15px 0 0 0;
-            }
-
-            /* CONTROLE DO PLANEJAMENTO - LISTA DINÂMICA DE LHS */
-
-                #planning .planning-lh-toolbar {
-                    margin-bottom: 20px;
-                    max-height: 40px;
-                    overflow: hidden;
-                }
-                #planning .planning-lh-toolbar button {
-                   width: 100%;
-                }
-                #planning .planning-lh-toolbar .button,
-                #planning .planning-lh-remove {
-                    min-height: 38px;
-                    padding: 8px 12px;
-                    font-size: 12px;
-                }
-                #planning .planning-lh-list {
-                    row-gap: 15px;
-                    max-height: 664px;
-                    overflow: auto;
-                    padding-right: 15px;
-                }
-                #planning .planning-lh-list::-webkit-scrollbar-track {
-                    background-color: transparent;
-                }
-                #planning .planning-lh-list::-webkit-scrollbar {
-                    width: 5px;
-                    height: 5px;
-                    background-color: transparent;
-                }
-                #planning .planning-lh-list::-webkit-scrollbar-thumb {
-                    border-radius: 5px;
-                    background-color: #525252;
-                }
-                #planning .planning-lh-item-header {
-                    align-items: center;
-                    flex-wrap: nowrap;
-                    margin-bottom: 15px;
-                }
-                #planning .planning-lh-item > input {
-                    margin: 15px 0 0 0;
-                }
-                #planning .planning-lh-remove {
-                    color: #e4e6eb;
-                    background-color: #141414;
-                    border: 1px solid #525252;
-                    border-bottom: 4px solid #525252;
-                }
-
-            /* CONTROLE DO PLANEJAMENTO - SEGREGAÇÃO */
-
-                #planning .planning-lh-item-actions {
-                    align-items: center;
-                    flex-wrap: nowrap;
-                    column-gap: 10px;
-                }
-                #planning .planning-lh-segregate-toggle {
-                    display: flex;
-                    align-items: center;
-                    column-gap: 6px;
-                    margin: 0;
-                    font-size: 12px;
-                    color: #e4e6eb;
-                    cursor: pointer;
-                    user-select: none;
-                }
-                #planning .planning-lh-segregate-toggle input {
-                    margin: 0;
-                    cursor: pointer;
-                }
-                #planning .planning-lh-segregate-quantity:disabled {
-                    opacity: 0.5;
-                    cursor: not-allowed;
-                }
-
-            /* CONTROLE DO PLANEJAMENTO - DADOS GERAIS */
-
-                #planning .planning-general-controls h4,
-                #planning .planning-pool-controls h4 {
-                    margin-bottom: 15px;
-                }
-                #planning .planning-general-fields {
-                    display: grid;
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                    gap: 10px;
-                }
-                #planning .planning-control-field {
-                    display: block;
-                    margin: 0;
-                }
-                #planning .planning-control-field span {
-                    display: block;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    color: #e4e6eb;
-                }
-                #planning .planning-control-field input {
-                    text-align: center;
-                }
-
-            /* CONTROLE DO PLANEJAMENTO - COLLECTION POOL */
-
-                #planning .planning-pool-control-list {
-                    display: grid;
-                    grid-template-columns: minmax(0, 1fr);
-                    gap: 10px;
-                }
-                #planning .planning-pool-control {
-                    display: flex;
-                    align-items: center;
-                    column-gap: 8px;
-                    margin: 0;
-                    font-size: 12px;
-                    color: #e4e6eb;
-                    cursor: pointer;
-                    user-select: none;
-                }
-                #planning .planning-pool-control input {
-                    margin: 0;
-                    cursor: pointer;
-                }
-
-            /* CONTROLE DOS REPORTS - AJUSTES ESPECIFICOS DEPENDENDO DO RELATÓRIO EM QUESTÃO */
-
-
-
-            /* PREVIA DOS REPORTS */
-            
-            #reports > .tabs-content > .tabs-panel > .flex-box-start > .report-preview {
-                flex: 1 1 0;
-                border-left: 2px solid #525252;
-            }
-
-            /* PRÉVIA DO PLANEJAMENTO */
-
-                #planning .report-preview {
-                    min-width: 0;
-                    padding-left: 25px;
-                }
-
-                /* ESTRUTURA DA PLANILHA */
-
-                    #planning .planning-sheet-preview {
-                        width: 100%;
-                        padding: 20px;
-                        color: #e4e6eb;
-                        background-color: #141414;
-                        border: 1px solid #525252;
-                        border-radius: 5px;
-                    }
-                    #planning .planning-sheet-title {
-                        padding: 12px 20px;
-                        margin-bottom: 20px;
-                        text-align: center;
-                        background-color: #2e2e2e;
-                        border: 1px solid #525252;
-                    }
-                    #planning .planning-sheet-title h2 {
-                        margin-bottom: 0;
-                        font-size: 20px;
-                        text-transform: uppercase;
-                        letter-spacing: 1.5px;
-                    }
-                    #planning .planning-sheet-layout {
-                        display: grid;
-                        grid-template-columns: minmax(0, 3fr) minmax(300px, 2fr);
-                        gap: 20px;
-                        align-items: start;
-                    }
-                    #planning .planning-sheet-main,
-                    #planning .planning-sheet-sidebar {
-                        min-width: 0;
-                    }
-                    #planning .planning-sheet-section {
-                        width: 100%;
-                        margin-bottom: 20px;
-                    }
-                    #planning .planning-sheet-section:last-child {
-                        margin-bottom: 0;
-                    }
-
-
-                /* TABELAS */
-
-                    #planning .planning-sheet-table {
-                        width: 100%;
-                        margin: 0;
-                        table-layout: fixed;
-                        border-collapse: collapse;
-                        background-color: #1f1f1f;
-                    }
-                    #planning .planning-sheet-table th,
-                    #planning .planning-sheet-table td {
-                        height: 38px;
-                        padding: 8px 10px;
-                        font-size: 12px;
-                        color: #e4e6eb;
-                        border: 1px solid #525252;
-                        overflow-wrap: anywhere;
-                    }
-                    #planning .planning-sheet-table th {
-                        font-weight: 600;
-                        text-align: center;
-                        background-color: #2e2e2e;
-                    }
-                    #planning .planning-sheet-table tbody tr:nth-child(even) {
-                        background-color: #1b1b1b;
-                    }
-                    #planning .planning-sheet-table td {
-                        text-align: left;
-                    }
-                    #planning .planning-sheet-table .planning-empty-row td {
-                        color: #8b8d91;
-                        text-align: center;
-                    }
-
-                    /* COLUNAS DAS TABELAS */
-
-                        #planning .planning-main-table th:nth-child(3),
-                        #planning .planning-main-table td:nth-child(3) {
-                            width: 90px;
-                            text-align: center;
-                        }
-                        #planning .planning-segregated-table th:nth-child(3),
-                        #planning .planning-segregated-table td:nth-child(3),
-                        #planning .planning-segregated-table th:nth-child(4),
-                        #planning .planning-segregated-table td:nth-child(4) {
-                            width: 90px;
-                            text-align: center;
-                        }
-                        #planning .planning-pool-table td:nth-child(2) {
-                            width: 75px;
-                            text-align: center;
-                        }
-                        #planning .planning-routing-table th:nth-child(3),
-                        #planning .planning-routing-table td:nth-child(3) {
-                            width: 75px;
-                            text-align: center;
-                        }
-                        #planning .planning-cp-summary-table td:nth-child(2),
-                        #planning .planning-pool-lh-table th:nth-child(2),
-                        #planning .planning-pool-lh-table td:nth-child(2) {
-                            width: 85px;
-                            text-align: center;
-                        }
-
-                    /* TABELAS DO RESUMO DO CP */
-
-                        #planning .planning-cp-tables {
-                            display: grid;
-                            grid-template-columns: minmax(0, 1fr);
-                            gap: 20px;
-                            align-items: start;
-                        }
-
-
-                    /* INDICADORES */
-
-                        #planning .planning-sheet-metrics {
-                            display: grid;
-                            grid-template-columns: repeat(3, minmax(0, 1fr));
-                            gap: 10px;
-                            margin-bottom: 20px;
-                        }
-                        #planning .planning-sheet-metrics > div {
-                            min-width: 0;
-                            text-align: center;
-                            border: 1px solid #525252;
-                        }
-                        #planning .planning-sheet-metrics h4 {
-                            padding: 8px;
-                            margin-bottom: 0;
-                            font-size: 12px;
-                            background-color: #2e2e2e;
-                            border-bottom: 1px solid #525252;
-                        }
-                        #planning .planning-sheet-metrics strong {
-                            display: block;
-                            padding: 10px;
-                            font-size: 15px;
-                        }
-
-                /* RESPONSIVIDADE */
-
-                    @media screen and (max-width: 1500px) {
-                        #planning .planning-sheet-layout {
-                            grid-template-columns: minmax(0, 1fr);
-                        }
-                    }
-
-                    @media screen and (max-width: 800px) {
-                        #planning .planning-sheet-metrics {
-                            grid-template-columns: minmax(0, 1fr);
-                        }
-                    }
-
-        </style>
+         
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -451,53 +51,58 @@
                 </div>
 
                 <ul class="flex-box-start tabs" data-tabs id="switch-1">
-                    <li class="tabs-title is-active">
+                    <li class="tabs-title">
                         <a href="#spreadsheets">
                             <div class="flex-box-center">
                                 <img src="images/geral-icons/sheets-icon.svg">
-                                <h4>Planilhas do Hub</h4>
+                                <h4>Planilhas</h4>
                             </div>
                         </a>
                     </li> 
 
-                    <!-- <li class="tabs-title">
+                    <li class="tabs-title is-active">
                         <a href="#reports">
                             <div class="flex-box-center">
-                                <img src="images/geral-icons/statistics-icon.svg">
+                                <img src="images/geral-icons/reports-icon.svg">
                                 <h4>Relatórios</h4>
                             </div>
                         </a>
-                    </li>  -->
+                    </li> 
 
                     <li class="tabs-title">
                         <a href="#statistics">
                             <div class="flex-box-center">
-                                <img src="images/geral-icons/statistics-icon.svg">
-                                <h4>Análise de Dados</h4>
+                                <img src="images/geral-icons/magnifier-icon.svg">
+                                <h4>Análises</h4>
                             </div>
                         </a>
                     </li> 
 
-                    <!-- <a href="https://www.appsheet.com/start/9898e1c7-28cc-4bcc-9e15-b13a73533544?platform=desktop#appName=AVARIASLSP-63-957299733-25-10-22&vss=H4sIAAAAAAAAA6WRzU7CQBDHX4XMuREoWGBPihhjjB8BwoUSM7ZT2dh2m90tSJo-jM_iiznLR_TgBbjtzsxv5v-fqWAlaT2xGH2AmFe_vwfagIAqhOmmoBBECDcqt1qlIXghPGG2C758f73LHNsh1OCBIdTRcko6Y3Y49oPu4LLd6wwGfvuZ0xbfUnLoVE22lVx1vUIt0UDtnT78dUQWZeo01Avv0MaSAVEdZ0GcuwEZU25lIkm7Xo7kHnuO047iwIFh15CV27VsBTNTc-gU42co_9PlWAN79B8fMFbrnQ6M-v2g0_NFo9VttoKm3_ID0VhJq_SFkRmqK7NUBdFFpDKecKdVWQwZnPMpJ0rbw3tECZapnWFausvOF7XbVaKi0lA8Y--nezb3-e1ngXn8qGIWn2BqqP4BMXkggBsDAAA=&row=ac886372:%2004/06/2026:%20vitor.simao@shopee.com&view=P%C3%A1gina1_Detail" target="_blank" class="link-button">
-                        <div class="flex-box-center">
-                            <img src="images/links-icons/pack-recover-icon.svg" style="margin-right: 10px;">
-                            <h4>Pack Recover</h4>
-                        </div>
-                    </a> -->
+                    <div class="external-links">
+                        <a data-toggle="external-links">
+                            <img src="images/menu-icons/link-icon.svg">
+                        </a>
 
-                    <a href="https://www.appsheet.com/start/9898e1c7-28cc-4bcc-9e15-b13a73533544?platform=desktop#appName=AVARIASLSP-63-957299733-25-10-22&vss=H4sIAAAAAAAAA6WRzU7CQBDHX4XMuREoWGBPihhjjB8BwoUSM7ZT2dh2m90tSJo-jM_iiznLR_TgBbjtzsxv5v-fqWAlaT2xGH2AmFe_vwfagIAqhOmmoBBECDcqt1qlIXghPGG2C758f73LHNsh1OCBIdTRcko6Y3Y49oPu4LLd6wwGfvuZ0xbfUnLoVE22lVx1vUIt0UDtnT78dUQWZeo01Avv0MaSAVEdZ0GcuwEZU25lIkm7Xo7kHnuO047iwIFh15CV27VsBTNTc-gU42co_9PlWAN79B8fMFbrnQ6M-v2g0_NFo9VttoKm3_ID0VhJq_SFkRmqK7NUBdFFpDKecKdVWQwZnPMpJ0rbw3tECZapnWFausvOF7XbVaKi0lA8Y--nezb3-e1ngXn8qGIWn2BqqP4BMXkggBsDAAA=&row=ac886372:%2004/06/2026:%20vitor.simao@shopee.com&view=P%C3%A1gina1_Detail" target="_blank" class="link-button">
-                        <div class="flex-box-center">
-                            <img src="images/links-icons/avarias-icon.svg" style="margin-right: 10px;">
-                            <h4>Avárias</h4>
-                        </div>
-                    </a>
-                    
-                    <a href="https://www.appsheet.com/start/e90438ea-37a9-47f7-a28f-1499b53fbd35#appName=ColetasLMHub-510641030&page=gallery&sort=%5B%5D&table=MenuInicial&view=Menu" target="_blank" class="link-button">
-                        <div class="flex-box-center">
-                            <img src="images/links-icons/coleta-icon.svg" style="margin-right: 10px;">
-                            <h4>Coletas</h4>
-                        </div>
-                    </a>
+                        <a href="https://docs.google.com/spreadsheets/d/1IS4QDnMenXTi07FhiL-nFINrEjLppAfZhSlogZq22hY/edit?gid=0#gid=0" target="_blank">
+                            <img src="images/menu-icons/settings-icon.svg">
+                        </a>
+                    </div>
+
+                    <div class="dropdown-pane" id="external-links" data-dropdown data-position="bottom" data-alignment="center" data-auto-focus="true" data-close-on-click="true">
+                        <a href="https://www.appsheet.com/start/9898e1c7-28cc-4bcc-9e15-b13a73533544?platform=desktop#appName=AVARIASLSP-63-957299733-25-10-22&vss=H4sIAAAAAAAAA6WRzU7CQBDHX4XMuREoWGBPihhjjB8BwoUSM7ZT2dh2m90tSJo-jM_iiznLR_TgBbjtzsxv5v-fqWAlaT2xGH2AmFe_vwfagIAqhOmmoBBECDcqt1qlIXghPGG2C758f73LHNsh1OCBIdTRcko6Y3Y49oPu4LLd6wwGfvuZ0xbfUnLoVE22lVx1vUIt0UDtnT78dUQWZeo01Avv0MaSAVEdZ0GcuwEZU25lIkm7Xo7kHnuO047iwIFh15CV27VsBTNTc-gU42co_9PlWAN79B8fMFbrnQ6M-v2g0_NFo9VttoKm3_ID0VhJq_SFkRmqK7NUBdFFpDKecKdVWQwZnPMpJ0rbw3tECZapnWFausvOF7XbVaKi0lA8Y--nezb3-e1ngXn8qGIWn2BqqP4BMXkggBsDAAA=&row=ac886372:%2004/06/2026:%20vitor.simao@shopee.com&view=P%C3%A1gina1_Detail" target="_blank" class="link-button">
+                            <div class="flex-box-center">
+                                <img src="images/links-icons/avarias-icon.svg" style="margin-right: 10px;">
+                                <h4>Avárias</h4>
+                            </div>
+                        </a>
+                        
+                        <a href="https://www.appsheet.com/start/e90438ea-37a9-47f7-a28f-1499b53fbd35#appName=ColetasLMHub-510641030&page=gallery&sort=%5B%5D&table=MenuInicial&view=Menu" target="_blank" class="link-button">
+                            <div class="flex-box-center">
+                                <img src="images/links-icons/coleta-icon.svg" style="margin-right: 10px;">
+                                <h4>Coletas</h4>
+                            </div>
+                        </a>
+                    </div>
                 </ul> 
             </div>        
         </nav>
@@ -509,7 +114,7 @@
 
                 <!-- PLANILHAS -->
 
-                <div class="tabs-panel is-active" id="spreadsheets">
+                <div class="tabs-panel" id="spreadsheets">
                     <div class="spreadsheets-layout">
 
                         <!-- MENU DE NAVEGAÇÃO DAS PLANILHAS -->
@@ -525,51 +130,83 @@
 
                 <!-- REPORTS -->
 
-                <div class="tabs-panel" id="reports">
-                    <ul class="tabs" data-tabs id="report-choice">
-                        <li class="tabs-title is-active">
-                            <a href="#planning">
-                                <div class="flex-box-full-center">
-                                    <img src="images/geral-icons/sheets-icon.svg">
-                                    <h4>Planejamento</h4>
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
-                                </div>
-                            </a>
-                        </li> 
+                <div class="tabs-panel is-active" id="reports">
+                    <div class="flex-box-start">
+                        <ul class="tabs" data-tabs id="report-choice">
+                            <li class="tabs-title is-active">
+                                <a href="#planning">
+                                    <div class="flex-box-full-center">
+                                        <h4>Planejamento</h4>
+                                    </div>
+                                </a>
+                            </li> 
 
-                        <li class="tabs-title">
-                            <a href="#receipt">
-                                <div class="flex-box-full-center">
-                                    <img src="images/geral-icons/statistics-icon.svg">
-                                    <h4>Recebimento</h4>
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
-                                </div>
-                            </a>
-                        </li> 
+                            <li class="tabs-title">
+                                <a href="#receipt">
+                                    <div class="flex-box-full-center">
+                                        <h4>Recebimento</h4>
+                                    </div>
+                                </a>
+                            </li> 
 
-                        <li class="tabs-title">
-                            <a href="#rlosses-rate">
-                                <div class="flex-box-full-center">
-                                    <img src="images/geral-icons/statistics-icon.svg">
-                                    <h4>Taxa de Perdas</h4>
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
-                                </div>
-                            </a>
-                        </li> 
+                            <li class="tabs-title">
+                                <a href="#rlosses-rate">
+                                    <div class="flex-box-full-center">
+                                        <h4>Taxa de Perdas</h4>
+                                    </div>
+                                </a>
+                            </li> 
 
-                        <li class="tabs-title">
-                            <a href="#rlosses-rate">
-                                <div class="flex-box-full-center">
-                                    <img src="images/geral-icons/statistics-icon.svg">
-                                    <h4>Mapa de Calor</h4>
-                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum</p>
-                                </div>
-                            </a>
-                        </li> 
-                    </ul> 
+                            <li class="tabs-title">
+                                <a href="#rlosses-rate">
+                                    <div class="flex-box-full-center">
+                                        <h4>Mapa de Calor</h4>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    
+                        <div class="action-buttons flex-box-start">
+                            <button class="button" id="reportDownloadButton" type="button" disabled>
+                                Baixar
+                            </button>
+
+                            <button id="reportImportButton">
+                                <img src="images/geral-icons/import-icon.svg" disabled>
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="tabs-content" data-tabs-content="report-choice">
                         <div class="tabs-panel is-active" id="planning">
+
+                            <!-- HEADER DO RELATÓRIO -->
+
+                            <ul class="tabs flex-box-start" data-tabs id="planning-choice">
+                                <li class="tabs-title is-active">
+                                    <a href="#lhs-list">
+                                        <h4>Lista de LHs</h4>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title" id="planningSegregatedTosTab" hidden>
+                                    <a href="#segregated-tos">
+                                        <h4>TOs a Segregar</h4>
+                                    </a>
+                                </li>
+
+                                <li class="tabs-title">
+                                    <a href="#collection-pool">
+                                        <h4>Collection Pool</h4>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#spr">
+                                        <h4>CAP do Dia e SPR Médio</h4>
+                                    </a>
+                                </li> 
+                            </ul> 
 
                             <!-- CONTEÚDO DO RELATÓRIO -->
 
@@ -577,131 +214,122 @@
 
                                 <!-- CONTROLES DO RELATÓRIO -->
 
-                                <div class="report-controls flex-box-column">
+                                <div class="tabs-content report-controls" data-tabs-content="planning-choice">
+                                    <div class="tabs-panel is-active" id="lhs-list">
 
-                                    <!-- MENU OPÇÕES DO RELATÓRIO EM QUESTÃO -->
+                                        <!-- BOTÃO DE ADICIONAR -->
 
-                                    <ul class="flex-box-start tabs" data-tabs id="planning-choice">
-                                        <li class="tabs-title is-active">
-                                            <a href="#lhs-list">
-                                                <h4>Lista de LHs</h4>
-                                            </a>
-                                        </li> 
-
-                                        <li class="tabs-title">
-                                            <a href="#collection-pool">
-                                                <h4>Collection Pool</h4>
-                                            </a>
-                                        </li> 
-
-                                        <li class="tabs-title">
-                                            <a href="#geral-data">
-                                                <h4>Dados Gerais</h4>
-                                            </a>
-                                        </li> 
-                                    </ul> 
-
-                                    <!-- CONTROLES SEPERADOS POR TIPO -->
-
-                                    <div class="tabs-content" data-tabs-content="planning-choice">
-                                        <div class="tabs-panel is-active" id="lhs-list">
-
-                                            <!-- LISTA DE LHS -->
-
-                                            <div class="planning-lh-toolbar">
-                                                <button class="button" id="planningAddLh">Adicionar LH</button>
+                                        <div class="lhs-buttons">
+                                            <div>
+                                                <button class="button" id="planningAddLh" type="button">Adicionar LH</button>
+                                                <button class="button" id="planningClearLhs" type="button">Limpar Lista</button>
                                             </div>
+                                        </div>
+                                        
+                                        <!-- LISTA DE LHS -->
 
-                                            <div class="planning-lh-list flex-box-column" id="planningLhList"></div>
+                                        <div class="planning-lh-list flex-box-column" id="planningLhList"></div>
+                                    </div>
+
+                                    <div class="tabs-panel" id="segregated-tos">
+
+                                        <!-- LISTAS DE TOS SEPARADAS POR LH -->
+
+                                        <div class="planning-to-empty" id="planningToEmpty">
+                                            <p>Marque “Segregar” e “Segregar TO” em um LH para adicionar suas TOs.</p>
                                         </div>
 
-                                        <div class="tabs-panel" id="collection-pool">
+                                        <div class="planning-to-groups flex-box-column" id="planningToGroups" hidden></div>
+                                    </div>
 
-                                            <!-- CONTROLES DA COLLECTION POOL -->
+                                    <div class="tabs-panel" id="collection-pool">
 
-                                            <div class="input-group planning-pool-controls" id="planningPoolControls">
-                                                <h4>Collection Pool</h4>
+                                        <!-- COLLECTION POOL -->
 
-                                                <div class="planning-pool-control-list">
-                                                    <label class="planning-pool-control">
-                                                        <input
-                                                            type="checkbox"
-                                                            data-planning-pool-field="bulky"
-                                                            checked
-                                                        >
+                                        <div class="input-group" id="planningPoolControls">
+                                            <div>
+                                                <h4>Qtd Backlog Pacotes</h4>
+                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogPackages">
+                                            </div>
 
-                                                        <span>Volumosos</span>
-                                                    </label>
+                                            <div>
+                                                <h4>Qtd Backlog Volumosos</h4>
+                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogBulky">
+                                            </div>
 
-                                                    <label class="planning-pool-control">
-                                                        <input
-                                                            type="checkbox"
-                                                            data-planning-pool-field="office"
-                                                            checked
-                                                        >
+                                            <div>
+                                                <h4>Qtd de Adicionados</h4>
+                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="added">
+                                            </div>
 
-                                                        <span>Roteirizar Office?</span>
-                                                    </label>
+                                            <div>
+                                                <h4>Qtd de Retirados</h4>
+                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="removed">
+                                            </div>
 
-                                                    <label class="planning-pool-control">
-                                                        <input
-                                                            type="checkbox"
-                                                            data-planning-pool-field="backlog"
-                                                            checked
-                                                        >
+                                            <div>
+                                                <h4>Qtd de Erros</h4>
+                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="errors">
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                        <span>Roteirizar Backlog?</span>
-                                                    </label>
+                                    <div class="tabs-panel" id="spr">
 
-                                                    <label class="planning-pool-control">
-                                                        <input
-                                                            type="checkbox"
-                                                            data-planning-pool-field="home"
-                                                            checked
-                                                        >
+                                        <!-- CONTROLES DOS INDICADORES -->
 
-                                                        <span>Roteirizar Home?</span>
-                                                    </label>
+                                        <div id="planningGeneralControls">
 
-                                                    <label class="planning-pool-control">
-                                                        <input
-                                                            type="checkbox"
-                                                            data-planning-pool-field="outOfRoute"
-                                                            checked
-                                                        >
+                                            <!-- CAP DO DIA -->
 
-                                                        <span>Fora de Rota</span>
-                                                    </label>
+                                            <div class="input-group">
+                                                <div>
+                                                    <h4>Cap do Dia</h4>
+
+                                                    <input type="text" inputmode="numeric" maxlength="6" data-planning-field="dailyCapacity">
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="tabs-panel" id="geral-data">
+                                            <!-- CÁLCULO DO SPR -->
 
-                                            <!-- DADOS GERAIS -->
+                                            <div class="input-group">
+                                                <div>
+                                                    <h4>SPR Médio</h4>
 
-                                            <div class="input-group planning-general-controls" id="planningGeneralControls">
-                                                <h4>Dados Gerais</h4>
+                                                    <input type="text" inputmode="numeric" maxlength="5" data-planning-field="averageSpr">
+                                                </div>
 
-                                                <div class="planning-general-fields">
-                                                    <input type="text" inputmode="numeric" maxlength="5" placeholder="SPR" data-planning-field="averageSpr">
-                                                    <input type="text" inputmode="numeric" maxlength="6" placeholder="CAP" data-planning-field="dailyCapacity">
+                                                <div>
+                                                    <h4>Carros</h4>
+
+                                                    <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="cars">
+                                                </div>
+
+                                                <div>
+                                                    <h4>Motos</h4>
+
+                                                    <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="motorcycles">
+                                                </div>
+
+                                                <div>
+                                                    <h4>Fiorinos</h4>
+
+                                                    <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="fiorinos">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="tabs-panel" id="planning-import"></div>
                                 </div>
 
                                 <!-- PPÉVIA DO RELATÓRIO -->
 
-                                <div class="report-preview">
+                                <div class="report-preview" id="planningSheetPreview">
 
-                                    <!-- PRÉVIA DO PLANEJAMENTO -->
+                                    <!-- RELATÓRIO DE PLANEJAMENTO -->
 
-                                    <section class="planning-sheet-preview" id="planningSheetPreview">
-
-                                        <!-- TÍTULO -->
-
+                                    <div class="planning-sheet-preview" id="planningReportExportArea">
                                         <div class="planning-sheet-title">
                                             <h2>Planejamento de Roteirização</h2>
                                         </div>
@@ -721,31 +349,51 @@
                                                     </div>
 
                                                     <div>
-                                                        <h4>SPR Médio Final</h4>
+                                                        <h4>SPR Médio</h4>
                                                         <strong id="planningPreviewAverageSpr">0</strong>
                                                     </div>
 
                                                     <div>
-                                                        <h4>CAP do Dia</h4>
+                                                        <h4>Cap do Dia</h4>
                                                         <strong id="planningPreviewDailyCapacity">0</strong>
                                                     </div>
                                                 </div>
 
                                                 <!-- LISTA DE LHS -->
 
-                                                <div class="planning-sheet-section">
+                                                <div class="planning-sheet-section planning-main-table-section">
                                                     <table class="planning-sheet-table planning-main-table">
                                                         <thead>
                                                             <tr>
-                                                                <th>LHs a Roteirizar</th>
+                                                                <th>LHs da Collection Pool</th>
                                                                 <th>Origem</th>
                                                                 <th>QTD</th>
                                                             </tr>
                                                         </thead>
 
                                                         <tbody id="planningPreviewLhBody">
-                                                            <tr class="planning-empty-row">
-                                                                <td colspan="3">Nenhum LH informado.</td>
+                                                            <tr>
+                                                                <td>—</td>
+                                                                <td>—</td>
+                                                                <td>—</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>—</td>
+                                                                <td>—</td>
+                                                                <td>—</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>—</td>
+                                                                <td>—</td>
+                                                                <td>—</td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>—</td>
+                                                                <td>—</td>
+                                                                <td>—</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -753,7 +401,7 @@
 
                                                 <!-- LHS PARA SEGREGAR -->
 
-                                                <div class="planning-sheet-section">
+                                                <div id="planningSegregatedSection" class="planning-sheet-section" hidden>
                                                     <table class="planning-sheet-table planning-segregated-table">
                                                         <thead>
                                                             <tr>
@@ -772,21 +420,21 @@
                                                     </table>
                                                 </div>
 
-                                                <!-- TOS PARA ROTEIRIZAR -->
+                                                <!-- TOS PARA SEGREGAR -->
 
-                                                <div class="planning-sheet-section">
-                                                    <table class="planning-sheet-table planning-routing-table">
+                                                <div id="planningSegregatedTosSection" class="planning-sheet-section" hidden>
+                                                    <table class="planning-sheet-table planning-segregated-tos-table">
                                                         <thead>
                                                             <tr>
-                                                                <th>TOs para Roteirizar</th>
+                                                                <th>TOs para Segregar</th>
                                                                 <th>LH</th>
                                                                 <th>QTD</th>
                                                             </tr>
                                                         </thead>
 
-                                                        <tbody id="planningPreviewRoutingBody">
+                                                        <tbody id="planningPreviewSegregatedTosBody">
                                                             <tr class="planning-empty-row">
-                                                                <td colspan="3">Nenhuma TO para roteirizar.</td>
+                                                                <td colspan="3">Nenhuma TO para segregar.</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -799,118 +447,99 @@
 
                                                 <!-- COLLECTION POOL -->
 
-                                                <div class="planning-sheet-section">
-                                                    <table class="planning-sheet-table planning-pool-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th colspan="2">Collection Pool</th>
-                                                            </tr>
-                                                        </thead>
+                                                <table class="planning-sheet-table planning-cp-summary-table">
+                                                    <colgroup>
+                                                        <col>
+                                                        <col class="planning-quantity-column">
+                                                    </colgroup>
 
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Volumosos</td>
-                                                                <td data-planning-pool-preview="bulky">SIM</td>
-                                                            </tr>
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Valores da Collection Pool</th>
+                                                        </tr>
+                                                    </thead>
 
-                                                            <tr>
-                                                                <td>Roteirizar Office?</td>
-                                                                <td data-planning-pool-preview="office">SIM</td>
-                                                            </tr>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Qtd Backlog Pacotes</td>
+                                                            <td id="planningPreviewCpBacklog">0</td>
+                                                        </tr>
 
-                                                            <tr>
-                                                                <td>Roteirizar Backlog?</td>
-                                                                <td data-planning-pool-preview="backlog">SIM</td>
-                                                            </tr>
+                                                        <tr>
+                                                            <td>Qtd Backlog Volumosos</td>
+                                                            <td id="planningPreviewCpBulky">0</td>
+                                                        </tr>
 
-                                                            <tr>
-                                                                <td>Roteirizar Home?</td>
-                                                                <td data-planning-pool-preview="home">SIM</td>
-                                                            </tr>
+                                                        <tr>
+                                                            <td>Qtd dentro dos LHs</td>
+                                                            <td id="planningPreviewCpLhPool">0</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
 
-                                                            <tr>
-                                                                <td>Fora de Rota</td>
-                                                                <td data-planning-pool-preview="outOfRoute">SIM</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                <table class="planning-sheet-table planning-cp-summary-table">
+                                                    <colgroup>
+                                                        <col>
+                                                        <col class="planning-quantity-column">
+                                                    </colgroup>
 
-                                                <!-- INFORMAÇÕES DO CP -->
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Operações na Collection Pool</th>
+                                                        </tr>
+                                                    </thead>
 
-                                                <div class="planning-cp-tables">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Qtd Pacotes Inseridos</td>
+                                                            <td id="planningPreviewCpAdded">0</td>
+                                                        </tr>
 
-                                                    <!-- LHS NA POOL -->
+                                                        <tr>
+                                                            <td>Qtd Pacotes Retirados</td>
+                                                            <td id="planningPreviewCpRemoved">0</td>
+                                                        </tr>
 
-                                                    <table class="planning-sheet-table planning-pool-lh-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th colspan="2">LHs na Pool</th>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <th>LH</th>
-                                                                <th>QTD</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody id="planningPreviewPoolLhBody">
-                                                            <tr class="planning-empty-row">
-                                                                <td colspan="2">Nenhum LH na Pool.</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-
-                                                    <!-- RESUMO DO CP -->
-
-                                                    <table class="planning-sheet-table planning-cp-summary-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th colspan="2">Resumo do CP</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Total</td>
-                                                                <td id="planningPreviewCpTotal">0</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>Backlog</td>
-                                                                <td id="planningPreviewCpBacklog">0</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>LH Pool</td>
-                                                                <td id="planningPreviewCpLhPool">0</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>Volumosos</td>
-                                                                <td id="planningPreviewCpBulky">0</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>Erros</td>
-                                                                <td id="planningPreviewCpErrors">0</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>Pacotes adicionados</td>
-                                                                <td id="planningPreviewCpAdded">0</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>Pacotes retirados</td>
-                                                                <td id="planningPreviewCpRemoved">0</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                        <tr>
+                                                            <td>Qtd Pacotes com Erros</td>
+                                                            <td id="planningPreviewCpErrors">0</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
-                                    </section>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FOOTER DO RELATÓRIO -->
+
+                            <div class="footer flex-box-between">
+                                <div class="flex-box-start">
+                                    <img src="images/geral-icons/hourglass-icon.svg" alt="">
+                                    <p>O relatório não será armazenado após sair desta página</p>
+                                </div>
+
+                                <div class="flex-box-start report-warning" id="planningReportStatus" role="status" aria-live="polite" aria-atomic="true">
+                                    <img id="planningReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
+
+                                    <p id="planningReportStatusText">
+                                        O relatório ainda aguarda informações.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <button class="button" id="planningClearReportButton" type="button">
+                                        Limpar Relatório
+                                    </button>
+
+                                    <button class="button" id="planningCopyReportButton" type="button" disabled>
+                                        Copiar Relatório
+                                    </button>
+
+                                    <button class="button" id="planningDownloadReportButton" type="button" disabled>
+                                        Baixar Relatório
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1125,7 +754,7 @@
                                             <span id="statisticsComparisonLineCount">0 linhas</span>
                                         </div>
 
-                                        <textarea id="statisticsComparisonInput" rows="15" placeholder="Cole um valor por linha" disabled></textarea>
+                                        <textarea id="statisticsComparisonInput" rows="14" placeholder="Cole um valor por linha" disabled></textarea>
 
                                         <div class="textarea-results flex-box-between">
                                             <div class="flex-box-start">
@@ -1250,33 +879,35 @@
 
                                 <!-- CONTEÚDO DO MODULO -->
 
-                                <div class="statistics-analysis-top">
-                                    <div id="statisticsAnalysisColumnSelector">
-                                        <div class="flex-box-between">
+                                <div id="standard-container">
+                                    <div class="statistics-analysis-top">
+                                        <div id="statisticsAnalysisColumnSelector">
+                                            <div class="flex-box-between">
 
-                                            <div>
-                                                <h4>Colunas para análise</h4>
-                                                <p>Escolha quais colunas da planilha devem ser analisadas.</p>
+                                                <div>
+                                                    <h4>Colunas para análise</h4>
+                                                    <p>Escolha quais colunas da planilha devem ser analisadas.</p>
+                                                </div>
+
+                                                <div class="statistics-column-actions">
+                                                    <button id="statisticsSelectAllColumns" class="statistics-analysis-action" type="button">Analisar Tudo</button>
+
+                                                    <button id="statisticsClearColumns" class="statistics-analysis-action" type="button">Limpar Seleção</button>
+                                                </div>
                                             </div>
 
-                                            <div class="statistics-column-actions">
-                                                <button id="statisticsSelectAllColumns" class="statistics-analysis-action" type="button">Analisar Tudo</button>
-
-                                                <button id="statisticsClearColumns" class="statistics-analysis-action" type="button">Limpar Seleção</button>
-                                            </div>
+                                            <div id="statisticsAnalysisColumns" class="statistics-column-options"></div>
                                         </div>
-
-                                        <div id="statisticsAnalysisColumns" class="statistics-column-options"></div>
                                     </div>
+
+                                    <div class="statistics-summary-cards">
+                                        <div id="statisticsAnalysisCards" style="display: contents;"></div>
+                                    </div>
+
+                                    <p id="statisticsAnalysisEmpty" class="statistics-analysis-empty">Selecione ao menos uma coluna para visualizar a análise.</p>
+
+                                    <div id="statisticsAnalysisResults" class="statistics-summary-tables"></div>
                                 </div>
-
-                                <div class="statistics-summary-cards">
-                                    <div id="statisticsAnalysisCards" style="display: contents;"></div>
-                                </div>
-
-                                <p id="statisticsAnalysisEmpty" class="statistics-analysis-empty">Selecione ao menos uma coluna para visualizar a análise.</p>
-
-                                <div id="statisticsAnalysisResults" class="statistics-summary-tables"></div>
                             </section>
                         </div>
 
@@ -1415,68 +1046,49 @@
             </div>
         </div>
         
-        <!-- ARQUIVOS JS -->  
+        <!-- JS - BARRA DE CARREGAMENTO -->  
 
-            <!-- JS - BARRA DE CARREGAMENTO -->  
+        <script src="js/pace.min.js" async></script>
 
-            <script src="js/pace.min.js" async></script>
+        <!-- JS - VERSÃO DO JQUERY -->  
 
-            <!-- JS - VERSÃO DO JQUERY -->  
+        <script src="js/jquery/jquery-3.2.1.min.js"></script>
 
-            <script src="js/jquery-3.2.1.min.js"></script>
+        <!-- JS - RECURSOS DO FOUNDATION -->  
 
-            <!-- JS - RECURSOS DO FOUNDATION -->  
+        <script src="js/foundation/foundation.min.js" defer></script>
 
-            <script src="js/foundation.min.js" defer></script>
+        <!-- JS - SELECT2 -->  
 
-            <!-- JS - SELECT2 -->  
+        <script src="js/select2/select2.min.js" defer></script> 
+        <script src="js/select2/options-select2.js" defer></script>
 
-            <script src="js/select2.min.js" defer></script> 
-            <script src="js/options-select2.js" defer></script>
+        <!-- JS - BIBLIOTECAS -->  
 
-            <!-- JS - BIBLIOTECAS -->  
+        <script src="js/libraries/html2canvas.min.js"></script>
+        <script src="js/libraries/xlsx.full.min.js"></script>
+        <script src="js/libraries/chart.umd.min.js"></script>
 
-            <script src="js/xlsx.full.min.js"></script>
-            <script src="js/chart.umd.min.js"></script>
+        <!-- JS - PAINEL DE PLANILHAS -->  
 
-            <!-- JS - PAINEL DE PLANILHAS -->  
+        <script type="module" src="js/spreadsheets/load-spreadsheets.js"></script>
 
-            <script type="module" src="js/load-spreadsheets.js"></script>
+        <!-- JS - PAINEL DE RELATÓRIOS -->
 
-            <!-- JS - PAINEL DE RELATÓRIOS -->
+        <script type="module" src="js/reports/init.js"></script>
 
-            <script type="module" src="js/reports/init.js"></script>
+        <!-- JS - PAINEL DE ANÁLISE -->  
 
-            <!-- JS - PAINEL DE ANÁLISE -->  
+        <script src="js/data-analysis/core.js" defer></script>
+        <script src="js/data-analysis/import.js" defer></script>
+        <script src="js/data-analysis/table.js" defer></script>
+        <script src="js/data-analysis/analysis.js" defer></script>
+        <script src="js/data-analysis/charts.js" defer></script>
+        <script src="js/data-analysis/comparison.js" defer></script>
+        <script src="js/data-analysis/init.js" defer></script>
 
-            <script src="js/data-analysis/core.js" defer></script>
-            <script src="js/data-analysis/import.js" defer></script>
-            <script src="js/data-analysis/table.js" defer></script>
-            <script src="js/data-analysis/analysis.js" defer></script>
-            <script src="js/data-analysis/charts.js" defer></script>
-            <script src="js/data-analysis/comparison.js" defer></script>
-            <script src="js/data-analysis/init.js" defer></script>
+        <!-- PONTO DE ENTRADA DA APLICAÇÃO -->
 
-            <!-- PONTO DE ENTRADA DA APLICAÇÃO -->
-
-            <script src="js/app.js" defer></script>
-
-            <!-- TEMPORARIO -->  
-
-            <script>
-
-                // FORÇAR MAXLENGTH
-
-                $('input[maxlength], textarea[maxlength]').on('input', function() {
-                    this.value = this.value.slice(0, this.maxLength);
-                });
-
-                // DESABILITAR SCROLL EM INPUTS TIPO NÚMERO
-
-                $('input[type=number]').on('wheel', function(e) {
-                    e.preventDefault();
-                });
-
-            </script>
+        <script src="js/foundation/app.js" defer></script>
     </body>
 </html>
