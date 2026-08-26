@@ -30,7 +30,6 @@
         <link rel="stylesheet" href="css/data-analysis.css">
 
         <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
-         
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -150,7 +149,7 @@
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#rlosses-rate">
+                                <a href="#losses-rate">
                                     <div class="flex-box-full-center">
                                         <h4>Taxa de Perdas</h4>
                                     </div>
@@ -515,11 +514,6 @@
                             <!-- FOOTER DO RELATÓRIO -->
 
                             <div class="footer flex-box-between">
-                                <div class="flex-box-start">
-                                    <img src="images/geral-icons/hourglass-icon.svg" alt="">
-                                    <p>O relatório não será armazenado após sair desta página</p>
-                                </div>
-
                                 <div class="flex-box-start report-warning" id="planningReportStatus" role="status" aria-live="polite" aria-atomic="true">
                                     <img id="planningReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
 
@@ -538,6 +532,182 @@
                                     </button>
 
                                     <button class="button" id="planningDownloadReportButton" type="button" disabled>
+                                        Baixar Relatório
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tabs-panel" id="losses-rate">
+
+                            <!-- HISTÓRICO POR MÊS -->
+
+                            <ul class="tabs flex-box-start" id="lossesRateMonthTabs" role="tablist" aria-label="Mês do relatório"></ul>
+
+                            <!-- CONTEÚDO DO RELATÓRIO -->
+
+                            <div class="flex-box-start">
+                                <div class="report-controls">
+
+                                    <!-- IMPORTAÇÃO DO HISTÓRICO -->
+
+                                    <div class="losses-rate-history-import flex-box-start">
+                                        <div style="width: 100%; height: 40px;overflow: hidden;">
+                                            <button class="button" id="lossesRateImportHistoryButton" type="button">
+                                                Importar Histórico
+                                            </button>
+                                        </div>
+
+                                        <input id="lossesRateHistoryFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+
+                                        <p id="lossesRateHistoryStatus" role="status" aria-live="polite" aria-atomic="true">
+                                            Nenhum histórico importado.
+                                        </p>
+                                    </div>
+
+                                    <div class="input-group losses-rate-identification">
+                                        <div>
+                                            <h4>Descrição</h4>
+                                            <input id="lossesRateDescriptionInput" type="text" value="LM HUB SP Santos Praia Grande 02" readonly>                                        
+                                        </div>
+
+                                        <div>
+                                            <h4>Código do Hub</h4>
+                                            <input id="lossesRateHubCodeInput" type="text" value="LSP-63" readonly>
+                                        </div>
+
+                                        <div>
+                                            <h4>Sub Regional</h4>
+                                            <input id="lossesRateSubRegionalInput" type="text" value="SPM07" readonly>                                        
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group losses-rate-values">
+                                        <div>
+                                            <h4>Volume Movimentado</h4>
+                                            <input id="lossesRateMovedInput" type="text" inputmode="numeric" maxlength="9">
+                                        </div>
+
+                                        <div>
+                                            <h4>Possíveis Perdas</h4>
+                                            <input id="lossesRatePossibleLossesInput" type="text" inputmode="numeric" maxlength="6">                                        
+                                        </div>
+
+                                        <div>
+                                            <h4>Quantidade de LOST</h4>
+                                            <input id="lossesRateLostInput" type="text" inputmode="numeric" maxlength="6">                                        
+                                        </div>
+
+                                        <div>
+                                            <h4>Quantidade de AVARIA</h4>
+                                            <input id="lossesRateDamageInput" type="text" inputmode="numeric" maxlength="6">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="preview" id="lossesRatePreview">
+
+                                    <!-- TABELAS DE LOSSES RATE -->
+
+                                    <div class="title">
+                                        <h2>Relatório de Taxas de Perdas</h2>
+                                    </div>
+
+                                    <table class="losses-rate-identification-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Descrição</th>
+                                                <th>Código do Hub</th>
+                                                <th>Sub Regional</th>
+                                                <th>Volume Movimentado</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td id="lossesRatePreviewDescription">—</td>
+                                                <td id="lossesRatePreviewHubCode">—</td>
+                                                <td id="lossesRatePreviewSubRegional">—</td>
+                                                <td id="lossesRatePreviewMoved">—</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Possíveis Perdas</th>
+                                                <th>Quantidade de LOST</th>
+                                                <th>Quantidade de AVARIA</th>
+                                                <th>Total de Perdas</th>
+                                                <th>Taxa de Perda</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td id="lossesRatePreviewPossibleLosses">—</td>
+                                                <td id="lossesRatePreviewLost">—</td>
+                                                <td id="lossesRatePreviewDamage">—</td>
+                                                <td id="lossesRatePreviewTotal">—</td>
+                                                <td id="lossesRatePreviewRate">—</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- GRÁFICOS DO RELATÓRIO -->
+
+                                    <div class="losses-rate-charts">
+                                        <div class="losses-rate-chart-panel">
+                                            <h3>
+                                                Composição das Ocorrências —
+                                                <span id="lossesRateCompositionMonth"></span>
+                                            </h3>
+
+                                            <div class="losses-rate-chart-container">
+                                                <canvas id="lossesRateCompositionChart">
+                                                    Seu navegador não suporta gráficos em canvas.
+                                                </canvas>
+                                            </div>
+                                        </div>
+
+                                        <div class="losses-rate-chart-panel">
+                                            <h3>
+                                                Histórico da Taxa de Perda —
+                                                <span id="lossesRateHistoryYear"></span>
+                                            </h3>
+
+                                            <div class="losses-rate-chart-container">
+                                                <canvas id="lossesRateHistoryChart">
+                                                    Seu navegador não suporta gráficos em canvas.
+                                                </canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FOOTER DO RELATÓRIO -->
+
+                            <div class="footer flex-box-between">
+                                <div class="flex-box-start report-warning" id="lossesRateReportStatus" role="status" aria-live="polite" aria-atomic="true">
+                                    <img id="lossesRateReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
+
+                                    <p id="lossesRateReportStatusText">
+                                        O relatório ainda aguarda informações.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <button class="button" id="lossesRateCopyBaseButton" type="button">
+                                        Copiar Base Atualizada
+                                    </button>
+
+                                    <button class="button" id="lossesRateCopyReportButton" type="button" disabled>
+                                        Copiar Relatório
+                                    </button>
+
+                                    <button class="button" id="lossesRateDownloadReportButton" type="button" disabled>
                                         Baixar Relatório
                                     </button>
                                 </div>
