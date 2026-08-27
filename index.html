@@ -30,6 +30,7 @@
         <link rel="stylesheet" href="css/data-analysis.css">
 
         <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
+
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -211,7 +212,215 @@
 
                             <div class="flex-box-start">
 
-                                <!-- CONTROLES DO RELATÓRIO -->
+                                <!-- PPÉVIA -->
+
+                                <div class="preview" id="planningSheetPreview">
+
+                                    <!-- RELATÓRIO DE PLANEJAMENTO -->
+
+                                    <div id="planningReportExportArea">
+                                        <div class="title">
+                                            <h2>Planejamento de Roteirização</h2>
+                                        </div>
+
+                                        <div class="planning-sheet-layout">
+
+                                            <!-- COLUNA PRINCIPAL -->
+
+                                            <div class="planning-sheet-main">
+
+                                                <!-- INDICADORES -->
+
+                                                <div class="planning-sheet-metrics">
+                                                    <div>
+                                                        <h4>Volume Estimado</h4>
+                                                        <strong id="planningEstimatedVolume">0</strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>SPR Médio</h4>
+                                                        <strong id="planningPreviewAverageSpr">0</strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>Cap do Dia</h4>
+                                                        <strong id="planningPreviewDailyCapacity">0</strong>
+                                                    </div>
+                                                </div>
+
+                                                <!-- LISTA DE LHS -->
+
+                                                <table class="planning-main-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>LHs da Collection Pool</th>
+                                                            <th>Origem</th>
+                                                            <th>QTD</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="planningPreviewLhBody">
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- LHS PARA SEGREGAR -->
+
+                                                <table class="planning-segregated-table" id="planningSegregatedSection" hidden>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>LHs a Segregar</th>
+                                                            <th>Origem</th>
+                                                            <th>QTD</th>
+                                                            <th>Segregar</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="planningPreviewSegregatedBody">
+                                                        <tr class="planning-empty-row">
+                                                            <td colspan="4">Nenhum LH para segregar.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- TOS PARA SEGREGAR -->
+
+                                                <table class="planning-segregated-tos-table" id="planningSegregatedTosSection" hidden>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>TOs para Segregar</th>
+                                                            <th>LH</th>
+                                                            <th>QTD</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="planningPreviewSegregatedTosBody">
+                                                        <tr class="planning-empty-row">
+                                                            <td colspan="3">Nenhuma TO para segregar.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- COLUNA LATERAL -->
+
+                                            <div class="planning-sheet-sidebar">
+
+                                                <!-- COLLECTION POOL -->
+
+                                                <table class="planning-sheet-table planning-cp-summary-table">
+                                                    <colgroup>
+                                                        <col>
+                                                        <col class="planning-quantity-column">
+                                                    </colgroup>
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Valores da Collection Pool</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Qtd Backlog Pacotes</td>
+                                                            <td id="planningPreviewCpBacklog">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd Backlog Volumosos</td>
+                                                            <td id="planningPreviewCpBulky">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd dentro dos LHs</td>
+                                                            <td id="planningPreviewCpLhPool">0</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <table class="planning-sheet-table planning-cp-summary-table">
+                                                    <colgroup>
+                                                        <col>
+                                                        <col class="planning-quantity-column">
+                                                    </colgroup>
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Operações na Collection Pool</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Qtd Pacotes Inseridos</td>
+                                                            <td id="planningPreviewCpAdded">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd Pacotes Retirados</td>
+                                                            <td id="planningPreviewCpRemoved">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd Pacotes com Erros</td>
+                                                            <td id="planningPreviewCpErrors">0</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- FOOTER -->
+
+                                    <div class="footer flex-box-between">
+                                        <div class="flex-box-start report-warning" id="planningReportStatus" role="status" aria-live="polite" aria-atomic="true">
+                                            <img id="planningReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
+
+                                            <p id="planningReportStatusText">
+                                                O relatório ainda aguarda informações.
+                                            </p>
+                                        </div>
+                                        
+                                        <div>
+                                            <button class="button" id="planningClearReportButton" type="button">
+                                                Limpar Relatório
+                                            </button>
+
+                                            <button class="button" id="planningCopyReportButton" type="button" disabled>
+                                                Copiar Relatório
+                                            </button>
+
+                                            <button class="button" id="planningDownloadReportButton" type="button" disabled>
+                                                Baixar Relatório
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CONTROLES -->
 
                                 <div class="tabs-content report-controls" data-tabs-content="planning-choice">
                                     <div class="tabs-panel is-active" id="lhs-list">
@@ -224,7 +433,7 @@
                                                 <button class="button" id="planningClearLhs" type="button">Limpar Lista</button>
                                             </div>
                                         </div>
-                                        
+
                                         <!-- LISTA DE LHS -->
 
                                         <div class="planning-lh-list flex-box-column" id="planningLhList"></div>
@@ -321,220 +530,6 @@
 
                                     <div class="tabs-panel" id="planning-import"></div>
                                 </div>
-
-                                <!-- PPÉVIA DO RELATÓRIO -->
-
-                                <div class="report-preview" id="planningSheetPreview">
-
-                                    <!-- RELATÓRIO DE PLANEJAMENTO -->
-
-                                    <div class="planning-sheet-preview" id="planningReportExportArea">
-                                        <div class="planning-sheet-title">
-                                            <h2>Planejamento de Roteirização</h2>
-                                        </div>
-
-                                        <div class="planning-sheet-layout">
-
-                                            <!-- COLUNA PRINCIPAL -->
-
-                                            <div class="planning-sheet-main">
-
-                                                <!-- INDICADORES -->
-
-                                                <div class="planning-sheet-metrics">
-                                                    <div>
-                                                        <h4>Volume Estimado</h4>
-                                                        <strong id="planningEstimatedVolume">0</strong>
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>SPR Médio</h4>
-                                                        <strong id="planningPreviewAverageSpr">0</strong>
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>Cap do Dia</h4>
-                                                        <strong id="planningPreviewDailyCapacity">0</strong>
-                                                    </div>
-                                                </div>
-
-                                                <!-- LISTA DE LHS -->
-
-                                                <div class="planning-sheet-section planning-main-table-section">
-                                                    <table class="planning-sheet-table planning-main-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>LHs da Collection Pool</th>
-                                                                <th>Origem</th>
-                                                                <th>QTD</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody id="planningPreviewLhBody">
-                                                            <tr>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                            </tr>
-
-                                                            <tr>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                                <td>—</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
-                                                <!-- LHS PARA SEGREGAR -->
-
-                                                <div id="planningSegregatedSection" class="planning-sheet-section" hidden>
-                                                    <table class="planning-sheet-table planning-segregated-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>LHs a Segregar</th>
-                                                                <th>Origem</th>
-                                                                <th>QTD</th>
-                                                                <th>Segregar</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody id="planningPreviewSegregatedBody">
-                                                            <tr class="planning-empty-row">
-                                                                <td colspan="4">Nenhum LH para segregar.</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
-                                                <!-- TOS PARA SEGREGAR -->
-
-                                                <div id="planningSegregatedTosSection" class="planning-sheet-section" hidden>
-                                                    <table class="planning-sheet-table planning-segregated-tos-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>TOs para Segregar</th>
-                                                                <th>LH</th>
-                                                                <th>QTD</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody id="planningPreviewSegregatedTosBody">
-                                                            <tr class="planning-empty-row">
-                                                                <td colspan="3">Nenhuma TO para segregar.</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-                                            <!-- COLUNA LATERAL -->
-
-                                            <div class="planning-sheet-sidebar">
-
-                                                <!-- COLLECTION POOL -->
-
-                                                <table class="planning-sheet-table planning-cp-summary-table">
-                                                    <colgroup>
-                                                        <col>
-                                                        <col class="planning-quantity-column">
-                                                    </colgroup>
-
-                                                    <thead>
-                                                        <tr>
-                                                            <th colspan="2">Valores da Collection Pool</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Qtd Backlog Pacotes</td>
-                                                            <td id="planningPreviewCpBacklog">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd Backlog Volumosos</td>
-                                                            <td id="planningPreviewCpBulky">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd dentro dos LHs</td>
-                                                            <td id="planningPreviewCpLhPool">0</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-
-                                                <table class="planning-sheet-table planning-cp-summary-table">
-                                                    <colgroup>
-                                                        <col>
-                                                        <col class="planning-quantity-column">
-                                                    </colgroup>
-
-                                                    <thead>
-                                                        <tr>
-                                                            <th colspan="2">Operações na Collection Pool</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Qtd Pacotes Inseridos</td>
-                                                            <td id="planningPreviewCpAdded">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd Pacotes Retirados</td>
-                                                            <td id="planningPreviewCpRemoved">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd Pacotes com Erros</td>
-                                                            <td id="planningPreviewCpErrors">0</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- FOOTER DO RELATÓRIO -->
-
-                            <div class="footer flex-box-between">
-                                <div class="flex-box-start report-warning" id="planningReportStatus" role="status" aria-live="polite" aria-atomic="true">
-                                    <img id="planningReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
-
-                                    <p id="planningReportStatusText">
-                                        O relatório ainda aguarda informações.
-                                    </p>
-                                </div>
-                                
-                                <div>
-                                    <button class="button" id="planningClearReportButton" type="button">
-                                        Limpar Relatório
-                                    </button>
-
-                                    <button class="button" id="planningCopyReportButton" type="button" disabled>
-                                        Copiar Relatório
-                                    </button>
-
-                                    <button class="button" id="planningDownloadReportButton" type="button" disabled>
-                                        Baixar Relatório
-                                    </button>
-                                </div>
                             </div>
                         </div>
 
@@ -547,12 +542,125 @@
                             <!-- CONTEÚDO DO RELATÓRIO -->
 
                             <div class="flex-box-start">
+
+                                <!-- PPÉVIA DO RELATÓRIO -->
+
+                                <div class="preview">
+                                    <div id="lossesRatePreview">
+
+                                        <!-- TABELAS -->
+
+                                        <div class="title">
+                                            <h2>Relatório de Taxas de Perdas</h2>
+                                        </div>
+
+                                        <table class="losses-rate-identification-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Descrição</th>
+                                                    <th>Código do Hub</th>
+                                                    <th>Sub Regional</th>
+                                                    <th>Volume Movimentado</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td id="lossesRatePreviewDescription">—</td>
+                                                    <td id="lossesRatePreviewHubCode">—</td>
+                                                    <td id="lossesRatePreviewSubRegional">—</td>
+                                                    <td id="lossesRatePreviewMoved">—</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Possíveis Perdas</th>
+                                                    <th>Quantidade de LOST</th>
+                                                    <th>Quantidade de AVARIA</th>
+                                                    <th>Total de Perdas</th>
+                                                    <th>Taxa de Perda</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td id="lossesRatePreviewPossibleLosses">—</td>
+                                                    <td id="lossesRatePreviewLost">—</td>
+                                                    <td id="lossesRatePreviewDamage">—</td>
+                                                    <td id="lossesRatePreviewTotal">—</td>
+                                                    <td id="lossesRatePreviewRate">—</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <!-- GRÁFICOS -->
+
+                                        <div class="losses-rate-charts">
+                                            <div class="losses-rate-chart-panel">
+                                                <h3>
+                                                    Composição das Ocorrências —
+                                                    <span id="lossesRateCompositionMonth"></span>
+                                                </h3>
+
+                                                <div class="losses-rate-chart-container">
+                                                    <canvas id="lossesRateCompositionChart">
+                                                        Seu navegador não suporta gráficos em canvas.
+                                                    </canvas>
+                                                </div>
+                                            </div>
+
+                                            <div class="losses-rate-chart-panel">
+                                                <h3>
+                                                    Histórico da Taxa de Perda —
+                                                    <span id="lossesRateHistoryYear"></span>
+                                                </h3>
+
+                                                <div class="losses-rate-chart-container">
+                                                    <canvas id="lossesRateHistoryChart">
+                                                        Seu navegador não suporta gráficos em canvas.
+                                                    </canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- FOOTER -->
+
+                                    <div class="footer flex-box-between">
+                                        <div class="flex-box-start report-warning" id="lossesRateReportStatus" role="status" aria-live="polite" aria-atomic="true">
+                                            <img id="lossesRateReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
+
+                                            <p id="lossesRateReportStatusText">
+                                                O relatório ainda aguarda informações.
+                                            </p>
+                                        </div>
+                                        
+                                        <div>
+                                            <button class="button" id="lossesRateCopyBaseButton" type="button">
+                                                Copiar Base Atualizada
+                                            </button>
+
+                                            <button class="button" id="lossesRateCopyReportButton" type="button" disabled>
+                                                Copiar Relatório
+                                            </button>
+
+                                            <button class="button" id="lossesRateDownloadReportButton" type="button" disabled>
+                                                Baixar Relatório
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CONTROLES DO RELATÓRIO -->
+
                                 <div class="report-controls">
 
-                                    <!-- IMPORTAÇÃO DO HISTÓRICO -->
-
                                     <div class="losses-rate-history-import flex-box-start">
-                                        <div style="width: 100%; height: 40px;overflow: hidden;">
+                                        <div>
                                             <button class="button" id="lossesRateImportHistoryButton" type="button">
                                                 Importar Histórico
                                             </button>
@@ -603,113 +711,6 @@
                                             <input id="lossesRateDamageInput" type="text" inputmode="numeric" maxlength="6">
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="preview" id="lossesRatePreview">
-
-                                    <!-- TABELAS DE LOSSES RATE -->
-
-                                    <div class="title">
-                                        <h2>Relatório de Taxas de Perdas</h2>
-                                    </div>
-
-                                    <table class="losses-rate-identification-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Descrição</th>
-                                                <th>Código do Hub</th>
-                                                <th>Sub Regional</th>
-                                                <th>Volume Movimentado</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr>
-                                                <td id="lossesRatePreviewDescription">—</td>
-                                                <td id="lossesRatePreviewHubCode">—</td>
-                                                <td id="lossesRatePreviewSubRegional">—</td>
-                                                <td id="lossesRatePreviewMoved">—</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Possíveis Perdas</th>
-                                                <th>Quantidade de LOST</th>
-                                                <th>Quantidade de AVARIA</th>
-                                                <th>Total de Perdas</th>
-                                                <th>Taxa de Perda</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr>
-                                                <td id="lossesRatePreviewPossibleLosses">—</td>
-                                                <td id="lossesRatePreviewLost">—</td>
-                                                <td id="lossesRatePreviewDamage">—</td>
-                                                <td id="lossesRatePreviewTotal">—</td>
-                                                <td id="lossesRatePreviewRate">—</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <!-- GRÁFICOS DO RELATÓRIO -->
-
-                                    <div class="losses-rate-charts">
-                                        <div class="losses-rate-chart-panel">
-                                            <h3>
-                                                Composição das Ocorrências —
-                                                <span id="lossesRateCompositionMonth"></span>
-                                            </h3>
-
-                                            <div class="losses-rate-chart-container">
-                                                <canvas id="lossesRateCompositionChart">
-                                                    Seu navegador não suporta gráficos em canvas.
-                                                </canvas>
-                                            </div>
-                                        </div>
-
-                                        <div class="losses-rate-chart-panel">
-                                            <h3>
-                                                Histórico da Taxa de Perda —
-                                                <span id="lossesRateHistoryYear"></span>
-                                            </h3>
-
-                                            <div class="losses-rate-chart-container">
-                                                <canvas id="lossesRateHistoryChart">
-                                                    Seu navegador não suporta gráficos em canvas.
-                                                </canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- FOOTER DO RELATÓRIO -->
-
-                            <div class="footer flex-box-between">
-                                <div class="flex-box-start report-warning" id="lossesRateReportStatus" role="status" aria-live="polite" aria-atomic="true">
-                                    <img id="lossesRateReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
-
-                                    <p id="lossesRateReportStatusText">
-                                        O relatório ainda aguarda informações.
-                                    </p>
-                                </div>
-                                
-                                <div>
-                                    <button class="button" id="lossesRateCopyBaseButton" type="button">
-                                        Copiar Base Atualizada
-                                    </button>
-
-                                    <button class="button" id="lossesRateCopyReportButton" type="button" disabled>
-                                        Copiar Relatório
-                                    </button>
-
-                                    <button class="button" id="lossesRateDownloadReportButton" type="button" disabled>
-                                        Baixar Relatório
-                                    </button>
                                 </div>
                             </div>
                         </div>
