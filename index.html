@@ -31,6 +31,7 @@
 
         <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
 
+        <style></style>
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -196,21 +197,15 @@
                                 </li>
 
                                 <li class="tabs-title">
-                                    <a href="#collection-pool">
-                                        <h4>Collection Pool</h4>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title">
-                                    <a href="#spr">
-                                        <h4>CAP do Dia e SPR Médio</h4>
+                                    <a href="#collection-indicators">
+                                        <h4>Collection Pool e Indicadores</h4>
                                     </a>
                                 </li> 
                             </ul> 
 
                             <!-- CONTEÚDO DO RELATÓRIO -->
 
-                            <div class="flex-box-start">
+                            <div class="flex-box-start planning-report-layout">
 
                                 <!-- PPÉVIA -->
 
@@ -450,45 +445,51 @@
                                         <div class="planning-to-groups flex-box-column" id="planningToGroups" hidden></div>
                                     </div>
 
-                                    <div class="tabs-panel" id="collection-pool">
+                                    <div class="tabs-panel" id="collection-indicators">
 
                                         <!-- COLLECTION POOL -->
 
-                                        <div class="input-group" id="planningPoolControls">
-                                            <div>
-                                                <h4>Qtd Backlog Pacotes</h4>
-                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogPackages">
+                                        <div id="planningPoolControls">
+
+                                            <h4>Quantidade de Backlog</h4>
+
+                                            <div class="input-group">
+                                                <div>
+                                                    <h4>Pacotes</h4>
+                                                    <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogPackages">
+                                                </div>
+
+                                                <div>
+                                                    <h4>Volumosos</h4>
+                                                    <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogBulky">
+                                                </div>
                                             </div>
 
-                                            <div>
-                                                <h4>Qtd Backlog Volumosos</h4>
-                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogBulky">
-                                            </div>
+                                            <h4>Operações na Pool</h4>
 
-                                            <div>
-                                                <h4>Qtd de Adicionados</h4>
-                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="added">
-                                            </div>
+                                            <div class="input-group operation">
+                                                <div>
+                                                    <h4>Adicionados</h4>
+                                                    <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="added">
+                                                </div>
 
-                                            <div>
-                                                <h4>Qtd de Retirados</h4>
-                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="removed">
-                                            </div>
+                                                <div>
+                                                    <h4>Retirados</h4>
+                                                    <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="removed">
+                                                </div>
 
-                                            <div>
-                                                <h4>Qtd de Erros</h4>
-                                                <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="errors">
+                                                <div>
+                                                    <h4>Erros</h4>
+                                                    <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="errors">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="tabs-panel" id="spr">
 
                                         <!-- CONTROLES DOS INDICADORES -->
 
                                         <div id="planningGeneralControls">
 
-                                            <!-- CAP DO DIA -->
+                                            <h4>Indicadores Operacionais</h4>
 
                                             <div class="input-group">
                                                 <div>
@@ -496,17 +497,17 @@
 
                                                     <input type="text" inputmode="numeric" maxlength="6" data-planning-field="dailyCapacity">
                                                 </div>
-                                            </div>
 
-                                            <!-- CÁLCULO DO SPR -->
-
-                                            <div class="input-group">
                                                 <div>
                                                     <h4>SPR Médio</h4>
 
                                                     <input type="text" inputmode="numeric" maxlength="5" data-planning-field="averageSpr">
                                                 </div>
+                                            </div>
 
+                                            <h4>Composição da Frota</h4>
+
+                                            <div class="input-group fleet">
                                                 <div>
                                                     <h4>Carros</h4>
 
@@ -658,6 +659,18 @@
                                 <!-- CONTROLES DO RELATÓRIO -->
 
                                 <div class="report-controls">
+                                    <div class="history-link flex-box-start">
+                                        <a href="#" target="_blank">
+                                            <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </a>
+
+                                        <div>
+                                            <h4>Planilha Losses Rate</h4>
+                                            <p>Exporte o histórico e importe aqui.</p>
+                                        </div>
+                                    </div>
 
                                     <div class="losses-rate-history-import flex-box-start">
                                         <div>
@@ -667,10 +680,6 @@
                                         </div>
 
                                         <input id="lossesRateHistoryFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
-
-                                        <p id="lossesRateHistoryStatus" role="status" aria-live="polite" aria-atomic="true">
-                                            Nenhum histórico importado.
-                                        </p>
                                     </div>
 
                                     <div class="input-group losses-rate-identification">
@@ -709,6 +718,25 @@
                                         <div>
                                             <h4>Quantidade de AVARIA</h4>
                                             <input id="lossesRateDamageInput" type="text" inputmode="numeric" maxlength="6">
+                                        </div>
+                                    </div>
+
+                                    <div class="losses-rate-controls-summary">
+                                        <h4>Resumo do Mês</h4>
+
+                                        <div class="losses-rate-goal-status">
+                                            <span>Referência máxima</span>
+                                            <span>0,030%</span>
+                                        </div>
+
+                                        <div>
+                                            <span>Total de Perdas</span>
+                                            <span id="lossesRateControlsTotal">—</span>
+                                        </div>
+
+                                        <div>
+                                            <span>Taxa de Perda</span>
+                                            <span id="lossesRateControlsRate">—</span>
                                         </div>
                                     </div>
                                 </div>
