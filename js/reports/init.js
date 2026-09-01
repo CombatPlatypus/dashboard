@@ -3,6 +3,10 @@ import {
 } from "./planning.js";
 
 import {
+    initializePlanningImport,
+} from "./planning-import.js";
+
+import {
     initializeLossesRateReport,
 } from "./losses-rate.js";
 
@@ -18,10 +22,40 @@ import {
     initializeLossesRateExport,
 } from "./losses-rate-export.js";
 
+import {
+    initializeReceiptReport,
+} from "./receipt.js";
+
+import {
+    initializeReceiptImport,
+} from "./receipt-import.js";
+
+import {
+    initializeReceiptCharts,
+} from "./receipt-charts.js";
+
+import {
+    initializeReceiptExport,
+} from "./receipt-export.js";
+
 /* INICIALIZA O PAINEL DE RELATÓRIOS */
 
 function initializeReportsPanel() {
+
+    // PLANEJAMENTO
+
     initializePlanningLhList();
+    initializePlanningImport();
+
+    // RECEBIMENTO
+
+    initializeReceiptReport();
+    initializeReceiptCharts();
+    initializeReceiptImport();
+    initializeReceiptExport();
+
+    // TAXA DE PERDAS
+
     initializeLossesRateReport();
     initializeLossesRateCharts();
     initializeLossesRateImport();
