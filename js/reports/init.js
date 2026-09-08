@@ -38,9 +38,37 @@ import {
     initializeReceiptExport,
 } from "./receipt-export.js";
 
+import {
+    initializeExpeditionReport,
+} from "./expedition.js";
+
+import {
+    initializeExpeditionImport,
+} from "./expedition-import.js";
+
+import {
+    initializeExpeditionErrorsImport,
+} from "./expedition-errors-import.js";
+
+import {
+    initializeExpeditionCharts,
+} from "./expedition-charts.js";
+
+import {
+    initializeExpeditionErrorsCharts,
+} from "./expedition-errors-charts.js";
+
+import {
+    initializeReportNotifications,
+} from "./report-notifications.js";
+
 /* INICIALIZA O PAINEL DE RELATÓRIOS */
 
 function initializeReportsPanel() {
+
+    // BARRA DE NOTIFICAÇÕES
+
+    initializeReportNotifications();
 
     // PLANEJAMENTO
 
@@ -53,6 +81,14 @@ function initializeReportsPanel() {
     initializeReceiptCharts();
     initializeReceiptImport();
     initializeReceiptExport();
+
+    // EXPEDIÇÃO
+
+    initializeExpeditionReport();
+    initializeExpeditionImport();
+    initializeExpeditionErrorsImport();
+    initializeExpeditionCharts();
+    initializeExpeditionErrorsCharts();
 
     // TAXA DE PERDAS
 
