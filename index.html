@@ -151,7 +151,7 @@
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#l">
+                                <a href="#expedition">
                                     <div class="flex-box-full-center">
                                         <h4>Expedição</h4>
                                     </div>
@@ -183,6 +183,16 @@
                             <button id="reportImportButton" disabled>
                                 <img src="images/geral-icons/import-icon.svg">
                             </button>
+                        </div>
+                    </div>
+
+                    <div class="warning" id="reportsNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                        <div class="flex-box-start">
+                            <img id="reportsNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                            <h4 id="reportsNotificationText">
+                                Tudo em silêncio por enquanto.
+                            </h4>
                         </div>
                     </div>
 
@@ -400,14 +410,6 @@
                                     <!-- FOOTER -->
 
                                     <div class="footer flex-box-between">
-                                        <div class="flex-box-start report-warning" id="planningReportStatus" role="status" aria-live="polite" aria-atomic="true">
-                                            <img id="planningReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
-
-                                            <p id="planningReportStatusText">
-                                                O relatório ainda aguarda informações.
-                                            </p>
-                                        </div>
-                                        
                                         <div>
                                             <button class="button" id="planningClearReportButton" type="button">
                                                 Limpar Relatório
@@ -657,14 +659,6 @@
                                     <!-- FOOTER -->
 
                                     <div class="footer flex-box-between">
-                                        <div class="flex-box-start report-warning" id="lossesRateReportStatus" role="status" aria-live="polite" aria-atomic="true">
-                                            <img id="lossesRateReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
-
-                                            <p id="lossesRateReportStatusText">
-                                                O relatório ainda aguarda informações.
-                                            </p>
-                                        </div>
-                                        
                                         <div>
                                             <button class="button" id="lossesRateCopyBaseButton" type="button">
                                                 Copiar Base Atualizada
@@ -685,15 +679,15 @@
 
                                 <div class="report-controls">
                                     <div class="history-link flex-box-start">
-                                        <a href="https://docs.google.com/spreadsheets/d/12hwMXkw5vMvpvEWcXaXyJqNFv8nF8ugZSPHlKIJq5ko/edit?gid=0#gid=0" target="_blank">
+                                        <a href="https://docs.google.com/spreadsheets/d/1TUOf4Bvv7L_Q87xOkCQqPKkNpSi03OSs3aKobbAn724/edit?gid=275287237#gid=275287237" target="_blank">
                                             <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
                                                 <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                             </svg>
                                         </a>
 
                                         <div>
-                                            <h4>Planilha Losses Rate</h4>
-                                            <p>Exporte o histórico e importe aqui.</p>
+                                            <h4>Planilha - Taxa de Perdas</h4>
+                                            <p>Copie toda página e importe aqui.</p>
                                         </div>
                                     </div>
 
@@ -704,7 +698,6 @@
                                             </button>
                                         </div>
 
-                                        <input id="lossesRateHistoryFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
                                     </div>
 
                                     <div class="input-group losses-rate-identification">
@@ -773,15 +766,22 @@
                             <!-- HEADER -->
 
                             <ul class="tabs flex-box-start" data-tabs id="receipt-view-tabs">
+                                
                                 <li class="tabs-title is-active">
                                     <a href="#receipt-tables">
-                                        <h4>Relatório Principal</h4>
+                                        <h4>Resumo do Relatório</h4>
                                     </a>
                                 </li> 
 
+                                <!-- <li class="tabs-title">
+                                    <a href="#linehaul">
+                                        <h4>Descarga de LH</h4>
+                                    </a>
+                                </li> -->
+
                                 <li class="tabs-title">
                                     <a href="#receipt-charts">
-                                        <h4>Comparação de Recebedores</h4>
+                                        <h4>Rank de Recebedores</h4>
                                     </a>
                                 </li>
                             </ul> 
@@ -958,7 +958,7 @@
                                             <div class="preview-style" id="receiptComparisonExportArea">
                                                 <div class="title">
                                                     <h2>
-                                                        Comparação de Recebedores — <span id="receiptComparisonWindow">AM</span>
+                                                        Rank de Recebedores — <span id="receiptComparisonWindow">AM</span>
                                                     </h2>
                                                 </div>
 
@@ -1006,14 +1006,6 @@
                                     <!-- FOOTER -->
 
                                     <div class="footer flex-box-between">
-                                        <div class="flex-box-start report-warning" id="receiptReportStatus" role="status" aria-live="polite" aria-atomic="true">
-                                            <img id="receiptReportStatusIcon" src="images/geral-icons/alert-icon.svg" alt="">
-
-                                            <p id="receiptReportStatusText">
-                                                O relatório ainda aguarda informações.
-                                            </p>
-                                        </div>
-
                                         <div>
                                             <button class="button" id="receiptClearReportButton" type="button" disabled>Limpar Relatório</button>
                                             <button class="button" id="receiptCopyReportButton" type="button" disabled>Copiar Relatório</button>
@@ -1088,7 +1080,449 @@
 
                                         <p>Calcular participação no total de erros.</p>
                                     </label>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="tabs-panel" id="expedition">
+
+                            <!-- HEADER -->
+
+                            <ul class="tabs flex-box-start" data-tabs id="expedition-view-tabs">
+                                <li class="tabs-title is-active">
+                                    <a href="#expedition-tables" data-controls-target="controls-summary">
+                                        <h4>Resumo do Relatório</h4>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#expedition-charts" data-controls-target="controls-summary">
+                                        <h4>Rank de Conferentes</h4>
+                                    </a>
+                                </li>
+
+                                <li class="tabs-title">
+                                    <a href="#expedition-mistakes" data-controls-target="controls-mistakes">
+                                        <h4>Análise de Erros</h4>
+                                    </a>
+                                </li>
+
+                                <li class="tabs-title">
+                                    <a href="#expedition-streets" data-controls-target="controls-mistakes">
+                                        <h4>Análise de Ruas</h4>
+                                    </a>
+                                </li>
+                            </ul> 
+                            
+                            <!-- CONTEÚDO -->
+
+                            <div class="flex-box-start">
+
+                                <!-- PPÉVIA -->
+
+                                <div class="preview" id="expeditionSheetPreview">
+                                    <div class="tabs-content" data-tabs-content="expedition-view-tabs">
+
+                                        <div class="tabs-panel is-active" id="expedition-tables">
+                                            <div class="preview-style" id="expeditionReportExportArea">
+                                                <div class="title">
+                                                    <h2>Relatório de Conferência</h2>
+                                                </div>
+
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Janela</th>
+                                                            <th>Conferentes</th>
+                                                            <th>Volume Conferido</th>
+                                                            <th>Rotas Conferidas</th>
+                                                            <th>Rotas no Piso</th>
+                                                            <th>Tempo de Expedição</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td id="expeditionPreviewWindow">—</td>
+                                                            <td id="expeditionPreviewOperatorCount">—</td>
+                                                            <td id="expeditionPreviewVolumeChecked">—</td>
+                                                            <td id="expeditionPreviewValidatedRoutes">—</td>
+                                                            <td id="expeditionPreviewFloorRoutes">—</td>
+                                                            <td id="expeditionPreviewDuration">—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Pacotes Ausentes</th>
+                                                            <th>Pacotes Duplicados</th>
+                                                            <th>Pacotes Incorretos</th>
+                                                            <th>Pacotes Desconhecidos</th>
+                                                            <th>Pacotes Exceção</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td id="expeditionPreviewMissing">—</td>
+                                                            <td id="expeditionPreviewDuplicated">—</td>
+                                                            <td id="expeditionPreviewMissorted">—</td>
+                                                            <td id="expeditionPreviewUnknown">—</td>
+                                                            <td id="expeditionPreviewException">—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <table class="expedition-operator-table">
+                                                    <colgroup>
+                                                        <col class="operator-name-column">
+                                                        <col class="operator-metric-column">
+                                                        <col class="operator-metric-column">
+                                                        <col class="operator-metric-column">
+                                                        <col class="operator-metric-column">
+                                                    </colgroup>
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Conferente</th>
+                                                            <th>Rotas Feitas</th>
+                                                            <th>Tempo Médio</th>
+                                                            <th>Pior Tempo</th>
+                                                            <th>Melhor Tempo</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="expeditionPreviewOperatorBody">
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="tabs-panel" id="expedition-charts">
+                                            <div class="preview-style" id="expeditionChartsExportArea">
+                                                <div class="title">
+                                                    <h2>Rank de Conferentes</h2>
+                                                </div>
+
+                                                <div class="cards">
+                                                    <div>
+                                                        <p>Maior Quantidade de Rotas</p>
+
+                                                        <h4 id="expeditionTopRoutesOperator">
+                                                            —
+                                                        </h4>
+
+                                                        <p id="expeditionTopRoutesDetails">
+                                                            0 Rotas Conferidas
+                                                        </p>
+                                                    </div>
+
+                                                    <div>
+                                                        <p>Conferente Mais Rápido</p>
+
+                                                        <h4 id="expeditionFastestOperator">
+                                                            —
+                                                        </h4>
+
+                                                        <p id="expeditionFastestOperatorDetails">
+                                                            Tempo Médio: —
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="charts">
+                                                    <div>
+                                                        <h3>Rotas Conferidas por Conferente</h3>
+                                                        <p>Distribuição das rotas conferidas.</p>
+
+                                                        <div>
+                                                            <canvas id="expeditionVolumeComparisonChart" role="img"></canvas>
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <h3>Média de Tempo por Conferente</h3>
+                                                        <p>Tempo médio para conclusão de cada rota.</p>
+
+                                                        <div>
+                                                            <canvas id="expeditionTimeComparisonChart" role="img"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tabs-panel" id="expedition-mistakes">
+                                            <div class="preview-style" id="expeditionMistakesExportArea">
+                                                <div class="title">
+                                                    <h2>Análise de Erros</h2>
+                                                </div>
+
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Erros de Sorting</th>
+                                                            <th>Erros de Etiquetagem</th>
+                                                            <th>Total de Erros</th>
+                                                            <th>Taxa de Erros</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td id="expeditionPreviewSortingErrors">—</td>
+                                                            <td id="expeditionPreviewLabelingErrors">—</td>
+                                                            <td id="expeditionPreviewTotalErrors">—</td>
+                                                            <td id="expeditionPreviewErrorRate">—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Erros Revertidos</th>
+                                                            <th>Taxa de Erros Revertidos</th>
+                                                            <th>Total Final de Erros</th>
+                                                            <th>Taxa Final</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td id="expeditionPreviewRevertedErrors">—</td>
+                                                            <td id="expeditionPreviewRevertedRate">—</td>
+                                                            <td id="expeditionPreviewFinalErrors">—</td>
+                                                            <td id="expeditionPreviewFinalRate">—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <div class="streets">
+                                                    <div class="streets-chart">
+                                                        <div class="chart-title">
+                                                            <div class="flex-box-between">
+                                                                <h4>Identificados x Revertidos x Saldo Final</h4>
+
+                                                                <div class="flex-box-start">
+                                                                    <div class="type">
+                                                                        <div style="background-color: #ffc107;"></div>
+                                                                        <p>Identificados</p>
+                                                                    </div>
+
+                                                                    <div class="type">
+                                                                        <div style="background-color: #8BC34A;"></div>
+                                                                        <p>Revertidos</p>
+                                                                    </div>
+
+                                                                    <div class="type">
+                                                                        <div style="background-color: #FF5722;"></div>
+                                                                        <p>Saldo Final</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="expedition-error-balance-chart">
+                                                            <canvas id="expeditionErrorBalanceChart" role="img" aria-label="Comparação entre erros identificados, revertidos e saldo final"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                         <div class="tabs-panel" id="expedition-streets">
+                                            <div class="preview-style" id="expeditionStreetsExportArea">
+                                                <div class="title">
+                                                    <h2>Análise de Ruas</h2>
+                                                </div>
+
+                                                <div class="cards">
+                                                    <div>
+                                                        <p>Melhor Rua</p>
+
+                                                        <h4 id="expeditionBestStreet">
+                                                            —
+                                                        </h4>
+
+                                                        <p>
+                                                            Taxa de Erros: <span id="expeditionBestStreetRate">—</span>
+                                                        </p>
+                                                    </div>
+
+                                                    <div>
+                                                        <p>Pior Rua</p>
+
+                                                        <h4 id="expeditionWorstStreet">
+                                                            —
+                                                        </h4>
+
+                                                        <p>
+                                                             Taxa de Erros: <span id="expeditionWorstStreetRate">—</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Rua</th>
+                                                            <th>Guardião</th>
+                                                            <th>Pacotes Ausentes</th>
+                                                            <th>Erros da Rua</th>
+                                                            <th>Taxa de Erros</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="expeditionPreviewStreetBody">
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <div class="streets-chart">
+                                                    <div class="chart-title">
+                                                        <div class="flex-box-between">
+                                                            <h4>Ocorrências por Rua</h4>
+
+                                                            <div class="flex-box-start">
+                                                                <div class="type">
+                                                                    <div style="background-color: #ffc107;"></div>
+                                                                    <p>Pacotes Ausentes</p>
+                                                                </div>
+
+                                                                <div class="type">
+                                                                    <div style="background-color: #F44336;"></div>
+                                                                    <p>Erros da Rua</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="expedition-street-occurrences-chart" id="expeditionStreetOccurrencesChartContainer">
+                                                        <canvas id="expeditionStreetOccurrencesChart" role="img" aria-label="Comparação de pacotes ausentes e erros por rua"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         </div>
+                                    </div>
+
+                                    <!-- FOOTER -->
+
+                                    <div class="footer">
+                                        <div>
+                                            <button class="button" id="expeditionClearReportButton" type="button" disabled>Limpar Relatório</button>
+                                            <button class="button" id="expeditionCopyReportButton" type="button" disabled>Copiar Relatório</button>
+                                            <button class="button" id="expeditionDownloadReportButton" type="button" disabled>Baixar Relatório</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CONTROLES DO RELATÓRIO -->
+
+                                <div class="report-controls" id="expedition-controls">
+
+                                    <!-- ANÁLISE DOS CONFERENTES E GESTÃO AUDIT -->
+
+                                    <div class="expedition-controls-panel is-active" id="controls-summary">
+                                        <div class="history-link flex-box-start">
+                                            <a href="https://spx.shopee.com.br/#/generalReceiveTaskMgt" target="_blank">
+                                                <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                                    <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </a>
+
+                                            <div>
+                                                <h4>Gestão de Audit</h4>
+                                                <p>Exporte do SPX e importe aqui.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="history-import flex-box-start">
+                                            <div>
+                                                <button class="button" id="expeditionImportButton" type="button">Importar Conferência</button>
+                                            </div>
+
+                                            <input id="expeditionFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <div>
+                                                <h4>Janela</h4>
+
+                                                <select class="standard-select" id="expeditionWindowInput" disabled>
+                                                    <option value="AM">AM</option>
+                                                    <option value="PM1">PM1</option>
+                                                    <option value="PM2">PM2</option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <h4>Rotas no Piso</h4>
+                                                <input id="expeditionFloorRoutesInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                            </div>
+
+                                            <div>
+                                                <h4>Pacotes Desconhecidos</h4>
+                                                <input id="expeditionUnknownInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                            </div>
+
+                                            <div>
+                                                <h4>Pacotes Exceção</h4>
+                                                <input id="expeditionExceptionInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group" id="expeditionOperatorControls"></div>
+                                    </div>
+
+                                    <!-- ANÁLISE DOS ERROS ENCONTRADOS NA GESTÃO AUDIT -->
+
+                                    <div class="expedition-controls-panel" id="controls-mistakes">
+                                        <div class="history-link flex-box-start">
+                                            <a href="https://docs.google.com/spreadsheets/d/1TUOf4Bvv7L_Q87xOkCQqPKkNpSi03OSs3aKobbAn724/edit?gid=354393054#gid=354393054" target="_blank">
+                                                <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                                    <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </a>
+
+                                            <div>
+                                                <h4>Planilha - Bipagem de Erros</h4>
+                                                <p>Copie toda página e importe aqui.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="history-import flex-box-start">
+                                            <div>
+                                                <button class="button" id="expeditionErrorsImportButton" type="button">
+                                                    Importar Planilha de Erros
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group">
+                                            <div>
+                                                <h4>Revertidos</h4>
+                                                <input id="expeditionRevertedInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group" id="expeditionStreetGuardianControls"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1657,6 +2091,45 @@
         <script src="js/data-analysis/charts.js" defer></script>
         <script src="js/data-analysis/comparison.js" defer></script>
         <script src="js/data-analysis/init.js" defer></script>
+
+        <!-- AJUSTES TABS -->
+
+        <script>
+
+            const expeditionTabs = $("#expedition-view-tabs");
+            const expeditionControls = $("#expedition-controls");
+
+            function updateExpeditionControls() {
+                const activeLink = expeditionTabs.find(
+                    ".tabs-title.is-active > a"
+                );
+
+                const controlsTarget = activeLink.data("controls-target");
+                const activeTabTarget = activeLink.attr("href");
+
+                expeditionControls
+                    .find(".expedition-controls-panel")
+                    .removeClass("is-active")
+                    .attr("hidden", true);
+
+                $("#" + controlsTarget)
+                    .addClass("is-active")
+                    .removeAttr("hidden");
+
+                $("#expeditionStreetGuardianControls")
+                    .toggleClass(
+                        "is-errors-tab-active",
+                        activeTabTarget === "#expedition-mistakes"
+                    );
+            }
+
+            expeditionTabs.on("change.zf.tabs", function () {
+                updateExpeditionControls();
+            });
+
+            updateExpeditionControls();
+
+        </script>
 
         <!-- PONTO DE ENTRADA DA APLICAÇÃO -->
 
