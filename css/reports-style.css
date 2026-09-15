@@ -1,4 +1,3 @@
-
 /* ESTILO GERAL DO REPORT */
 
 #reports {
@@ -6,7 +5,7 @@
     margin: 0 auto;
 }
 #reports > .flex-box-start {
-    max-width: 1300px;
+    max-width: 1500px;
     margin: 0 auto 20px auto;
     column-gap: 15px;
     align-items: center;
@@ -29,14 +28,9 @@
         text-align: center;
     }
     #reports .action-buttons {
-        flex: 0 0 135px;
+        flex: 0 0 85px;
         column-gap: 15px;
         overflow: hidden;
-    }
-    #reports .action-buttons #reportDownloadButton {
-        min-height: 45px;
-        font-size: 14px;
-        padding: 10px 15px;
     }
     #reports .action-buttons #reportImportButton {
         background-color: transparent;
@@ -47,7 +41,7 @@
         opacity: 0.61;
         transition: all 0.5s ease;
     }
-    #reports .action-buttons #reportImportButton img {
+    #reports .action-buttons button img {
         width: 35px;
     }
     #reports > .tabs-content > .tabs-panel > .flex-box-start {
@@ -97,6 +91,200 @@
         letter-spacing: 1.5px;
     }
 
+    /* CARDS DE DESTAQUES */
+
+    #reports .cards {
+        display: grid;
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(300px, 1fr)
+            );
+        gap: 15px;
+        width: 100%;
+    }
+    #reports .cards > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 11px;
+        min-width: 0;
+        padding: 25px;
+        background-color: var(--color-container);
+        border: 1px solid var(--color-border);
+    }
+    #reports .cards > div > .flex-box-start {
+        align-items: center;
+        column-gap: 6px;
+    }
+    #reports .cards > div > .flex-box-start > h4 {
+        margin: 0;
+    }
+    #reports .cards > div > .flex-box-start > img {
+        width: 25px;
+    }
+    #reports .cards > div > p {
+        font-size: 14px;
+        color: var(--color-gray-p);
+        line-height: 1;
+        margin: 0;
+    }
+    #reports .cards > div > p:last-child {
+        margin: 0;
+    }
+
+    /* GRAFICOS - BARRAS HORIZONTAIS ÚNICO */
+
+    #reports .horizontal-bars-chart {
+        width: 100%;
+        padding: 20px;
+        background-color: var(--color-container);
+        border: 1px solid var(--color-border);
+    }
+    #reports .horizontal-bars-chart h4, #reports .horizontal-bars-chart p {
+        margin: 0;
+    }
+    #reports .horizontal-bars-chart p {
+        font-size: 14px;
+        color: var(--color-gray-p);
+        line-height: 1;
+    }
+    #reports .horizontal-bars-chart .chart-title {
+        margin-bottom: 20px;
+    }
+    #reports .horizontal-bars-chart .chart-title .flex-box-start {
+        column-gap: 15px;
+    }
+    #reports .horizontal-bars-chart .chart-title .type {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    #reports .horizontal-bars-chart .chart-title .type > div {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+    }
+    #reports .horizontal-bars-chart .chart-title h4,
+    #reports .horizontal-bars-chart .chart-title p {
+        letter-spacing: 1px;
+    }
+
+    /* GRAFICOS - BARRAS HORIZONTAIS DUPLO */
+
+    #reports .two-horizontal-bars-chart {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        width: 100%;
+        height: auto;
+        gap: 15px;
+    }
+    #reports .two-horizontal-bars-chart .chart-panel {
+        display: flex;
+        flex-direction: column;
+        height: 470px;
+        padding: 20px;
+        background-color: var(--color-container);
+        border: 1px solid var(--color-border);
+        border-radius: 0 0 5px 5px;
+    }
+    #reports .two-horizontal-bars-chart .chart-panel h3 {
+        margin: 0 0 5px;
+        text-align: center;
+    }
+    #reports .two-horizontal-bars-chart .chart-panel > p {
+        margin: 0 0 15px 0;
+        color: var(--color-gray-p);
+        font-size: 14px;
+        text-align: center;
+    }
+    #reports .two-horizontal-bars-chart .chart-panel > div {
+        height: 359px
+    }
+    #reports .two-horizontal-bars-chart .chart-panel > div > canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* GRAFICOS - BARRA ÚNICA HORRIZONTAL DE PROGRESSO */
+
+    #reports .chart-progress {
+        padding: 18px 20px;
+        border: 1px solid var(--color-border);
+        background-color: var(--color-container);
+    }
+    #reports .chart-progress-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+    #reports .chart-progress-header h4 {
+        margin: 0 0 5px;
+    }
+    #reports .chart-progress-header p {
+        margin: 0;
+        color: var(--color-gray-p);
+        font-size: 14px;
+    }
+    #reports .chart-progress-percentage {
+        color: var(--color-text) !important;
+        font-size: 16px !important;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    #reports .chart-progress-track {
+        position: relative;
+        height: 15px;
+        margin-top: 18px;
+        overflow: hidden;
+        background-color: var(--color-progress-bar);
+    }
+    #reports .chart-progress-fill {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0;
+        background-color: #4CAF50;
+    }
+
+    /* GRAFICOS - ROSCA */
+
+    #reports .doughnut-chart {
+        padding: 15px;
+        background-color: var(--color-container);
+        border: 1px solid var(--color-border);
+    }
+    #reports .doughnut-chart > h3 {
+        margin-bottom: 15px;
+        font-size: 14px;
+        text-align: center;
+    }
+    #reports .doughnut-chart > div {
+        width: 100%;
+        height: 321px;
+        position: relative;
+    }
+
+    /* GRAFICOS - LINHA */
+
+    #reports .line-chart {
+        padding: 15px;
+        background-color: var(--color-container);
+        border: 1px solid var(--color-border);
+    }
+    #reports .line-chart > h3 {
+        margin-bottom: 15px;
+        font-size: 14px;
+        text-align: center;
+    }
+    #reports .line-chart > div {
+        width: 100%;
+        height: 321px;
+        position: relative;
+    }
+
     /* TABELAS */
 
     #reports table {
@@ -142,7 +330,7 @@
     }
     #reports .footer > div {
         width: 100%;
-        height: 45px;
+        height: 40px;
         display: flex;
         overflow: hidden;
         gap: 10px;
@@ -153,9 +341,6 @@
     }
     #reports .footer button {
         flex: 1 1 0;
-        min-height: 45px;
-        font-size: 14px;
-        padding: 10px 15px;
     }
          
     /* CONTROLES */
@@ -246,7 +431,7 @@
     #planning #planningGeneralControls > .input-group:first-of-type {
         padding-bottom: 20px;
         border-bottom: 2px solid var(--color-border);
-        margin-bottom: 28px;
+        margin-bottom: 15px;
     }
     #losses-rate .tabs {
         grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
@@ -256,6 +441,7 @@
         margin-bottom: 20px;
         border-bottom: 2px solid var(--color-border);
     }
+
     #receipt .report-controls .input-group:last-of-type {
         padding-bottom: 0;
         margin-bottom: 0;
@@ -282,6 +468,16 @@
     }
     #expedition .expedition-guardian-name {
         text-transform: uppercase;
+    }
+    #expedition .two-horizontal-bars-chart .chart-panel {
+        height: auto !important;
+        min-height: 1226px !important;
+    }
+    #expedition .two-horizontal-bars-chart .chart-panel > div {
+        height: 1115px;
+    }
+    #overall-analysis td {
+        text-align: center;
     }
 
 /* ESTILOS ÚNICOS DE CADA RELATÓRIO */
@@ -525,6 +721,9 @@
         border: 1px solid var(--color-border);
         border-radius: 5px;
     }
+    #planning .planning-lh-segregate-to-toggle[hidden] {
+        display: none;
+    }
     #planning .planning-lh-segregate-to-toggle:has(input:disabled) {
         opacity: 0.5;
         cursor: not-allowed;
@@ -547,6 +746,9 @@
     #planningPoolControls > h4:last-of-type {
         margin-top: 20px;
     }
+    #planningPoolControls > .input-group:first-of-type {
+        margin-bottom: 18px;
+    }
     .input-group.operation, .input-group.fleet {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
     }
@@ -564,9 +766,10 @@
         color: #1a73e8;
     }
 
-    /* PLANEJAMENTO - REVEAL */
+    /* SPX - SELEÇÃO DE JANELA */
 
-    #planningImportWindowOptions {
+    #planningImportWindowOptions,
+    #receiptLinehaulImportWindowOptions {
         margin: 20px 0;
         display: flex;
         flex-direction: column;
@@ -575,11 +778,13 @@
         border-top: 2px solid var(--color-border);
         border-bottom: 2px solid var(--color-border);
     }
-    #planningImportWindowOptions div {
+    #planningImportWindowOptions div,
+    #receiptLinehaulImportWindowOptions div {
         cursor: pointer;
         width: max-content;
     }
-    #planningImportWindowOptions input{
+    #planningImportWindowOptions input,
+    #receiptLinehaulImportWindowOptions input {
         margin-right: 10px;
         cursor: pointer;
     }
@@ -635,7 +840,7 @@
         justify-content: space-between;
         align-items: center;
         min-height: 40px;
-        padding: 8px 12px;
+        padding: 13px 12px;
         border: 1px solid var(--color-border);
         border-bottom: none;
     }
@@ -677,9 +882,6 @@
 
     /* TAXA DE PERDAS - TABELA DE IDENTIFICAÇÃO */
 
-    #losses-rate .losses-rate-identification-table {
-        table-layout: fixed;
-    }
     #losses-rate .losses-rate-identification-table th:first-child,
     #losses-rate .losses-rate-identification-table td:first-child {
         width: 40%;
@@ -705,6 +907,12 @@
     #receipt #receiptWindowInput + .select2-container {
         width: 100% !important;
     }
+    #receipt #receiptLinehaulWindowInput {
+        width: 100%;
+    }
+    #receipt #receiptLinehaulWindowInput + .select2-container {
+        width: 100% !important;
+    }
     #receipt .receipt-operator-row {
         grid-template-columns: minmax(0, 1fr);
     }
@@ -714,27 +922,57 @@
 
     /* RECEBIMENTO - CONTROLES */
 
-    #receipt .receipt-operator-controls {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        max-height: var(
-            --receipt-operator-controls-max-height,
-            451px
-        );
+    #receipt .receipt-operator-controls,
+    #receipt .receipt-linehaul-controls {
         overflow-y: auto;
         padding-right: 15px;
     }
+    #receipt .receipt-operator-controls {
+        max-height: 446px;
+    }
+    #receipt .receipt-linehaul-controls {
+        max-height: 511px;
+    }
+    #receipt .receipt-linehaul-controls > div {
+        width: 100%;
+    }
+    #receipt .receipt-linehaul-controls [data-receipt-linehaul-field="code"] {
+        min-width: 0;
+        flex: 1 1 0;
+    }
+    #receipt .receipt-linehaul-controls [data-receipt-linehaul-field="loadedOrders"] {
+        width: 86px;
+        flex: 0 0 86px;
+        text-align: center;
+    }
+    #receipt .receipt-linehaul-controls .checkbox {
+        flex: 0 0 40px;
+    }
+    #receipt .receipt-operator-controls [data-receipt-operator-field="labeler"] {
+        min-width: 0;
+        flex: 1 1 0;
+    }
+    #receipt .receipt-operator-controls [data-receipt-operator-field="errorQuantity"] {
+        width: 86px;
+        flex: 0 0 86px;
+        text-align: center;
+    }
+    #receipt .receipt-operator-controls .checkbox {
+        flex: 0 0 40px;
+    }
 
-    #receipt .receipt-operator-controls::-webkit-scrollbar-track {
+    #receipt .receipt-operator-controls::-webkit-scrollbar-track,
+    #receipt .receipt-linehaul-controls::-webkit-scrollbar-track {
         background-color: transparent;
     }
-    #receipt .receipt-operator-controls::-webkit-scrollbar {
+    #receipt .receipt-operator-controls::-webkit-scrollbar,
+    #receipt .receipt-linehaul-controls::-webkit-scrollbar {
         width: 5px;
         height: 5px;
         background-color: transparent;
     }
-    #receipt .receipt-operator-controls::-webkit-scrollbar-thumb {
+    #receipt .receipt-operator-controls::-webkit-scrollbar-thumb,
+    #receipt .receipt-linehaul-controls::-webkit-scrollbar-thumb {
         border-radius: 5px;
         background-color: var(--color-border);
     }
@@ -775,44 +1013,6 @@
 
     /* RECEBIMENTO - GRAFICOS E PARTE DE COMPARAÇÃO */
 
-    #receipt .receipt-progress {
-        padding: 18px 20px;
-        border: 1px solid var(--color-border);
-        background-color: var(--color-container);
-    }
-    #receipt .receipt-progress-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-    }
-    #receipt .receipt-progress-header h4 {
-        margin: 0 0 5px;
-    }
-    #receipt .receipt-progress-header p {
-        margin: 0;
-        color: var(--color-gray-p);
-        font-size: 14px;
-    }
-    #receipt .receipt-progress-percentage {
-        color: var(--color-text) !important;
-        font-size: 16px !important;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-    #receipt .receipt-progress-track {
-        position: relative;
-        height: 15px;
-        margin-top: 18px;
-        overflow: hidden;
-        background-color: var(--color-progress-bar);
-    }
-    #receipt .receipt-progress-fill {
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 0;
-        background-color: #4CAF50;
-    }
     #receipt .receipt-operator-preview-table {
         width: 100%;
     }
@@ -821,92 +1021,8 @@
             align-items: flex-start;
         }
     }
-    #receipt #receipt-charts .cards {
-        display: grid;
-        grid-template-columns:
-            repeat(
-                auto-fit,
-                minmax(300px, 1fr)
-            );
-        gap: 15px;
-        width: 100%;
-    }
-    #receipt #receipt-charts .cards > div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        min-width: 0;
-        padding: 25px;
-        background-color: var(--color-container);
-        border: 1px solid var(--color-border);
-    }
-    #receipt .receipt-comparison-card-label {
-        margin: 0 0 5px;
-        color: var(--color-gray-p);
-        font-size: 13px;
-    }
-    #receipt #receipt-charts .cards h4 {
-        margin: 0;
-        font-size: 18px;
-    }
-    #receipt #receipt-charts .cards p:last-child {
-        margin: 0;
-    }
-    #receipt #receipt-charts > .preview-style {
-        box-sizing: border-box;
-        height: calc(var(--receipt-comparison-height, auto) - 129px);
-    }
-    #receipt #receipt-charts > .preview-style > .title,
-    #receipt #receipt-charts > .preview-style > .cards {
-        flex: 0 0 auto;
-    }
-    #receipt #receipt-charts .charts {
-        display: grid;
-        grid-template-columns:
-            repeat(
-                auto-fit,
-                minmax(420px, 1fr)
-            );
-        width: 100%;
-        height: auto;
-        gap: 15px;
-    }
-    #receipt .receipt-comparison-chart-panel {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        min-height: 460px;
-        height: 100%;
-        padding: 20px;
-        background-color: var(--color-container);
-        border: 1px solid var(--color-border);
-        border-radius: 0 0 5px 5px;
-    }
-    #receipt .receipt-comparison-chart-panel h3 {
-        margin: 0 0 5px;
-        text-align: center;
-    }
-    #receipt .receipt-comparison-chart-panel > p {
-        margin: 0;
-        color: var(--color-gray-p);
-        font-size: 14px;
-        text-align: center;
-    }
-    #receipt .receipt-comparison-chart-container {
-        position: relative;
-        flex: 1 1 auto;
-        min-height: 300px;
-        width: 100%;
-        height: auto;
-        margin-top: 15px;
-    }
-    #receipt .receipt-comparison-chart-container canvas {
-        display: block;
-        width: 100% !important;
-        height: 100% !important;
-    }
+
+
 
     /* RECEBIMENTO - RESPONSIVDADE */
 
@@ -918,52 +1034,6 @@
         #receipt #receipt-charts .charts {
             grid-template-columns: 1fr;
         }
-
-        #receipt .receipt-comparison-chart-container {
-            height: 360px;
-            min-height: 360px;
-        }
-    }
-
-    /* EXPEDIÇÃO - CARDS */
-
-    #expedition .cards {
-        display: grid;
-        grid-template-columns:
-            repeat(
-                auto-fit,
-                minmax(300px, 1fr)
-            );
-        gap: 15px;
-        width: 100%;
-    }
-    #expedition .cards > div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        min-width: 0;
-        padding: 25px;
-        background-color: var(--color-container);
-        border: 1px solid var(--color-border);
-    }
-    #expedition .cards > div > p:first-of-type {
-        margin: 0 0 5px;
-        color: var(--color-gray-p);
-        font-size: 13px;
-    }
-    #expedition .cards > div > h4 {
-        margin: 0;
-        font-size: 18px;
-    }
-    #expedition .cards > div > p {
-        font-size: 14px;
-        color: var(--color-gray-p);
-        line-height: 1;
-    }
-    #expedition .cards > div > p:last-child {
-        margin: 0;
     }
 
     /* EXPEDIÇÃO - TABELAS */
@@ -987,75 +1057,6 @@
 
     /* EXPEDIÇÃO - GRÁFICOS */
 
-    #expedition #expedition-charts .charts {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-        width: 100%;
-        height: auto;
-        gap: 15px;
-    }
-    #expedition #expedition-charts .charts > div {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        min-height: 1216px;
-        padding: 20px;
-        background-color: var(--color-container);
-        border: 1px solid var(--color-border);
-        border-radius: 0 0 5px 5px;
-    }
-    #expedition #expedition-charts .charts > div > h3 {
-        margin: 0 0 5px;
-        text-align: center;
-    }
-    #expedition #expedition-charts .charts > div > p {
-        margin: 0;
-        color: var(--color-gray-p);
-        font-size: 14px;
-        text-align: center;
-    }
-    #expedition #expedition-charts .charts > div > div {
-        flex: 1 1 auto;
-        width: 100%;
-        min-height: 300px;
-        height: auto;
-        margin-top: 15px;
-        position: relative;
-    }
-    #expedition .streets-chart {
-        width: 100%;
-        padding: 20px;
-        background-color: var(--color-container);
-        border: 1px solid var(--color-border);
-    }
-    #expedition .streets-chart h4, #expedition .streets-chart p {
-        margin: 0;
-    }
-    #expedition .streets-chart p {
-        font-size: 14px;
-        color: var(--color-gray-p);
-        line-height: 1;
-    }
-    #expedition .streets-chart .chart-title {
-        margin-bottom: 20px;
-    }
-    #expedition .streets-chart .chart-title .flex-box-start {
-        column-gap: 15px;
-    }
-    #expedition .streets-chart .chart-title .type {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    #expedition .streets-chart .chart-title .type > div {
-        width: 20px;
-        height: 20px;
-        border-radius: 3px;
-    }
-    #expedition .streets-chart .chart-title h4,
-    #expedition .streets-chart .chart-title p {
-        letter-spacing: 1px;
-    }
     #expedition .expedition-error-balance-chart {
         position: relative;
         width: 100%;
@@ -1078,7 +1079,7 @@
     }
     #expedition #expeditionOperatorControls {
         grid-template-columns: repeat(auto-fit, minmax(100%, 1fr)) !important;
-        height: 1192px;
+        height: 1187px;
         overflow: auto;
         padding-right: 15px;
     }
@@ -1097,10 +1098,13 @@
     #controls-mistakes .input-group {
         grid-template-columns: repeat(auto-fit, minmax(100%, 1fr)) !important;
     }
-    #expedition #expeditionStreetGuardianControls.is-errors-tab-active {
-        max-height: 477px;
+    #expedition #expeditionStreetGuardianControls {
+        max-height: 864px;
         overflow-y: auto;
         padding-right: 15px;
+    }
+    #expedition #expeditionStreetGuardianControls.is-errors-tab-active {
+        max-height: 472px;
     }
     #expedition #expeditionStreetGuardianControls.is-errors-tab-active::-webkit-scrollbar-track {
         background-color: transparent;

@@ -1,62 +1,26 @@
 import {
-    initializePlanningLhList,
-} from "./planning.js";
+    reportManager,
+} from "./core/report-manager.js";
 
 import {
-    initializePlanningImport,
-} from "./planning-import.js";
+    planningReport,
+} from "./planning/index.js";
 
 import {
-    initializeLossesRateReport,
-} from "./losses-rate.js";
+    receiptReport,
+} from "./receipt/index.js";
 
 import {
-    initializeLossesRateCharts,
-} from "./losses-rate-charts.js";
+    expeditionReport,
+} from "./expedition/index.js";
 
 import {
-    initializeLossesRateImport,
-} from "./losses-rate-import.js";
+    lossesRateReport,
+} from "./losses-rate/index.js";
 
 import {
-    initializeLossesRateExport,
-} from "./losses-rate-export.js";
-
-import {
-    initializeReceiptReport,
-} from "./receipt.js";
-
-import {
-    initializeReceiptImport,
-} from "./receipt-import.js";
-
-import {
-    initializeReceiptCharts,
-} from "./receipt-charts.js";
-
-import {
-    initializeReceiptExport,
-} from "./receipt-export.js";
-
-import {
-    initializeExpeditionReport,
-} from "./expedition.js";
-
-import {
-    initializeExpeditionImport,
-} from "./expedition-import.js";
-
-import {
-    initializeExpeditionErrorsImport,
-} from "./expedition-errors-import.js";
-
-import {
-    initializeExpeditionCharts,
-} from "./expedition-charts.js";
-
-import {
-    initializeExpeditionErrorsCharts,
-} from "./expedition-errors-charts.js";
+    overallAnalysisReport,
+} from "./overall-analysis/index.js";
 
 import {
     initializeReportNotifications,
@@ -70,32 +34,29 @@ function initializeReportsPanel() {
 
     initializeReportNotifications();
 
-    // PLANEJAMENTO
+    // RELATÓRIOS MODULARIZADOS
 
-    initializePlanningLhList();
-    initializePlanningImport();
+    reportManager.register(
+        planningReport,
+    );
 
-    // RECEBIMENTO
+    reportManager.register(
+        receiptReport,
+    );
 
-    initializeReceiptReport();
-    initializeReceiptCharts();
-    initializeReceiptImport();
-    initializeReceiptExport();
+    reportManager.register(
+        expeditionReport,
+    );
 
-    // EXPEDIÇÃO
+    reportManager.register(
+        lossesRateReport,
+    );
 
-    initializeExpeditionReport();
-    initializeExpeditionImport();
-    initializeExpeditionErrorsImport();
-    initializeExpeditionCharts();
-    initializeExpeditionErrorsCharts();
+    reportManager.register(
+        overallAnalysisReport,
+    );
 
-    // TAXA DE PERDAS
-
-    initializeLossesRateReport();
-    initializeLossesRateCharts();
-    initializeLossesRateImport();
-    initializeLossesRateExport();
+    reportManager.initializeAll();
 }
 
 if (
