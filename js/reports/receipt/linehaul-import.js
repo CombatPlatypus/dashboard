@@ -8,14 +8,19 @@ import {
     createSpXLinehaulWindowCandidates,
     formatSpXLinehaulOrigin,
     getSpXLinehaulPlainLoadedOrders,
+    getSpXLinehaulWindow,
     parseSpXLinehaulQuantity,
 } from "../core/spx-linehaul-rules.js";
 
+import {
+    setReportNotification,
+} from "../report-notifications.js";
+
 const RECEIPT_LINEHAUL_IMPORT_BUTTON_ID =
-    "receiptLinehaulImportButton";
+    "receiptImportActionButton";
 
 const RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT =
-    "Importar Viagens de Carga";
+    "Importar viagens de carga da área de transferência";
 
 const RECEIPT_LINEHAUL_IMPORT_FEEDBACK_DURATION =
     3000;
@@ -25,9 +30,6 @@ const RECEIPT_LINEHAUL_IMPORT_EXPECTED_MAXIMUM =
 
 const RECEIPT_LINEHAUL_CODE_PATTERN =
     /\bLT[A-Z0-9]{8,24}\b/i;
-
-const RECEIPT_LINEHAUL_WINDOW_PATTERN =
-    /^(AM|PM1|PM2)$/i;
 
 const RECEIPT_LINEHAUL_PLATE_PATTERN =
     /\b[A-Z]{3}[0-9][A-Z0-9][0-9]{2}\b/i;
@@ -133,32 +135,11 @@ function getReceiptLinehaulLoadedOrders(
 function getReceiptLinehaulCpt(
     values,
 ) {
-    const receivedValues =
-        values
-            .flatMap(
-                splitReceiptLinehaulImportValues,
-            )
-            .filter(
-                function (value) {
-                    return value !== "-";
-                },
-            );
-
-    const windowValue =
-        receivedValues.find(
-            function (value) {
-                return RECEIPT_LINEHAUL_WINDOW_PATTERN
-                    .test(
-                        value,
-                    );
-            },
-        );
-
-    return (
-        windowValue ||
-        receivedValues[0] ||
-        ""
-    ).toUpperCase();
+    return getSpXLinehaulWindow(
+        values.flatMap(
+            splitReceiptLinehaulImportValues,
+        ),
+    );
 }
 
 function getReceiptLinehaulVehiclePlate(
@@ -191,6 +172,44 @@ function getReceiptLinehaulVehiclePlate(
             },
         )
         ?.toUpperCase() || "";
+}
+
+function getReceiptLinehaulPlainDriver(
+    values,
+) {
+    return values
+        .flatMap(
+            splitReceiptLinehaulImportValues,
+        )
+        .find(
+            function (value) {
+                const normalizedValue =
+                    String(
+                        value ?? "",
+                    )
+                        .replace(
+                            /\s+/g,
+                            " ",
+                        )
+                        .trim();
+
+                const name =
+                    normalizedValue.replace(
+                        /^\[\d+\]\s*/,
+                        "",
+                    );
+
+                return (
+                    /^\[\d+\]\s*\p{L}/u.test(
+                        normalizedValue,
+                    ) &&
+                    !name.includes("_") &&
+                    !/^(?:soc|lm hub|fm hub|am hub|cd|warehouse)\b/i.test(
+                        name,
+                    )
+                );
+            },
+        ) || "";
 }
 
 function getReceiptLinehaulElementText(
@@ -327,6 +346,41 @@ function findReceiptLinehaulColumn(
     );
 }
 
+function findReceiptLinehaulColumnByAliasPriority(
+    normalizedRow,
+    aliases,
+) {
+    for (const alias of aliases) {
+        const columnIndex =
+            normalizedRow.findIndex(
+                function (value) {
+                    return value === alias;
+                },
+            );
+
+        if (columnIndex >= 0) {
+            return columnIndex;
+        }
+    }
+
+    for (const alias of aliases) {
+        const columnIndex =
+            normalizedRow.findIndex(
+                function (value) {
+                    return value.includes(
+                        alias,
+                    );
+                },
+            );
+
+        if (columnIndex >= 0) {
+            return columnIndex;
+        }
+    }
+
+    return -1;
+}
+
 function getReceiptLinehaulColumns(
     row,
 ) {
@@ -347,6 +401,19 @@ function getReceiptLinehaulColumns(
             findReceiptLinehaulColumn(
                 normalizedRow,
                 ["station"],
+            ),
+
+        driver:
+            findReceiptLinehaulColumnByAliasPriority(
+                normalizedRow,
+                [
+                    "nome do motorista",
+                    "nome motorista",
+                    "driver name",
+                    "driver full name",
+                    "motorista",
+                    "driver",
+                ],
             ),
 
         cpt:
@@ -382,8 +449,12 @@ function getReceiptLinehaulColumns(
     )
         .filter(
             function ([key]) {
-                return key !==
-                    "loadedOrders";
+                return ![
+                    "driver",
+                    "loadedOrders",
+                ].includes(
+                    key,
+                );
             },
         )
         .every(
@@ -416,6 +487,17 @@ function createReceiptLinehaulRecord(
             receivedRecord.cpt,
         );
 
+    const driver =
+        receivedRecord.driver
+            .flatMap(
+                splitReceiptLinehaulImportValues,
+            )
+            .find(
+                function (value) {
+                    return value !== "-";
+                },
+            ) || "";
+
     const punctualityValues =
         receivedRecord.punctuality
             .flatMap(
@@ -427,6 +509,8 @@ function createReceiptLinehaulRecord(
             receivedRecord.code,
 
         origin,
+
+        driver,
 
         cpt,
 
@@ -527,6 +611,7 @@ function parseReceiptLinehaulMatrix(
                     currentRecord = {
                         code,
                         origin: [],
+                        driver: [],
                         cpt: [],
                         punctuality: [],
                         loadedOrders: [],
@@ -540,6 +625,12 @@ function parseReceiptLinehaulMatrix(
 
                 currentRecord.origin.push(
                     row[columns.origin] ?? "",
+                );
+
+                currentRecord.driver.push(
+                    columns.driver >= 0
+                        ? row[columns.driver] ?? ""
+                        : "",
                 );
 
                 currentRecord.cpt.push(
@@ -743,6 +834,11 @@ function parseReceiptLinehaulSpXPlainText(
 
                     origin,
 
+                    driver:
+                        getReceiptLinehaulPlainDriver(
+                            values,
+                        ),
+
                     cpt,
 
                     window: cpt,
@@ -773,6 +869,100 @@ function parseReceiptLinehaulSpXPlainText(
         );
 
     return records;
+}
+
+function mergeReceiptLinehaulComplementaryRecords(
+    recordGroups,
+) {
+    const loadedOrdersByCode =
+        new Map();
+
+    const driversByCode =
+        new Map();
+
+    recordGroups
+        .flat()
+        .forEach(
+            function (record) {
+                const code =
+                    getReceiptLinehaulImportCode(
+                        record.code,
+                    );
+
+                const loadedOrders =
+                    parseReceiptLinehaulImportQuantity(
+                        record.loadedOrders,
+                    );
+
+                if (
+                    code &&
+                    loadedOrders !== null
+                ) {
+                    loadedOrdersByCode.set(
+                        code,
+                        loadedOrders,
+                    );
+                }
+
+                const driver =
+                    String(
+                        record.driver ?? "",
+                    ).trim();
+
+                if (
+                    code &&
+                    driver
+                ) {
+                    driversByCode.set(
+                        code,
+                        driver,
+                    );
+                }
+            },
+        );
+
+    recordGroups.forEach(
+        function (records) {
+            records.forEach(
+                function (record) {
+                    const code =
+                        getReceiptLinehaulImportCode(
+                            record.code,
+                        );
+
+                    if (
+                        !String(
+                            record.driver ?? "",
+                        ).trim()
+                    ) {
+                        const driver =
+                            driversByCode.get(
+                                code,
+                            );
+
+                        if (driver) {
+                            record.driver =
+                                driver;
+                        }
+                    }
+
+                    if (
+                        parseReceiptLinehaulImportQuantity(
+                            record.loadedOrders,
+                        ) === null &&
+                        loadedOrdersByCode.has(
+                            code,
+                        )
+                    ) {
+                        record.loadedOrders =
+                            loadedOrdersByCode.get(
+                                code,
+                            );
+                    }
+                },
+            );
+        },
+    );
 }
 
 function getReceiptLinehaulImportWindowModalElements() {
@@ -1110,8 +1300,28 @@ function restoreReceiptLinehaulImportButton(
     receiptLinehaulImportFeedbackTimer =
         window.setTimeout(
             function () {
-                button.textContent =
+                if (
+                    button.getAttribute(
+                        "aria-busy",
+                    ) === "true"
+                ) {
+                    receiptLinehaulImportFeedbackTimer =
+                        null;
+
+                    return;
+                }
+
+                button.title =
+                    button.dataset
+                        .receiptLinehaulImportDefaultTitle ||
                     RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT;
+
+                button.setAttribute(
+                    "aria-label",
+                    button.dataset
+                        .receiptLinehaulImportDefaultAriaLabel ||
+                    RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT,
+                );
 
                 receiptLinehaulImportFeedbackTimer =
                     null;
@@ -1133,9 +1343,47 @@ async function handleReceiptLinehaulClipboardImport(
         return;
     }
 
+    const activeTarget =
+        button.closest(
+            "#receipt",
+        )?.querySelector(
+            "#receipt-view-tabs .tabs-title.is-active > a",
+        )?.getAttribute(
+            "href",
+        );
+
+    if (
+        activeTarget !==
+        "#linehaul"
+    ) {
+        return;
+    }
+
+    if (
+        receiptLinehaulImportFeedbackTimer !==
+        null
+    ) {
+        window.clearTimeout(
+            receiptLinehaulImportFeedbackTimer,
+        );
+
+        receiptLinehaulImportFeedbackTimer =
+            null;
+    }
+
     button.disabled = true;
-    button.textContent =
+    button.title =
         "Lendo área de transferência...";
+
+    button.setAttribute(
+        "aria-label",
+        "Lendo viagens de carga da área de transferência",
+    );
+
+    button.setAttribute(
+        "aria-busy",
+        "true",
+    );
 
     try {
         const clipboard =
@@ -1151,69 +1399,11 @@ async function handleReceiptLinehaulClipboardImport(
                 clipboard.text,
             );
 
-        const loadedOrdersByCode =
-            new Map();
-
-        [
-            ...htmlRecords,
-            ...plainTextRecords,
-        ].forEach(
-            function (record) {
-                const code =
-                    getReceiptLinehaulImportCode(
-                        record.code,
-                    );
-
-                const loadedOrders =
-                    parseReceiptLinehaulImportQuantity(
-                        record.loadedOrders,
-                    );
-
-                if (
-                    code &&
-                    loadedOrders !== null
-                ) {
-                    loadedOrdersByCode.set(
-                        code,
-                        loadedOrders,
-                    );
-                }
-            },
-        );
-
-        [
-            htmlRecords,
-            plainTextRecords,
-        ].forEach(
-            function (records) {
-                records.forEach(
-                    function (record) {
-                        if (
-                            parseReceiptLinehaulImportQuantity(
-                                record.loadedOrders,
-                            ) !== null
-                        ) {
-                            return;
-                        }
-
-                        const code =
-                            getReceiptLinehaulImportCode(
-                                record.code,
-                            );
-
-                        if (
-                            loadedOrdersByCode.has(
-                                code,
-                            )
-                        ) {
-                            record.loadedOrders =
-                                loadedOrdersByCode.get(
-                                    code,
-                                );
-                        }
-                    },
-                );
-            },
+        mergeReceiptLinehaulComplementaryRecords(
+            [
+                htmlRecords,
+                plainTextRecords,
+            ],
         );
 
         const importCandidates = [
@@ -1318,8 +1508,8 @@ async function handleReceiptLinehaulClipboardImport(
                 .window;
 
         if (validWindowCandidates.length > 1) {
-            button.textContent =
-                "Escolha a janela...";
+            button.title =
+                "Escolha a janela da importação";
 
             selectedWindow =
                 await requestReceiptLinehaulImportWindow(
@@ -1327,8 +1517,9 @@ async function handleReceiptLinehaulClipboardImport(
                 );
 
             if (!selectedWindow) {
-                button.textContent =
-                    RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT;
+                restoreReceiptLinehaulImportButton(
+                    button,
+                );
 
                 return;
             }
@@ -1361,8 +1552,9 @@ async function handleReceiptLinehaulClipboardImport(
                 );
 
             if (!shouldContinue) {
-                button.textContent =
-                    RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT;
+                restoreReceiptLinehaulImportButton(
+                    button,
+                );
 
                 return;
             }
@@ -1383,8 +1575,9 @@ async function handleReceiptLinehaulClipboardImport(
                 "A importação substituirá as viagens carregadas atualmente. Deseja continuar?",
             )
         ) {
-            button.textContent =
-                RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT;
+            restoreReceiptLinehaulImportButton(
+                button,
+            );
 
             return;
         }
@@ -1393,25 +1586,38 @@ async function handleReceiptLinehaulClipboardImport(
             selection.records,
         );
 
-        button.textContent =
-            `${selection.records.length} LHs importados — ${selection.targetWindow}`;
-
         button.title =
+            `${selection.records.length} LHs importados — ${selection.targetWindow}. ` +
             `Importação realizada por ${selectedCandidate.format}.`;
 
         restoreReceiptLinehaulImportButton(
             button,
         );
+
+        setReportNotification({
+            reportId: "receipt",
+            type: "success",
+            message: `${selection.records.length} LHs importados da janela ${selection.targetWindow}.`,
+        });
     } catch (error) {
         console.error(
             "Falha ao importar os LHs do processamento.",
             error,
         );
 
-        button.textContent =
+        button.title =
             "Não foi possível importar";
 
         enableReceiptLinehaulManualEntry();
+
+        setReportNotification({
+            reportId: "receipt",
+            type: "error",
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "Não foi possível importar as viagens copiadas do SPX.",
+        });
 
         window.alert(
             error instanceof Error
@@ -1424,6 +1630,10 @@ async function handleReceiptLinehaulClipboardImport(
         );
     } finally {
         button.disabled = false;
+
+        button.removeAttribute(
+            "aria-busy",
+        );
     }
 }
 
@@ -1453,6 +1663,18 @@ function initializeReceiptLinehaulImport(
         .receiptLinehaulImportInitialized =
             "true";
 
+    button.dataset
+        .receiptLinehaulImportDefaultTitle =
+            button.title ||
+            RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT;
+
+    button.dataset
+        .receiptLinehaulImportDefaultAriaLabel =
+            button.getAttribute(
+                "aria-label",
+            ) ||
+            RECEIPT_LINEHAUL_IMPORT_DEFAULT_TEXT;
+
     button.addEventListener(
         "click",
         handleReceiptLinehaulClipboardImport,
@@ -1463,6 +1685,7 @@ function initializeReceiptLinehaulImport(
 
 export {
     initializeReceiptLinehaulImport,
+    mergeReceiptLinehaulComplementaryRecords,
     parseReceiptLinehaulSpXHtml,
     parseReceiptLinehaulSpXPlainText,
 };

@@ -1,3 +1,8 @@
+import {
+    getReportContext,
+    updateReportContextField,
+} from "../core/report-context.js";
+
 /* OUVINTES DO ESTADO */
 
 const receiptStateListeners =
@@ -112,6 +117,16 @@ function createReceiptReceiverKey(
 function createReceiptOperatorRecord(
     values = {},
 ) {
+    const packagesReceived =
+        normalizeReceiptQuantity(
+            values.packagesReceived,
+        );
+
+    const receivedErrors =
+        normalizeReceiptQuantity(
+            values.errorQuantity,
+        );
+
     return {
         id:
             nextReceiptOperatorId++,
@@ -127,14 +142,15 @@ function createReceiptOperatorRecord(
             ),
 
         packagesReceived:
-            normalizeReceiptQuantity(
-                values.packagesReceived,
-            ),
+            packagesReceived,
 
         errorQuantity:
-            normalizeReceiptQuantity(
-                values.errorQuantity,
-            ),
+            receivedErrors === null
+                ? null
+                : Math.min(
+                    receivedErrors,
+                    packagesReceived || 0,
+                ),
 
         selected:
             values.selected !== false,
@@ -144,9 +160,6 @@ function createReceiptOperatorRecord(
 /* ESTADO DO RECEBIMENTO */
 
 const receiptState = {
-    window: "AM",
-    expectedVolume: null,
-
     useTotalErrorParticipation:
         false,
 
@@ -156,12 +169,16 @@ const receiptState = {
 /* CRIA UMA CÓPIA DO ESTADO */
 
 function getReceiptState() {
+    const reportContext =
+        getReportContext();
+
     return {
         window:
-            receiptState.window,
+            reportContext.window,
 
         expectedVolume:
-            receiptState.expectedVolume,
+            reportContext
+                .plannedVolume,
 
         useTotalErrorParticipation:
             receiptState
@@ -328,10 +345,18 @@ function updateReceiptGeneralField(
     let normalizedValue;
 
     if (field === "window") {
-        normalizedValue =
-            normalizeReceiptText(
-                value,
-            );
+        return updateReportContextField(
+            field,
+            value,
+        );
+    } else if (
+        field ===
+        "expectedVolume"
+    ) {
+        return updateReportContextField(
+            "plannedVolume",
+            value,
+        );
     } else if (
         field ===
         "useTotalErrorParticipation"
@@ -394,7 +419,7 @@ function updateReceiptOperator(
         return false;
     }
 
-    const normalizedValue =
+    let normalizedValue =
         field === "labeler"
             ? normalizeReceiptText(
                 value,
@@ -402,6 +427,17 @@ function updateReceiptOperator(
             : normalizeReceiptQuantity(
                 value,
             );
+
+    if (
+        field === "errorQuantity" &&
+        normalizedValue !== null
+    ) {
+        normalizedValue =
+            Math.min(
+                normalizedValue,
+                operator.packagesReceived || 0,
+            );
+    }
 
     if (
         operator[field] ===
@@ -578,9 +614,6 @@ function replaceReceiptOperators(
 /* LIMPA O RELATÓRIO */
 
 function resetReceiptReport() {
-    receiptState.window = "AM";
-    receiptState.expectedVolume = null;
-
     receiptState
         .useTotalErrorParticipation =
             false;
@@ -609,15 +642,21 @@ function restoreReceiptState(
         return false;
     }
 
-    receiptState.window =
-        normalizeReceiptText(
-            sessionState.window,
-        ) || "AM";
-
-    receiptState.expectedVolume =
+    const legacyExpectedVolume =
         normalizeReceiptQuantity(
             sessionState.expectedVolume,
         );
+
+    if (
+        getReportContext()
+            .plannedVolume === null &&
+        legacyExpectedVolume !== null
+    ) {
+        updateReportContextField(
+            "plannedVolume",
+            legacyExpectedVolume,
+        );
+    }
 
     receiptState
         .useTotalErrorParticipation =

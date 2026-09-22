@@ -28,195 +28,11 @@
         <link rel="stylesheet" href="css/reports-style.css">
         <link rel="stylesheet" href="css/hub-spreadsheets.css">
         <link rel="stylesheet" href="css/data-analysis.css">
+        <link rel="stylesheet" href="css/docs.css">
 
         <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
 
-        <style>
-
-            /* RELATÓRIO FINAL - TITULOS */
-
-            .final-report-title {
-                padding: 0.5rem 0.625rem 0.625rem;
-                background-color: var(--color-table-th);
-                border-right: 1px solid var(--color-border);
-                border-left: 1px solid var(--color-border);
-                border-top: 1px solid var(--color-border);
-            }
-            .final-report-title h4 {
-                letter-spacing: 1.5px;
-                font-size: 15px;
-                margin: 0;
-            }
-
-            /* RELATÓRIO FINAL - HEADER */
-
-            .final-report-header {
-                padding: 15px 20px;
-                border: 1px solid var(--color-border);
-                align-items: center;
-            }
-            .final-report-header .flex-box-start {
-                column-gap: 15px;
-                align-items: center;
-            }
-            .final-report-header img {
-                width: 35px;
-            }
-            .final-report-header p {
-                margin-bottom: 0;
-                line-height: 1;
-            }
-
-            /* RELATÓRIO FINAL - CARDS */
-
-            .final-report-cards {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 15px;
-                width: 100%;
-            }
-            .final-report-cards > div {
-                min-width: 0;
-                min-height: 125px;
-            }
-            .final-report-cards .final-report-card {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 11px;
-                padding: 25px;
-                border: 1px solid var(--color-border);
-            }
-            .final-report-cards .final-report-card h2 {
-                margin: 0;
-                font-weight: 600;
-            }
-            .final-report-cards .final-report-card p {
-                margin: 0;
-                text-align: center;
-            }
-            .final-report-cards .final-report-card .flex-box-start {
-                column-gap: 15px;
-                align-items: center;
-            }
-            .final-report-cards .final-report-card .flex-box-start > div {
-                text-align: center;
-            }
-            .final-report-cards .final-report-card .final-report-mini-chart {
-                width: 150px;
-                min-height: 150px;
-                height: 150px;
-                position: relative;
-            }
-            .final-report-cards .final-report-card .final-report-mini-chart canvas {
-                width: 100%;
-                height: 100%;
-                display: block;
-            }
-            .final-report-cards .final-report-card .final-report-mini-chart img {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                z-index: 1;
-                width: 42px;
-                height: 42px;
-                object-fit: contain;
-                pointer-events: none;
-                transform: translate(-50%, -50%);
-            }
-
-            /*  */
-            
-            .final-report-flow {
-                flex: 1 1 0;
-            }
-            .final-report-flow .flow {
-                padding: 25px;
-                border: 1px solid var(--color-border);
-            }
-            .flow .mini-cards {
-                gap: 15px;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(236px, 1fr));
-            }
-            .flow .mini-cards > div {
-                padding: 25px;
-                border: 1px solid var(--color-border);
-                gap: 15px;
-                align-items: center;
-            }
-            .flow .mini-cards img {
-                width: 35px;
-            }
-            .flow .mini-cards h4, .flow .mini-cards p {
-                margin: 0;
-                text-align: center;
-            }
-            .flow .dashed-border {
-                width: 80%;
-                height: 50px;
-                margin: 0 auto;
-                border-bottom: 2px dashed var(--color-border);
-                border-right: 2px dashed var(--color-border);
-                border-left: 2px dashed var(--color-border);
-            }
-            .flow h5 {
-                margin: 15px 0 0 0;
-                text-align: center;
-            }
-
-            /*  */
-
-            .final-report-highlights {
-                flex: 0 0 500px;
-            }
-            .final-report-highlights img {
-                width: 25px;
-            }
-            .final-report-highlights ul {
-                display: flex;
-                min-height: 237px;
-                row-gap: 17px;
-                padding: 25px;
-                border: 1px solid var(--color-border);
-                flex-direction: column;
-            }
-            .final-report-highlights ul li {
-                display: flex;
-                column-gap: 10px;
-                align-items: center;
-                padding-bottom: 10px;
-                border-bottom: 1px solid var(--color-border);
-            }
-            .final-report-highlights ul li:last-of-type {
-                padding-bottom: 0;
-                border-bottom: none;
-            }
-            .final-report-highlights ul li h5 {
-                margin: 0;
-            }
-
-            /*  */
-
-            .final-report-receipt-and-expedition {
-                gap: 15px;
-            }
-            .final-report-receipt-and-expedition > div {
-                flex: 1 1 0;
-            }
-            .final-report-receipt > .horizontal-bars-chart > div:last-of-type,
-            .final-report-expedition > .horizontal-bars-chart > div:last-of-type {
-                height: 320px;
-                margin-top: 15px;
-            }
-            .final-report-receipt .horizontal-bars-chart, .final-report-expedition .horizontal-bars-chart {
-                margin-top: 15px;
-            }
-
-            /* AJUSTES */
-
-        </style>
+        <style></style>
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -237,7 +53,7 @@
                 </div>
 
                 <ul class="flex-box-start tabs" data-tabs id="switch-1">
-                    <li class="tabs-title">
+                    <li class="tabs-title is-active">
                         <a href="#spreadsheets">
                             <div class="flex-box-center">
                                 <img src="images/geral-icons/sheets-icon.svg">
@@ -246,7 +62,7 @@
                         </a>
                     </li> 
 
-                    <li class="tabs-title is-active">
+                    <li class="tabs-title">
                         <a href="#reports">
                             <div class="flex-box-center">
                                 <img src="images/geral-icons/reports-icon.svg">
@@ -268,7 +84,7 @@
                         <a href="#docs">
                             <div class="flex-box-center">
                                 <img src="images/menu-icons/docs-icon.svg">
-                                <h4>Manual</h4>
+                                <h4>Documentação</h4>
                             </div>
                         </a>
                     </li> 
@@ -327,7 +143,7 @@
 
                 <!-- PAINEL - PLANILHAS -->
 
-                <div class="tabs-panel" id="spreadsheets">
+                <div class="tabs-panel is-active" id="spreadsheets">
                     <div class="spreadsheets-layout">
 
                         <!-- MENU DE NAVEGAÇÃO DAS PLANILHAS -->
@@ -337,27 +153,54 @@
                         <!-- PLANILHAS -->
 
                         <div class="tabs-content" data-tabs-content="switch-spreadsheet" id="spreadsheetPanels"></div>
-                        
                     </div>
                 </div>
 
                 <!-- PAINEL - REPORTS -->
 
-                <div class="tabs-panel is-active" id="reports">
+                <div class="tabs-panel" id="reports">
+
+                    <!-- INPUTS E INFORMAÇÕES GLOBAIS -->
+
+                    <div class="global-inputs">
+                        <div>
+                            <div>
+                                <h4>Janela do Turno</h4>
+
+                                <select id="reportWindowInput" class="standard-select" aria-label="Janela do Turno" style="width: 100%">
+                                    <option value="AM">AM</option>
+                                    <option value="PM1">PM1</option>
+                                    <option value="PM2">PM2</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <h4>Analista Responsável</h4>
+                                <input type="text" id="reportAnalystInput" maxlength="60" autocomplete="off" aria-label="Analista Responsável">
+                            </div>
+
+                            <div>
+                                <h4>Planejamento da Janela</h4>
+                                <input type="text" id="reportPlanningInput" maxlength="9" autocomplete="off" inputmode="numeric" pattern="[0-9]*" aria-label="Planejamento da Janela">
+                            </div>
+
+                            <div>
+                                <h4>Total de Colaboradores</h4>
+                                <input type="text" id="reportCollaboratorsInput" maxlength="5" autocomplete="off" inputmode="numeric" pattern="[0-9]*" aria-label="Total de Colaboradores">
+                            </div>
+
+                            <div>
+                                <h4>Capacidade do Turno</h4>
+                                <input type="text" id="reportCapacityInput" maxlength="9" autocomplete="off" inputmode="numeric" pattern="[0-9]*" aria-label="Capacidade do Turno">
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- NAVEGAÇÃO ENTRE OS RELATÓRIOS -->
 
                     <div class="flex-box-start">
                         <ul class="tabs" data-tabs id="report-choice">
                             <li class="tabs-title is-active">
-                                <a href="#planning">
-                                    <div class="flex-box-full-center">
-                                        <h4>Planejamento</h4>
-                                    </div>
-                                </a>
-                            </li> 
-
-                            <li class="tabs-title">
                                 <a href="#receipt">
                                     <div class="flex-box-full-center">
                                         <h4>Processamento</h4>
@@ -374,7 +217,15 @@
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#h">
+                                <a href="#planning">
+                                    <div class="flex-box-full-center">
+                                        <h4>Planejamento</h4>
+                                    </div>
+                                </a>
+                            </li> 
+
+                            <li class="tabs-title">
+                                <a href="#damage-and-losses">
                                     <div class="flex-box-full-center">
                                         <h4>Avarias e Perdas</h4>
                                     </div>
@@ -399,395 +250,24 @@
                         </ul>
                     </div>
 
-                    <!-- BARRA DE NOTIFICAÇÕES DOS RELATÓRIOS -->
-
-                    <div class="warning" id="reportsNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
-                        <div class="flex-box-start">
-                            <img id="reportsNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
-
-                            <h4 id="reportsNotificationText">
-                                Tudo em silêncio por enquanto.
-                            </h4>
-                        </div>
-                    </div>
-
                     <!-- CONTEÚDO DOS RELATÓRIOS -->
 
                     <div class="tabs-content" data-tabs-content="report-choice">
 
-                        <!-- RELATÓRIO DO PLANEJAMENTO -->
-
-                        <div class="tabs-panel is-active" id="planning">
-
-                            <!-- TABS DO PLANEJAMENTO -->
-
-                            <ul class="tabs flex-box-start" data-tabs id="planningTabs">
-                                <li class="tabs-title is-active">
-                                    <a href="#lhs-list">
-                                        <h4>Descarregamento de LHs</h4>
-                                    </a>
-                                </li> 
-
-                                <li class="tabs-title" id="planningSegregatedTosTab" hidden>
-                                    <a href="#segregated-tos">
-                                        <h4>TOs a Segregar</h4>
-                                    </a>
-                                </li>
-
-                                <li class="tabs-title">
-                                    <a href="#collection-indicators">
-                                        <h4>Collection Pool e Indicadores</h4>
-                                    </a>
-                                </li> 
-                            </ul> 
-
-                            <!-- CONTEÚDO DO RELATÓRIO -->
-
-                            <div class="flex-box-start planning-report-layout">
-
-                                <!-- PPÉVIA DO RELATÓRIO -->
-
-                                <div class="preview" id="planningSheetPreview">
-                                    <div class="preview-style" id="planningReportExportArea">
-                                        <div class="title">
-                                            <h2>Relatório de Planejamento</h2>
-                                        </div>
-
-                                        <table class="indicators">
-                                            <thead>
-                                                <tr>
-                                                    <th>Volume Estimado</th>
-                                                    <th>SPR Médio</th>
-                                                    <th>Cap do Dia</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                <tr>
-                                                    <td id="planningEstimatedVolume">—</td>
-                                                    <td id="planningPreviewAverageSpr">—</td>
-                                                    <td id="planningPreviewDailyCapacity">—</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                        <div class="planning-sheet-layout">
-                                            <div class="planning-sheet-main">
-
-                                                <!-- LISTA DE LHS PARA ROTEIRIZAR -->
-
-                                                <table>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>LHs Programados</th>
-                                                            <th>Origem</th>
-                                                            <th>QTD</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody id="planningPreviewLhBody">
-                                                        <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-
-                                                <!-- LHS PARA SEGREGAR -->
-
-                                                <table class="planning-segregated-table" id="planningSegregatedSection" hidden>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>LHs a Segregar</th>
-                                                            <th>Origem</th>
-                                                            <th>QTD</th>
-                                                            <th>Segregar</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody id="planningPreviewSegregatedBody">
-                                                        <tr class="planning-empty-row">
-                                                            <td colspan="4">Nenhum LH para segregar.</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-
-                                                <!-- TOS PARA SEGREGAR -->
-
-                                                <table class="planning-segregated-tos-table" id="planningSegregatedTosSection" hidden>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>TOs para Segregar</th>
-                                                            <th>LH</th>
-                                                            <th>QTD</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody id="planningPreviewSegregatedTosBody">
-                                                        <tr class="planning-empty-row">
-                                                            <td colspan="3">Nenhuma TO para segregar.</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                            <div class="planning-sheet-sidebar">
-
-                                                <!-- COLLECTION POOL -->
-
-                                                <table class="planning-sheet-table planning-cp-summary-table">
-                                                    <colgroup>
-                                                        <col>
-                                                        <col class="planning-quantity-column">
-                                                    </colgroup>
-
-                                                    <thead>
-                                                        <tr>
-                                                            <th colspan="2">Valores da Collection Pool</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Qtd Backlog Pacotes</td>
-                                                            <td id="planningPreviewCpBacklog">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd Backlog Volumosos</td>
-                                                            <td id="planningPreviewCpBulky">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd dentro dos LHs</td>
-                                                            <td id="planningPreviewCpLhPool">0</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-
-                                                <table class="planning-sheet-table planning-cp-summary-table">
-                                                    <colgroup>
-                                                        <col>
-                                                        <col class="planning-quantity-column">
-                                                    </colgroup>
-
-                                                    <thead>
-                                                        <tr>
-                                                            <th colspan="2">Operações na Collection Pool</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Qtd Pacotes Inseridos</td>
-                                                            <td id="planningPreviewCpAdded">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd Pacotes Retirados</td>
-                                                            <td id="planningPreviewCpRemoved">0</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>Qtd Pacotes com Erros</td>
-                                                            <td id="planningPreviewCpErrors">0</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- OPÇÕES DO RELATÓRIO -->
-
-                                    <div class="footer flex-box-between">
-                                        <div>
-                                            <button class="button" id="planningClearReportButton" type="button">
-                                                Limpar Relatório
-                                            </button>
-
-                                            <button class="button" id="planningCopyReportButton" type="button" disabled>
-                                                Copiar Relatório
-                                            </button>
-
-                                            <button class="button" id="planningDownloadReportButton" type="button" disabled>
-                                                Baixar Relatório
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- CONTROLES DO RELATÓRIO -->
-
-                                <div class="report-controls">
-                                    <div class="tabs-content" data-tabs-content="planningTabs">
-                                        <div class="tabs-panel is-active" id="lhs-list">
-                                            <div class="history-link flex-box-start">
-                                                <a href="https://spx.shopee.com.br/#/hubLinehaulTrips/trip" target="_blank">
-                                                    <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                                        <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                    </svg>
-                                                </a>
-
-                                                <div>
-                                                    <h4>Transporte Principal - Inbound</h4>
-                                                    <p>Crtl A + Crtl C, e clique em importar.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="history-import flex-box-start">
-                                                <div>
-                                                    <button class="button" id="planningImportClipboardButton" type="button">
-                                                        Importar Viagens de Carga
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div class="planning-lh-list flex-box-column" id="planningLhList"></div>
-
-                                            <div class="lhs-buttons">
-                                                <div>
-                                                    <button class="button" id="planningAddLh" type="button">Adicionar LH</button>
-                                                    <button class="button" id="planningClearLhs" type="button">Limpar Lista</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="tabs-panel" id="segregated-tos">
-
-                                            <!-- LISTAS DE TOS SEPARADAS POR LH -->
-
-                                            <div class="planning-to-empty" id="planningToEmpty">
-                                                <p>Marque “Segregar” e “Segregar TO” em um LH para adicionar suas TOs.</p>
-                                            </div>
-
-                                            <div class="planning-to-groups flex-box-column" id="planningToGroups" hidden></div>
-                                        </div>
-
-                                        <div class="tabs-panel" id="collection-indicators">
-
-                                            <!-- COLLECTION POOL -->
-
-                                            <div id="planningPoolControls">
-
-                                                <h4>Indicadores Operacionais</h4>
-
-                                                <div class="input-group">
-                                                    <div>
-                                                        <h4>Cap do Dia</h4>
-
-                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-field="dailyCapacity">
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>SPR Médio</h4>
-
-                                                        <input type="text" inputmode="numeric" maxlength="5" data-planning-field="averageSpr">
-                                                    </div>
-                                                </div>
-
-                                                <h4>Quantidade de Backlog</h4>
-
-                                                <div class="input-group">
-                                                    <div>
-                                                        <h4>Pacotes</h4>
-                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogPackages">
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>Volumosos</h4>
-                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogBulky">
-                                                    </div>
-                                                </div>
-
-                                                <h4>Operações na Pool</h4>
-
-                                                <div class="input-group operation">
-                                                    <div>
-                                                        <h4>Adicionados</h4>
-                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="added">
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>Retirados</h4>
-                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="removed">
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>Erros</h4>
-                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="errors">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- CONTROLES DOS INDICADORES -->
-
-                                            <div id="planningGeneralControls">
-
-                                                <h4>Composição da Frota</h4>
-
-                                                <div class="input-group fleet">
-                                                    <div>
-                                                        <h4>Carros</h4>
-
-                                                        <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="cars">
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>Motos</h4>
-
-                                                        <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="motorcycles">
-                                                    </div>
-
-                                                    <div>
-                                                        <h4>Fiorinos</h4>
-
-                                                        <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="fiorinos">
-                                                    </div>
-                                                </div>
-
-                                                <p>Os valores da frota afetarão o cálculo do indicador SPR Médio, preencher a composição da frota é opcional.</p>
-                                                <a href="#">Consultar Frota ➚</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- RELATÓRIO DE PROCESSAMENTO -->
 
-                        <div class="tabs-panel" id="receipt">
+                        <div class="tabs-panel is-active" id="receipt">
 
                             <!-- TABS DO RELATÓRIO -->
 
                             <ul class="tabs flex-box-start" data-tabs id="receipt-view-tabs">
-                                <li class="tabs-title">
+                                <li class="tabs-title is-active">
                                     <a href="#linehaul" data-controls-target="receipt-controls-2">
-                                        <h4>Descarregamentos e Reversas</h4>
+                                        <h4>Descarregamento de LHs</h4>
                                     </a>
                                 </li>
 
-                                <li class="tabs-title is-active">
+                                <li class="tabs-title">
                                     <a href="#receipt-tables" data-controls-target="receipt-controls-1">
                                         <h4>Mesa de Recebimento</h4>
                                     </a>
@@ -799,7 +279,37 @@
                                     </a>
                                 </li>
                             </ul> 
-                            
+                        
+                            <!-- BARRA DE NOTIFICAÇÕES E BOTÕES DE AÇÃO -->
+
+                            <div class="flex-box-start">
+                                <div class="warning" id="receiptNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                                    <div class="flex-box-start">
+                                        <img id="receiptNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                                        <h4 id="receiptNotificationText">
+                                            Tudo em silêncio por enquanto.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="report-actions">
+                                    <button id="receiptCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de processamento; segure por 1,5 segundo para baixar">
+                                        <img src="images/geral-icons/image-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="receiptImportActionButton" type="button" title="Importar dados da aba atual" aria-label="Importar dados da aba atual do processamento">
+                                        <img src="images/geral-icons/import-icon.svg" alt="">
+                                    </button>
+
+                                    <input id="receiptFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+
+                                    <button id="receiptClearReportButton" type="button" title="Limpar relatório" aria-label="Limpar relatório de processamento">
+                                        <img src="images/geral-icons/trash-basket-icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- CONTEÚDO DO RELATÓRIO -->
 
                             <div class="flex-box-start">
@@ -811,10 +321,10 @@
 
                                         <!-- DESCARGGA DE LHs -->
 
-                                        <div class="tabs-panel" id="linehaul">
+                                        <div class="tabs-panel is-active" id="linehaul">
                                             <div class="preview-style" id="receiptLinehaulExportArea">
                                                 <div class="title">
-                                                    <h2>Descarregamentos e Reversas</h2>
+                                                    <h2>Descarregamento de LHs</h2>
                                                 </div>
 
                                                 <table>
@@ -824,7 +334,6 @@
                                                             <th>Volume Esperado</th>
                                                             <th>Volume Descarregado</th>
                                                             <th>LHs Descarregados</th>
-                                                            <th>Reversa Enviadas</th>
                                                         </tr>
                                                     </thead>
 
@@ -834,7 +343,6 @@
                                                             <td id="receiptLinehaulPreviewExpected">—</td>
                                                             <td id="receiptLinehaulPreviewUnloadedVolume">—</td>
                                                             <td id="receiptLinehaulPreviewUnloadedCount">—</td>
-                                                            <td id="receiptLinehaulPreviewReversesSent">—</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -863,17 +371,15 @@
                                                 <table>
                                                     <thead>
                                                         <tr>
-                                                            <th>LH Descarregado</th>
-                                                            <th>Volume Descarregado</th>
+                                                            <th>Código do LH</th>
+                                                            <th>Motorista</th>
                                                             <th>Origem</th>
-                                                            <th>CPT</th>
-                                                            <th>Placa do Veículo </th>
+                                                            <th>Volume</th>
                                                         </tr>
                                                     </thead>
 
                                                     <tbody id="receiptLinehaulPreviewBody">
                                                         <tr>
-                                                            <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
@@ -885,19 +391,9 @@
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
-                                                            <td>—</td>
                                                         </tr>
 
                                                         <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
@@ -909,19 +405,9 @@
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
-                                                            <td>—</td>
                                                         </tr>
 
                                                         <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
@@ -933,11 +419,23 @@
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
                                                             <td>—</td>
                                                         </tr>
 
                                                         <tr>
                                                             <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
@@ -950,7 +448,7 @@
 
                                         <!-- MESA DE RECEBIMENTO -->
 
-                                        <div class="tabs-panel is-active" id="receipt-tables">
+                                        <div class="tabs-panel" id="receipt-tables">
                                             <div class="preview-style" id="receiptReportExportArea">
                                                 <div class="title">
                                                     <h2>Mesa de Recebimento</h2>
@@ -1016,7 +514,6 @@
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
-                                                            <td>—</td>
                                                         </tr>
                                                         
                                                         <tr>
@@ -1024,19 +521,9 @@
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
-                                                            <td>—</td>
                                                         </tr>
 
                                                         <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
@@ -1048,19 +535,9 @@
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
-                                                            <td>—</td>
                                                         </tr>
 
                                                         <tr>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                            <td>—</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
@@ -1072,11 +549,23 @@
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
                                                             <td>—</td>
                                                         </tr>
 
                                                         <tr>
                                                             <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
                                                             <td>—</td>
                                                             <td>—</td>
                                                             <td>—</td>
@@ -1117,40 +606,15 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="two-horizontal-bars-chart">
-                                                    <div class="chart-panel">
-                                                        <h3>Volume Recebido por Recebedor</h3>
-                                                        <p>Distribuição dos pacotes processados.</p>
+                                                <div class="aligned-comparison-chart">
 
-                                                        <div>
-                                                            <canvas id="receiptVolumeComparisonChart" role="img">
-                                                                Seu navegador não suporta gráficos em canvas.
-                                                            </canvas>
-                                                        </div>
+                                                    <div id="receiptAlignedComparisonChartContainer">
+                                                        <canvas id="receiptAlignedComparisonChart" role="img" aria-label="Comparação alinhada entre volume recebido e taxa de erros por recebedor"></canvas>
                                                     </div>
 
-                                                    <div class="chart-panel">
-                                                        <h3 id="receiptComparisonErrorChartTitle">Taxa de Erros por Recebedor</h3>
-                                                        <p id="receiptComparisonErrorChartSubtitle">Aguardando importação.</p>
-
-                                                        <div>
-                                                            <canvas id="receiptErrorComparisonChart" role="img">
-                                                                Seu navegador não suporta gráficos em canvas.
-                                                            </canvas>
-                                                        </div>
-                                                    </div>
                                                 </div>
+
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- OPÇÕES DO RELATÓRIO -->
-
-                                    <div class="footer flex-box-between">
-                                        <div>
-                                            <button class="button" id="receiptClearReportButton" type="button" disabled>Limpar Relatório</button>
-                                            <button class="button" id="receiptCopyReportButton" type="button" disabled>Copiar Relatório</button>
-                                            <button class="button" id="receiptDownloadReportButton" type="button" disabled>Baixar Relatório</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1158,129 +622,74 @@
                                 <!-- CONTROLES DO RELATÓRIO -->
 
                                 <div class="report-controls" id="receipt-controls">
-                                    <div class="receipt-controls-panel is-active" id="receipt-controls-1">
-                                        <div class="history-link flex-box-start">
-                                            <a href="https://spx.shopee.com.br/#/generalReceiveTaskMgt" target="_blank">
-                                                <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                </svg>
-                                            </a>
-
-                                            <div>
-                                                <h4>Gestão de Recebimento</h4>
-                                                <p>Exporte do SPX e importe aqui.</p>
-                                            </div>
+                                    <div class="receipt-controls-panel" id="receipt-controls-1">
+                                        <div class="title">
+                                            <h4>Defina os Etiquetadores</h4>
                                         </div>
 
-                                        <div class="history-import flex-box-start">
-                                            <div>
-                                                <button class="button" id="receiptImportButton" type="button">
-                                                    Importar Recebimento
-                                                </button>
-                                            </div>
+                                        <div class="padding">
+                                            <div class="input-group" id="receiptOperatorControls">
 
-                                            <input id="receiptFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
-                                        </div>
+                                                <div>
+                                                    <h4 data-receipt-operator-label>Etiquetador</h4>
 
-                                        <div class="input-group">
-                                            <div>
-                                                <h4>Janela</h4>
+                                                    <div class="flex-box-start">
+                                                        <input type="text" data-receipt-operator-field="labeler" autocomplete="off" disabled>
+                                                        <select class="standard-select" data-receipt-operator-field="errorQuantity" autocomplete="off" disabled>
+                                                            <option value="">—</option>
+                                                        </select>
 
-                                                <select class="standard-select" id="receiptWindowInput" disabled>
-                                                    <option value="AM">AM</option>
-                                                    <option value="PM1">PM1</option>
-                                                    <option value="PM2">PM2</option>
-                                                </select>
-                                            </div>
-
-                                            <div>
-                                                <h4>Volume Esperado</h4>
-
-                                                <input id="receiptExpectedInput" type="text" inputmode="numeric" maxlength="8" disabled>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="input-group receipt-operator-controls" id="receiptOperatorControls">
-                                            <div>
-                                                <h4 data-receipt-operator-label>Etiquetador</h4>
-
-                                                <div class="flex-box-start">
-                                                    <input type="text" data-receipt-operator-field="labeler" autocomplete="off" disabled>
-                                                    <input type="text" data-receipt-operator-field="errorQuantity" maxlength="5" autocomplete="off" inputmode="numeric" pattern="[0-9]*" disabled>
-
-                                                    <div class="checkbox">
-                                                        <input type="checkbox" data-receipt-operator-selection disabled>
-                                                        <label for=""></label>
+                                                        <div class="checkbox">
+                                                            <input type="checkbox" data-receipt-operator-selection disabled>
+                                                            <label for=""></label>
+                                                        </div>
                                                     </div>
                                                 </div>
+
                                             </div>
+
+                                            <label class="erro-checkbox" for="receiptErrorCalculationToggle">
+                                                <input id="receiptErrorCalculationToggle" type="checkbox" disabled>
+
+                                                <p>Calcular participação no total de erros.</p>
+                                            </label>
                                         </div>
 
-                                        <label class="receipt-error-calculation-option" for="receiptErrorCalculationToggle">
-                                            <input id="receiptErrorCalculationToggle" type="checkbox" disabled>
-
-                                            <p>Calcular participação no total de erros.</p>
-                                        </label>
                                     </div>
 
-                                    <div class="receipt-controls-panel" id="receipt-controls-2" hidden>
-                                        <div class="history-link flex-box-start">
-                                            <a href="https://spx.shopee.com.br/#/hubLinehaulTrips/trip" target="_blank">
-                                                <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                </svg>
-                                            </a>
+                                    <div class="receipt-controls-panel is-active" id="receipt-controls-2" hidden>
+                                        <div class="title">
+                                            <h4>Defina os LHs</h4>
 
-                                            <div>
-                                                <h4>Transporte Principal - Inbound</h4>
-                                                <p>Crtl A + Crtl C, e clique em importar.</p>
-                                            </div>
-                                        </div>
+                                            <div class="flex-box-start">
+                                                <button id="receiptLinehaulAddButton" type="button" title="Adicionar LH" aria-label="Adicionar LH">
+                                                    <img src="images/geral-icons/add-icon.svg" alt="">
+                                                </button>
 
-                                        <div class="history-import flex-box-start">
-                                            <div>
-                                                <button class="button" id="receiptLinehaulImportButton" type="button">
-                                                    Importar Viagens de Carga
+                                                <button id="receiptLinehaulRemoveButton" type="button" title="Remover último LH" aria-label="Remover último LH">
+                                                    <img src="images/geral-icons/remove-icon.svg" alt="">
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div class="input-group" style="grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));">
-                                            <div>
-                                                <h4>Janela</h4>
+                                        <div class="padding">
+                                            <div class="input-group receipt-linehaul-controls" id="receiptLinehaulControls">
+                                                <div>
+                                                    <h4 data-receipt-linehaul-label>Primeiro LH</h4>
 
-                                                <select class="standard-select" id="receiptLinehaulWindowInput" disabled>
-                                                    <option value="AM">AM</option>
-                                                    <option value="PM1">PM1</option>
-                                                    <option value="PM2">PM2</option>
-                                                </select>
-                                            </div>
+                                                    <div class="flex-box-between">
+                                                        <input type="text" data-receipt-linehaul-field="driver" placeholder="Motorista" maxlength="80" autocomplete="off" readonly disabled>
 
-                                            <div>
-                                                <h4>Esperado</h4>
+                                                        <div class="checkbox">
+                                                            <input type="checkbox" data-receipt-linehaul-selection disabled>
+                                                            <label for=""></label>
+                                                        </div>
+                                                    </div>
 
-                                                <input id="receiptLinehaulExpectedInput" type="text" inputmode="numeric" maxlength="8" disabled>
-                                            </div>
-
-                                            <div>
-                                                <h4>Reversas</h4>
-
-                                                <input id="receiptLinehaulReversesInput" type="text" inputmode="numeric" maxlength="8" disabled>
-                                            </div>
-                                        </div>
-
-                                        <div class="input-group receipt-linehaul-controls" id="receiptLinehaulControls">
-                                            <div>
-                                                <h4 data-receipt-linehaul-label>Código do LH 1</h4>
-
-                                                <div class="flex-box-start">
-                                                    <input type="text" data-receipt-linehaul-field="code" autocomplete="off" readonly disabled>
-                                                    <input type="text" data-receipt-linehaul-field="loadedOrders" maxlength="8" autocomplete="off" inputmode="numeric" pattern="[0-9]*" readonly disabled>
-
-                                                    <div class="checkbox">
-                                                        <input type="checkbox" data-receipt-linehaul-selection disabled>
-                                                        <label for=""></label>
+                                                    <div>
+                                                        <input type="text" data-receipt-linehaul-field="code" placeholder="Código" autocomplete="off" readonly disabled>
+                                                        <input type="text" data-receipt-linehaul-field="origin" placeholder="Origem" aria-label="Origem do LH 1" maxlength="30" autocomplete="off" readonly disabled>
+                                                        <input type="text" data-receipt-linehaul-field="loadedOrders" placeholder="Qtd" maxlength="8" autocomplete="off" inputmode="numeric" pattern="[0-9]*" readonly disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1321,7 +730,37 @@
                                     </a>
                                 </li>
                             </ul> 
-                            
+
+                            <!-- BARRA DE NOTIFICAÇÕES E BOTÕES DE AÇÃO -->
+
+                            <div class="flex-box-start">
+                                <div class="warning" id="expeditionNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                                    <div class="flex-box-start">
+                                        <img id="expeditionNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                                        <h4 id="expeditionNotificationText">
+                                            Tudo em silêncio por enquanto.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="report-actions">
+                                    <button id="expeditionCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de expedição; segure por 1,5 segundo para baixar">
+                                        <img src="images/geral-icons/image-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="expeditionImportActionButton" type="button" title="Importar dados da aba atual" aria-label="Importar dados da aba atual da expedição">
+                                        <img src="images/geral-icons/import-icon.svg" alt="">
+                                    </button>
+
+                                    <input id="expeditionFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+                
+                                    <button id="expeditionClearReportButton" type="button" title="Limpar relatório" aria-label="Limpar relatório de expedição">
+                                        <img src="images/geral-icons/trash-basket-icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- CONTEÚDO DO RELATÓRIO -->
 
                             <div class="flex-box-start">
@@ -1347,7 +786,7 @@
                                                             <th>Rotas Conferidas</th>
                                                             <th>Volume Conferido</th>
                                                             <th>Volume no Piso</th>
-                                                            <th>Tempo de Expedição</th>
+                                                            <th>Duração</th>
                                                         </tr>
                                                     </thead>
 
@@ -1448,24 +887,13 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="two-horizontal-bars-chart">
-                                                    <div class="chart-panel">
-                                                        <h3>Rotas Conferidas por Conferente</h3>
-                                                        <p>Distribuição das rotas conferidas.</p>
 
-                                                        <div>
-                                                            <canvas id="expeditionVolumeComparisonChart" role="img"></canvas>
-                                                        </div>
+                                                <div class="aligned-comparison-chart">
+                        
+                                                    <div id="expeditionAlignedComparisonChartContainer">
+                                                        <canvas id="expeditionAlignedComparisonChart" role="img" aria-label="Comparação alinhada entre rotas conferidas e tempo médio por conferente"></canvas>
                                                     </div>
 
-                                                    <div class="chart-panel">
-                                                        <h3>Média de Tempo por Conferente</h3>
-                                                        <p>Tempo médio para conclusão de cada rota.</p>
-
-                                                        <div>
-                                                            <canvas id="expeditionTimeComparisonChart" role="img"></canvas>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1625,16 +1053,6 @@
                                             </div>
                                          </div>
                                     </div>
-
-                                    <!-- FOOTER -->
-
-                                    <div class="footer">
-                                        <div>
-                                            <button class="button" id="expeditionClearReportButton" type="button" disabled>Limpar Relatório</button>
-                                            <button class="button" id="expeditionCopyReportButton" type="button" disabled>Copiar Relatório</button>
-                                            <button class="button" id="expeditionDownloadReportButton" type="button" disabled>Baixar Relatório</button>
-                                        </div>
-                                    </div>
                                 </div>
 
                                 <!-- CONTROLES DO RELATÓRIO -->
@@ -1644,89 +1062,854 @@
                                     <!-- ANÁLISE DOS CONFERENTES E GESTÃO AUDIT -->
 
                                     <div class="expedition-controls-panel is-active" id="controls-summary">
-                                        <div class="history-link flex-box-start">
-                                            <a href="https://spx.shopee.com.br/#/generalReceiveTaskMgt" target="_blank">
-                                                <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                </svg>
-                                            </a>
-
-                                            <div>
-                                                <h4>Gestão de Audit</h4>
-                                                <p>Exporte do SPX e importe aqui.</p>
-                                            </div>
+                                        <div class="title">
+                                            <h4>Importe a Gestão Audit</h4>
                                         </div>
 
-                                        <div class="history-import flex-box-start">
-                                            <div>
-                                                <button class="button" id="expeditionImportButton" type="button">Importar Conferência</button>
+                                        <div class="padding">
+                                            <div class="input-group">
+                                                <div>
+                                                    <h4>Volume no Piso</h4>
+                                                    <input id="expeditionFloorRoutesInput" type="text" inputmode="numeric" maxlength="5" autocomplete="off" disabled>
+                                                </div>
+
+                                                <div>
+                                                    <h4>Desconhecidos</h4>
+                                                    <input id="expeditionUnknownInput" type="text" inputmode="numeric" maxlength="3" autocomplete="off" disabled>
+                                                </div>
+
+                                                <div>
+                                                    <h4>Pacotes Exceção</h4>
+                                                    <input id="expeditionExceptionInput" type="text" inputmode="numeric" maxlength="3" autocomplete="off" disabled>
+                                                </div>
                                             </div>
 
-                                            <input id="expeditionFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+                                            <div class="input-group" id="expeditionOperatorControls"></div>
                                         </div>
 
-                                        <div class="input-group">
-                                            <div>
-                                                <h4>Janela</h4>
-
-                                                <select class="standard-select" id="expeditionWindowInput" disabled>
-                                                    <option value="AM">AM</option>
-                                                    <option value="PM1">PM1</option>
-                                                    <option value="PM2">PM2</option>
-                                                </select>
-                                            </div>
-
-                                            <div>
-                                                <h4>Volume no Piso</h4>
-                                                <input id="expeditionFloorRoutesInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
-                                            </div>
-
-                                            <div>
-                                                <h4>Pacotes Desconhecidos</h4>
-                                                <input id="expeditionUnknownInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
-                                            </div>
-
-                                            <div>
-                                                <h4>Pacotes Exceção</h4>
-                                                <input id="expeditionExceptionInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
-                                            </div>
-                                        </div>
-
-                                        <div class="input-group" id="expeditionOperatorControls"></div>
                                     </div>
 
                                     <!-- ANÁLISE DOS ERROS ENCONTRADOS NA GESTÃO AUDIT -->
 
                                     <div class="expedition-controls-panel" id="controls-mistakes">
-                                        <div class="history-link flex-box-start">
-                                            <a href="https://docs.google.com/spreadsheets/d/1TUOf4Bvv7L_Q87xOkCQqPKkNpSi03OSs3aKobbAn724/edit?gid=354393054#gid=354393054" target="_blank">
-                                                <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                </svg>
-                                            </a>
+                                        <div class="title">
+                                            <h4>Importe a Bipagem de Erros</h4>
+                                        </div>
 
-                                            <div>
-                                                <h4>Planilha - Bipagem de Erros</h4>
-                                                <p>Crtl A + Crtl C, e clique em importar.</p>
+                                        <div class="padding">
+                                            <div class="input-group">
+                                                <div>
+                                                    <h4>Revertidos</h4>
+                                                    <input id="expeditionRevertedInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group" id="expeditionStreetGuardianControls"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RELATÓRIO DO PLANEJAMENTO -->
+
+                        <div class="tabs-panel" id="planning">
+
+                            <!-- TABS DE NAVEGAÇÃO -->
+
+                            <ul class="tabs flex-box-start" data-tabs id="planningTabs">
+                                <li class="tabs-title is-active">
+                                    <a href="#lhs-list">
+                                        <h4>Lista de LHs</h4>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title" id="planningSegregatedTosTab" hidden>
+                                    <a href="#segregated-tos">
+                                        <h4>TOs a Segregar</h4>
+                                    </a>
+                                </li>
+
+                                <li class="tabs-title">
+                                    <a href="#collection-indicators">
+                                        <h4>Collection Pool e Indicadores</h4>
+                                    </a>
+                                </li> 
+                            </ul> 
+
+                            <!-- BARRA DE NOTIFICAÇÕES E BOTÕES DE AÇÃO -->
+
+                            <div class="flex-box-start">
+                                <div class="warning" id="planningNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                                    <div class="flex-box-start">
+                                        <img id="planningNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                                        <h4 id="planningNotificationText">
+                                            Tudo em silêncio por enquanto.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="report-actions">
+                                    <button id="planningCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de planejamento; segure por 1,5 segundo para baixar">
+                                        <img src="images/geral-icons/image-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="planningImportClipboardButton" type="button" title="Importar LHs da área de transferência" aria-label="Importar LHs da área de transferência">
+                                        <img src="images/geral-icons/import-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="planningClearReportButton" type="button" title="Limpar relatório" aria-label="Limpar relatório de planejamento">
+                                        <img src="images/geral-icons/trash-basket-icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+      
+                            <!-- CONTEÚDO DO RELATÓRIO -->
+
+                            <div class="flex-box-start planning-report-layout">
+
+                                <!-- PPÉVIA DO RELATÓRIO -->
+
+                                <div class="preview" id="planningSheetPreview">
+                                    <div class="preview-style" id="planningReportExportArea">
+                                        <div class="title">
+                                            <h2>Relatório de Planejamento</h2>
+                                        </div>
+
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Volume Estimado</th>
+                                                    <th>SPR Médio</th>
+                                                    <th>Cap do Dia</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td id="planningEstimatedVolume">—</td>
+                                                    <td id="planningPreviewAverageSpr">—</td>
+                                                    <td id="planningPreviewDailyCapacity">—</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div class="planning-sheet-layout">
+                                            <div class="planning-sheet-main">
+
+                                                <!-- LISTA DE LHS PARA ROTEIRIZAR -->
+
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>LHs Programados</th>
+                                                            <th>Origem</th>
+                                                            <th style="width: 100px;">QTD</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="planningPreviewLhBody">
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- LHS PARA SEGREGAR -->
+
+                                                <table class="planning-segregated-table" id="planningSegregatedSection" hidden>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>LHs a Segregar</th>
+                                                            <th>Origem</th>
+                                                            <th>QTD</th>
+                                                            <th>Segregar</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="planningPreviewSegregatedBody">
+                                                        <tr class="planning-empty-row">
+                                                            <td colspan="4">Nenhum LH para segregar.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- TOS PARA SEGREGAR -->
+
+                                                <table class="planning-segregated-tos-table" id="planningSegregatedTosSection" hidden>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>TOs para Segregar</th>
+                                                            <th>LH</th>
+                                                            <th>QTD</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="planningPreviewSegregatedTosBody">
+                                                        <tr class="planning-empty-row">
+                                                            <td colspan="3">Nenhuma TO para segregar.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div class="planning-sheet-sidebar">
+
+                                                <!-- COLLECTION POOL -->
+
+                                                <table class="planning-sheet-table planning-cp-summary-table">
+                                                    <colgroup>
+                                                        <col>
+                                                        <col class="planning-quantity-column">
+                                                    </colgroup>
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Valores da Collection Pool</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Qtd Backlog Pacotes</td>
+                                                            <td id="planningPreviewCpBacklog">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd Backlog Volumosos</td>
+                                                            <td id="planningPreviewCpBulky">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd dentro dos LHs</td>
+                                                            <td id="planningPreviewCpLhPool">0</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <table class="planning-sheet-table planning-cp-summary-table">
+                                                    <colgroup>
+                                                        <col>
+                                                        <col class="planning-quantity-column">
+                                                    </colgroup>
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Operações na Collection Pool</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Qtd Pacotes Inseridos</td>
+                                                            <td id="planningPreviewCpAdded">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd Pacotes Retirados</td>
+                                                            <td id="planningPreviewCpRemoved">0</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>Qtd Pacotes com Erros</td>
+                                                            <td id="planningPreviewCpErrors">0</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CONTROLES DO RELATÓRIO -->
+
+                                <div class="report-controls">
+                                    <div class="tabs-content" data-tabs-content="planningTabs">
+                                        <div class="tabs-panel is-active" id="lhs-list">
+                                            <div class="title">
+                                                <h4>Lista de LHs</h4>
+
+                                                <div class="flex-box-start">
+                                                    <button id="planningAddLh" type="button" title="Adicionar LH" aria-label="Adicionar LH">
+                                                        <img src="images/geral-icons/add-icon.svg" alt="">
+                                                    </button>
+
+                                                    <button id="planningRemoveLh" type="button" title="Remover último LH" aria-label="Remover último LH">
+                                                        <img src="images/geral-icons/remove-icon.svg" alt="">
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="padding">
+                                                <div class="lhs-list planning-lh-list" id="planningLhList"></div>
                                             </div>
                                         </div>
 
-                                        <div class="history-import flex-box-start">
-                                            <div>
-                                                <button class="button" id="expeditionErrorsImportButton" type="button">
-                                                    Importar Planilha de Erros
+                                        <div class="tabs-panel" id="segregated-tos">
+                                            <div class="title">
+                                                <h4>Defina TOs Para Segregar</h4>
+
+                                                <div class="flex-box-start">
+                                                    <button id="planningAddTo" type="button" title="Adicionar TO" aria-label="Adicionar TO">
+                                                        <img src="images/geral-icons/add-icon.svg" alt="">
+                                                    </button>
+
+                                                    <button id="planningRemoveTo" type="button" title="Remover última TO" aria-label="Remover última TO">
+                                                        <img src="images/geral-icons/remove-icon.svg" alt="">
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="padding">
+                                                <div class="to-list" id="planningToList"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tabs-panel" id="collection-indicators">
+                                            <div class="title">
+                                                <h4>Collection Pool e Indicadores</h4>
+                                            </div>
+
+                                            <div class="padding">
+                                                <div class="input-group">
+                                                    <div>
+                                                        <h4>Cap do Dia</h4>
+
+                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-field="dailyCapacity">
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>SPR Médio</h4>
+
+                                                        <input type="text" inputmode="numeric" maxlength="5" data-planning-field="averageSpr">
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-group">
+                                                    <div>
+                                                        <h4>Pacotes</h4>
+                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogPackages">
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>Volumosos</h4>
+                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="backlogBulky">
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-group operations">
+                                                    <div>
+                                                        <h4>Adicionados</h4>
+                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="added">
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>Retirados</h4>
+                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="removed">
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>Erros</h4>
+                                                        <input type="text" inputmode="numeric" maxlength="6" data-planning-pool-field="errors">
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-group fleet">
+                                                    <div>
+                                                        <h4>Carros</h4>
+
+                                                        <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="cars">
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>Motos</h4>
+
+                                                        <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="motorcycles">
+                                                    </div>
+
+                                                    <div>
+                                                        <h4>Fiorinos</h4>
+
+                                                        <input type="text" inputmode="numeric" maxlength="4" data-planning-vehicle-field="fiorinos">
+                                                    </div>
+                                                </div>
+
+                                                <p>Os valores da frota afetarão o cálculo do indicador SPR Médio, preencher a composição da frota é opcional.</p>
+                                                <a href="#">Consultar Frota ➚</a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AVARIAS E PERDAS -->
+
+                        <div class="tabs-panel" id="damage-and-losses">
+
+                            <!-- TABS DE NAVEGAÇÃO -->
+
+                            <ul class="tabs flex-box-start" data-tabs id="damage-and-losses-choice">
+                                <li class="tabs-title is-active">
+                                    <a href="#damage">
+                                        <h4>Avarias do Mês</h4>
+                                    </a>
+                                </li> 
+
+                                <li class="tabs-title">
+                                    <a href="#losses">
+                                        <h4>Perdas do Mês</h4>
+                                    </a>
+                                </li>
+                            </ul> 
+
+                            <!-- BARRA DE NOTIFICAÇÕES E BOTÕES DE AÇÃO -->
+
+                            <div class="flex-box-start">
+                                <div class="warning" id="damageAndLossesNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                                    <div class="flex-box-start">
+                                        <img id="damageAndLossesNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                                        <h4 id="damageAndLossesNotificationText">
+                                            Tudo em silêncio por enquanto.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="report-actions">
+                                    <button id="damageAndLossesCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de avarias ou perdas; segure por 1,5 segundo para baixar">
+                                        <img src="images/geral-icons/image-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="damageAndLossesImportButton" type="button" title="Importar planilha de avarias e perdas" aria-label="Importar planilha de avarias e perdas">
+                                        <img src="images/geral-icons/import-icon.svg" alt="">
+                                    </button>
+
+                                    <input id="damageAndLossesFileInput" type="file" accept=".xlsx,.xls" hidden>
+
+                                    <button id="damageAndLossesClearButton" type="button" title="Limpar relatório" aria-label="Limpar relatório de avarias e perdas">
+                                        <img src="images/geral-icons/trash-basket-icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+      
+                            <!-- PPÉVIA DO RELATÓRIO -->
+
+                            <div class="preview" id="damageReportPreview">
+                                <div class="tabs-content" data-tabs-content="damage-and-losses-choice">
+
+                                    <!-- AVARIAS DO MÊS -->
+
+                                    <div class="tabs-panel is-active" id="damage">
+                                        <div class="preview-style" id="damageReportExportArea">
+                                            <div class="title">
+                                                <h2>Avarias do Mês</h2>
+                                            </div>
+
+                                            <div class="cards">
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/damage-icon.svg">
+                                                        <h4 id="damageTotalValue">—</h4>
+                                                    </div>
+
+                                                    <p id="">Total de Avarias</p>
+                                                </div>
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/hub-icon.svg">
+                                                        <h4 id="damageHubValue">—</h4>
+                                                    </div>
+
+                                                    <p id="">Avarias do Hub</p>
+                                                </div>
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/truck-icon.svg">
+                                                        <h4 id="damageSocValue">—</h4>
+                                                    </div>
+
+                                                    <p id="">Avarias do Soc</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="damage-chart-period-selector" id="damageChartPeriodSelector" role="tablist" aria-label="Período exibido no gráfico de avarias">
+                                                <button class="is-active" type="button" role="tab" aria-selected="true" data-damage-chart-period="last7">
+                                                    <span>Últimos 7 Dias</span>
+                                                </button>
+
+                                                <button type="button" role="tab" aria-selected="false" data-damage-chart-period="days8to14">
+                                                    <span>De 8 a 14</span>
+                                                    <span>Dias Atrás</span>
+                                                </button>
+
+                                                <button type="button" role="tab" aria-selected="false" data-damage-chart-period="monthStart">
+                                                    <span>De 15 Dias Atrás</span>
+                                                    <span>Até o Começo do Mês</span>
+                                                </button>
+
+                                                <button type="button" role="tab" aria-selected="false" data-damage-chart-period="totalMonth">
+                                                    <span>Total do Mês</span>
                                                 </button>
                                             </div>
-                                        </div>
 
-                                        <div class="input-group">
-                                            <div>
-                                                <h4>Revertidos</h4>
-                                                <input id="expeditionRevertedInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                            <div class="vertical-bars-chart">
+                                                <div class="chart-title">
+                                                    <div class="flex-box-between">
+                                                        <h4 id="damageChartPeriodTitle">Últimos 7 Dias</h4>
+
+                                                        <div class="flex-box-start">
+                                                            <div class="type">
+                                                                <div style="background-color: #ffc107;"></div>
+                                                                <p>Avarias do Soc</p>
+                                                            </div>
+
+                                                            <div class="type">
+                                                                <div style="background-color: #F44336;"></div>
+                                                                <p>Avarias do Hub</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="damageLastSevenDaysChartContainer">
+                                                    <div class="damage-period-chart-canvas">
+                                                        <canvas id="damageLastSevenDaysChart" role="img" aria-label="Avarias do Soc e do Hub nos últimos sete dias"></canvas>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="input-group" id="expeditionStreetGuardianControls"></div>
+                                            <div class="damage-and-losses-charts flex-box-start">
+                                                <div class="doughnut-chart">
+                                                    <h4>Composição das Avarias</h4>
+
+                                                    <div class="flex-box-start">
+                                                        <div>
+                                                            <canvas id="damageCompositionChart" role="img" aria-label="Composição das avarias entre sólidas, líquidas e de vidro"></canvas>
+                                                        </div>
+
+                                                        <div>
+                                                            <div class="type">
+                                                                <div style="background-color: #F44336;"></div>
+                                                                <p>Avarias Sólidas <span id="damageSolidValue">—</span></p>
+                                                            </div>
+
+                                                            <div class="type">
+                                                                <div style="background-color: #ff9800;"></div>
+                                                                <p>Avarias Líquidas <span id="damageLiquidValue">—</span></p>
+                                                            </div>
+
+                                                            <div class="type">
+                                                                <div style="background-color: #3F51B5;"></div>
+                                                                <p>Avarias de Vidro <span id="damageGlassValue">—</span></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="horizontal-bars-chart">
+                                                    <div class="chart-title">
+                                                        <h4>Avarias por Soc</h4>
+                                                    </div>
+
+                                                    <div id="damageSocChartContainer" class="damage-soc-chart-container">
+                                                        <canvas id="damageSocChart" role="img" aria-label="Quantidade de avarias por Soc"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <table id="damageTraditionalAnalysisTable">
+                                                <caption>Análise Tradicional</caption>
+
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 230px;">Ocorrência</th>
+                                                        <th scope="col">Hoje</th>
+                                                        <th scope="col">Ontem</th>
+                                                        <th scope="col">Anteontem</th>
+                                                        <th scope="col">Dê 3 a 7<br>Dias Atrás</th>
+                                                        <th scope="col">Dê 8 a 14<br>Dias Atrás</th>
+                                                        <th scope="col">Dê 15 Dias Atrás<br>Até o Começo do Mês</th>
+                                                        <th scope="col">Total do Mês</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr data-damage-analysis-field="hub">
+                                                        <th scope="row">Avarias do Hub</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-damage-analysis-field="soc">
+                                                        <th scope="row">Avarias do Soc</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-damage-analysis-field="solid">
+                                                        <th scope="row">Avarias Sólidas</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-damage-analysis-field="liquid">
+                                                        <th scope="row">Avarias Líquidas</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-damage-analysis-field="glass">
+                                                        <th scope="row">Avarias Vidro</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- PERDAS DO MÊS -->
+
+                                    <div class="tabs-panel" id="losses">
+                                        <div class="preview-style" id="lossesReportExportArea">
+                                            <div class="title">
+                                                <h2>Perdas do Mês</h2>
+                                            </div>
+
+                                            <div class="cards">
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/register-icon.svg">
+                                                        <h4 id="lossesTotalValue">—</h4>
+                                                    </div>
+
+                                                    <p>Total de Registros</p>
+                                                </div>
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/clock-icon.svg">
+                                                        <h4 id="PackagesUnderReview">—</h4>
+                                                    </div>
+
+                                                    <p>Pacotes em Análise</p>
+                                                </div>
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/alert-icon.svg">
+                                                        <h4 id="confirmedLosses">—</h4>
+                                                    </div>
+
+                                                    <p>Perdas Confirmadas</p>
+                                                </div>
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/money-icon.svg">
+                                                        <h4 id="lossesMonetaryValue">—</h4>
+                                                    </div>
+
+                                                    <p>Prejuízo Estimado</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="damage-chart-period-selector" id="lossesChartPeriodSelector" role="tablist" aria-label="Período exibido no gráfico de perdas.">
+                                                <button class="is-active" type="button" role="tab" aria-selected="true" data-losses-chart-period="last7">
+                                                    <span>Últimos 7 Dias</span>
+                                                </button>
+
+                                                <button type="button" role="tab" aria-selected="false" data-losses-chart-period="days8to14">
+                                                    <span>De 8 a 14</span>
+                                                    <span>Dias Atrás</span>
+                                                </button>
+
+                                                <button type="button" role="tab" aria-selected="false" data-losses-chart-period="monthStart">
+                                                    <span>De 15 Dias Atrás</span>
+                                                    <span>Até o Começo do Mês</span>
+                                                </button>
+
+                                                <button type="button" role="tab" aria-selected="false" data-losses-chart-period="totalMonth">
+                                                    <span>Total do Mês</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="vertical-bars-chart">
+                                                <div class="chart-title">
+                                                    <div class="flex-box-between">
+                                                        <h4 id="lossesChartPeriodTitle">Últimos 7 Dias</h4>
+
+                                                        <div class="flex-box-start">
+                                                            <div class="type">
+                                                                <div style="background-color: #ffc107;"></div>
+                                                                <p>Pacotes Em Análise</p>
+                                                            </div>
+
+                                                            <div class="type">
+                                                                <div style="background-color: #F44336;"></div>
+                                                                <p>Perdas Confirmadas</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="lossesLastSevenDaysChartContainer">
+                                                    <div class="losses-period-chart-canvas">
+                                                        <canvas id="lossesLastSevenDaysChart" role="img" aria-label="Pacotes em análise e perdas confirmadas nos últimos sete dias"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="damage-and-losses-charts flex-box-start">
+                                                <div class="horizontal-bars-chart">
+                                                    <div class="chart-title">
+                                                        <h4>Pack Recover</h4>
+                                                    </div>
+
+                                                    <div id="lossesPackRecoveryChartContainer" class="losses-horizontal-chart-canvas">
+                                                        <canvas id="lossesPackRecoveryChart" role="img" aria-label="Pack Recovery"></canvas>
+                                                    </div>
+                                                </div>
+
+                                                <div class="horizontal-bars-chart">
+                                                    <div class="chart-title">
+                                                        <h4>Composição dos Valores Informados</h4>
+                                                    </div>
+
+                                                    <div id="lossesValueCompositionChartContainer" class="losses-horizontal-chart-canvas">
+                                                        <canvas id="lossesValueCompositionChart" role="img" aria-label="Composição dos valores informados"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <table id="lossesTraditionalAnalysisTable">
+                                                <caption>Análise Tradicional</caption>
+
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 230px;">Ocorrência</th>
+                                                        <th scope="col">Hoje</th>
+                                                        <th scope="col">Ontem</th>
+                                                        <th scope="col">Anteontem</th>
+                                                        <th scope="col">Dê 3 a 7<br>Dias Atrás</th>
+                                                        <th scope="col">Dê 8 a 14<br>Dias Atrás</th>
+                                                        <th scope="col">Dê 15 Dias Atrás<br>Até o Começo do Mês</th>
+                                                        <th scope="col">Total do Mês</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr data-losses-analysis-field="underReview">
+                                                        <th scope="row">Pacotes Em Análise</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-losses-analysis-field="confirmedLosses">
+                                                        <th scope="row">Perdas Confirmadas</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-losses-analysis-field="savedAwaitingTicket">
+                                                        <th scope="row">Salvos Aguardando Ticket</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-losses-analysis-field="emptyAwaitingTicket">
+                                                        <th scope="row">Vazios Aguardando Ticket</th>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1739,6 +1922,34 @@
                             <!-- TABS DO RELATÓRIO -->
 
                             <ul class="tabs flex-box-start" id="lossesRateMonthTabs" role="tablist"></ul>
+
+                            <!-- BARRA DE NOTIFICAÇÕES E BOTÕES DE AÇÃO -->
+
+                            <div class="flex-box-start">
+                                <div class="warning" id="lossesRateNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                                    <div class="flex-box-start">
+                                        <img id="lossesRateNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                                        <h4 id="lossesRateNotificationText">
+                                            Tudo em silêncio por enquanto.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="report-actions">
+                                    <button id="lossesRateCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de taxa de perdas; segure por 1,5 segundo para baixar">
+                                        <img src="images/geral-icons/image-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="lossesRateImportActionButton" type="button" title="Importar histórico da área de transferência" aria-label="Importar histórico da taxa de perdas">
+                                        <img src="images/geral-icons/import-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="lossesRateClearReportButton" type="button" title="Limpar relatório" aria-label="Limpar relatório de taxa de perdas">
+                                        <img src="images/geral-icons/trash-basket-icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
 
                             <!-- CONTEÚDO DO RELATÓRIO -->
 
@@ -1816,108 +2027,76 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- OPÇÕES DO RELATÓRIO -->
-
-                                    <div class="footer flex-box-between">
-                                        <div>
-                                            <button class="button" id="lossesRateCopyBaseButton" type="button">
-                                                Copiar Base Atualizada
-                                            </button>
-
-                                            <button class="button" id="lossesRateCopyReportButton" type="button" disabled>
-                                                Copiar Relatório
-                                            </button>
-
-                                            <button class="button" id="lossesRateDownloadReportButton" type="button" disabled>
-                                                Baixar Relatório
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
 
                                 <!-- CONTROLES DO RELATÓRIO -->
 
                                 <div class="report-controls">
-                                    <div class="history-link flex-box-start">
-                                        <a href="https://docs.google.com/spreadsheets/d/1TUOf4Bvv7L_Q87xOkCQqPKkNpSi03OSs3aKobbAn724/edit?gid=275287237#gid=275287237" target="_blank">
-                                            <svg class="spreadsheets-link-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path d="M7 17L17 7M9 7H17V15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </svg>
-                                        </a>
-
-                                        <div>
-                                            <h4>Planilha - Taxa de Perdas</h4>
-                                            <p>Crtl A + Crtl C, e clique em importar.</p>
-                                        </div>
+                                    <div class="title">
+                                        <h4>Importe a Bipagem de Erros</h4>
                                     </div>
 
-                                    <div class="history-import flex-box-start">
-                                        <div>
-                                            <button class="button" id="lossesRateImportHistoryButton" type="button">
-                                                Importar Histórico
-                                            </button>
+                                    <div class="padding">
+                                
+                                        <div class="input-group losses-rate-identification">
+                                            <div>
+                                                <h4>Descrição</h4>
+                                                <input id="lossesRateDescriptionInput" type="text">
+                                            </div>
+
+                                            <div>
+                                                <h4>Código do Hub</h4>
+                                                <input id="lossesRateHubCodeInput" type="text">
+                                            </div>
+
+                                            <div>
+                                                <h4>Sub Regional</h4>
+                                                <input id="lossesRateSubRegionalInput" type="text">
+                                            </div>
                                         </div>
 
-                                    </div>
+                                        <div class="input-group losses-rate-values">
+                                            <div>
+                                                <h4>Volume Movimentado</h4>
+                                                <input id="lossesRateMovedInput" type="text" inputmode="numeric" maxlength="9">
+                                            </div>
 
-                                    <div class="input-group losses-rate-identification">
-                                        <div>
-                                            <h4>Descrição</h4>
-                                            <input id="lossesRateDescriptionInput" type="text" readonly>
+                                            <div>
+                                                <h4>Possíveis Perdas</h4>
+                                                <input id="lossesRatePossibleLossesInput" type="text" inputmode="numeric" maxlength="6">                                        
+                                            </div>
+
+                                            <div>
+                                                <h4>Quantidade de LOST</h4>
+                                                <input id="lossesRateLostInput" type="text" inputmode="numeric" maxlength="6">                                        
+                                            </div>
+
+                                            <div>
+                                                <h4>Quantidade de AVARIA</h4>
+                                                <input id="lossesRateDamageInput" type="text" inputmode="numeric" maxlength="6">
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <h4>Código do Hub</h4>
-                                            <input id="lossesRateHubCodeInput" type="text" readonly>
-                                        </div>
+                                        <div class="losses-rate-controls-summary">
+                                            <h4>Resumo do Mês</h4>
 
-                                        <div>
-                                            <h4>Sub Regional</h4>
-                                            <input id="lossesRateSubRegionalInput" type="text" readonly>
-                                        </div>
-                                    </div>
+                                            <div class="losses-rate-goal-status">
+                                                <span>Referência máxima</span>
+                                                <span>0,030%</span>
+                                            </div>
 
-                                    <div class="input-group losses-rate-values">
-                                        <div>
-                                            <h4>Volume Movimentado</h4>
-                                            <input id="lossesRateMovedInput" type="text" inputmode="numeric" maxlength="9">
-                                        </div>
+                                            <div>
+                                                <span>Total de Perdas</span>
+                                                <span id="lossesRateControlsTotal">—</span>
+                                            </div>
 
-                                        <div>
-                                            <h4>Possíveis Perdas</h4>
-                                            <input id="lossesRatePossibleLossesInput" type="text" inputmode="numeric" maxlength="6">                                        
-                                        </div>
-
-                                        <div>
-                                            <h4>Quantidade de LOST</h4>
-                                            <input id="lossesRateLostInput" type="text" inputmode="numeric" maxlength="6">                                        
-                                        </div>
-
-                                        <div>
-                                            <h4>Quantidade de AVARIA</h4>
-                                            <input id="lossesRateDamageInput" type="text" inputmode="numeric" maxlength="6">
-                                        </div>
-                                    </div>
-
-                                    <div class="losses-rate-controls-summary">
-                                        <h4>Resumo do Mês</h4>
-
-                                        <div class="losses-rate-goal-status">
-                                            <span>Referência máxima</span>
-                                            <span>0,030%</span>
-                                        </div>
-
-                                        <div>
-                                            <span>Total de Perdas</span>
-                                            <span id="lossesRateControlsTotal">—</span>
-                                        </div>
-
-                                        <div>
-                                            <span>Taxa de Perda</span>
-                                            <span id="lossesRateControlsRate">—</span>
+                                            <div>
+                                                <span>Taxa de Perda</span>
+                                                <span id="lossesRateControlsRate">—</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -1925,10 +2104,37 @@
                         <!-- RELATÓRIO ANÁLISE GERAL -->
 
                         <div class="tabs-panel" id="overall-analysis">
+
+                            <!-- BARRA DE NOTIFICAÇÕES E BOTÕES DE AÇÃO -->
+
+                            <div class="flex-box-start">
+                                <div class="warning" id="overallAnalysisNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                                    <div class="flex-box-start">
+                                        <img id="overallAnalysisNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                                        <h4 id="overallAnalysisNotificationText">
+                                            Tudo em silêncio por enquanto.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="report-actions">
+                                    <button id="overallAnalysisCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de análise geral; segure por 1,5 segundo para baixar">
+                                        <img src="images/geral-icons/image-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="overallAnalysisClearReportButton" type="button" title="Limpar todos os relatórios" aria-label="Limpar todos os relatórios e a análise geral">
+                                        <img src="images/geral-icons/trash-basket-icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- PPÉVIA DO RELATÓRIO -->
+
                             <div class="preview">
-                                <div class="preview-style">
+                                <div class="preview-style" id="overallAnalysisReportExportArea">
                                     <div class="title">
-                                        <h2>Análise do Geral</h2>
+                                        <h2>Análise Geral</h2>
                                     </div>
 
                                     <!-- HEADER -->
@@ -1939,7 +2145,7 @@
                                             <p id="overallAnalysisDate">—</p>
                                         </div>
 
-                                       <p>Janela do <span id="">PM 2</span> - Analista do Turno: <span id="">-</span></p>
+                                       <p>Janela do <span id="overallAnalysisWindow">—</span> - Analista do Turno: <span id="overallAnalysisAnalyst">—</span></p>
                                     </div>
 
                                     <!-- CARDS -->
@@ -1976,11 +2182,11 @@
                                             <div class="final-report-card">
                                                 <div class="flex-box-start">
                                                     <div class="final-report-mini-chart">
-                                                        <canvas id="overallAnalysisPackagesAnalysisChart" role="img" aria-label="Pacotes em análise, aguardando fonte de dados">
+                                                        <canvas id="overallAnalysisPackagesAnalysisChart" role="img" aria-label="Pacotes em análise">
                                                             Seu navegador não suporta gráficos em canvas.
                                                         </canvas>
 
-                                                        <img src="images/geral-icons/alert-icon.svg" alt="" aria-hidden="true">
+                                                        <img src="images/geral-icons/clock-icon.svg" alt="" aria-hidden="true">
                                                     </div>
 
                                                     <div>
@@ -2013,7 +2219,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
 
                                     <!-- FLUXO DO DIA E DASTAQUES DA OPERAÇÃO -->
@@ -2045,7 +2250,7 @@
                                                     </div>
 
                                                     <div class="flex-box-center">
-                                                        <img src="images/geral-icons/van-icon.svg">
+                                                        <img src="images/geral-icons/van-icon.svg" style="width: 40px;">
 
                                                         <div>
                                                             <h4>Expedido</h4>
@@ -2057,7 +2262,7 @@
                                                         <img src="images/geral-icons/forklift-icon.svg">
 
                                                         <div>
-                                                            <h4>No Piso</h4>
+                                                            <h4>Backlog no Piso</h4>
                                                             <p id="overallAnalysisFloor">—</p>
                                                         </div>
                                                     </div>
@@ -2065,7 +2270,7 @@
 
                                                 <div class="dashed-border"></div>
 
-                                                <h5 id="">- Saldo Final de Pacotes</h5>
+                                                <h5 id="overallAnalysisFlowStatus">—</h5>
                                             </div>
                                         </div>
 
@@ -2149,7 +2354,7 @@
                                                         <th>Rotas Conferidas</th>
                                                         <th>Volume Conferido</th>
                                                         <th>Volume no Piso</th>
-                                                        <th>Tempo de Expedição</th>
+                                                        <th>Duração</th>
                                                     </tr>
                                                 </thead>
 
@@ -2182,7 +2387,7 @@
                                     <!-- AVARIAS E PERDAS -->
 
                                     <div class="final-report-damage-and-lost">
-                                        <table>
+                                        <table id="overallAnalysisDamageAndLossesTable">
                                             <caption>Situação das Avarias e Perdas</caption>
 
                                             <thead>
@@ -2199,7 +2404,7 @@
                                             </thead>
 
                                             <tbody>
-                                                <tr>
+                                                <tr data-overall-damage-losses-field="hub">
                                                     <th scope="row">Avarias do Hub</th>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -2212,7 +2417,7 @@
                                             </tbody>
 
                                             <tbody>
-                                                <tr>
+                                                <tr data-overall-damage-losses-field="soc">
                                                     <th scope="row">Avarias do Soc</th>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -2225,7 +2430,7 @@
                                             </tbody>
 
                                             <tbody>
-                                                <tr>
+                                                <tr data-overall-damage-losses-field="underReview">
                                                     <th scope="row">Pacotes Em Análise</th>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -2238,7 +2443,7 @@
                                             </tbody>
 
                                             <tbody>
-                                                <tr>
+                                                <tr data-overall-damage-losses-field="confirmedLosses">
                                                     <th scope="row">Perdas Confirmadas</th>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -2251,7 +2456,7 @@
                                             </tbody>
 
                                             <tbody>
-                                                <tr>
+                                                <tr data-overall-damage-losses-field="savedAwaitingTicket">
                                                     <th scope="row">Salvos Aguardando Ticket</th>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -2264,7 +2469,7 @@
                                             </tbody>
 
                                             <tbody>
-                                                <tr>
+                                                <tr data-overall-damage-losses-field="emptyAwaitingTicket">
                                                     <th scope="row">Vazios Aguardando Ticket</th>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -2783,7 +2988,314 @@
 
                 <!-- PAINEL - MANUAL -->
 
-                <div class="tabs-panel" id="docs"></div>
+                <div class="tabs-panel" id="docs">
+                    <div class="flex-box-start">
+
+                        <!-- DOCUMENTAÇÃO -->
+
+                        <div>
+                            <div class="tabs-content" data-tabs-content="docs-tabs">
+
+                                <!-- DOCUMENTAÇÃO O QUE É DASHBOARD -->
+
+                                <div class="tabs-panel is-active" id="docs-what-is-it">
+                                    <div class="title">
+                                        <h3>O que é o Dashboard</h3>
+                                    </div>
+
+                                    <div class="padding">
+                                        <div>
+                                            <h4>Visão Geral</h4>
+
+                                            <p>O Dashboard do Inventário é uma ferramenta de apoio à operação criada para reunir planilhas, relatórios e análises em um único ambiente. Ele transforma bases operacionais em indicadores, tabelas e gráficos que facilitam o acompanhamento da janela, a identificação de desvios e a comunicação dos resultados. Ele tem como publico alvo os analistas de inventário, mas também pode ajudar outras áreas da operação.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Como Usar os Relatórios</h4>
+
+                                            <p>Comece preenchendo as informações gerais da janela, como o turno atual, analista responsável, planejamento, quantidade de colaboradores e capacidade. Depois, acesse o relatório desejado e importe a base de dados correspondente. <br><br> Confira a notificação de importação, revise os dados exibidos na prévia e se necessário, complete os campos manuais. <br> Os indicadores e gráficos são atualizados automaticamente conforme os dados do relatório são alterados.</p>
+                                        </div>
+
+                                        <hr>
+                                        <div>
+                                            <h4>Recomendações</h4>
+
+                                            <p>Utilize sempre a base oficial mais recente, confirme se o arquivo pertence à janela ou ao mês analisado e compare o volume importado com a fonte antes de divulgar o resultado. Revise também nomes, filtros, períodos e valores preenchidos manualmente.
+
+                                            <br><br>
+
+                                            Para continuar o trabalho em outro momento, salve uma sessão antes de limpar o relatório, atualizar a página ou fechar o navegador.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Peculiaridades</h4>
+
+                                            <p>O importador de cada relatório procura colunas, abas e formatos específicos. Por isso, alterações no nome de um cabeçalho ou na estrutura da planilha podem impedir a leitura correta. Um traço (—) representa uma informação ainda não disponível ou não aplicável e não deve ser interpretado automaticamente como zero. Os resultados apresentados são calculados a partir das bases e dos dados importados.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DOCUMENTAÇÃO PAINÉIS DO DASHBOARD -->
+
+                                <div class="tabs-panel" id="docs-panels">
+                                    <div class="title">
+                                        <h3>Painéis do Dashboard</h3>
+                                    </div>
+
+                                    <div class="padding">
+                                        <p>Reúne atalhos para planilhas operacionais utilizadas no dia a dia, o painel permite visulizar o conteúdo de uma planilhas e fazer pequenas alterações simples, e também conta com links que direcionam para suas respectivas fontes externas no google planilhas. <br><br>O conteúdo dessas planilhas não é de nenhuma forma alterado pelo dashboard, ele apenas abre uma janela do google planilhas no painel, utilizando o link da planilha em tags HTML conhecidas como &lt;IFRAME&gt;, toda alteração de planilhas é feita através da plataforma do google.
+
+                                        <br><br>
+
+                                        É de responsabilidade do usuário do dashboard inventário, manter o link de suas respectivas planilhas sempre atualizado, o inventário de cada operação shopee possui suas prórias planilhas, por isso, cada operação deve mapear as suas, para que consiga utilizar este painel.
+                                        </p>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Relatórios</h4>
+
+                                            <p>É o núcleo operacional do dashboard, dividio em seis relatórios: Processamento, Expedição, Planejamento, Avarias e Perdas, Taxa de Perdas e Análise Geral, cada um com suas respectivas funções, atribuções e bases específicas de dados para importar, seja do SPX ou Planilhas. 
+
+                                            <br><br>
+
+                                            Processamento
+
+                                            <br><br>
+
+                                            Acompanha descarregamentos de LHs, a mesa de recebimento e o desempenho dos recebedores, permitindo uma análise completa de todo cliclo do processamento, desde o descarregamento do primeiro LH até o último pacote recebido pela operação, usando dados do SPX.
+
+                                            <br><br>
+
+                                            Expedição 
+
+                                            <br><br>
+
+                                            Uma análise precisa de todo o processo de expedição, acompanha o resumo da expedição, o rank de conferentes e também uma a análise de erros juntamente com e as ocorrências categorizadas por rua, permitindo analisar no detalhe o desempenho de cada rua. 
+
+                                            <br><br>
+
+                                            Planejamento
+
+                                            <br><br>
+
+                                            Organiza LHs, TOs para segregação, operações na collection pool e indicadores de capacidade, desenhado para planejar volume da proxima janela de precessamento, carregamento infomrações precisas da quantidade de pacotes em cada LH, e o total de backlog da janela anterior.
+
+                                            <br><br>
+
+                                            Avarias e Perdas
+
+                                            <br><br>Reaproveita a base de dados mantida pelos analistas de inventário para criar paineis visuais, consolidando ocorrências por período, origem, composição, situação e valores. o relatório gera gráficos e organiza os dados a respeito das avarias e perdas para uma análise superior.
+
+                                            <br><br>
+
+                                            Taxa de Perdas
+                                                
+                                            <br><br>
+
+                                            Acompanha a composição mensal de avarias e perdas, permitindo uma análise mais ampla do desempenho do Hub.
+
+                                            <br><br>
+
+                                            Análise Geral
+                                                
+                                            <br><br>
+                                            Combina os principais dados dos demais relatórios em uma visão geral da janela, sendo um grande resumo de como foi os acontecimentos daquela janela em questão, gerado dinamicamente pelo preenchimento dos relatórios anteriores.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Análises</h4>
+
+                                            <p>Permite explorar arquivos XLSX, XLS e CSV sem depender de um relatório predefinido. É possível visualizar a planilha, controlar as colunas exibidas, comparar dados, aplicar condições, calcular estatísticas e montar gráficos de colunas, linhas ou pizza.
+
+                                            <br><br>
+
+                                            As tabelas e os gráficos gerados também podem ser baixados para uso em outras análises.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Documentação</h4>
+
+                                            <p>Apresenta orientações sobre o funcionamento do dashboard, suas áreas, limitações e cuidados de uso. Este conteúdo acompanha a evolução da ferramenta e deve ser sempre consultado quando houver dúvidas sobre importações, interpretações ou de como usar uma função.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DOCUMENTAÇÃO VERSÕES E FUNCIONALIDADES -->
+
+                                <div class="tabs-panel" id="docs-versions">
+                                    <div class="title">
+                                        <h3>Versões e Funcionalidades</h3>
+                                    </div>
+
+                                    <div class="padding">
+                                        <div>
+                                            <h4>Versão Atual</h4>
+
+                                            <p>Esta documentação descreve o funcionamento completo do dashboard de inventário em sua primeira versão, 1.0.<br> Ela reúne os fluxos de Processamento, Expedição, Planejamento, Avarias e Perdas, Taxa de Perdas, Análise Geral e análise livre de planilhas.
+
+                                            <br><br>
+
+                                            Como o projeto continua evoluindo, nomes, regras de cálculo e formatos de arquivos aceitos podem receber ajustes.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Principais Funcionalidades</h4>
+
+                                            <p>Entre as funções disponíveis estão a importação de bases operacionais para preenchimento automático de relatórios, atualizando prévias, indicadores e rankings. Opções filtros por período, tabelas analíticas, gráficos interativos, cópia ou download de relatórios e salvamento da sessão de trabalho para uso posterior no proximo turno, ou para consultas pontuais de determinadas janelas.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Compatibilidade das Bases</h4>
+
+                                            <p>Os formatos aceitos dependem do painel. Em geral, o dashboard trabalha com arquivos XLSX, XLS e CSV, mas cada importador possui regras próprias para localizar abas, cabeçalhos e colunas. Uma planilha pode abrir normalmente no Excel e ainda assim não ser reconhecida se sua estrutura não corresponder ao modelo esperado, para a determinada função que você está tentando utlizar.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DOCUMENTAÇÃO SEGURANÇA E PRIVACIDADE -->
+
+                                <div class="tabs-panel" id="docs-security">
+                                    <div class="title">
+                                        <h3>Segurança e Privacidade</h3>
+                                    </div>
+
+                                    <div class="padding">
+                                        <div>
+                                            <h4>Processamento dos Dados</h4>
+
+                                            <p>As bases importadas nos relatórios e nas análises são lidas pelo navegador para produzir as visualizações exibidas na página. O dashboard não deve ser tratado como um banco de dados permanente: mantenha os arquivos oficiais em seus locais autorizados, utilize o salvamento de sessão apenas quando precisar preservar o trabalho realizado, e mantenha o arquivo do salvamento somente nas maquinas corporativas da empresa ou nos drives das contas corporativas, a opção de salvar sessão é opcional, e o arquivo gerado pela função deve ser tratado como dado potencialmente sensivel, mesmo que sua leitura não seja fácil fora do dashboard, tenha responsabilidade com o arquivo salvo.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Informações Sensíveis</h4>
+
+                                            <p>Importe somente arquivos necessários para a análise e aos quais você tenha acesso autorizado. NÃO compartilhe sessões, imagens ou relatórios que contenham nomes, identificadores, rastreios ou informações operacionais com pessoas que não participem do processo, ou que não possuam autorização para consultar tais informações. 
+
+                                            <br><br>
+
+                                            O dashboard não envia, salva ou armazena nenhum tipo de informação para quaisquer servidores externos, e também não possui um banco de dados conectado ao sistema, absolutamente nenhuma informação sensivel da empresa é enviada para quaisquer lugares, que não sejam a prória maquina corporativa do usuário, e tais informações só são baixadas para maquina local, com as ações do usuário. 
+
+
+
+                                            <br><br>
+                                            As planilhas que aparecem no painel planilhas estão protegidas pela login google, é preciso estar conectado a conta corporativa para puder visualizar as informações das respectivas planilhas, e o que dashboard faz é como se abrir uma nova aba do navegador dentro do painel planilhas, mas somente para aquela determinada planilha, cujo o link foi fornecido pelo próprio usuário, e que devemos lembrar, não guarda nenhum tipo de informação sensível, mesmo que uma pessoa sem autorização obtenha um link, sem o acesso da conta corporativa, são apenas letras e números que não informam ou representam qualquer tipo de informação a respeito da operação.
+
+                                            </p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Permissões do Navegador</h4>
+
+                                            <p>Algumas ações no dashboard podem solicitar acesso à área de transferência ou iniciar downloads. 
+
+                                            <br><br>
+                                            Essas permissões são usadas para importar dados copiados, copiar relatórios e salvar arquivos gerados. Autorize apenas quando reconhecer a ação executada e confira o conteúdo antes de compartilhá-lo.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Serviços Externos</h4>
+                                            <p>Os atalhos de planilhas abrem serviços externos, esses serviços possuem suas próprias regras de acesso, armazenamento e privacidade.
+
+                                            <br><br>
+                                            O dashboard não controla as permissões desses serviços. Utilize sempre sua conta corporativa autorizada.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DOCUMENTAÇÃO DÚVIDAS COMUNS -->
+
+                                <div class="tabs-panel" id="docs-doubts">
+                                    <div class="title">
+                                        <h3>Dúvidas Comuns</h3>
+                                    </div>
+
+                                    <div class="padding">
+                                        <div>
+                                            <h4>Por que meu arquivo não foi importado?</h4>
+
+                                            <p>Verifique o formato do arquivo, o nome da aba, os cabeçalhos obrigatórios e se a base pertence ao relatório selecionado. Leia também a mensagem exibida na barra de notificações, pois ela normalmente indica a coluna, aba ou informação que não foi encontrada.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>O que significa o traço nos indicadores?</h4>
+
+                                            <p>O traço (—) indica que o dashboard ainda não possui dados suficientes para calcular ou exibir aquela informação. Ele pode representar um campo não preenchido, uma base ainda não importada ou um cálculo que não se aplica ao período analisado.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Por que alguns campos começam desativados?</h4>
+
+                                            <p>Determinados controles dependem da importação ou da seleção de dados anteriores. Eles são habilitados automaticamente quando o dashboard identifica as informações necessárias, evitando preenchimentos incompatíveis com a base em uso.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Os dados podem ser recuperados depois de fechar a página?</h4>
+
+                                            <p>Apenas se sessão tiver sido salva antes do fechamento. A atualização da página, a limpeza de um relatório ou o encerramento do navegador podem descartar informações que ainda não foram exportadas. Salve a sessão sempre que precisar interromper e continuar o trabalho.</p>
+                                        </div>
+
+                                        <hr>
+
+                                        <div>
+                                            <h4>Por que os números mudam quando seleciono outro período?</h4>
+
+                                            <p>Nos painéis com filtros temporais, a seleção atualiza os cards, gráficos e tabelas relacionados ao mesmo conjunto de dados. Essa sincronização permite comparar períodos sem misturar informações de intervalos diferentes.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TABS DA DOCUMENTAÇÃO -->
+
+                        <ul class="tabs" data-tabs id="docs-tabs">
+                            <li class="tabs-title is-active">
+                                <a href="#docs-what-is-it">O que é o Dashboard</a>
+                            </li>
+
+                            <li class="tabs-title">
+                                <a href="#docs-panels">Painéis do Dashboard</a>
+                            </li>
+
+                            <li class="tabs-title">
+                                <a href="#docs-versions">Versões e Funcionalidades</a>
+                            </li>
+
+                            <li class="tabs-title">
+                                <a href="#docs-security">Segurança e Privacidade</a>
+                            </li>
+
+                            <li class="tabs-title">
+                                <a href="#docs-doubts">Dúvidas Comuns</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 

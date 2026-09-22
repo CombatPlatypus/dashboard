@@ -53,6 +53,17 @@ const overallAnalysisWeekdays =
         "Sábado",
     ]);
 
+const overallAnalysisTraditionalPeriodKeys =
+    Object.freeze([
+        "today",
+        "yesterday",
+        "dayBeforeYesterday",
+        "days3to7",
+        "days8to14",
+        "days15toMonthStart",
+        "totalMonth",
+    ]);
+
 let overallAnalysisViewElements =
     null;
 
@@ -266,6 +277,16 @@ function getOverallAnalysisViewElements(
                 "overallAnalysisDate",
             ),
 
+        window:
+            getElement(
+                "overallAnalysisWindow",
+            ),
+
+        analyst:
+            getElement(
+                "overallAnalysisAnalyst",
+            ),
+
         capacityUsage:
             getElement(
                 "overallAnalysisCapacityUsage",
@@ -274,6 +295,16 @@ function getOverallAnalysisViewElements(
         capacityStatus:
             getElement(
                 "overallAnalysisCapacityStatus",
+            ),
+
+        packagesAnalysisValue:
+            getElement(
+                "overallAnalysisPackagesAnalysisValue",
+            ),
+
+        packagesAnalysisStatus:
+            getElement(
+                "overallAnalysisPackagesAnalysisStatus",
             ),
 
         lossRate:
@@ -304,6 +335,11 @@ function getOverallAnalysisViewElements(
         floor:
             getElement(
                 "overallAnalysisFloor",
+            ),
+
+        flowStatus:
+            getElement(
+                "overallAnalysisFlowStatus",
             ),
 
         fastestReceiver:
@@ -365,6 +401,11 @@ function getOverallAnalysisViewElements(
             getElement(
                 "overallAnalysisExpeditionTime",
             ),
+
+        damageAndLossesTable:
+            getElement(
+                "overallAnalysisDamageAndLossesTable",
+            ),
     };
 }
 
@@ -425,6 +466,51 @@ function scheduleOverallAnalysisDateUpdate() {
         );
 }
 
+function renderOverallDamageAndLossesTable(
+    tableElement,
+    analysis,
+) {
+    tableElement
+        .querySelectorAll(
+            "[data-overall-damage-losses-field]",
+        )
+        .forEach(
+            function (rowElement) {
+                const field =
+                    rowElement.dataset
+                        .overallDamageLossesField;
+
+                const cells =
+                    rowElement.querySelectorAll(
+                        "td",
+                    );
+
+                overallAnalysisTraditionalPeriodKeys
+                    .forEach(
+                        function (
+                            periodKey,
+                            index,
+                        ) {
+                            const cell =
+                                cells[index];
+
+                            if (!cell) {
+                                return;
+                            }
+
+                            cell.textContent =
+                                formatOverallAnalysisQuantity(
+                                    analysis
+                                        ?.traditionalAnalysis
+                                        ?.[periodKey]
+                                        ?.[field],
+                                );
+                        },
+                    );
+            },
+        );
+}
+
 /* RENDERIZAÇÃO */
 
 function renderOverallAnalysisView(
@@ -438,6 +524,12 @@ function renderOverallAnalysisView(
         overallAnalysisViewElements;
 
     renderOverallAnalysisDate();
+
+    elements.window.textContent =
+        data.context?.window || "—";
+
+    elements.analyst.textContent =
+        data.context?.analyst || "—";
 
     elements.capacityUsage.textContent =
         formatOverallAnalysisCapacityRate(
@@ -469,6 +561,25 @@ function renderOverallAnalysisView(
             ) +
             " Pacotes";
     }
+
+    elements.packagesAnalysisValue.textContent =
+        formatOverallAnalysisQuantity(
+            data.cards.packagesAnalysis
+                .value,
+        );
+
+    elements.packagesAnalysisStatus.textContent =
+        data.cards.packagesAnalysis.rate ===
+            null
+            ? "—"
+            : (
+                formatOverallAnalysisCapacityRate(
+                    data.cards
+                        .packagesAnalysis
+                        .rate,
+                ) +
+                " dos Registros"
+            );
 
     elements.lossRate.textContent =
         formatOverallAnalysisLossRate(
@@ -513,6 +624,19 @@ function renderOverallAnalysisView(
         formatOverallAnalysisQuantity(
             data.flow.floor,
         );
+
+    elements.flowStatus.textContent =
+        data.flow.gap === null
+            ? "—"
+            : data.flow.gap === 0
+                ? "Piso Zerado"
+                : (
+                    "Gap de " +
+                    formatOverallAnalysisQuantity(
+                        data.flow.gap,
+                    ) +
+                    " Em Relação ao Planejamento"
+                );
 
     elements.fastestReceiver.textContent =
         data.highlights.fastestReceiver ||
@@ -578,6 +702,11 @@ function renderOverallAnalysisView(
         formatOverallAnalysisDuration(
             data.expedition.durationSeconds,
         );
+
+    renderOverallDamageAndLossesTable(
+        elements.damageAndLossesTable,
+        data.damageAndLosses,
+    );
 
     return true;
 }

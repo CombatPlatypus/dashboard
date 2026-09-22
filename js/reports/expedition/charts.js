@@ -4,8 +4,11 @@ import {
     subscribeExpeditionState,
 } from "./state.js";
 
-let routesChart = null;
-let averageTimeChart = null;
+import {
+    formatReportPersonFirstName,
+} from "../core/person-name.js";
+
+let comparisonChart = null;
 let visibilityObserver = null;
 let resizeFrame = null;
 
@@ -16,8 +19,26 @@ const CHART_PIXEL_RATIO = Math.max(
     4,
 );
 
+const ROUTES_SCALE_START = 0;
+const ROUTES_SCALE_END = 49;
+const TIME_SCALE_START = 51;
+const TIME_SCALE_END = 100;
+const INITIAL_ROUTE_AXIS_MAXIMUM = 12;
+const ROUTE_AXIS_INTERVAL = 2;
+const INITIAL_TIME_AXIS_MAXIMUM_SECONDS =
+    12 * 60;
+const TIME_MAXIMUM_REFERENCE_SECONDS =
+    10 * 60;
+const TIME_AXIS_INTERVAL_SECONDS =
+    2 * 60;
+const COMPARISON_COLUMN_GAP = 30;
+const ROUTES_BAR_COLOR = "#e4e6eb";
+const TIME_BAR_COLOR = "#ffc107";
+
 const quantityFormatter =
-    new Intl.NumberFormat("pt-BR");
+    new Intl.NumberFormat(
+        "pt-BR",
+    );
 
 function formatQuantity(value) {
     if (
@@ -84,84 +105,23 @@ function formatDuration(value) {
     );
 }
 
-function getOperatorName(value) {
-    const receivedValue =
-        String(value ?? "")
-            .trim();
-
-    if (!receivedValue) {
-        return "—";
-    }
-
-    const closingBracketIndex =
-        receivedValue.lastIndexOf(
-            "]",
-        );
-
-    const name =
-        closingBracketIndex !== -1
-            ? receivedValue.slice(
-                closingBracketIndex + 1,
-            )
-            : receivedValue;
-
-    const normalizedName =
-        name.trim();
-
-    if (!normalizedName) {
-        return "—";
-    }
-
-    const firstName =
-        normalizedName
-            .split(/\s+/)[0]
-            .toLocaleLowerCase(
-                "pt-BR",
-            );
+function formatTimeAxisTick(value) {
+    const totalSeconds = Math.max(
+        Number(value) || 0,
+        0,
+    );
 
     return (
-        firstName
-            .charAt(0)
-            .toLocaleUpperCase(
-                "pt-BR",
-            ) +
-        firstName.slice(1)
+        `${Math.round(totalSeconds / 60)}M`
     );
 }
 
-function getCompactOperatorName(
-    value,
-) {
-    const fullName =
-        getOperatorName(value);
-
-    if (
-        fullName === "—" ||
-        fullName.length <= 22
-    ) {
-        return fullName;
-    }
-
-    const nameParts =
-        fullName.split(/\s+/);
-
-    const compactName =
-        nameParts.length > 1
-            ? (
-                nameParts[0] +
-                " " +
-                nameParts[
-                    nameParts.length - 1
-                ]
-            )
-            : fullName;
-
-    return compactName.length <= 22
-        ? compactName
-        : `${compactName.slice(0, 21)}…`;
+function getOperatorName(value) {
+    return formatReportPersonFirstName(
+        value,
+        "—",
+    );
 }
-
-/* ELEMENTOS */
 
 function getChartElements(
     rootElement = document,
@@ -216,56 +176,42 @@ function getChartElements(
                 "expeditionFastestOperatorDetails",
             ),
 
-        routesCanvas:
+        chartContainer:
             getElementById(
-                "expeditionVolumeComparisonChart",
+                "expeditionAlignedComparisonChartContainer",
             ),
 
-        timeCanvas:
+        comparisonCanvas:
             getElementById(
-                "expeditionTimeComparisonChart",
+                "expeditionAlignedComparisonChart",
             ),
     };
 }
 
-function hasChartElements(
-    elements,
-) {
+function hasChartElements(elements) {
     return (
         elements.expeditionPanel instanceof
             HTMLElement &&
-
         elements.panel instanceof
             HTMLElement &&
-
         elements.preview instanceof
             HTMLElement &&
-
         elements.topRoutesOperator instanceof
             HTMLElement &&
-
         elements.topRoutesDetails instanceof
             HTMLElement &&
-
         elements.fastestOperator instanceof
             HTMLElement &&
-
         elements.fastestOperatorDetails instanceof
             HTMLElement &&
-
-        elements.routesCanvas instanceof
-            HTMLCanvasElement &&
-
-        elements.timeCanvas instanceof
+        elements.chartContainer instanceof
+            HTMLElement &&
+        elements.comparisonCanvas instanceof
             HTMLCanvasElement
     );
 }
 
-/* ESPAÇAMENTO DOS TEXTOS */
-
-function applyTextSpacing(
-    chart,
-) {
+function applyTextSpacing(chart) {
     if (
         "letterSpacing" in
         chart.ctx
@@ -275,272 +221,680 @@ function applyTextSpacing(
     }
 }
 
-const textSpacingPlugin = {
-    id: "expeditionTextSpacing",
+function getNiceRouteMaximum(value) {
+    const maximum = Math.max(
+        Math.ceil(Number(value) || 0),
+        INITIAL_ROUTE_AXIS_MAXIMUM,
+    );
 
-    beforeDraw(
-        chart,
-    ) {
-        applyTextSpacing(
-            chart,
-        );
-    },
+    return Math.ceil(
+        maximum /
+        ROUTE_AXIS_INTERVAL,
+    ) * ROUTE_AXIS_INTERVAL;
+}
 
-    beforeDatasetsDraw(
-        chart,
-    ) {
-        applyTextSpacing(
-            chart,
-        );
-    },
+function getTimeMaximum(value) {
+    const receivedValue = Math.max(
+        Number(value) || 0,
+        INITIAL_TIME_AXIS_MAXIMUM_SECONDS,
+    );
 
-    beforeTooltipDraw(
-        chart,
-    ) {
-        applyTextSpacing(
-            chart,
-        );
-    },
-};
+    return Math.ceil(
+        receivedValue /
+        TIME_AXIS_INTERVAL_SECONDS,
+    ) * TIME_AXIS_INTERVAL_SECONDS;
+}
 
-/* VALORES NO FINAL DAS BARRAS */
+function getTimeAxisTicks(maximum) {
+    const intervalCount = Math.round(
+        maximum /
+        TIME_AXIS_INTERVAL_SECONDS,
+    );
 
-const barValuesPlugin = {
-    id: "expeditionBarValues",
-
-    afterDatasetsDraw(
-        chart,
-        args,
-        options,
-    ) {
-        if (
-            options.display === false ||
-            !chart.chartArea
-        ) {
-            return;
-        }
-
-        const dataset =
-            chart.data.datasets[0];
-
-        const metadata =
-            chart.getDatasetMeta(
-                0,
+    return Array.from(
+        {
+            length:
+                intervalCount + 1,
+        },
+        function (_, index) {
+            return (
+                index *
+                TIME_AXIS_INTERVAL_SECONDS
             );
+        },
+    );
+}
 
-        const context =
-            chart.ctx;
+function normalizeMetric(
+    value,
+    maximum,
+    start,
+    end,
+) {
+    const ratio = Math.max(
+        0,
+        Math.min(
+            Number(value) /
+                maximum,
+            1,
+        ),
+    );
 
-        const chartArea =
-            chart.chartArea;
+    return start +
+        (
+            end - start
+        ) * ratio;
+}
 
-        context.save();
+function drawRoundedBar(
+    context,
+    positionX,
+    positionY,
+    width,
+    height,
+    fillStyle,
+) {
+    const safeWidth = Math.max(
+        Number(width) || 0,
+        0,
+    );
 
-        if (
-            "letterSpacing" in
-            context
-        ) {
-            context.letterSpacing =
-                "1px";
-        }
+    if (safeWidth === 0) {
+        return;
+    }
 
+    const radius = Math.min(
+        3,
+        safeWidth / 2,
+        height / 2,
+    );
+
+    context.fillStyle =
+        fillStyle;
+    context.beginPath();
+    context.moveTo(
+        positionX + radius,
+        positionY,
+    );
+    context.lineTo(
+        positionX + safeWidth - radius,
+        positionY,
+    );
+    context.quadraticCurveTo(
+        positionX + safeWidth,
+        positionY,
+        positionX + safeWidth,
+        positionY + radius,
+    );
+    context.lineTo(
+        positionX + safeWidth,
+        positionY + height - radius,
+    );
+    context.quadraticCurveTo(
+        positionX + safeWidth,
+        positionY + height,
+        positionX + safeWidth - radius,
+        positionY + height,
+    );
+    context.lineTo(
+        positionX + radius,
+        positionY + height,
+    );
+    context.quadraticCurveTo(
+        positionX,
+        positionY + height,
+        positionX,
+        positionY + height - radius,
+    );
+    context.lineTo(
+        positionX,
+        positionY + radius,
+    );
+    context.quadraticCurveTo(
+        positionX,
+        positionY,
+        positionX + radius,
+        positionY,
+    );
+    context.fill();
+}
+
+function drawMetricLabel(
+    context,
+    label,
+    barEnd,
+    panelEnd,
+    positionY,
+    color = "#e4e6eb",
+) {
+    const labelWidth =
+        context.measureText(
+            label,
+        ).width;
+
+    let positionX =
+        barEnd + 10;
+
+    context.textAlign =
+        "left";
+
+    if (
+        positionX + labelWidth >
+        panelEnd - 4
+    ) {
+        positionX =
+            panelEnd - 8;
+        context.textAlign =
+            "right";
+    }
+
+    context.strokeStyle =
+        "#18191a";
+    context.lineWidth = 3;
+    context.fillStyle =
+        color;
+    context.strokeText(
+        label,
+        positionX,
+        positionY,
+    );
+    context.fillText(
+        label,
+        positionX,
+        positionY,
+    );
+}
+
+function drawComparisonStructure(chart) {
+    const rows =
+        chart.$expeditionRows || [];
+    const context =
+        chart.ctx;
+    const chartArea =
+        chart.chartArea;
+    const xScale =
+        chart.scales.x;
+    const yScale =
+        chart.scales.y;
+
+    if (
+        !chartArea ||
+        !xScale ||
+        !yScale
+    ) {
+        return;
+    }
+
+    applyTextSpacing(
+        chart,
+    );
+
+    const routeMaximum =
+        chart.$expeditionRouteMaximum ||
+        INITIAL_ROUTE_AXIS_MAXIMUM;
+    const timeMaximum =
+        chart.$expeditionTimeMaximum ||
+        INITIAL_TIME_AXIS_MAXIMUM_SECONDS;
+    const comparisonWidth =
+        chartArea.right -
+        chartArea.left;
+    const columnWidth =
+        (
+            comparisonWidth -
+            COMPARISON_COLUMN_GAP
+        ) / 2;
+    const volumeStart =
+        chartArea.left;
+    const volumeEnd =
+        volumeStart +
+        columnWidth;
+    const timeStart =
+        volumeEnd +
+        COMPARISON_COLUMN_GAP;
+    const timeEnd =
+        timeStart +
+        columnWidth;
+    const nameStart =
+        volumeStart + 10;
+    const routeStart = Math.min(
+        volumeStart + 120,
+        volumeEnd - 80,
+    );
+    const routeEnd =
+        volumeEnd;
+    const axisY =
+        chartArea.bottom + 8;
+    const barHeight = 20;
+
+    context.save();
+    context.textBaseline =
+        "middle";
+
+    context.font =
+        '500 14px "Open Sans", sans-serif';
+    context.fillStyle =
+        "#bfc2c8";
+
+    context.strokeStyle =
+        "rgba(82, 82, 82, 0.45)";
+    context.lineWidth = 1;
+
+    for (
+        let routeValue = 0;
+        routeValue <= routeMaximum;
+        routeValue += ROUTE_AXIS_INTERVAL
+    ) {
+        const ratio =
+            routeValue /
+            routeMaximum;
+        const positionX =
+            routeStart +
+            (routeEnd - routeStart) *
+                ratio;
+
+        context.beginPath();
+        context.moveTo(
+            positionX,
+            chartArea.top,
+        );
+        context.lineTo(
+            positionX,
+            chartArea.bottom,
+        );
+        context.stroke();
+
+        context.textAlign =
+            routeValue === 0
+                ? "left"
+                : routeValue ===
+                    routeMaximum
+                    ? "right"
+                    : "center";
+        context.fillStyle =
+            "#bfc2c8";
+        context.fillText(
+            formatQuantity(
+                routeValue,
+            ),
+            positionX,
+            axisY + 16,
+        );
+    }
+
+    getTimeAxisTicks(
+        timeMaximum,
+    ).forEach(
+        function (timeValue) {
+            const positionX =
+                timeStart +
+                (
+                    timeEnd -
+                    timeStart
+                ) *
+                (
+                    timeValue /
+                    timeMaximum
+                );
+
+            context.beginPath();
+            context.moveTo(
+                positionX,
+                chartArea.top,
+            );
+            context.lineTo(
+                positionX,
+                chartArea.bottom,
+            );
+            context.stroke();
+
+            context.textAlign =
+                timeValue === 0
+                    ? "left"
+                    : timeValue ===
+                        timeMaximum
+                        ? "right"
+                        : "center";
+            context.fillStyle =
+                "#bfc2c8";
+            context.fillText(
+                formatTimeAxisTick(
+                    timeValue,
+                ),
+                positionX,
+                axisY + 16,
+            );
+        },
+    );
+
+    context.strokeStyle =
+        "rgba(82, 82, 82, 0.7)";
+    [
+        chartArea.top,
+        chartArea.bottom,
+    ].forEach(
+        function (positionY) {
+            context.beginPath();
+            context.moveTo(
+                volumeStart,
+                positionY,
+            );
+            context.lineTo(
+                timeEnd,
+                positionY,
+            );
+            context.stroke();
+        },
+    );
+
+    if (rows.length === 0) {
         context.font =
             '600 14px "Open Sans", sans-serif';
-
-        context.textBaseline =
-            "middle";
-
-        context.lineWidth =
-            3;
-
-        context.strokeStyle =
-            "#1c1c1c";
-
         context.fillStyle =
-            "#e4e6eb";
+            "#bfc2c8";
+        context.textAlign =
+            "center";
+        context.fillText(
+            "Importe os dados para comparar os conferentes.",
+            (
+                chartArea.left +
+                chartArea.right
+            ) / 2,
+            (
+                chartArea.top +
+                chartArea.bottom
+            ) / 2,
+        );
+        context.restore();
+        return;
+    }
 
-        metadata.data.forEach(
-            function (
-                bar,
-                index,
-            ) {
-                const value =
-                    dataset.data[index];
-
-                if (
-                    !Number.isFinite(
-                        Number(value),
-                    )
-                ) {
-                    return;
-                }
-
-                const formattedValue =
-                    dataset
-                        .expeditionMetric ===
-                    "time"
-                        ? formatDuration(
-                            value,
-                        )
-                        : formatQuantity(
-                            value,
+    rows.forEach(
+        function (operator, index) {
+            const positionY =
+                yScale.getPixelForValue(
+                    index,
+                );
+            const rowBottom =
+                yScale.getPixelForValue(
+                    index + 0.5,
+                );
+            const routeBarEnd =
+                routeStart +
+                (
+                    routeEnd -
+                    routeStart
+                ) *
+                Math.min(
+                    operator.routesChecked /
+                        routeMaximum,
+                    1,
+                );
+            const receivedTime =
+                operator
+                    .averageDurationSeconds;
+            const timeBarEnd =
+                receivedTime === null
+                    ? timeStart
+                    : timeStart +
+                        (
+                            timeEnd -
+                            timeStart
+                        ) *
+                        Math.min(
+                            receivedTime /
+                                timeMaximum,
+                            1,
                         );
 
-                const textWidth =
-                    context
-                        .measureText(
-                            formattedValue,
-                        )
-                        .width;
+            context.strokeStyle =
+                "rgba(82, 82, 82, 0.4)";
+            context.lineWidth = 1;
+            context.beginPath();
+            context.moveTo(
+                volumeStart,
+                rowBottom,
+            );
+            context.lineTo(
+                timeEnd,
+                rowBottom,
+            );
+            context.stroke();
 
-                let positionX =
-                    bar.x + 8;
+            context.font =
+                '600 14px "Open Sans", sans-serif';
+            context.fillStyle =
+                "#e4e6eb";
+            context.textAlign =
+                "left";
+            context.fillText(
+                getOperatorName(
+                    operator.operator,
+                ),
+                nameStart,
+                positionY,
+            );
 
-                let textAlign =
-                    "left";
+            drawRoundedBar(
+                context,
+                routeStart,
+                positionY -
+                    barHeight / 2,
+                routeEnd - routeStart,
+                barHeight,
+                "rgba(228, 230, 235, 0.07)",
+            );
+            drawRoundedBar(
+                context,
+                routeStart,
+                positionY -
+                    barHeight / 2,
+                routeBarEnd -
+                    routeStart,
+                barHeight,
+                ROUTES_BAR_COLOR,
+            );
 
-                /*
-                 * Se o valor ultrapassar a área
-                 * do gráfico, ele será mostrado
-                 * antes do final da barra.
-                 */
+            drawRoundedBar(
+                context,
+                timeStart,
+                positionY -
+                    barHeight / 2,
+                timeEnd - timeStart,
+                barHeight,
+                "rgba(228, 230, 235, 0.07)",
+            );
 
-                if (
-                    positionX +
-                        textWidth >
-                    chartArea.right
-                ) {
-                    positionX =
-                        bar.x - 8;
+            if (receivedTime !== null) {
+                drawRoundedBar(
+                    context,
+                    timeStart,
+                    positionY -
+                        barHeight / 2,
+                    timeBarEnd -
+                        timeStart,
+                    barHeight,
+                    TIME_BAR_COLOR,
+                );
+            }
 
-                    textAlign =
-                        "right";
-                }
+            context.font =
+                '600 14px "Open Sans", sans-serif';
+            drawMetricLabel(
+                context,
+                formatQuantity(
+                    operator.routesChecked,
+                ) +
+                    (
+                        operator.routesChecked ===
+                        1
+                            ? " rota"
+                            : " rotas"
+                    ),
+                routeBarEnd,
+                routeEnd,
+                positionY,
+            );
 
+            if (receivedTime === null) {
+                context.fillStyle =
+                    "#bfc2c8";
                 context.textAlign =
-                    textAlign;
-
-                context.strokeText(
-                    formattedValue,
-                    positionX,
-                    bar.y,
-                );
-
+                    "left";
                 context.fillText(
-                    formattedValue,
-                    positionX,
-                    bar.y,
+                    "—",
+                    timeStart + 8,
+                    positionY,
                 );
-            },
+            } else {
+                drawMetricLabel(
+                    context,
+                    formatDuration(
+                        receivedTime,
+                    ),
+                    timeBarEnd,
+                    timeEnd,
+                    positionY,
+                    receivedTime >
+                        TIME_MAXIMUM_REFERENCE_SECONDS
+                        ? TIME_BAR_COLOR
+                        : "#e4e6eb",
+                );
+            }
+        },
+    );
+
+    const maximumReferenceX =
+        timeStart +
+        (
+            timeEnd - timeStart
+        ) *
+        (
+            TIME_MAXIMUM_REFERENCE_SECONDS /
+            timeMaximum
         );
 
-        context.restore();
+    context.strokeStyle =
+        "#d9534f";
+    context.lineWidth = 1;
+    context.setLineDash([
+        6,
+        5,
+    ]);
+    context.beginPath();
+    context.moveTo(
+        maximumReferenceX,
+        chartArea.top - 4,
+    );
+    context.lineTo(
+        maximumReferenceX,
+        chartArea.bottom,
+    );
+    context.stroke();
+    context.setLineDash([]);
+
+    context.font =
+        '600 14px "Open Sans", sans-serif';
+    context.textAlign =
+        "right";
+    context.textBaseline =
+        "bottom";
+    context.strokeStyle =
+        "#18191a";
+    context.lineWidth = 3;
+    context.fillStyle =
+        "#d9534f";
+    context.strokeText(
+        "Máximo 10:00",
+        maximumReferenceX - 6,
+        chartArea.top - 7,
+    );
+    context.fillText(
+        "Máximo 10:00",
+        maximumReferenceX - 6,
+        chartArea.top - 7,
+    );
+
+    context.restore();
+}
+
+const alignedComparisonPlugin = {
+    id: "expeditionAlignedComparison",
+
+    beforeDatasetsDraw(chart) {
+        drawComparisonStructure(
+            chart,
+        );
     },
 };
 
-/* CRIAÇÃO DOS GRÁFICOS */
-
-function createChart(
-    canvas,
-    metric,
-) {
-    const isTimeMetric =
-        metric === "time";
-
+function createComparisonChart(canvas) {
     return new window.Chart(
         canvas,
         {
-            type: "bar",
+            type: "scatter",
 
             data: {
-                labels: [],
-
                 datasets: [
                     {
-                        data: [],
-
+                        label: "Rotas",
                         expeditionMetric:
-                            metric,
-
-                        expeditionDetails:
-                            [],
-
-                        backgroundColor:
-                            isTimeMetric
-                                ? "#2196F3"
-                                : "#4CAF50",
-
-                        borderWidth:
-                            0,
-
-                        maxBarThickness:
-                            20,
-
-                        categoryPercentage:
-                            0.82,
-
-                        barPercentage:
-                            0.8,
+                            "routes",
+                        data: [],
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        pointHitRadius: 12,
+                        pointBackgroundColor:
+                            "transparent",
+                        pointBorderWidth: 0,
+                    },
+                    {
+                        label:
+                            "Tempo médio",
+                        expeditionMetric:
+                            "time",
+                        data: [],
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                        pointHitRadius: 12,
+                        pointBackgroundColor:
+                            "transparent",
+                        pointBorderWidth: 0,
                     },
                 ],
             },
 
             plugins: [
-                textSpacingPlugin,
-                barValuesPlugin,
+                alignedComparisonPlugin,
             ],
 
             options: {
-                indexAxis:
-                    "y",
-
-                responsive:
-                    true,
-
-                maintainAspectRatio:
-                    false,
-
+                responsive: true,
+                maintainAspectRatio: false,
                 devicePixelRatio:
                     CHART_PIXEL_RATIO,
+                parsing: false,
 
                 layout: {
                     padding: {
-                        top:
-                            5,
-
-                        right:
-                            35,
-
-                        bottom:
-                            5,
-
-                        left:
-                            5,
+                        top: 38,
+                        right: 16,
+                        bottom: 46,
+                        left: 16,
                     },
                 },
 
                 animation: {
-                    duration:
-                        250,
+                    duration: 250,
                 },
 
                 interaction: {
-                    intersect:
-                        false,
-
-                    mode:
-                        "nearest",
+                    intersect: true,
+                    mode: "nearest",
                 },
 
                 plugins: {
-                    expeditionBarValues: {
-                        display:
-                            true,
-                    },
-
                     legend: {
-                        display:
-                            false,
+                        display: false,
                     },
 
                     tooltip: {
@@ -558,75 +912,49 @@ function createChart(
                         },
 
                         callbacks: {
-                            title(
-                                contexts,
-                            ) {
-                                const context =
-                                    contexts[0];
-
-                                const details =
-                                    context
-                                        ?.dataset
-                                        ?.expeditionDetails[
-                                            context
-                                                .dataIndex
-                                        ];
-
-                                return (
-                                    details
-                                        ?.operatorName ||
-
-                                    context
-                                        ?.label ||
-
-                                    ""
-                                );
+                            title(contexts) {
+                                return contexts[0]
+                                    ?.raw
+                                    ?.operatorName ||
+                                    "";
                             },
 
-                            label(
-                                context,
-                            ) {
-                                if (
-                                    isTimeMetric
-                                ) {
-                                    return (
+                            label(context) {
+                                const data =
+                                    context.raw;
+
+                                return context
+                                    .dataset
+                                    .expeditionMetric ===
+                                    "time"
+                                    ? (
                                         "Tempo médio: " +
                                         formatDuration(
-                                            context.raw,
+                                            data.actualValue,
+                                        )
+                                    )
+                                    : (
+                                        "Rotas conferidas: " +
+                                        formatQuantity(
+                                            data.actualValue,
                                         )
                                     );
-                                }
-
-                                return (
-                                    "Rotas conferidas: " +
-                                    formatQuantity(
-                                        context.raw,
-                                    )
-                                );
                             },
 
-                            afterLabel(
-                                context,
-                            ) {
-                                const details =
-                                    context
-                                        .dataset
-                                        .expeditionDetails[
-                                            context
-                                                .dataIndex
-                                        ];
-
-                                if (!details) {
-                                    return "";
-                                }
+                            afterLabel(context) {
+                                const data =
+                                    context.raw;
 
                                 if (
-                                    !isTimeMetric
+                                    context
+                                        .dataset
+                                        .expeditionMetric ===
+                                    "routes"
                                 ) {
                                     return (
                                         "Volume conferido: " +
                                         formatQuantity(
-                                            details
+                                            data.details
                                                 .volumeChecked,
                                         )
                                     );
@@ -636,24 +964,15 @@ function createChart(
                                     (
                                         "Melhor tempo: " +
                                         formatDuration(
-                                            details
+                                            data.details
                                                 .bestDurationSeconds,
                                         )
                                     ),
-
                                     (
                                         "Pior tempo: " +
                                         formatDuration(
-                                            details
+                                            data.details
                                                 .worstDurationSeconds,
-                                        )
-                                    ),
-
-                                    (
-                                        "Rotas conferidas: " +
-                                        formatQuantity(
-                                            details
-                                                .routesChecked,
                                         )
                                     ),
                                 ];
@@ -664,78 +983,18 @@ function createChart(
 
                 scales: {
                     x: {
-                        beginAtZero:
-                            true,
-
-                        grace:
-                            "18%",
-
-                        ticks: {
-                            color:
-                                "#e4e6eb",
-
-                            font: {
-                                family:
-                                    '"Open Sans", sans-serif',
-                                size: 14,
-                            },
-
-                            precision:
-                                isTimeMetric
-                                    ? undefined
-                                    : 0,
-
-                            callback(
-                                value,
-                            ) {
-                                return isTimeMetric
-                                    ? formatDuration(
-                                        value,
-                                    )
-                                    : formatQuantity(
-                                        value,
-                                    );
-                            },
-                        },
-
-                        grid: {
-                            color:
-                                "rgba(82, 82, 82, 0.45)",
-                        },
+                        type: "linear",
+                        display: false,
+                        min: 0,
+                        max: 100,
                     },
 
                     y: {
-                        ticks: {
-                            color:
-                                "#e4e6eb",
-
-                            font: {
-                                family:
-                                    '"Open Sans", sans-serif',
-                                size: 14,
-                            },
-
-                            autoSkip:
-                                false,
-
-                            callback(
-                                value,
-                            ) {
-                                return (
-                                    getCompactOperatorName(
-                                        this
-                                            .getLabelForValue(
-                                                value,
-                                            ),
-                                    )
-                                );
-                            },
-                        },
-
-                        grid: {
-                            display:
-                                false,
-                        },
+                        type: "linear",
+                        display: false,
+                        reverse: true,
+                        min: -0.5,
+                        max: 0.5,
                     },
                 },
             },
@@ -743,70 +1002,125 @@ function createChart(
     );
 }
 
-/* ATUALIZA UM GRÁFICO */
-
-function updateChart(
+function updateComparisonChart(
     chart,
     operators,
-    metric,
     animate,
 ) {
-    const dataset =
-        chart.data.datasets[0];
-
-    chart.data.labels =
-        operators.map(
-            function (
-                operator,
-            ) {
-                return (
-                    getOperatorName(
-                        operator
-                            .operator,
-                    )
-                );
-            },
+    const maximumRoutes =
+        getNiceRouteMaximum(
+            Math.max(
+                0,
+                ...operators.map(
+                    function (operator) {
+                        return operator
+                            .routesChecked;
+                    },
+                ),
+            ),
         );
 
-    dataset.data =
-        operators.map(
-            function (
-                operator,
-            ) {
-                return metric ===
-                    "time"
-                    ? operator
-                        .averageDurationSeconds
-                    : operator
-                        .routesChecked;
-            },
+    const maximumTime =
+        getTimeMaximum(
+            Math.max(
+                0,
+                ...operators.map(
+                    function (operator) {
+                        return operator
+                            .averageDurationSeconds ??
+                            0;
+                    },
+                ),
+            ),
         );
 
-    dataset.expeditionDetails =
+    chart.$expeditionRows =
+        operators;
+    chart.$expeditionRouteMaximum =
+        maximumRoutes;
+    chart.$expeditionTimeMaximum =
+        maximumTime;
+
+    chart.options.scales.y.max =
+        Math.max(
+            operators.length - 0.5,
+            0.5,
+        );
+
+    chart.data.datasets[0].data =
         operators.map(
-            function (
-                operator,
-            ) {
+            function (operator, index) {
                 return {
-                    ...operator,
-
+                    x: normalizeMetric(
+                        operator.routesChecked,
+                        maximumRoutes,
+                        ROUTES_SCALE_START,
+                        ROUTES_SCALE_END,
+                    ),
+                    y: index,
+                    actualValue:
+                        operator.routesChecked,
                     operatorName:
                         getOperatorName(
-                            operator
-                                .operator,
+                            operator.operator,
                         ),
+                    details: operator,
                 };
             },
         );
 
+    chart.data.datasets[1].data =
+        operators.flatMap(
+            function (operator, index) {
+                if (
+                    operator
+                        .averageDurationSeconds ===
+                    null
+                ) {
+                    return [];
+                }
+
+                return [
+                    {
+                        x: normalizeMetric(
+                            operator
+                                .averageDurationSeconds,
+                            maximumTime,
+                            TIME_SCALE_START,
+                            TIME_SCALE_END,
+                        ),
+                        y: index,
+                        actualValue:
+                            operator
+                                .averageDurationSeconds,
+                        operatorName:
+                            getOperatorName(
+                                operator.operator,
+                            ),
+                        details: operator,
+                    },
+                ];
+            },
+        );
+
+    const chartHeight = Math.max(
+        470,
+        operators.length * 58 +
+            105,
+    );
+
+    chart.canvas
+        .parentElement
+        .style.height =
+            `${chartHeight}px`;
+
+    chart.resize();
     chart.update(
         animate
             ? undefined
             : "none",
     );
 }
-
-/* ATUALIZA OS CARDS */
 
 function renderCards(
     elements,
@@ -832,7 +1146,6 @@ function renderCards(
                         topRoutesOperator
                             .routesChecked,
                     ) +
-
                     (
                         topRoutesOperator
                             .routesChecked ===
@@ -859,7 +1172,6 @@ function renderCards(
             fastestOperator
                 ? (
                     "Tempo Médio: " +
-
                     formatDuration(
                         fastestOperator
                             .averageDurationSeconds,
@@ -867,8 +1179,6 @@ function renderCards(
                 )
                 : "Tempo Médio: —";
 }
-
-/* RENDERIZA O RANKING */
 
 function renderCharts(
     elements,
@@ -884,11 +1194,6 @@ function renderCharts(
             },
         );
 
-    /*
-     * Maior quantidade de rotas
-     * aparece primeiro.
-     */
-
     const routesRanking =
         operators
             .slice()
@@ -902,7 +1207,6 @@ function renderCharts(
                             .routesChecked -
                         first
                             .routesChecked ||
-
                         first
                             .operator
                             .localeCompare(
@@ -914,22 +1218,13 @@ function renderCharts(
                 },
             );
 
-    /*
-     * Menor tempo médio
-     * aparece primeiro.
-     */
-
     const timeRanking =
         operators
             .filter(
-                function (
-                    operator,
-                ) {
-                    return (
-                        operator
-                            .averageDurationSeconds !==
-                        null
-                    );
+                function (operator) {
+                    return operator
+                        .averageDurationSeconds !==
+                        null;
                 },
             )
             .sort(
@@ -942,12 +1237,10 @@ function renderCharts(
                             .averageDurationSeconds -
                         second
                             .averageDurationSeconds ||
-
                         second
                             .routesChecked -
                         first
                             .routesChecked ||
-
                         first
                             .operator
                             .localeCompare(
@@ -963,37 +1256,23 @@ function renderCharts(
         elements,
         routesRanking[0] ||
             null,
-
         timeRanking[0] ||
             null,
     );
 
-    const animate =
+    updateComparisonChart(
+        comparisonChart,
+        routesRanking,
         elements
             .panel
             .classList
             .contains(
                 "is-active",
-            );
-
-    updateChart(
-        routesChart,
-        routesRanking,
-        "routes",
-        animate,
-    );
-
-    updateChart(
-        averageTimeChart,
-        timeRanking,
-        "time",
-        animate,
+            ),
     );
 }
 
-/* REDIMENSIONA OS GRÁFICOS */
-
-function resizeCharts() {
+function resizeChart() {
     if (
         resizeFrame !==
         null
@@ -1006,36 +1285,21 @@ function resizeCharts() {
     resizeFrame =
         window.requestAnimationFrame(
             function () {
-                resizeFrame =
-                    null;
+                resizeFrame = null;
 
-                [
-                    routesChart,
-                    averageTimeChart,
-                ].forEach(
-                    function (
-                        chart,
-                    ) {
-                        if (!chart) {
-                            return;
-                        }
+                if (!comparisonChart) {
+                    return;
+                }
 
-                        chart.resize();
-
-                        chart.update(
-                            "none",
-                        );
-                    },
+                comparisonChart.resize();
+                comparisonChart.update(
+                    "none",
                 );
             },
         );
 }
 
-/* OBSERVA A EXIBIÇÃO DA GUIA */
-
-function observeVisibility(
-    elements,
-) {
+function observeVisibility(elements) {
     visibilityObserver
         ?.disconnect();
 
@@ -1053,7 +1317,7 @@ function observeVisibility(
                     return;
                 }
 
-                resizeCharts();
+                resizeChart();
             },
         );
 
@@ -1061,26 +1325,19 @@ function observeVisibility(
         elements.expeditionPanel,
         elements.panel,
     ].forEach(
-        function (
-            element,
-        ) {
-            visibilityObserver
-                .observe(
-                    element,
-                    {
-                        attributes:
-                            true,
-
-                        attributeFilter: [
-                            "class",
-                        ],
-                    },
-                );
+        function (element) {
+            visibilityObserver.observe(
+                element,
+                {
+                    attributes: true,
+                    attributeFilter: [
+                        "class",
+                    ],
+                },
+            );
         },
     );
 }
-
-/* INICIALIZAÇÃO */
 
 function initializeExpeditionCharts(
     rootElement = document,
@@ -1107,7 +1364,7 @@ function initializeExpeditionCharts(
         "function"
     ) {
         console.error(
-            "O Chart.js não está disponível para os gráficos de expedição.",
+            "O Chart.js não está disponível para o gráfico de expedição.",
         );
 
         return false;
@@ -1129,24 +1386,14 @@ function initializeExpeditionCharts(
         .expeditionChartsInitialized =
             "true";
 
-    routesChart =
-        createChart(
+    comparisonChart =
+        createComparisonChart(
             elements
-                .routesCanvas,
-            "routes",
-        );
-
-    averageTimeChart =
-        createChart(
-            elements
-                .timeCanvas,
-            "time",
+                .comparisonCanvas,
         );
 
     subscribeExpeditionState(
-        function (
-            state,
-        ) {
+        function (state) {
             renderCharts(
                 elements,
                 state,
@@ -1158,7 +1405,6 @@ function initializeExpeditionCharts(
         elements,
         getExpeditionState(),
     );
-
 
     observeVisibility(
         elements,

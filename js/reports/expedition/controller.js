@@ -28,6 +28,14 @@ import {
     initializeExpeditionErrorsCharts,
 } from "./errors-charts.js";
 
+import {
+    initializeExpeditionExport,
+} from "./export.js";
+
+import {
+    subscribeReportContext,
+} from "../core/report-context.js";
+
 let expeditionControllerInitialized =
     false;
 
@@ -53,6 +61,7 @@ function initializeExpeditionController() {
         initializeExpeditionErrorsImport,
         initializeExpeditionCharts,
         initializeExpeditionErrorsCharts,
+        initializeExpeditionExport,
     ];
 
     const initialized =
@@ -72,6 +81,10 @@ function initializeExpeditionController() {
 
     expeditionControllerInitialized =
         true;
+
+    subscribeReportContext(
+        renderExpeditionController,
+    );
 
     return true;
 }

@@ -11,56 +11,53 @@ import {
     getLossesRateMonthSummary,
 } from "../losses-rate/state.js";
 
+import {
+    getDamageAndLossesSummary,
+} from "../damage-and-losses/state.js";
+
+import {
+    getLossesSummary,
+} from "../damage-and-losses/losses-state.js";
+
+import {
+    formatReportPersonFirstName,
+} from "../core/person-name.js";
+
 const OVERALL_ANALYSIS_CAPACITY =
     20000;
 
 const OVERALL_ANALYSIS_LOSS_RATE_LIMIT =
     0.0003;
 
+const OVERALL_ANALYSIS_PERIOD_KEYS =
+    Object.freeze([
+        "today",
+        "yesterday",
+        "dayBeforeYesterday",
+        "days3to7",
+        "days8to14",
+        "days15toMonthStart",
+        "totalMonth",
+    ]);
+
+function getOverallAnalysisContextQuantity(
+    value,
+) {
+    return Number.isSafeInteger(
+        value,
+    ) && value >= 0
+        ? value
+        : null;
+}
+
 /* NORMALIZA O NOME EXIBIDO NOS DESTAQUES */
 
 function getOverallAnalysisPersonName(
     value,
 ) {
-    const receivedValue =
-        String(value ?? "")
-            .trim();
-
-    if (!receivedValue) {
-        return null;
-    }
-
-    const closingBracketIndex =
-        receivedValue.lastIndexOf(
-            "]",
-        );
-
-    const name =
-        closingBracketIndex !== -1
-            ? receivedValue.slice(
-                closingBracketIndex + 1,
-            )
-            : receivedValue;
-
-    const firstName =
-        name
-            .trim()
-            .split(/\s+/)[0]
-            ?.toLocaleLowerCase(
-                "pt-BR",
-            ) || "";
-
-    if (!firstName) {
-        return null;
-    }
-
-    return (
-        firstName
-            .charAt(0)
-            .toLocaleUpperCase(
-                "pt-BR",
-            ) +
-        firstName.slice(1)
+    return formatReportPersonFirstName(
+        value,
+        null,
     );
 }
 
@@ -116,8 +113,10 @@ function getReceiptHighlights(
 
         mostPackages:
             topVolumeOperator
-                ?.packagesReceived ??
-            null,
+                ? getOverallAnalysisPersonName(
+                    topVolumeOperator.receiver,
+                )
+                : null,
     };
 }
 
@@ -204,12 +203,117 @@ function getExpeditionHighlights(
     };
 }
 
+/* REÚNE AVARIAS E PERDAS NOS MESMOS PERÍODOS DA TABELA */
+
+function getOverallDamageAndLossesAnalysis(
+    damageState,
+    lossesState,
+) {
+    const damageSummary =
+        getDamageAndLossesSummary(
+            damageState,
+        );
+
+    const lossesSummary =
+        getLossesSummary(
+            lossesState,
+        );
+
+    const damageHasData =
+        damageSummary.hasData;
+
+    const lossesHasData =
+        lossesSummary.hasData;
+
+    const traditionalAnalysis = {};
+
+    OVERALL_ANALYSIS_PERIOD_KEYS
+        .forEach(
+            function (periodKey) {
+                const damagePeriod =
+                    damageSummary
+                        .traditionalAnalysis
+                        ?.[periodKey];
+
+                const lossesPeriod =
+                    lossesSummary
+                        .traditionalAnalysis
+                        ?.[periodKey];
+
+                traditionalAnalysis[
+                    periodKey
+                ] = {
+                    hub:
+                        damageHasData
+                            ? damagePeriod
+                                ?.hub ?? 0
+                            : null,
+
+                    soc:
+                        damageHasData
+                            ? damagePeriod
+                                ?.soc ?? 0
+                            : null,
+
+                    underReview:
+                        lossesHasData
+                            ? lossesPeriod
+                                ?.underReview ?? 0
+                            : null,
+
+                    confirmedLosses:
+                        lossesHasData
+                            ? lossesPeriod
+                                ?.confirmedLosses ?? 0
+                            : null,
+
+                    savedAwaitingTicket:
+                        lossesHasData
+                            ? lossesPeriod
+                                ?.savedAwaitingTicket ?? 0
+                            : null,
+
+                    emptyAwaitingTicket:
+                        lossesHasData
+                            ? lossesPeriod
+                                ?.emptyAwaitingTicket ?? 0
+                            : null,
+                };
+            },
+        );
+
+    return {
+        hasData:
+            damageHasData ||
+            lossesHasData,
+
+        damageHasData,
+        lossesHasData,
+
+        lossesTotal:
+            lossesHasData
+                ? lossesSummary.total
+                : null,
+
+        packagesUnderReview:
+            lossesHasData
+                ? lossesSummary
+                    .underReview
+                : null,
+
+        traditionalAnalysis,
+    };
+}
+
 /* CRIA UMA VISÃO DERIVADA DOS RELATÓRIOS DE ORIGEM */
 
 function createOverallAnalysisData(
     receiptState,
     expeditionState,
     lossesRateState,
+    reportContext = {},
+    damageState = null,
+    lossesState = null,
 ) {
     const receiptSummary =
         getReceiptSummary(
@@ -255,18 +359,50 @@ function createOverallAnalysisData(
     const floorVolume =
         expeditionSummary.floorVolume;
 
+    const plannedVolume =
+        getOverallAnalysisContextQuantity(
+            reportContext.plannedVolume,
+        );
+
+    const expeditedVolume =
+        hasExpeditionData
+            ? expeditionSummary
+                .volumeChecked
+            : null;
+
+    const planningGap =
+        plannedVolume !== null &&
+        expeditedVolume !== null
+            ? Math.max(
+                plannedVolume -
+                    expeditedVolume,
+                0,
+            )
+            : null;
+
+    const configuredCapacity =
+        getOverallAnalysisContextQuantity(
+            reportContext.shiftCapacity,
+        );
+
+    const capacityLimit =
+        configuredCapacity !== null &&
+        configuredCapacity > 0
+            ? configuredCapacity
+            : OVERALL_ANALYSIS_CAPACITY;
+
     const capacityUsed =
-        expectedVolume;
+        plannedVolume;
 
     const capacityUsageRate =
         capacityUsed !== null
             ? capacityUsed /
-                OVERALL_ANALYSIS_CAPACITY
+                capacityLimit
             : null;
 
     const capacityBalance =
         capacityUsed !== null
-            ? OVERALL_ANALYSIS_CAPACITY -
+            ? capacityLimit -
                 capacityUsed
             : null;
 
@@ -290,11 +426,52 @@ function createOverallAnalysisData(
             ) * 100
             : null;
 
+    const damageAndLossesAnalysis =
+        getOverallDamageAndLossesAnalysis(
+            damageState,
+            lossesState,
+        );
+
+    const packagesAnalysisRate =
+        damageAndLossesAnalysis
+            .packagesUnderReview !== null &&
+        damageAndLossesAnalysis
+            .lossesTotal > 0
+            ? damageAndLossesAnalysis
+                .packagesUnderReview /
+                damageAndLossesAnalysis
+                    .lossesTotal
+            : null;
+
     return {
+        context: {
+            window:
+                String(
+                    reportContext.window ??
+                    "",
+                ).trim(),
+
+            analyst:
+                String(
+                    reportContext.analyst ??
+                    "",
+                ).trim(),
+
+            plannedVolume,
+
+            collaboratorCount:
+                getOverallAnalysisContextQuantity(
+                    reportContext.collaboratorCount,
+                ),
+
+            shiftCapacity:
+                configuredCapacity,
+        },
+
         cards: {
             capacity: {
                 limit:
-                    OVERALL_ANALYSIS_CAPACITY,
+                    capacityLimit,
 
                 used:
                     capacityUsed,
@@ -304,6 +481,19 @@ function createOverallAnalysisData(
 
                 balance:
                     capacityBalance,
+            },
+
+            packagesAnalysis: {
+                value:
+                    damageAndLossesAnalysis
+                        .packagesUnderReview,
+
+                total:
+                    damageAndLossesAnalysis
+                        .lossesTotal,
+
+                rate:
+                    packagesAnalysisRate,
             },
 
             lossesRate: {
@@ -326,19 +516,19 @@ function createOverallAnalysisData(
 
         flow: {
             planned:
-                expectedVolume,
+                plannedVolume,
 
             processed:
                 receivedVolume,
 
             expedited:
-                hasExpeditionData
-                    ? expeditionSummary
-                        .volumeChecked
-                    : null,
+                expeditedVolume,
 
             floor:
-                floorVolume,
+                planningGap,
+
+            gap:
+                planningGap,
         },
 
         processing: {
@@ -379,6 +569,9 @@ function createOverallAnalysisData(
                 expeditionState,
             ),
         },
+
+        damageAndLosses:
+            damageAndLossesAnalysis,
     };
 }
 

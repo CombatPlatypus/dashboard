@@ -12,6 +12,10 @@ import {
     resetReceiptLinehaulState,
 } from "./linehaul-state.js";
 
+import {
+    formatReportPersonFirstName,
+} from "../core/person-name.js";
+
 /* CONFIGURAÇÕES */
 
 const MINIMUM_RECEIPT_PREVIEW_ROWS = 9;
@@ -39,26 +43,6 @@ let receiptViewElements = null;
 let receiptOperatorTemplate = null;
 
 /* FORMATAÇÃO */
-
-function sanitizeReceiptIntegerInput(
-    input,
-) {
-    const sanitizedValue =
-        input.value.replace(
-            /\D/g,
-            "",
-        );
-
-    if (
-        input.value !==
-        sanitizedValue
-    ) {
-        input.value =
-            sanitizedValue;
-    }
-
-    return sanitizedValue;
-}
 
 function formatReceiptQuantity(
     value,
@@ -140,31 +124,9 @@ function formatReceiptErrorRate(
 function getReceiptReceiverFirstName(
     value,
 ) {
-    const receivedValue =
-        String(value ?? "")
-            .trim();
-
-    if (receivedValue === "") {
-        return "";
-    }
-
-    const closingBracketIndex =
-        receivedValue.lastIndexOf(
-            "]",
-        );
-
-    const name =
-        closingBracketIndex !== -1
-            ? receivedValue.slice(
-                closingBracketIndex + 1,
-            )
-            : receivedValue;
-
-    return (
-        name
-            .trim()
-            .split(/\s+/)[0] ||
-        ""
+    return formatReportPersonFirstName(
+        value,
+        "",
     );
 }
 
@@ -187,36 +149,6 @@ function setReceiptInputValue(
     }
 }
 
-/* SINCRONIZA O SELECT DA JANELA COM O SELECT2 */
-
-function refreshReceiptWindowSelect(
-    select,
-) {
-    if (
-        typeof window.jQuery !==
-        "function"
-    ) {
-        return;
-    }
-
-    const selectElement =
-        window.jQuery(
-            select,
-        );
-
-    if (
-        !selectElement.hasClass(
-            "select2-hidden-accessible",
-        )
-    ) {
-        return;
-    }
-
-    selectElement.trigger(
-        "change.select2",
-    );
-}
-
 /* ELEMENTOS */
 
 function getReceiptElementById(
@@ -235,18 +167,6 @@ function getReceiptElements(rootElement) {
             getReceiptElementById(
                 rootElement,
                 "receiptClearReportButton",
-            ),
-
-        expectedInput:
-            getReceiptElementById(
-                rootElement,
-                "receiptExpectedInput",
-            ),
-
-        windowInput:
-            getReceiptElementById(
-                rootElement,
-                "receiptWindowInput",
             ),
 
         operatorControls:
@@ -364,6 +284,81 @@ function getReceiptOperatorInputs(
     };
 }
 
+function configureReceiptErrorSelect(
+    select,
+    operator,
+) {
+    const maximum =
+        Math.max(
+            Number(
+                operator?.packagesReceived,
+            ) || 0,
+            0,
+        );
+
+    if (
+        select.dataset
+            .receiptErrorMaximum !==
+        String(maximum)
+    ) {
+        const fragment =
+            document.createDocumentFragment();
+
+        const emptyOption =
+            document.createElement(
+                "option",
+            );
+
+        emptyOption.value = "";
+        emptyOption.textContent = "—";
+        fragment.appendChild(
+            emptyOption,
+        );
+
+        for (
+            let value = 0;
+            value <= maximum;
+            value += 1
+        ) {
+            const option =
+                document.createElement(
+                    "option",
+                );
+
+            option.value = String(value);
+            option.textContent = String(value);
+            fragment.appendChild(option);
+        }
+
+        select.replaceChildren(
+            fragment,
+        );
+
+        select.dataset
+            .receiptErrorMaximum =
+                String(maximum);
+    }
+
+    setReceiptInputValue(
+        select,
+        operator?.errorQuantity,
+    );
+
+    if (
+        select.classList.contains(
+            "select2-hidden-accessible",
+        ) &&
+        typeof window.jQuery ===
+            "function"
+    ) {
+        window.jQuery(
+            select,
+        ).trigger(
+            "change.select2",
+        );
+    }
+}
+
 function createReceiptOperatorControl(
     template,
     operator,
@@ -409,19 +404,13 @@ function createReceiptOperatorControl(
             : "Etiquetador",
     );
 
-    setReceiptInputValue(
+    configureReceiptErrorSelect(
         inputs.errorQuantity,
-        operator.errorQuantity,
+        operator,
     );
 
     inputs.errorQuantity.disabled =
         false;
-
-    inputs.errorQuantity.inputMode =
-        "numeric";
-
-    inputs.errorQuantity.pattern =
-        "[0-9]*";
 
     inputs.errorQuantity.setAttribute(
         "aria-label",
@@ -486,8 +475,10 @@ function createEmptyReceiptOperatorControl(
         `Etiquetador ${position}`,
     );
 
-    inputs.errorQuantity.value =
-        "";
+    configureReceiptErrorSelect(
+        inputs.errorQuantity,
+        null,
+    );
 
     inputs.errorQuantity.disabled =
         true;
@@ -529,6 +520,7 @@ function getReceiptOperatorStructureSignature(
                 return [
                     operator.id,
                     operator.receiver,
+                    operator.packagesReceived,
                 ];
             },
         ),
@@ -561,9 +553,9 @@ function synchronizeReceiptOperatorControls(
                 operator.labeler,
             );
 
-            setReceiptInputValue(
+            configureReceiptErrorSelect(
                 inputs.errorQuantity,
-                operator.errorQuantity,
+                operator,
             );
 
             inputs.selection.checked =
@@ -596,6 +588,15 @@ function renderReceiptOperatorControls(
 
     receiptOperatorStructureSignature =
         currentSignature;
+
+    if (
+        typeof window.destroySelect2Fields ===
+            "function"
+    ) {
+        window.destroySelect2Fields(
+            elements.operatorControls,
+        );
+    }
 
     const fragment =
         document.createDocumentFragment();
@@ -640,6 +641,15 @@ function renderReceiptOperatorControls(
         .replaceChildren(
             fragment,
         );
+
+    if (
+        typeof window.initializeSelect2Fields ===
+            "function"
+    ) {
+        window.initializeSelect2Fields(
+            elements.operatorControls,
+        );
+    }
 }
 
 /* PRÉVIA DOS OPERADORES */
@@ -675,8 +685,10 @@ function createReceiptPreviewRow(
         "—";
 
     const labeler =
-        operator?.labeler?.trim() ||
-        "—";
+        formatReportPersonFirstName(
+            operator?.labeler,
+            "—",
+        );
 
     const packagesReceived =
         formatReceiptQuantity(
@@ -787,17 +799,9 @@ function setReceiptGeneralControlsAvailability(
     const disabled =
         !hasImportedFile;
 
-    elements.expectedInput.disabled =
-        disabled;
-
-    elements.windowInput.disabled =
-        disabled;
-
     elements.errorCalculationToggle.disabled =
         disabled;
 
-    elements.clearReportButton.disabled =
-        disabled;   
 }
 
 /* RESUMO */
@@ -830,20 +834,6 @@ function renderReceiptSummary(
             totalErrors,
             receivedVolume,
         );
-
-    setReceiptInputValue(
-        elements.windowInput,
-        state.window,
-    );
-
-    refreshReceiptWindowSelect(
-        elements.windowInput,
-    );
-
-    setReceiptInputValue(
-        elements.expectedInput,
-        state.expectedVolume,
-    );
 
     elements.previewWindow.textContent =
         state.window.trim() ||
@@ -944,7 +934,7 @@ function handleResetReceiptReport() {
 
     const importButton =
         receiptPanel?.querySelector(
-            "#receiptImportButton",
+            "#receiptImportActionButton",
         );
 
     if (
@@ -960,56 +950,6 @@ function handleResetReceiptReport() {
 function bindReceiptGeneralInputs(
     elements,
 ) {
-    elements.expectedInput.addEventListener(
-        "input",
-        function () {
-            const sanitizedValue =
-                sanitizeReceiptIntegerInput(
-                    elements.expectedInput,
-                );
-
-            updateReceiptGeneralField(
-                "expectedVolume",
-                sanitizedValue,
-            );
-        },
-    );
-
-    const handleWindowChange =
-        function () {
-            updateReceiptGeneralField(
-                "window",
-                elements.windowInput.value,
-            );
-        };
-
-    /*
-     * O Select2 dispara o evento change
-     * por meio do jQuery.
-     */
-
-    if (
-        typeof window.jQuery ===
-        "function"
-    ) {
-        window.jQuery(
-            elements.windowInput,
-        )
-            .off(
-                "change.receiptReport",
-            )
-            .on(
-                "change.receiptReport",
-                handleWindowChange,
-            );
-    } else {
-        elements.windowInput
-            .addEventListener(
-                "change",
-                handleWindowChange,
-            );
-    }
-
     elements.errorCalculationToggle
         .addEventListener(
             "change",
@@ -1024,6 +964,67 @@ function bindReceiptGeneralInputs(
         );
 }
 
+function handleReceiptOperatorFieldEvent(
+    elements,
+    event,
+) {
+    const input =
+        event.target instanceof Element
+            ? event.target.closest(
+                "[data-receipt-operator-field]",
+            )
+            : null;
+
+    if (
+        !(
+            input instanceof
+                HTMLInputElement ||
+            input instanceof
+                HTMLSelectElement
+        ) ||
+        !elements.operatorControls
+            .contains(input)
+    ) {
+        return;
+    }
+
+    const field =
+        input.dataset
+            .receiptOperatorField;
+
+    if (
+        field !== "labeler" &&
+        field !== "errorQuantity"
+    ) {
+        return;
+    }
+
+    const row =
+        input.closest(
+            "[data-receipt-operator-id]",
+        );
+
+    const operatorId =
+        Number(
+            row?.dataset
+                .receiptOperatorId,
+        );
+
+    if (
+        !Number.isInteger(
+            operatorId,
+        )
+    ) {
+        return;
+    }
+
+    updateReceiptOperator(
+        operatorId,
+        field,
+        input.value,
+    );
+}
+
 function bindReceiptOperatorControls(
     elements,
 ) {
@@ -1031,84 +1032,52 @@ function bindReceiptOperatorControls(
         .addEventListener(
             "input",
             function (event) {
-                const input =
-                    event.target.closest(
-                        "[data-receipt-operator-field]",
-                    );
-
-                if (
-                    !(
-                        input instanceof
-                        HTMLInputElement
-                    ) ||
-                    !elements.operatorControls
-                        .contains(
-                            input,
-                        )
-                ) {
-                    return;
-                }
-
-                const field =
-                    input.dataset
-                        .receiptOperatorField;
-
-                if (
-                    field !==
-                        "labeler" &&
-                    field !==
-                        "errorQuantity"
-                ) {
-                    return;
-                }
-
-                const row =
-                    input.closest(
-                        "[data-receipt-operator-id]",
-                    );
-
-                if (!row) {
-                    return;
-                }
-
-                const operatorId =
-                    Number(
-                        row.dataset
-                            .receiptOperatorId,
-                    );
-
-                if (
-                    !Number.isInteger(
-                        operatorId,
-                    )
-                ) {
-                    return;
-                }
-
-                const value =
-                    field ===
-                    "errorQuantity"
-                        ? sanitizeReceiptIntegerInput(
-                            input,
-                        )
-                        : input.value;
-
-                updateReceiptOperator(
-                    operatorId,
-                    field,
-                    value,
+                handleReceiptOperatorFieldEvent(
+                    elements,
+                    event,
                 );
             },
         );
+
+    if (
+        typeof window.jQuery ===
+            "function"
+    ) {
+        window.jQuery(
+            elements.operatorControls,
+        )
+            .off(
+                "change.receiptErrorSelect2",
+                'select[data-receipt-operator-field="errorQuantity"]',
+            )
+            .on(
+                "change.receiptErrorSelect2",
+                'select[data-receipt-operator-field="errorQuantity"]',
+                function (event) {
+                    handleReceiptOperatorFieldEvent(
+                        elements,
+                        event,
+                    );
+                },
+            );
+    }
 
     elements.operatorControls
         .addEventListener(
             "change",
             function (event) {
+                handleReceiptOperatorFieldEvent(
+                    elements,
+                    event,
+                );
+
                 const checkbox =
-                    event.target.closest(
-                        "[data-receipt-operator-selection]",
-                    );
+                    event.target instanceof
+                        Element
+                        ? event.target.closest(
+                            "[data-receipt-operator-selection]",
+                        )
+                        : null;
 
                 if (
                     !(
@@ -1330,7 +1299,7 @@ function initializeReceiptView(
         ) ||
         !(
             templateInputs.errorQuantity instanceof
-            HTMLInputElement
+            HTMLSelectElement
         ) ||
         !(
             templateInputs.selection instanceof

@@ -12,6 +12,7 @@ import {
 
 import {
     initializeReceiptCharts,
+    renderReceiptCharts,
 } from "./charts.js";
 
 import {
@@ -38,6 +39,10 @@ import {
     initializeReceiptExport,
     renderReceiptExportStatus,
 } from "./export.js";
+
+import {
+    subscribeReportContext,
+} from "../core/report-context.js";
 
 let receiptControllerInitialized =
     false;
@@ -88,6 +93,10 @@ function initializeReceiptController() {
     receiptControllerInitialized =
         true;
 
+    subscribeReportContext(
+        renderReceiptController,
+    );
+
     return true;
 }
 
@@ -97,6 +106,11 @@ function renderReceiptController() {
 
     const receiptRendered =
         renderReceiptView(
+            state,
+        );
+
+    const chartsRendered =
+        renderReceiptCharts(
             state,
         );
 
@@ -110,6 +124,7 @@ function renderReceiptController() {
     );
 
     return receiptRendered &&
+        chartsRendered &&
         linehaulRendered;
 }
 

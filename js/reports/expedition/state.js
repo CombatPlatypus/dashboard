@@ -1,14 +1,12 @@
+import {
+    getReportContext,
+    updateReportContextField,
+} from "../core/report-context.js";
+
 /* OUVINTES DO ESTADO */
 
 const expeditionStateListeners =
     new Set();
-
-const expeditionWindows =
-    new Set([
-        "AM",
-        "PM1",
-        "PM2",
-    ]);
 
 /* NORMALIZAÇÕES */
 
@@ -362,7 +360,6 @@ function createExpeditionRoute(
 /* ESTADO DA EXPEDIÇÃO */
 
 const expeditionState = {
-    window: "AM",
     sourceFileName: "",
 
     errorSourceFileName: "",
@@ -481,7 +478,8 @@ function getExpeditionDuplicatedOrders(
 function getExpeditionState() {
     return {
         window:
-            expeditionState.window,
+            getReportContext()
+                .window,
 
         sourceFileName:
             expeditionState.sourceFileName,
@@ -1628,34 +1626,10 @@ function subscribeExpeditionState(
 function updateExpeditionWindow(
     value,
 ) {
-    const windowValue =
-        normalizeExpeditionText(
-            value,
-        ).toUpperCase();
-
-    if (
-        !expeditionWindows.has(
-            windowValue,
-        )
-    ) {
-        return false;
-    }
-
-    if (
-        expeditionState.window ===
-        windowValue
-    ) {
-        return true;
-    }
-
-    expeditionState.window =
-        windowValue;
-
-    notifyExpeditionState({
-        type: "window-updated",
-    });
-
-    return true;
+    return updateReportContextField(
+        "window",
+        value,
+    );
 }
 
 /* ALTERA UMA QUANTIDADE MANUAL */
@@ -1665,6 +1639,7 @@ function updateExpeditionManualQuantity(
     value,
 ) {
     if (
+        field !== "floorVolume" &&
         field !== "unknownOrders" &&
         field !== "exceptionOrders" &&
         field !== "revertedErrors"
@@ -1976,18 +1951,6 @@ function restoreExpeditionState(
         return false;
     }
 
-    const windowValue =
-        normalizeExpeditionText(
-            sessionState.window,
-        ).toUpperCase();
-
-    expeditionState.window =
-        expeditionWindows.has(
-            windowValue,
-        )
-            ? windowValue
-            : "AM";
-
     expeditionState.sourceFileName =
         normalizeExpeditionText(
             sessionState.sourceFileName,
@@ -2144,9 +2107,6 @@ function restoreExpeditionState(
 /* LIMPA O RELATÓRIO */
 
 function resetExpeditionReport() {
-    expeditionState.window =
-        "AM";
-
     expeditionState.floorVolume =
         null;
 

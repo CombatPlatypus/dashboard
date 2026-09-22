@@ -8,12 +8,15 @@ import {
     updateExpeditionManualQuantity,
     updateExpeditionOperatorSelection,
     updateExpeditionStreetGuardian,
-    updateExpeditionWindow,
 } from "./state.js";
 
 import {
     setReportNotification,
 } from "../report-notifications.js";
+
+import {
+    formatReportPersonFirstName,
+} from "../core/person-name.js";
 
 /* CONFIGURAÇÕES */
 
@@ -150,56 +153,10 @@ function formatExpeditionDuration(
 function getExpeditionOperatorName(
     value,
 ) {
-    const receivedValue =
-        String(
-            value ?? "",
-        ).trim();
-
-    if (!receivedValue) {
-        return "—";
-    }
-
-    const closingBracketIndex =
-        receivedValue.lastIndexOf(
-            "]",
-        );
-
-    const name =
-        closingBracketIndex !== -1
-            ? receivedValue.slice(
-                closingBracketIndex + 1,
-            )
-            : receivedValue;
-
-    const normalizedName =
-        name
-            .trim()
-            .replace(/\s+/g, " ");
-
-    if (!normalizedName) {
-        return "—";
-    }
-
-    return normalizedName
-        .split(" ")
-        .map(
-            function (word) {
-                const lowercaseWord =
-                    word.toLocaleLowerCase(
-                        "pt-BR",
-                    );
-
-                return (
-                    lowercaseWord
-                        .charAt(0)
-                        .toLocaleUpperCase(
-                            "pt-BR",
-                        ) +
-                    lowercaseWord.slice(1)
-                );
-            },
-        )
-        .join(" ");
+    return formatReportPersonFirstName(
+        value,
+        "—",
+    );
 }
 
 function setExpeditionInputValue(
@@ -244,11 +201,6 @@ function getExpeditionElements(
         panel:
             getElementById(
                 "expedition",
-            ),
-
-        windowInput:
-            getElementById(
-                "expeditionWindowInput",
             ),
 
         floorVolumeInput:
@@ -451,36 +403,6 @@ function hasExpeditionElements(
     return missingElements.length === 0;
 }
 
-/* SINCRONIZA O SELECT2 */
-
-function refreshExpeditionWindowSelect(
-    select,
-) {
-    if (
-        typeof window.jQuery !==
-        "function"
-    ) {
-        return;
-    }
-
-    const selectElement =
-        window.jQuery(
-            select,
-        );
-
-    if (
-        !selectElement.hasClass(
-            "select2-hidden-accessible",
-        )
-    ) {
-        return;
-    }
-
-    selectElement.trigger(
-        "change.select2",
-    );
-}
-
 /* ATIVA OU DESATIVA OS CONTROLES GERAIS */
 
 function setExpeditionGeneralControlsAvailability(
@@ -491,14 +413,11 @@ function setExpeditionGeneralControlsAvailability(
     const disabled =
         !hasImportedFile;
 
-    elements.windowInput.disabled =
-        disabled;
-
     elements.floorVolumeInput.disabled =
         disabled;
 
     elements.floorVolumeInput.readOnly =
-        hasImportedFile;
+        false;
 
     elements.unknownInput.disabled =
         disabled;
@@ -1110,7 +1029,7 @@ function renderExpeditionGuardianControls(
                 `expeditionStreetGuardianInput${index}`;
 
             input.type = "text";
-            input.maxLength = 60;
+            input.maxLength = 22;
             input.autocomplete = "off";
             input.setAttribute(
                 "aria-label",
@@ -1294,9 +1213,9 @@ function renderExpeditionReport(
 
     elements.previewWindow
         .textContent =
-            summary.hasData
-                ? state.window
-                : "—";
+            String(
+                state.window ?? "",
+            ).trim() || "—";
 
     elements.previewOperatorCount
         .textContent =
@@ -1383,15 +1302,6 @@ function renderExpeditionReport(
         summary.exceptionOrders,
     );
 
-    setExpeditionInputValue(
-        elements.windowInput,
-        state.window,
-    );
-
-    refreshExpeditionWindowSelect(
-        elements.windowInput,
-    );
-            
     renderExpeditionOperators(
         elements,
         selectedOperators,
@@ -1466,6 +1376,11 @@ function bindExpeditionEvents(
     }
 
     bindManualQuantityInput(
+        elements.floorVolumeInput,
+        "floorVolume",
+    );
+
+    bindManualQuantityInput(
         elements.unknownInput,
         "unknownOrders",
     );
@@ -1493,48 +1408,33 @@ function bindExpeditionEvents(
                     return;
                 }
 
+                const sanitizedValue =
+                    input.value
+                        .replace(
+                            /[^\p{L}\s]/gu,
+                            "",
+                        )
+                        .slice(
+                            0,
+                            22,
+                        );
+
+                if (
+                    input.value !==
+                    sanitizedValue
+                ) {
+                    input.value =
+                        sanitizedValue;
+                }
+
                 updateExpeditionStreetGuardian(
                     input.dataset
                         .expeditionStreet,
-                    input.value,
+                    sanitizedValue,
                 );
             },
         );
     
-    const handleWindowChange =
-        function () {
-            updateExpeditionWindow(
-                elements.windowInput.value,
-            );
-        };
-
-    /*
-    * O Select2 dispara o evento change
-    * por meio do jQuery.
-    */
-
-    if (
-        typeof window.jQuery ===
-        "function"
-    ) {
-        window.jQuery(
-            elements.windowInput,
-        )
-            .off(
-                "change.expeditionReport",
-            )
-            .on(
-                "change.expeditionReport",
-                handleWindowChange,
-            );
-    } else {
-        elements.windowInput
-            .addEventListener(
-                "change",
-                handleWindowChange,
-            );
-    }
-
     elements.clearButton
         .addEventListener(
             "click",

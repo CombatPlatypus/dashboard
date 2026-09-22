@@ -9,6 +9,7 @@ import {
 } from "./linehaul-state.js";
 
 import {
+    bindReportImageExportButton,
     createReportImageBlob,
     copyReportBlob,
     downloadReportBlob,
@@ -25,6 +26,7 @@ const receiptExportElements = {
     clearButton: null,
     copyButton: null,
     downloadButton: null,
+    linehaulArea: null,
     mainArea: null,
     comparisonArea: null,
 };
@@ -106,6 +108,28 @@ function canExportReceiptReport(
     );
 }
 
+function getActiveReceiptExportPendingMessage(
+    state,
+    linehaulState =
+        getReceiptLinehaulState(),
+) {
+    if (
+        getActiveReceiptViewId() ===
+        "linehaul"
+    ) {
+        return Array.isArray(
+            linehaulState.linehauls,
+        ) &&
+        linehaulState.linehauls.length > 0
+            ? ""
+            : "Importe ou defina ao menos um LH.";
+    }
+
+    return getReceiptExportPendingMessage(
+        state,
+    );
+}
+
 /* ATUALIZA O RODAPÉ */
 
 function renderReceiptClearStatus(
@@ -140,7 +164,7 @@ function renderReceiptExportStatus(
     state,
 ) {
     const pendingMessage =
-        getReceiptExportPendingMessage(
+        getActiveReceiptExportPendingMessage(
             state,
         );
 
@@ -210,10 +234,15 @@ function getActiveReceiptViewId() {
                 1,
             );
 
-    return panelId ===
-        "receipt-charts"
-            ? "receipt-charts"
-            : "receipt-tables";
+    return [
+        "linehaul",
+        "receipt-tables",
+        "receipt-charts",
+    ].includes(
+        panelId,
+    )
+        ? panelId
+        : "linehaul";
 }
 
 /* AGUARDA A RENDERIZAÇÃO DA GUIA */
@@ -431,44 +460,28 @@ async function combineReceiptReportBlobs(
     );
 }
 
-/* CAPTURA AS DUAS GUIAS */
+/* CAPTURA SOMENTE A GUIA ATIVA */
 
 async function createReceiptReportBlob() {
-    const originalViewId =
+    const activeViewId =
         getActiveReceiptViewId();
 
-    let mainBlob;
-    let comparisonBlob;
+    const exportArea = {
+        linehaul:
+            receiptExportElements
+                .linehaulArea,
 
-    try {
-        await activateReceiptView(
-            "receipt-tables",
-        );
+        "receipt-tables":
+            receiptExportElements
+                .mainArea,
 
-        mainBlob =
-            await createReportImageBlob(
-                receiptExportElements
-                    .mainArea,
-            );
+        "receipt-charts":
+            receiptExportElements
+                .comparisonArea,
+    }[activeViewId];
 
-        await activateReceiptView(
-            "receipt-charts",
-        );
-
-        comparisonBlob =
-            await createReportImageBlob(
-                receiptExportElements
-                    .comparisonArea,
-            );
-    } finally {
-        await activateReceiptView(
-            originalViewId,
-        );
-    }
-
-    return combineReceiptReportBlobs(
-        mainBlob,
-        comparisonBlob,
+    return createReportImageBlob(
+        exportArea,
     );
 }
 
@@ -542,8 +555,13 @@ async function runReceiptExport(
             : receiptExportElements
                 .downloadButton;
 
-    const originalText =
-        button.textContent;
+    const originalTitle =
+        button.title;
+
+    const originalAriaLabel =
+        button.getAttribute(
+            "aria-label",
+        );
 
     receiptExportBusy =
         true;
@@ -552,10 +570,17 @@ async function runReceiptExport(
         state,
     );
 
-    button.textContent =
+    button.title =
         isCopy
-            ? "Copiando..."
-            : "Gerando...";
+            ? "Copiando relatório..."
+            : "Gerando relatório...";
+
+    button.setAttribute(
+        "aria-label",
+        isCopy
+            ? "Copiando relatório de processamento"
+            : "Gerando relatório de processamento",
+    );
 
     button.setAttribute(
         "aria-busy",
@@ -571,19 +596,6 @@ async function runReceiptExport(
                 reportBlob,
             );
 
-            button.textContent =
-                "Copiado!";
-
-            await new Promise(
-                function (
-                    resolve,
-                ) {
-                    window.setTimeout(
-                        resolve,
-                        1200,
-                    );
-                },
-            );
         } else {
             downloadReportBlob(
                 reportBlob,
@@ -593,6 +605,15 @@ async function runReceiptExport(
                 ),
             );
         }
+
+        setReportNotification({
+            reportId: "receipt",
+            type: "success",
+            message:
+                isCopy
+                    ? "Relatório de processamento copiado."
+                    : "Relatório de processamento baixado.",
+        });
     } catch (error) {
         console.error(
             "Não foi possível exportar o relatório:",
@@ -604,12 +625,25 @@ async function runReceiptExport(
                 ? error.message
                 : "Não foi possível exportar a imagem.",
         );
+
+        setReportNotification({
+            reportId: "receipt",
+            type: "error",
+            message: "Não foi possível exportar o relatório de processamento.",
+        });
     } finally {
         receiptExportBusy =
             false;
 
-        button.textContent =
-            originalText;
+        button.title =
+            originalTitle;
+
+        if (originalAriaLabel) {
+            button.setAttribute(
+                "aria-label",
+                originalAriaLabel,
+            );
+        }
 
         button.removeAttribute(
             "aria-busy",
@@ -649,8 +683,11 @@ function initializeReceiptExport(
         );
 
     receiptExportElements.downloadButton =
+        receiptExportElements.copyButton;
+
+    receiptExportElements.linehaulArea =
         receiptExportElements.panel.querySelector(
-            "#receiptDownloadReportButton",
+            "#receiptLinehaulExportArea",
         );
 
     receiptExportElements.mainArea =
@@ -732,29 +769,24 @@ function initializeReceiptExport(
         },
     );
 
-    receiptExportElements
-        .copyButton
-        .addEventListener(
-            "click",
-
-            function () {
-                runReceiptExport(
-                    "copy",
-                );
-            },
-        );
-
-    receiptExportElements
-        .downloadButton
-        .addEventListener(
-            "click",
-
-            function () {
-                runReceiptExport(
-                    "download",
-                );
-            },
-        );
+    bindReportImageExportButton(
+        receiptExportElements
+            .copyButton,
+        {
+            onCopy:
+                function () {
+                    runReceiptExport(
+                        "copy",
+                    );
+                },
+            onDownload:
+                function () {
+                    runReceiptExport(
+                        "download",
+                    );
+                },
+        },
+    );
 
     subscribeReceiptState(
         function (state) {
@@ -768,10 +800,45 @@ function initializeReceiptExport(
     );
 
     subscribeReceiptLinehaulState(
-        function (linehaulState) {
-            renderReceiptClearStatus(
+        function () {
+            renderReceiptExportStatus(
                 getReceiptState(),
-                linehaulState,
+            );
+        },
+    );
+
+    const viewTabs =
+        receiptExportElements.panel
+            .querySelector(
+                "#receipt-view-tabs",
+            );
+
+    const renderAfterTabChange =
+        function () {
+            renderReceiptExportStatus(
+                getReceiptState(),
+            );
+        };
+
+    if (
+        typeof window.jQuery ===
+            "function" &&
+        viewTabs
+    ) {
+        window.jQuery(
+            viewTabs,
+        ).on(
+            "change.zf.tabs",
+            renderAfterTabChange,
+        );
+    }
+
+    viewTabs?.addEventListener(
+        "click",
+        function () {
+            window.setTimeout(
+                renderAfterTabChange,
+                0,
             );
         },
     );
