@@ -17,6 +17,7 @@
         --color-button-text: #000000;
         --color-gray-p: #a8a9ad;
         --color-progress-bar: #3e3e3e;
+        --color-close-button: #8f8d8d;
     }
 
     /* DOCUMENTO */
@@ -127,18 +128,8 @@
         a:hover, a:focus {
             color: var(--color-text);
         }
-        .link {
-            color: #27a1f3;
-            font-size: 14px;
-            font-family: 'Open Sans', sans-serif;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            letter-spacing: 1px;
-            line-height: inherit;
-        }
-        .link:hover, .link:focus{
-            color: #2284c5;
+        .link:hover, .link:focus {
+            color: #2284c5 !important;
         }
 
     /* LISTAS E DIVISORES */
@@ -883,6 +874,7 @@
     .select2-selection--single {
         background-color: var(--color-container);
         cursor: default;
+        opacity: 0.5;
     }
     .select2-container--default.select2-container--disabled
     .select2-selection--single
@@ -1219,6 +1211,44 @@
         transition: all 0.5s ease;
     }
 
+/* FOOTER */
+
+footer {
+    padding: 25px;
+    user-select: none;
+    background-color: var(--color-container);
+    border-top: 2px solid var(--color-border);
+}
+footer img {
+    width: 35px;
+}
+footer button {
+    font-size: 14px;
+    color: var(--color-text);
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+    line-height: inherit;
+    outline: none;
+    margin: 0;
+    line-height: 1;
+}
+footer > div {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: center;
+}
+footer > div > div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
 /* PAINEL DROPDOWN */
 
     .dropdown-pane {
@@ -1368,7 +1398,7 @@
         top: 15px;
         right: 30px;
         z-index: 10;
-        color: #F44336;
+        color: var(--color-close-button);
         cursor: pointer;
         font-size: 2em;
         line-height: 1;
@@ -1436,4 +1466,3 @@
         position: fixed;
     }
 
-/*  */

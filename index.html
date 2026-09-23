@@ -32,7 +32,86 @@
 
         <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
 
-        <style></style>
+        <style>
+
+            #settings {
+                padding: 0px !important;
+                overflow-y: hidden !important;
+            }
+            .reveal .title {
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 2px solid var(--color-border);
+                padding: 20px;
+                align-items: center;
+            }
+            .reveal .tabs {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+                margin: 0 0 30px 0;
+            }
+            .reveal .tabs .tabs-title {
+                width: 100% !important;
+            }
+            .reveal .title > h4 {
+                margin: 0;
+            }
+            .reveal .padding {
+                padding: 35px;
+            }
+            .reveal .spreadsheets-links {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                max-height: 600px;
+                overflow-y: auto;
+                padding-right: 15px;
+            }
+            .reveal .spreadsheets-links::-webkit-scrollbar-track {
+                background-color: transparent;
+            }
+            .reveal .spreadsheets-links::-webkit-scrollbar {
+                width: 5px;
+                height: 5px;
+                background-color: transparent;
+            }
+            .reveal .spreadsheets-links::-webkit-scrollbar-thumb {
+                border-radius: 5px;
+                background-color: var(--color-border);
+            }
+            .reveal .spreadsheets-links > div {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                row-gap: 10px;
+            }
+            .reveal .spreadsheets-links > div > h4 {
+                margin: 0;
+            }
+            .reveal .spreadsheets-links > div > [data-dashboard-spreadsheet-row] {
+                display: flex;
+                align-items: center;
+                column-gap: 15px;
+            }
+            .reveal .spreadsheets-links > div > [data-dashboard-spreadsheet-row] input {
+                flex: 1 1 0;
+            }
+            .reveal .spreadsheets-links > div > [data-dashboard-spreadsheet-row] > div {
+                flex: 0 0 100px;
+            }
+            .reveal #another-links > div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .reveal #another-links > div > div {
+                width: 100%;
+            }
+                        
+        </style>
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -48,7 +127,7 @@
 
                     <div>
                         <h3>Dashboard do Inventário</h3>
-                        <p><i>Um agregado de ferramentas.</i></p>
+                        <p><i>Versão 1.0 - Operações Last Mile</i></p>
                     </div>
                 </div>
 
@@ -100,28 +179,8 @@
 
                         <input id="reportSessionFileInput" type="file" accept=".js,text/javascript,application/javascript" hidden>
 
-                        <a data-toggle="external-links">
-                            <img src="images/menu-icons/link-icon.svg">
-                        </a>
-
-                        <a href="https://docs.google.com/spreadsheets/d/1IS4QDnMenXTi07FhiL-nFINrEjLppAfZhSlogZq22hY/edit?gid=0#gid=0" target="_blank">
+                        <a data-open="settings">
                             <img src="images/menu-icons/settings-icon.svg">
-                        </a>
-                    </div>
-
-                    <div class="dropdown-pane" id="external-links" data-dropdown data-position="bottom" data-alignment="center" data-auto-focus="true" data-close-on-click="true">
-                        <a href="https://www.appsheet.com/start/9898e1c7-28cc-4bcc-9e15-b13a73533544?platform=desktop#appName=AVARIASLSP-63-957299733-25-10-22&vss=H4sIAAAAAAAAA6WRzU7CQBDHX4XMuREoWGBPihhjjB8BwoUSM7ZT2dh2m90tSJo-jM_iiznLR_TgBbjtzsxv5v-fqWAlaT2xGH2AmFe_vwfagIAqhOmmoBBECDcqt1qlIXghPGG2C758f73LHNsh1OCBIdTRcko6Y3Y49oPu4LLd6wwGfvuZ0xbfUnLoVE22lVx1vUIt0UDtnT78dUQWZeo01Avv0MaSAVEdZ0GcuwEZU25lIkm7Xo7kHnuO047iwIFh15CV27VsBTNTc-gU42co_9PlWAN79B8fMFbrnQ6M-v2g0_NFo9VttoKm3_ID0VhJq_SFkRmqK7NUBdFFpDKecKdVWQwZnPMpJ0rbw3tECZapnWFausvOF7XbVaKi0lA8Y--nezb3-e1ngXn8qGIWn2BqqP4BMXkggBsDAAA=&row=ac886372:%2004/06/2026:%20vitor.simao@shopee.com&view=P%C3%A1gina1_Detail" target="_blank" class="link-button">
-                            <div class="flex-box-center">
-                                <img src="images/links-icons/avarias-icon.svg" style="margin-right: 10px;">
-                                <h4>Avárias</h4>
-                            </div>
-                        </a>
-                        
-                        <a href="https://www.appsheet.com/start/e90438ea-37a9-47f7-a28f-1499b53fbd35#appName=ColetasLMHub-510641030&page=gallery&sort=%5B%5D&table=MenuInicial&view=Menu" target="_blank" class="link-button">
-                            <div class="flex-box-center">
-                                <img src="images/links-icons/coleta-icon.svg" style="margin-right: 10px;">
-                                <h4>Coletas</h4>
-                            </div>
                         </a>
                     </div>
                 </ul> 
@@ -288,7 +347,7 @@
                                         <img id="receiptNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="receiptNotificationText">
-                                            Tudo em silêncio por enquanto.
+                                            No SPX, acesse Transporte Principal / Viagens de Carga Direta, escolha Inbound e aperte Crtl A, depois Crtl C, então volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -739,7 +798,7 @@
                                         <img id="expeditionNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="expeditionNotificationText">
-                                            Tudo em silêncio por enquanto.
+                                            No SPX, acesse Gestão Audit / Conferencia: LM Hub AT/TO, escolha uma tarefa para exportar, então volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -1146,7 +1205,7 @@
                                         <img id="planningNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="planningNotificationText">
-                                            Tudo em silêncio por enquanto.
+                                            No SPX, acesse Transporte Principal / Viagens de Carga Direta, escolha Inbound e aperte Crtl A, depois Crtl C, então volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -1457,7 +1516,7 @@
                                                 </div>
 
                                                 <p>Os valores da frota afetarão o cálculo do indicador SPR Médio, preencher a composição da frota é opcional.</p>
-                                                <a href="#">Consultar Frota ➚</a>
+                                                <a id="planningFleetLink" href="#" aria-disabled="true">Consultar Frota ➚</a>
 
                                             </div>
                                         </div>
@@ -1494,7 +1553,7 @@
                                         <img id="damageAndLossesNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="damageAndLossesNotificationText">
-                                            Tudo em silêncio por enquanto.
+                                            Importe uma planilha com a aba Histórico de Avarias e Histórico de Análises, seguindo exatamente o modelo fornecido no footer do dashboard.
                                         </h4>
                                     </div>
                                 </div>
@@ -1931,7 +1990,7 @@
                                         <img id="lossesRateNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="lossesRateNotificationText">
-                                            Tudo em silêncio por enquanto.
+                                            Importe uma planilha com a aba Taxa de Perdas, seguindo exatamente o modelo fornecido no footer do dashboard.
                                         </h4>
                                     </div>
                                 </div>
@@ -2113,7 +2172,7 @@
                                         <img id="overallAnalysisNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="overallAnalysisNotificationText">
-                                            Tudo em silêncio por enquanto.
+                                            Preencha os relatórios para completar a análise geral, tudo aqui vai se atualizar automaticamente.
                                         </h4>
                                     </div>
                                 </div>
@@ -3013,12 +3072,45 @@
                                         <hr>
 
                                         <div>
+                                            <h4>Como Usar as Planilhas</h4>
+
+                                            <p>Comece abrindo as configurações do dashboard e preencha os campos de texto com os respectivos links e nomes das planilhas que você vai utilizar, uma vez feito isso, feche as configurações, agora no painel planilhas você verá os nomes das planilhas que você definiu aparecendo nas opções a esqueda, clique nos nomes e veja que automaticamente a bloco ao lado carregara sua planilha, se quiser abrir a mesma em uma nova guia do navegador, basta clicar na seta, que fica ao lado do nome que você escolheu. </p>
+                                        </div>
+
+                                        <hr>
+                                        
+                                        <div>
                                             <h4>Como Usar os Relatórios</h4>
 
                                             <p>Comece preenchendo as informações gerais da janela, como o turno atual, analista responsável, planejamento, quantidade de colaboradores e capacidade. Depois, acesse o relatório desejado e importe a base de dados correspondente. <br><br> Confira a notificação de importação, revise os dados exibidos na prévia e se necessário, complete os campos manuais. <br> Os indicadores e gráficos são atualizados automaticamente conforme os dados do relatório são alterados.</p>
                                         </div>
 
                                         <hr>
+
+                                        <div>
+                                            <h4>Como Usar a Análise</h4>
+
+                                            <p>Comece exportando um arquivo do SPX ou uma planilha, assim que você exportar verá que uma previa de planilha foi montada com base nos dados presentes do arquivo que exportado, logo nessa primeira opção "Previa da Planilha", você pode terá todas as ferramentas necessárias para realizar uma análise, botões para mostrar ou ocultar colunas, filtros, e controle de linhas.
+
+                                                <br><br>
+
+                                            Também há outras opções interessantes nas demais guias de desse painel, como "Comparação de Dados", que como o nome já diz serve para você comparar dados de uma determinada coluna, com o dados inseridos, muito útil para comprar BRs.
+
+
+                                                <br><br>
+
+                                            A "Montagem de Gráficos" também pode se fazer muit útil se você precisa montar um gráfico simples para algumas apresentação, como nas reuniões de RMR, ele permite até 3 tipos de gráficos para serem escolhido.
+
+
+                                            <br><br>
+
+                                            Já a Análise de Planilha é feita para encontrar padrões, identificar os identificadores de cada base de dados, entre outras coisas, recomendo usar essa função principamente para analisar o arquivo de Parcel, gerado pelo SPX, ou alguma tarefa especifíca da Gestão Audit.
+
+                                            </p>
+                                        </div>
+
+                                        <hr>
+
                                         <div>
                                             <h4>Recomendações</h4>
 
@@ -3047,6 +3139,8 @@
                                     </div>
 
                                     <div class="padding">
+                                        <h4>Planilhas</h4>
+
                                         <p>Reúne atalhos para planilhas operacionais utilizadas no dia a dia, o painel permite visulizar o conteúdo de uma planilhas e fazer pequenas alterações simples, e também conta com links que direcionam para suas respectivas fontes externas no google planilhas. <br><br>O conteúdo dessas planilhas não é de nenhuma forma alterado pelo dashboard, ele apenas abre uma janela do google planilhas no painel, utilizando o link da planilha em tags HTML conhecidas como &lt;IFRAME&gt;, toda alteração de planilhas é feita através da plataforma do google.
 
                                         <br><br>
@@ -3299,6 +3393,118 @@
             </div>
         </div>
 
+        <!-- FOOTER DO DASHBOARD -->
+
+        <footer>
+            <div>
+                <div>
+                    <img src="images/geral-icons/box-icon.svg">
+
+                    <button type="button" class="external-link" data-url="https://spx.shopee.com.br/">
+                        Sistema SPX ↗
+                    </button>
+                </div>
+
+                <div>
+                    <img src="images/geral-icons/sheets-icon.svg">
+
+                    <button type="button" class="external-link" data-url="https://docs.google.com/spreadsheets/d/1jSYbHh2vq96RA3z0GQQNR8oLZULFvJF-v4_Qc8y5ZDo/edit?gid=354393054#gid=354393054">
+                        Planilhas para o Dashboard ↗
+                    </button>
+                </div>
+
+                <div>
+                    <img src="images/links-icons/avarias-icon.svg">
+
+                    <button id="footerDamageAppLink" type="button" class="external-link" data-url="" disabled>
+                        Avarias AppSheet ↗
+                    </button>
+                </div>
+
+                <div>
+                    <img src="images/links-icons/coleta-icon.svg">
+
+                    <button id="footerCollectionAppLink" type="button" class="external-link" data-url="" disabled>
+                        Coletas AppSheet ➚
+                    </button>
+                </div>
+            </div>
+        </footer>
+
+        <!-- REVEAL - CONFIGURAÇÕES -->
+
+        <div class="reveal small" id="settings" data-reveal data-close-on-click="true">
+            <div class="title">
+                <h4>Configurações do Dashboard</h4>
+            </div>
+
+            <div class="padding">
+                <ul class="tabs" data-tabs id="settings-tabs">
+                    <li class="tabs-title is-active">
+                        <a href="#settings-links">Link das Planilhas</a>
+                    </li>
+
+                    <li class="tabs-title">
+                        <a href="#another-links">Outros Links do Dashboard</a>
+                    </li> 
+                                    
+                    <li class="tabs-title" style="display: none;">
+                        <a href="#settings-themes">Temas do Dashboard</a>
+                    </li> 
+                </ul> 
+
+                <div class="tabs-content" data-tabs-content="settings-tabs">
+                    <div class="tabs-panel is-active" id="settings-links">
+
+                        <!-- LISTA DINÂMICA DE LINKS -->
+
+                        <div class="spreadsheets-links" id="settingsSpreadsheetRows">
+                            <div>
+                                <h4>Primeira Planilha</h4>
+
+                                <div data-dashboard-spreadsheet-row="0">
+                                    <input type="url" inputmode="none" autocomplete="off" placeholder="Cole o Link da Planilha" id="settingsSpreadsheetLink1" data-dashboard-spreadsheet-field="link" aria-label="Link da planilha 1">
+                                    <input type="text" placeholder="Nome no Menu" maxlength="22" id="settingsSpreadsheetName1" data-dashboard-spreadsheet-field="menuName" aria-label="Nome da planilha 1 no menu">
+
+                                    <div>
+                                        <select class="standard-select" style="width: 100%;" id="settingsSpreadsheetVisibility1" data-dashboard-spreadsheet-field="visible" aria-label="Visibilidade da planilha 1">
+                                            <option value="show">Visível</option>
+                                            <option value="hide">Oculta</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tabs-panel" id="another-links">
+                        <div>
+                            <div>
+                                <h4>Avarias AppSheet</h4>
+                                <input type="url" id="settingsDamageAppLink" data-dashboard-external-link="damageApp" aria-label="Link do Avarias AppSheet">
+                            </div>
+        
+                            <div>
+                                <h4>Coletas AppSheet</h4>
+                                <input type="url" id="settingsCollectionAppLink" data-dashboard-external-link="collectionApp" aria-label="Link do Coletas AppSheet">
+                            </div>
+        
+                            <div>
+                                <h4>Consultar Frota</h4>
+                                <input type="url" placeholder="Aqui vai do link da planilha de frotas do time de fleet (Se Houver)." id="settingsFleetLink" data-dashboard-external-link="fleet" aria-label="Link para consultar a frota">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tabs-panel" id="settings-themes"></div>
+                </div>
+            </div>
+
+            <button class="close-button" data-close aria-label="Close modal" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
         <!-- REVEAL - SELEÇÃO DA JANELA DO PLANEJAMENTO -->
 
         <div class="reveal tiny" id="planningImportWindowModal" data-reveal data-close-on-click="false" aria-labelledby="planningImportWindowTitle">
@@ -3387,6 +3593,18 @@
         <!-- AJUSTES TABS -->
 
         <script>
+
+            // BOTÕES DO FOOTER
+
+            document.querySelectorAll(".external-link").forEach((button) => {
+                button.addEventListener("click", () => {
+                    window.open(
+                        button.dataset.url,
+                        "_blank",
+                        "noopener,noreferrer",
+                    );
+                });
+            });
 
             // AJUSTE DO TABS DE EXPEDIÇÃO
 
