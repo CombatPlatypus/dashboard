@@ -448,8 +448,8 @@ function getExpeditionDuplicatedOrders(
     const scannedOrders =
         route?.scannedOrders;
 
-    const finalOrders =
-        route?.finalOrders;
+    const initialOrders =
+        route?.initialOrders;
 
     const missortedOrders =
         route?.missortedOrders;
@@ -457,8 +457,8 @@ function getExpeditionDuplicatedOrders(
     if (
         scannedOrders === null ||
         scannedOrders === undefined ||
-        finalOrders === null ||
-        finalOrders === undefined ||
+        initialOrders === null ||
+        initialOrders === undefined ||
         missortedOrders === null ||
         missortedOrders === undefined
     ) {
@@ -467,7 +467,7 @@ function getExpeditionDuplicatedOrders(
 
     return Math.max(
         scannedOrders -
-            finalOrders -
+            initialOrders -
             missortedOrders,
         0,
     );
