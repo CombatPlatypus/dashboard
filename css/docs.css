@@ -1,6 +1,15 @@
+
 #docs {
     max-width: 1600px;
     margin: 0 auto;
+    padding: 30px;
+}
+#docs .main-title {
+    text-align: center;
+    margin: 0px 30px 30px 30px;
+}
+#docs .main-title h1 {
+    margin: 0;
 }
 #docs .title {
     border-bottom: 2px solid var(--color-border);

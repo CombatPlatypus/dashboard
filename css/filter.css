@@ -1,0 +1,138 @@
+#filter {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+#filter > .flex-box-start {
+    gap: 15px;
+}
+#filter .title {
+    padding: 20px;
+    border-bottom: 2px solid var(--color-border);
+}
+#filter .title h4 {
+    margin: 0;
+}
+#filter .padding {
+    min-height: 574px;
+    padding: 30px;
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+#filter .report-actions {
+    display: flex;
+    flex: 0 0 max-content;
+    justify-content: center;
+    gap: 15px;
+    margin: 0 0 20px;
+    padding: 20px;
+    border: 2px solid var(--color-border);
+    border-radius: 5px;
+    background-color: var(--color-container);
+}
+#filter .report-actions > button:hover:not(:disabled) {
+    opacity: 0.61;
+    transition: opacity 0.5s ease;
+}
+#filter .report-actions > button > img {
+    width: 35px;
+    cursor: pointer;
+}
+#filter .report-actions > button:disabled > img {
+    cursor: not-allowed;
+}
+#filter .filter-controls {
+    flex: 0 0 480px;
+    height: auto;
+    overflow: hidden;
+    border: 2px solid var(--color-border);
+    border-radius: 5px;
+    background-color: var(--color-container);
+}
+#filter .padding > label {
+    margin-bottom: 0;
+}
+#filter .comparison-textarea-title span {
+    color: var(--color-gray-p);
+    font-size: 13px;
+}
+#filter .filter-submit {
+    margin-top: 20px;
+    overflow: hidden;
+}
+#filter .filter-submit button {
+    width: 100%;
+}
+#filter .filter-preview {
+    min-width: 0;
+    flex: 1 1 0;
+    overflow: hidden;
+    border: 2px solid var(--color-border);
+    border-radius: 5px;
+    background-color: var(--color-container);
+}
+#filter .filter-preview .padding > p {
+    margin: auto 0;
+    color: var(--color-gray-p);
+    text-align: center;
+}
+#filter .filter-preview #filterPreviewResult > p {
+    margin: 0 0 12px;
+    color: var(--color-text);
+    font-size: 13px;
+}
+#filter .filter-preview #filterPreviewResult > div {
+    width: 100%;
+    max-height: 481px;
+    overflow: auto;
+    border: 2px solid var(--color-border);
+    border-radius: 5px;
+}
+#filter .filter-preview #filterPreviewResult > div > table {
+    width: 100%;
+    min-width: 920px;
+    color: var(--color-text);
+    background-color: var(--color-container);
+}
+#filter .filter-preview #filterPreviewResult > div > table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--color-table-th);
+}
+#filter .filter-preview #filterPreviewResult > div > table thead th,
+#filter .filter-preview #filterPreviewResult > div > table tbody td {
+    padding: 9px 12px;
+    border-right: 1px solid var(--color-border);
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+#filter .filter-preview #filterPreviewResult > div > table th:last-child,
+#filter .filter-preview #filterPreviewResult > div > table td:last-child {
+    border-right: none;
+}
+#filter .filter-preview #filterPreviewResult > div > table tbody tr {
+    border-top: 1px solid var(--color-border);
+}
+#filter .filter-preview #filterPreviewResult > div > table tbody tr:nth-child(even) {
+    background-color: var(--color-table-tr);
+}
+#filter .filter-preview #filterPreviewResult > div > table .filter-empty-row {
+    padding: 30px 12px;
+    color: var(--color-gray-p);
+    text-align: center;
+}
+#filter .filter-preview #filterPreviewResult > div::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+#filter .filter-preview #filterPreviewResult > div::-webkit-scrollbar {
+    width: 7px;
+    height: 5px;
+    background-color: var(--color-container-focus);
+    border-left: 1px solid var(--color-border);
+}
+#filter .filter-preview #filterPreviewResult > div::-webkit-scrollbar-thumb {
+    border-radius: 0px 3px 3px 0px;
+    background-color: var(--color-text);
+}

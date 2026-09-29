@@ -29,10 +29,7 @@
         <link rel="stylesheet" href="css/hub-spreadsheets.css">
         <link rel="stylesheet" href="css/data-analysis.css">
         <link rel="stylesheet" href="css/docs.css">
-
-        <!-- ESTILOS TEMPORARIOS NÃO FINALIZADOS -->
-
-        <style></style>
+        <link rel="stylesheet" href="css/filter.css">
     </head>	
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -43,16 +40,22 @@
 
         <nav class="main-menu">
             <div class="flex-box-between">
+
+                <!-- NOME DO SISTEMA E VERSÃO -->
+
                 <div class="flex-box-start">
                     <img src="images/geral-icons/hub-logo-menu.svg">
 
                     <div>
                         <h3>Dashboard do Inventário</h3>
-                        <p><i>Versão 1.0 - Operações Last Mile</i></p>
+                        <p><i>Versão 1.1 - Operações Last Mile</i></p>
                     </div>
                 </div>
 
                 <ul class="flex-box-start tabs" data-tabs id="switch-1">
+
+                    <!-- PAINEL - PLANILHAS -->
+
                     <li class="tabs-title is-active">
                         <a href="#spreadsheets">
                             <div class="flex-box-center">
@@ -61,6 +64,8 @@
                             </div>
                         </a>
                     </li> 
+
+                    <!-- PAINEL - REPORTS -->
 
                     <li class="tabs-title">
                         <a href="#reports">
@@ -71,8 +76,10 @@
                         </a>
                     </li> 
 
+                    <!-- PAINEL - ANÁLISE -->
+
                     <li class="tabs-title">
-                        <a href="#statistics">
+                        <a href="#analysis">
                             <div class="flex-box-center">
                                 <img src="images/geral-icons/magnifier-icon.svg">
                                 <h4>Análises</h4>
@@ -80,14 +87,18 @@
                         </a>
                     </li> 
 
+                    <!-- PAINEL FILTRAGEM -->
+
                     <li class="tabs-title">
-                        <a href="#docs">
+                        <a href="#filter">
                             <div class="flex-box-center">
-                                <img src="images/menu-icons/docs-icon.svg">
-                                <h4>Documentação</h4>
+                                <img src="images/geral-icons/filter-icon.svg">
+                                <h4>Filtragem</h4>
                             </div>
                         </a>
                     </li> 
+
+                    <!-- LISTA DE BOTÕES PRINCIPAIS DO MENU -->
 
                     <div class="nav-actions">
                         <button id="reportDownloadButton" type="button" title="Salvar sessão" aria-label="Salvar sessão dos relatórios">
@@ -259,7 +270,7 @@
 
                                 <li class="tabs-title">
                                     <a href="#receipt-charts" data-controls-target="receipt-controls-1">
-                                        <h4>Rank de Recebedores</h4>
+                                        <h4>Ranking de Recebedores</h4>
                                     </a>
                                 </li>
                             </ul> 
@@ -272,7 +283,7 @@
                                         <img id="receiptNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="receiptNotificationText">
-                                            No SPX, acesse Transporte Principal / Viagens de Carga Direta, escolha Inbound e aperte Crtl A, depois Crtl C, então volte aqui e clique em importar.
+                                            No SPX, Transporte Principal / Viagens de Carga, escolha Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -565,7 +576,7 @@
                                         <div class="tabs-panel" id="receipt-charts">
                                             <div class="preview-style" id="receiptComparisonExportArea">
                                                 <div class="title">
-                                                    <h2>Rank de Recebedores</h2>
+                                                    <h2>Ranking de Recebedores</h2>
                                                 </div>
 
                                                 <div class="cards">
@@ -576,7 +587,7 @@
                                                         </div>
 
                                                         <p class="receipt-comparison-card-label">Maior Volume Recebido</p>
-                                                        <p id="receiptComparisonTopVolume">— Pacotes</p>
+                                                        <p id="receiptComparisonTopVolume">— pacotes</p>
                                                     </div>
 
                                                     <div>
@@ -698,7 +709,7 @@
 
                                 <li class="tabs-title">
                                     <a href="#expedition-charts" data-controls-target="controls-summary">
-                                        <h4>Rank de Conferentes</h4>
+                                        <h4>Ranking de Conferentes</h4>
                                     </a>
                                 </li>
 
@@ -723,7 +734,7 @@
                                         <img id="expeditionNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="expeditionNotificationText">
-                                            No SPX, acesse Gestão Audit / Conferencia: LM Hub AT/TO, escolha uma tarefa para exportar, então volte aqui e clique em importar.
+                                            No SPX, acesse Gestão Audit / Conferência: LM Hub AT/TO, escolha uma tarefa para exportar e, em seguida, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -844,7 +855,7 @@
                                         <div class="tabs-panel" id="expedition-charts">
                                             <div class="preview-style" id="expeditionChartsExportArea">
                                                 <div class="title">
-                                                    <h2>Rank de Conferentes</h2>
+                                                    <h2>Ranking de Conferentes</h2>
                                                 </div>
 
                                                 <div class="cards">
@@ -855,7 +866,7 @@
                                                         </div>
 
                                                         <p>Maior Quantidade de Rotas</p>
-                                                        <p id="expeditionTopRoutesDetails">0 Rotas Conferidas</p>
+                                                        <p id="expeditionTopRoutesDetails">0 rotas conferidas</p>
                                                     </div>
 
                                                     <div>
@@ -865,7 +876,7 @@
                                                         </div>
 
                                                         <p>Conferente Mais Rápido</p>
-                                                        <p id="expeditionFastestOperatorDetails">Tempo Médio: —</p>
+                                                        <p id="expeditionFastestOperatorDetails">Tempo médio: —</p>
                                                     </div>
                                                 </div>
 
@@ -974,7 +985,7 @@
                                                         </div>
 
                                                         <p>Melhor Rua</p>
-                                                        <p>Taxa de Erros: <span id="expeditionBestStreetRate">—</span></p>
+                                                        <p>Taxa de erros: <span id="expeditionBestStreetRate">—</span></p>
                                                     </div>
 
                                                     <div>
@@ -983,7 +994,7 @@
                                                         </div>
 
                                                         <p>Pior Rua</p>
-                                                        <p>Taxa de Erros: <span id="expeditionWorstStreetRate">—</span></p>
+                                                        <p>Taxa de erros: <span id="expeditionWorstStreetRate">—</span></p>
                                                     </div>
                                                 </div>
 
@@ -1045,7 +1056,7 @@
 
                                     <div class="expedition-controls-panel is-active" id="controls-summary">
                                         <div class="title">
-                                            <h4>Importe a Gestão Audit</h4>
+                                            <h4>Importe o relatório Gestão Audit</h4>
                                         </div>
 
                                         <div class="padding">
@@ -1061,7 +1072,7 @@
                                                 </div>
 
                                                 <div>
-                                                    <h4>Pacotes Exceção</h4>
+                                                    <h4>Pacotes de Exceção</h4>
                                                     <input id="expeditionExceptionInput" type="text" inputmode="numeric" maxlength="3" autocomplete="off" disabled>
                                                 </div>
                                             </div>
@@ -1075,13 +1086,23 @@
 
                                     <div class="expedition-controls-panel" id="controls-mistakes">
                                         <div class="title">
-                                            <h4>Importe a Bipagem de Erros</h4>
+                                            <h4>Defina os Erros</h4>
                                         </div>
 
                                         <div class="padding">
                                             <div class="input-group">
                                                 <div>
-                                                    <h4>Revertidos</h4>
+                                                    <h4>Erros de Sorting</h4>
+                                                    <input id="expeditionSortingErrorsInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                                </div>
+                                                
+                                                <div>
+                                                    <h4>Erros de Etiqueta</h4>
+                                                    <input id="expeditionLabelingErrorsInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
+                                                </div>
+
+                                                <div>
+                                                    <h4>Erros Revertidos</h4>
                                                     <input id="expeditionRevertedInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
                                                 </div>
                                             </div>
@@ -1128,7 +1149,7 @@
                                         <img id="planningNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="planningNotificationText">
-                                            No SPX, acesse Transporte Principal / Viagens de Carga Direta, escolha Inbound e aperte Crtl A, depois Crtl C, então volte aqui e clique em importar.
+                                            No SPX, Transporte Principal / Viagens de Carga, escolha Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -1351,7 +1372,7 @@
 
                                         <div class="tabs-panel" id="segregated-tos">
                                             <div class="title">
-                                                <h4>Defina TOs Para Segregar</h4>
+                                                <h4>Defina TOs para Segregar</h4>
 
                                                 <div class="flex-box-start">
                                                     <button id="planningAddTo" type="button" title="Adicionar TO" aria-label="Adicionar TO">
@@ -1438,7 +1459,7 @@
                                                     </div>
                                                 </div>
 
-                                                <p>Os valores da frota afetarão o cálculo do indicador SPR Médio, preencher a composição da frota é opcional.</p>
+                                                <p>Os valores da frota afetarão o cálculo do indicador SPR médio. O preenchimento da composição da frota é opcional.</p>
                                                 <a id="planningFleetLink" href="#" aria-disabled="true">Consultar Frota ➚</a>
 
                                             </div>
@@ -1476,7 +1497,7 @@
                                         <img id="damageAndLossesNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="damageAndLossesNotificationText">
-                                            Importe uma planilha com a aba Histórico de Avarias e Histórico de Análises, seguindo exatamente o modelo fornecido no footer do dashboard.
+                                            Importe a planilha de Avarias e Perdas com as abas Histórico de Avarias, Histórico de Análises e Taxa de Perdas.
                                         </h4>
                                     </div>
                                 </div>
@@ -1536,39 +1557,39 @@
                                                         <h4 id="damageSocValue">—</h4>
                                                     </div>
 
-                                                    <p id="">Avarias do Soc</p>
+                                                    <p id="">Avarias do SOC</p>
                                                 </div>
                                             </div>
                                             
                                             <div class="damage-chart-period-selector" id="damageChartPeriodSelector" role="tablist" aria-label="Período exibido no gráfico de avarias">
                                                 <button class="is-active" type="button" role="tab" aria-selected="true" data-damage-chart-period="last7">
-                                                    <span>Últimos 7 Dias</span>
+                                                    <span>Últimos 7 dias</span>
                                                 </button>
 
                                                 <button type="button" role="tab" aria-selected="false" data-damage-chart-period="days8to14">
                                                     <span>De 8 a 14</span>
-                                                    <span>Dias Atrás</span>
+                                                    <span>dias atrás</span>
                                                 </button>
 
                                                 <button type="button" role="tab" aria-selected="false" data-damage-chart-period="monthStart">
-                                                    <span>De 15 Dias Atrás</span>
-                                                    <span>Até o Começo do Mês</span>
+                                                    <span>De 15 dias atrás</span>
+                                                    <span>até o começo do mês</span>
                                                 </button>
 
                                                 <button type="button" role="tab" aria-selected="false" data-damage-chart-period="totalMonth">
-                                                    <span>Total do Mês</span>
+                                                    <span>Total do mês</span>
                                                 </button>
                                             </div>
 
                                             <div class="vertical-bars-chart">
                                                 <div class="chart-title">
                                                     <div class="flex-box-between">
-                                                        <h4 id="damageChartPeriodTitle">Últimos 7 Dias</h4>
+                                                        <h4 id="damageChartPeriodTitle">Últimos 7 dias</h4>
 
                                                         <div class="flex-box-start">
                                                             <div class="type">
                                                                 <div style="background-color: #ffc107;"></div>
-                                                                <p>Avarias do Soc</p>
+                                                                <p>Avarias do SOC</p>
                                                             </div>
 
                                                             <div class="type">
@@ -1616,7 +1637,7 @@
 
                                                 <div class="horizontal-bars-chart">
                                                     <div class="chart-title">
-                                                        <h4>Avarias por Soc</h4>
+                                                        <h4>Avarias por SOC</h4>
                                                     </div>
 
                                                     <div id="damageSocChartContainer" class="damage-soc-chart-container">
@@ -1757,33 +1778,33 @@
 
                                             <div class="damage-chart-period-selector" id="lossesChartPeriodSelector" role="tablist" aria-label="Período exibido no gráfico de perdas.">
                                                 <button class="is-active" type="button" role="tab" aria-selected="true" data-losses-chart-period="last7">
-                                                    <span>Últimos 7 Dias</span>
+                                                    <span>Últimos 7 dias</span>
                                                 </button>
 
                                                 <button type="button" role="tab" aria-selected="false" data-losses-chart-period="days8to14">
                                                     <span>De 8 a 14</span>
-                                                    <span>Dias Atrás</span>
+                                                    <span>dias atrás</span>
                                                 </button>
 
                                                 <button type="button" role="tab" aria-selected="false" data-losses-chart-period="monthStart">
-                                                    <span>De 15 Dias Atrás</span>
-                                                    <span>Até o Começo do Mês</span>
+                                                    <span>De 15 dias atrás</span>
+                                                    <span>até o começo do mês</span>
                                                 </button>
 
                                                 <button type="button" role="tab" aria-selected="false" data-losses-chart-period="totalMonth">
-                                                    <span>Total do Mês</span>
+                                                    <span>Total do mês</span>
                                                 </button>
                                             </div>
 
                                             <div class="vertical-bars-chart">
                                                 <div class="chart-title">
                                                     <div class="flex-box-between">
-                                                        <h4 id="lossesChartPeriodTitle">Últimos 7 Dias</h4>
+                                                        <h4 id="lossesChartPeriodTitle">Últimos 7 dias</h4>
 
                                                         <div class="flex-box-start">
                                                             <div class="type">
                                                                 <div style="background-color: #ffc107;"></div>
-                                                                <p>Pacotes Em Análise</p>
+                                                                <p>Pacotes em Análise</p>
                                                             </div>
 
                                                             <div class="type">
@@ -1804,7 +1825,7 @@
                                             <div class="damage-and-losses-charts flex-box-start">
                                                 <div class="horizontal-bars-chart">
                                                     <div class="chart-title">
-                                                        <h4>Pack Recover</h4>
+                                                        <h4>Pack Recovery</h4>
                                                     </div>
 
                                                     <div id="lossesPackRecoveryChartContainer" class="losses-horizontal-chart-canvas">
@@ -1913,7 +1934,7 @@
                                         <img id="lossesRateNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="lossesRateNotificationText">
-                                            Importe uma planilha com a aba Taxa de Perdas, seguindo exatamente o modelo fornecido no footer do dashboard.
+                                            Importe a planilha de Avarias e Perdas com a aba Taxa de Perdas; os dois relatórios serão atualizados.
                                         </h4>
                                     </div>
                                 </div>
@@ -1923,9 +1944,11 @@
                                         <img src="images/geral-icons/image-icon.svg" alt="">
                                     </button>
 
-                                    <button id="lossesRateImportActionButton" type="button" title="Importar histórico da área de transferência" aria-label="Importar histórico da taxa de perdas">
+                                    <button id="lossesRateImportActionButton" type="button" title="Importar planilha de avarias e perdas" aria-label="Importar planilha de avarias e perdas">
                                         <img src="images/geral-icons/import-icon.svg" alt="">
                                     </button>
+
+                                    <input id="lossesRateFileInput" type="file" accept=".xlsx,.xls" hidden>
 
                                     <button id="lossesRateClearReportButton" type="button" title="Limpar relatório" aria-label="Limpar relatório de taxa de perdas">
                                         <img src="images/geral-icons/trash-basket-icon.svg" alt="">
@@ -1942,7 +1965,7 @@
                                 <div class="preview">
                                     <div class="preview-style" id="lossesRatePreview">
                                         <div class="title">
-                                            <h2>Relatório de Taxas de Perdas</h2>
+                                            <h2>Relatório de Taxa de Perdas</h2>
                                         </div>
 
                                         <table class="losses-rate-identification-table">
@@ -2010,76 +2033,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- CONTROLES DO RELATÓRIO -->
-
-                                <div class="report-controls">
-                                    <div class="title">
-                                        <h4>Importe a Bipagem de Erros</h4>
-                                    </div>
-
-                                    <div class="padding">
-                                
-                                        <div class="input-group losses-rate-identification">
-                                            <div>
-                                                <h4>Descrição</h4>
-                                                <input id="lossesRateDescriptionInput" type="text">
-                                            </div>
-
-                                            <div>
-                                                <h4>Código do Hub</h4>
-                                                <input id="lossesRateHubCodeInput" type="text">
-                                            </div>
-
-                                            <div>
-                                                <h4>Sub Regional</h4>
-                                                <input id="lossesRateSubRegionalInput" type="text">
-                                            </div>
-                                        </div>
-
-                                        <div class="input-group losses-rate-values">
-                                            <div>
-                                                <h4>Volume Movimentado</h4>
-                                                <input id="lossesRateMovedInput" type="text" inputmode="numeric" maxlength="9">
-                                            </div>
-
-                                            <div>
-                                                <h4>Possíveis Perdas</h4>
-                                                <input id="lossesRatePossibleLossesInput" type="text" inputmode="numeric" maxlength="6">                                        
-                                            </div>
-
-                                            <div>
-                                                <h4>Quantidade de LOST</h4>
-                                                <input id="lossesRateLostInput" type="text" inputmode="numeric" maxlength="6">                                        
-                                            </div>
-
-                                            <div>
-                                                <h4>Quantidade de AVARIA</h4>
-                                                <input id="lossesRateDamageInput" type="text" inputmode="numeric" maxlength="6">
-                                            </div>
-                                        </div>
-
-                                        <div class="losses-rate-controls-summary">
-                                            <h4>Resumo do Mês</h4>
-
-                                            <div class="losses-rate-goal-status">
-                                                <span>Referência máxima</span>
-                                                <span>0,030%</span>
-                                            </div>
-
-                                            <div>
-                                                <span>Total de Perdas</span>
-                                                <span id="lossesRateControlsTotal">—</span>
-                                            </div>
-
-                                            <div>
-                                                <span>Taxa de Perda</span>
-                                                <span id="lossesRateControlsRate">—</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
                             </div>
                         </div>
 
@@ -2095,7 +2048,7 @@
                                         <img id="overallAnalysisNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="overallAnalysisNotificationText">
-                                            Preencha os relatórios para completar a análise geral, tudo aqui vai se atualizar automaticamente.
+                                            Preencha os relatórios para completar a análise geral. Todas as informações serão atualizadas automaticamente.
                                         </h4>
                                     </div>
                                 </div>
@@ -2127,7 +2080,7 @@
                                             <p id="overallAnalysisDate">—</p>
                                         </div>
 
-                                       <p>Janela do <span id="overallAnalysisWindow">—</span> - Analista do Turno: <span id="overallAnalysisAnalyst">—</span></p>
+                                       <p>Janela do <span id="overallAnalysisWindow">—</span> — Analista do turno: <span id="overallAnalysisAnalyst">—</span></p>
                                     </div>
 
                                     <!-- CARDS -->
@@ -2150,7 +2103,7 @@
 
                                                     <div>
                                                         <h2 id="overallAnalysisCapacityUsage">—</h2>
-                                                        <p id="overallAnalysisCapacityStatus">Folga de — Pacotes</p>
+                                                        <p id="overallAnalysisCapacityStatus">Folga de — pacotes</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2472,207 +2425,235 @@
 
                 <!-- PAINEL - ANÁLISE -->
 
-                <div class="tabs-panel no-file" id="statistics">
+                <div class="tabs-panel" id="analysis">
 
-                    <!-- IMPORTAÇÃO LOCAL -->
+                    <!-- TABS DE NAVEGAÇÃO -->
 
-                    <section class="import-panel">
-                        <div class="flex-box-start">
-                            <img src="images/geral-icons/sheets-icon.svg">
-                            <h3>Exporte do SPX ou uma Planilha.</h3>
-                        </div>
+                    <ul class="tabs" data-tabs id="analysis-tabs">
+                        <li class="tabs-title is-active">
+                            <a href="#spreadsheets-mode">
+                                <h4>Visualização de Planilhas</h4>
+                            </a>
+                        </li> 
 
-                        <div class="statistics-drop-zone" id="statisticsDropZone">
-                            <img src="images/geral-icons/import-icon.svg">
-                            <h3>Importe os dados para começar.</h3>
-                            <p>Arraste uma planilha ou escolha um arquivo do computador.</p>
+                        <li class="tabs-title">
+                            <a href="#data-analysis" data-analysis-requires-data aria-disabled="true" tabindex="-1">
+                                <h4>Análise de Dados</h4>
+                            </a>
+                        </li> 
 
-                            <div class="flex-box-center">
-                                <h5>.xlsx</h5>
-                                <h5>.xls</h5>
-                                <h5>.csv</h5>
+                        <li class="tabs-title">
+                            <a href="#comparison-module" data-analysis-requires-data aria-disabled="true" tabindex="-1">
+                                <h4>Comparação de Dados</h4>
+                            </a>
+                        </li> 
+                    </ul> 
+
+                    <!-- BARRA DE NOTIFCAÇÕES E BOTÕES -->
+
+                    <div class="flex-box-start">
+                        <div class="warning" id="analysisNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                            <div class="flex-box-start">
+                                <img id="analysisNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="" aria-hidden="true">
+
+                                <h4 id="analysisNotificationText">Importe uma base de dados vinda do SPX para começar.</h4>
                             </div>
                         </div>
 
-                        <p id="statisticsFileStatus">Nenhum arquivo selecionado, escolha um arquivo para começar.</p>
-
-                        <div>
-                            <label class="button statistics-file-button" for="statisticsFileInput">Procurar Arquivo</label>
-                            <input id="statisticsFileInput" type="file" accept=".xlsx,.xls,.csv" style="display: none;">
-                        </div>
-                    </section>
-
-                    <div class="flex-box-start" id="statistics-margin">
-
-                        <!-- MENU DE NAVEGAÇÃO DO PAINEL -->
-
-                        <ul class="tabs" data-tabs id="statistics-tabs">
-                            <li class="tabs-title is-active">
-                                <a href="#statistics-1">
-                                    <h4>Prévia da Planilha</h4>
-                                </a>
-                            </li> 
-
-                            <li class="tabs-title">
-                                <a href="#statistics-2">
-                                    <h4>Comparação de Dados</h4>
-                                </a>
-                            </li> 
-
-                            <li class="tabs-title">
-                                <a href="#statistics-3">
-                                    <h4>Análise da Planilha</h4>
-                                </a>
-                            </li> 
-
-                            <li class="tabs-title">
-                                <a href="#statistics-4">
-                                    <h4>Montagem de Gráficos</h4>
-                                </a>
-                            </li> 
-                        </ul> 
-
-                        <!-- BOTÕES DE AÇÃO -->
-
-                        <div class="action-buttons flex-box-start">
-                            <button class="button" id="statisticsDownloadCsv" type="button" disabled>
-                                Baixar
+                        <div class="report-actions">
+                            <button id="analysisCopyButton" type="button" title="Copia os dados filtrados" aria-label="Copia os dados filtrados" data-analysis-requires-data disabled>
+                                <img src="images/geral-icons/copy-icon.svg" alt="" aria-hidden="true">
                             </button>
 
-                            <button id="statisticsClearFile" disabled>
-                                <img src="images/geral-icons/trash-basket-icon.svg">
+                            <button id="analysisSaveButton" type="button" title="Salvar arquivo filtrado em CSV" aria-label="Salvar arquivo filtrado em CSV" data-analysis-requires-data disabled>
+                                <img src="images/geral-icons/save-icon.svg" alt="" aria-hidden="true">
                             </button>
-                            
-                            <button id="statisticsDownloadXlsx" type="button" disabled style="display: none;">
-                                <img src="images/geral-icons/file-xlsx-icon.svg">
+
+                            <button id="analysisImportButton" type="button" title="Importar base de dados" aria-label="Importar base de dados">
+                                <img src="images/geral-icons/import-icon.svg" alt="" aria-hidden="true">
+                            </button>
+
+                            <input id="analysisFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+
+                            <button id="analysisClearButton" type="button" title="Descartar arquivo importado" aria-label="Descartar arquivo importado" data-analysis-requires-data disabled>
+                                <img src="images/geral-icons/trash-basket-icon.svg" alt="" aria-hidden="true">
                             </button>
                         </div>
                     </div>
 
-                    <!-- SEM TITULO POR ENQUANTO -->
+                    <!-- CONTEÚDO DOS TABS -->
 
-                    <div class="tabs-content" data-tabs-content="statistics-tabs">
+                    <div class="tabs-content" data-tabs-content="analysis-tabs">
 
-                        <!-- PRÉVIA DA PLANILHA -->
+                        <!-- VISUALIZAÇÃO DA PLANILHA -->
 
-                        <div class="tabs-panel is-active" id="statistics-1">
-                            <section id="statisticsLocalPreview" hidden>
+                        <div class="tabs-panel is-active" id="spreadsheets-mode">
+                            <div class="flex-box-start">
 
-                                <!-- HEADER -->
+                                <!-- CONTROLES DO MODULO -->
 
-                                <div class="module-header flex-box-between">
-                                    <div class="flex-box-start">
-                                        <img src="images/geral-icons/table-icon.svg">
-                                        <h3>Prévia da Planilha</h3>
+                                <div class="controls">
+                                    <div class="title">
+                                        <h4>Controles de Visualização</h4>
                                     </div>
 
-                                    <div class="statistics-visible-columns-title statistics-preview-controls">
-                                        <h4 id="statisticsPreviewSummary"></h4>
+                                    <div class="padding">
+                                        <h4>Exibir até</h4>
 
-                                        <label for="statisticsPreviewLimit">
-                                            Exibir até
-                                        </label>
-
-                                        <select id="statisticsPreviewLimit" class="standard-select">
-                                            <option value="50">50 linhas</option>
-                                            <option value="100">100 linhas</option>
-                                            <option value="250">250 linhas</option>
-                                            <option value="500">500 linhas</option>
-                                            <option value="all" selected>Todas as linhas</option>
+                                        <select class="standard-select" id="analysisPreviewLimit" style="width: 100%;" data-analysis-requires-data disabled>
+                                            <option value="50">50 Linhas</option>
+                                            <option value="100">100 Linhas</option>
+                                            <option value="250">250 Linhas</option>
+                                            <option value="500">500 Linhas</option>
+                                            <option value="all">Todas as Linhas</option>
                                         </select>
 
-                                        <button class="statistics-visible-columns-toggle" data-toggle="statisticsVisibleColumnSelector">
-                                            <span>Colunas</span>
+                                        <div class="filters">
 
-                                            <span id="statisticsVisibleColumnCount">
-                                                0 de 0
-                                            </span>
+                                            <!-- SELETOR DE COLUNAS -->
 
-                                            <span aria-hidden="true">▾</span>
-                                        </button>
+                                            <h4>Filtro de Colunas</h4>
 
-                                        <button id="statisticsClearFilters" class="statistics-visible-columns-action" disabled>
-                                            <img src="images/geral-icons/clean-filter-icon.svg">
-                                        </button>
-                                    </div>
-                                </div>
+                                            <select class="standard-select" id="analysisFilterColumn" style="width: 100%;" data-analysis-requires-data disabled>
+                                                <option value="">Selecione uma coluna</option>
 
-                                <!-- PAINEL DROPDOWN DAS COLUNAS -->
+                                                <!-- OPÇÕES DE COLUNAS GERADAS DINAMICAMENTE DE ACORDO COM O ARQUIVO -->
 
-                                <div class="dropdown-pane statistics-visible-columns-dropdown" id="statisticsVisibleColumnSelector" data-dropdown data-position="bottom" data-alignment="center" data-auto-focus="true" data-close-on-click="true">
-                                    <div class="statistics-visible-columns-header">
-                                        <h4>Controle de Colunas</h4>
+                                            </select>
+                                            
+                                            <!-- FILTROS DA COLUNA SELECIONADA -->
 
-                                        <div class="statistics-visible-columns-actions">
-                                            <button id="statisticsShowAllColumns" class="statistics-visible-columns-action">Marcar todas</button>
-                                            <button id="statisticsHideAllColumns" class="statistics-visible-columns-action">Desmarcar todas</button>
-                                            <button id="statisticsHideEmptyColumns" class="statistics-visible-columns-action">Ocultar vazias</button>
+                                            <div class="type-of-filters">
+                                                <input type="search" id="analysisFilterText" placeholder="Filtrar..." disabled>
+
+                                                <select class="standard-select" id="analysisOccurrenceFilter" style="width: 100%;" disabled>
+                                                    <option value="all">Todos os Valores</option>
+                                                    <option value="duplicates">Somente Duplicados</option>
+                                                    <option value="unique">Somente Únicos</option>
+                                                    <option value="empty">Somente Células Vazias</option>
+                                                </select>
+                        
+                                                <div class="numeric-filter flex-box-start">
+                                                    <div>
+                                                        <select class="standard-select" style="width: 100%;" id="analysisNumericOperator" disabled>
+                                                            <option value="">Comparar...</option>
+                                                            <option value="greaterThan">Maior que</option>
+                                                            <option value="greaterThanOrEqual">Maior ou igual</option>
+                                                            <option value="lessThan">Menor que</option>
+                                                            <option value="lessThanOrEqual">Menor ou igual</option>
+                                                            <option value="notEqual">Diferente de</option>
+                                                            <option value="equal">Igual a</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <input type="text" id="analysisNumericValue" placeholder="Valor" autocomplete="off" inputmode="decimal" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="columns no-file">
+                                            <div>
+                                                <h4>Lista de Colunas</h4>
+
+                                                <div>
+                                                    <button class="button" id="analysisShowAllColumns" type="button" data-analysis-requires-data disabled>Marcar todas</button>
+                                                    <button class="button" id="analysisHideAllColumns" type="button" data-analysis-requires-data disabled>Desmarcar todas</button>
+                                                </div>
+                                            </div>
+
+                                            <div id="analysisVisibleColumns" aria-live="polite"></div>
                                         </div>
                                     </div>
-
-                                    <div id="statisticsVisibleColumns"></div>
                                 </div>
 
-                                <!-- TABELA GERADA DE ACORDO COM A PLANILHA -->
+                                <!-- PREVIA DO MODULO -->
 
-                                <div class="statistics-table-container">
-                                    <table id="statisticsLocalTable" class="statistics-local-table">
-                                        <thead></thead>
-                                        <tbody></tbody>
-                                    </table>
+                                <div class="preview">
+                                    <div class="title">
+                                        <h4>Prévia da Planilha</h4>
+                                    </div>
+
+                                    <div class="padding">
+                                        <p id="analysisPreviewSummary" class="analysis-preview-summary" hidden></p>
+
+                                        <p id="analysisPreviewWaiting" class="analysis-preview-waiting">A prévia será exibida depois que uma planilha for importada.</p>
+
+                                        <!-- TABELA GERADA DE ACORDO COM O ARQUIVO -->
+
+                                        <div class="analysis-empty" id="analysisEmptyState" hidden>
+                                            <h3>Selecione ao menos uma coluna para visualizar a planilha.</h3>
+                                        </div>
+
+                                        <div class="analysis-table-container" id="analysisTableContainer" hidden>
+                                            <table id="analysisPreviewTable">
+                                                <thead></thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </section>
+                            </div>
+                        </div>
+
+                        <!-- ANÁLISE DE DADOS -->
+
+                        <div class="tabs-panel" id="data-analysis">
+                            <div class="flex-box-start">
+
+                                <!-- PREVIA DO MODULO -->
+
+                                <div class="preview">
+                                    <div class="title">
+                                        <h4>Análise de Dados</h4>
+                                    </div>
+
+                                    <div class="padding">
+
+                                        <div class="cards" id="analysisCards" hidden></div>
+
+                                        <div class="analysis-empty" id="analysisCardsEmpty" hidden>
+                                            <h3>Selecione ao menos uma coluna na visualização da planilha para gerar a análise.</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- COMPARAÇÃO DE DADOS -->
 
-                        <div class="tabs-panel" id="statistics-2">
-                            <section class="comparison" id="statisticsComparisonPanel" hidden>
+                        <div class="tabs-panel" id="comparison-module">
+                            <div class="flex-box-start">
 
-                                <!-- HEADER -->
+                                <!-- CONTROLES DO MODULO -->
 
-                                <div class="flex-box-between">
-                                    <div class="flex-box-start">
-                                        <img src="images/geral-icons/comparison-icon.svg">
-                                        <h3>Comparação de Dados</h3>
+                                <div class="controls">
+                                    <div class="title">
+                                        <h4>Controles de Comparação</h4>
                                     </div>
 
-                                    <p id="statisticsComparisonSummary">Nenhuma planilha carregada.</p>
-                                </div>
+                                    <div class="padding">
+                                        <h4>Localize em:</h4>
 
-                                <!-- CONTEÚDO -->
-
-                                <div class="comparison-body flex-box-start">
-
-                                    <!-- DADOS PARA COMPARAÇÃO -->
-
-                                    <div class="comparison-choice">
-                                        <h4>Dados para Comparar</h4>
-                                        <p>Escolha a coluna e cole os valores para localizar.</p>
-
-                                        <h4>Localize Em:</h4>
-
-                                        <select id="statisticsComparisonColumn" class="standard-select">
+                                        <select id="analysisComparisonColumn" class="standard-select" data-analysis-requires-data disabled>
                                             <option value="">Selecione uma coluna</option>
                                         </select>
 
                                         <div class="conditional-comparison">
                                             <div>
-                                                <h4>Se a Coluna:</h4>
+                                                <h4>Se a coluna:</h4>
                                                 <select id="statisticsComparisonConditionColumn" class="standard-select" style="width: 100%;" disabled>
                                                     <option value="">Nenhuma condição</option>
                                                 </select>
                                             </div>
 
                                             <div>
-                                                <h4>Tiver o Valor:</h4>
+                                                <h4>Tiver o valor:</h4>
                                                 <select id="statisticsComparisonConditionValue" class="standard-select" style="width: 100%;" disabled>
                                                     <option value="">Selecione um valor</option>
                                                 </select>
                                             </div>
                                         </div>
-
-
+                                        
                                         <div class="comparison-textarea-title flex-box-between">
                                             <label for="statisticsComparisonInput">Valores para comparar</label>
                                             <span id="statisticsComparisonLineCount">0 linhas</span>
@@ -2683,17 +2664,17 @@
                                         <div class="textarea-results flex-box-between">
                                             <div class="flex-box-start">
                                                 <img src="images/geral-icons/circle-green-icon.svg">
-                                                <p><span id="statisticsComparisonValidCount">0</span> Válidos</p>
+                                                <p><span id="statisticsComparisonValidCount">0</span> válidos</p>
                                             </div>
 
                                             <div class="flex-box-start">
                                                 <img src="images/geral-icons/circle-yellow-icon.svg">
-                                                <p><span id="statisticsComparisonDuplicateCount">0</span> Repetidos</p>
+                                                <p><span id="statisticsComparisonDuplicateCount">0</span> repetidos</p>
                                             </div>
 
                                             <div class="flex-box-start">
                                                 <img src="images/geral-icons/circle-red-icon.svg">
-                                                <p><span id="statisticsComparisonInvalidCount">0</span> Inválidos</p>
+                                                <p><span id="statisticsComparisonInvalidCount">0</span> inválidos</p>
                                             </div>
                                         </div>
 
@@ -2701,14 +2682,21 @@
                                             <button id="statisticsComparisonClear" class="button" type="button" disabled>Limpar Lista</button>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- RESULTADOS -->
+                                <!-- PREVIA DO MODULO -->
 
-                                    <div class="comparison-results">
+                                <div class="preview">
+                                    <div class="title">
+                                        <h4>Prévia da Comparação</h4>
+                                    </div>
 
-                                        <!-- CARDS -->
+                                    <div class="padding">
+                                        <div class="analysis-empty" id="analysisComparisonEmpty" hidden>
+                                            <h3>Selecione ao menos uma coluna na comparação da planilha para gerar a análise.</h3>
+                                        </div>
 
-                                        <div class="comparison-cards">
+                                        <div class="comparison-cards" id="analysisComparisonCards" hidden>
                                             <div class="card">
                                                 <h3 id="statisticsComparisonFoundTitle">Encontrados</h3>
 
@@ -2746,577 +2734,106 @@
                                             </div>
                                         </div>
 
-                                        <!-- ESTADO INICIAL -->
+                                        <input id="analysisComparisonSearch" type="search" placeholder="Buscar nos resultados" disabled hidden>
 
-                                        <div class="comparison-empty" id="statisticsComparisonEmpty">
-                                            <h4>Esperando por uma comparação...</h4>
-                                        </div>
+                                        <!-- GERE A TABELA AQUI -->
 
-                                        <!-- PRÉVIA DOS RESULTADOS -->
+                                        <div class="analysis-comparison-results" id="analysisComparisonResults" hidden></div>
 
-                                        <div class="comparison-preview" id="statisticsComparisonPreview" hidden>
-                                            <div class="comparison-preview-header flex-box-between">
-                                                <input id="statisticsComparisonSearch" type="search" placeholder="Buscar nos resultados">
-
-                                                <button id="statisticsComparisonExport" class="button" type="button" disabled>Baixar Resultado</button>
-                                            </div>
-
-                                            <div class="comparison-table">
-                                                <div class="statistics-table-container">
-                                                    <table class="statistics-local-table" id="statisticsComparisonTable">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Valor Informado</th>
-                                                                <th>Status</th>
-                                                                <th>Valor da Condição</th>
-                                                                <th>Ocorrências</th>
-                                                                <th>Linhas</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody></tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-
-                        <!-- ANÁLISE PLANILHA -->
-
-                        <div class="tabs-panel" id="statistics-3">
-                            <section id="statisticsQuickAnalysis" hidden>
-
-                                <!-- HEADER -->
-
-                                <div class="module-header flex-box-between">
-                                    <div class="flex-box-start">
-                                        <img src="images/geral-icons/magnifier-icon.svg">
-                                        <h3>Análise da Planilha</h3>
-                                    </div>
-
-                                    <p>Linhas Analisadas - <span id="statisticsTotalRecords">0</span></p>
-                                </div>
-
-                                <!-- CONTEÚDO DO MODULO -->
-
-                                <div id="standard-container">
-                                    <div class="statistics-analysis-top">
-                                        <div id="statisticsAnalysisColumnSelector">
-                                            <div class="flex-box-between">
-
-                                                <div>
-                                                    <h4>Colunas para análise</h4>
-                                                    <p>Escolha quais colunas da planilha devem ser analisadas.</p>
-                                                </div>
-
-                                                <div class="statistics-column-actions">
-                                                    <button id="statisticsSelectAllColumns" class="statistics-analysis-action" type="button">Analisar Tudo</button>
-
-                                                    <button id="statisticsClearColumns" class="statistics-analysis-action" type="button">Limpar Seleção</button>
-                                                </div>
-                                            </div>
-
-                                            <div id="statisticsAnalysisColumns" class="statistics-column-options"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="statistics-summary-cards">
-                                        <div id="statisticsAnalysisCards" style="display: contents;"></div>
-                                    </div>
-
-                                    <p id="statisticsAnalysisEmpty" class="statistics-analysis-empty">Selecione ao menos uma coluna para visualizar a análise.</p>
-
-                                    <div id="statisticsAnalysisResults" class="statistics-summary-tables"></div>
-                                </div>
-                            </section>
-                        </div>
-
-                        <!-- GERAÇÃO DE GRÁFICOS -->
-
-                        <div class="tabs-panel" id="statistics-4">
-                            <section id="statisticsChartPanel" class="charts-panel" hidden>
-
-                                <!-- HEADER -->
-
-                                <div class="flex-box-between">
-
-                                    <div class="flex-box-start">
-                                        <img src="images/geral-icons/statistics-icon.svg" alt="">
-                                        <h3>Montagem de Gráficos</h3>
-                                    </div>
-
-                                    <p id="statisticsChartSummary">Nenhuma planilha carregada.</p>
-                                </div>
-
-                                <!-- CONTEÚDO -->
-
-                                <div class="charts-body flex-box-start">
-
-                                    <!-- CONTROLES -->
-
-                                    <div class="charts-control">
-
-                                        <h4>Configure os Dados</h4>
-                                        <p>Escolha como as informações da planilha serão organizadas e calculadas.</p>
-
-                                        <div class="operation-choice">
-                                            <h4>Agrupar Por</h4>
-
-                                            <select id="statisticsChartCategory" class="standard-select">
-                                                <option value="">Selecione uma coluna</option>
-                                            </select>
-
-                                            <h4>Calcular Usando</h4>
-
-                                            <select id="statisticsChartValue" class="standard-select">
-                                                <option value="">Selecione uma coluna</option>
-                                            </select>
-
-                                            <h4>Tipo de Cálculo</h4>
-
-                                            <select id="statisticsChartOperation" class="standard-select">
-                                                <option value="count">Contar Registros</option>
-                                                <option value="sum">Somar Valores</option>
-                                                <option value="average">Calcular Média</option>
-                                            </select>
-                                        </div>
-
-                                        <hr>
-
-                                        <h4>Tipos de Gráfico</h4>
-
-                                        <div id="statisticsChartTypes" class="types-of-charts flex-box-between">
-
-                                            <div>
-                                                <button type="button" data-chart-type="bar" aria-label="Gráfico de colunas" aria-pressed="true">
-                                                    <img src="images/geral-icons/chart-columns-icon.svg" alt="">
-                                                </button>
-
-                                                <h4>Colunas</h4>
-                                            </div>
-
-                                            <div>
-                                                <button type="button" data-chart-type="line" aria-label="Gráfico de linhas" aria-pressed="false">
-                                                    <img src="images/geral-icons/chart-lines-icon.svg" alt="">
-                                                </button>
-
-                                                <h4>Linhas</h4>
-                                            </div>
-
-                                            <div>
-                                                <button type="button" data-chart-type="pie" aria-label="Gráfico de pizza" aria-pressed="false">
-                                                    <img src="images/geral-icons/chart-pizza-icon.svg" alt="">
-                                                </button>
-
-                                                <h4>Pizza</h4>
-                                            </div>
-
-                                        </div>
-
-                                        <hr>
-
-                                        <h4>Aparência</h4>
-
-                                        <div class="colors-change flex-box-start">
-
-                                            <h4>Cores</h4>
-
-                                            <div id="statisticsChartColors" class="flex-box-start">
-                                                <button type="button" data-chart-color="#ff5533" aria-label="Cor coral" aria-pressed="true"></button>
-                                                <button type="button" data-chart-color="#dfe3e8" aria-label="Cor cinza claro" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#f2a900" aria-label="Cor amarela" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#3478d4" aria-label="Cor azul" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#1abc9c" aria-label="Cor turquesa" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#8e5cd9" aria-label="Cor roxa" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#e85d9e" aria-label="Cor rosa" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#3dbfd9" aria-label="Cor ciano" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#62b44b" aria-label="Cor verde" aria-pressed="false"></button>
-                                                <button type="button" data-chart-color="#9c755f" aria-label="Cor marrom" aria-pressed="false"></button>
-                                            </div>
-                                        </div>
-
-                                        <label class="flex-box-start"><input id="statisticsChartShowValues" type="checkbox" checked><span>Exibir valores nos gráficos barra e linhas.</span></label>
-                                    </div>
-
-                                    <!-- ÁREA DO GRÁFICO -->
-
-                                    <div class="chart-view">
-                                        <div class="flex-box-between">
-                                            <h3>Prévia do Gráfico</h3>
-                                            <div>
-                                                <button class="button" id="statisticsChartDownload" type="button" disabled>Baixar PNG</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="chart-box">
-                                            <div class="chart-empty" id="statisticsChartEmpty">
-                                                <h4>Nenhum gráfico gerado</h4>
-                                                <p>Configure os dados para visualizar o gráfico.</p>
-                                            </div>
-
-                                            <canvas id="statisticsChartCanvas">Seu navegador não suporta gráficos em canvas.</canvas>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </section>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAINEL - DOCUMENTAÇÃO -->
-
-                <div class="tabs-panel" id="docs">
-                    <div class="flex-box-start">
-                        <div>
-                            <div class="tabs-content" data-tabs-content="docs-tabs">
-
-                                <!-- DOCUMENTAÇÃO O QUE É DASHBOARD -->
-
-                                <div class="tabs-panel is-active" id="docs-what-is-it">
-                                    <div class="title">
-                                        <h3>O que é o Dashboard</h3>
-                                    </div>
-
-                                    <div class="padding">
-                                        <div>
-                                            <h4>Visão Geral</h4>
-
-                                            <p>O Dashboard do Inventário é uma ferramenta de apoio à operação criada para reunir planilhas, relatórios e análises em um único ambiente. Ele transforma bases operacionais em indicadores, tabelas e gráficos que facilitam o acompanhamento da janela, a identificação de desvios e a comunicação dos resultados. Seu público-alvo são os analistas de inventário, mas a ferramenta também pode ajudar outras áreas da operação.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Como Usar as Planilhas</h4>
-
-                                            <p>Comece abrindo as configurações do dashboard e preencha os campos de texto com os respectivos links e nomes das planilhas que você utilizará. Feito isso, feche as configurações. No painel Planilhas, você verá, nas opções à esquerda, os nomes das planilhas que definiu. Clique nos nomes e veja que o bloco ao lado carregará automaticamente a planilha. Se quiser abri-la em uma nova guia do navegador, basta clicar na seta localizada ao lado do nome escolhido.</p>
-                                        </div>
-
-                                        <hr>
-                                        
-                                        <div>
-                                            <h4>Como Usar os Relatórios</h4>
-
-                                            <p>Comece preenchendo as informações gerais da janela, como o turno atual, o analista responsável, o planejamento, a quantidade de colaboradores e a capacidade. Depois, acesse o relatório desejado e importe a base de dados correspondente. <br><br>Confira a notificação de importação, revise os dados exibidos na prévia e, se necessário, complete os campos manuais. <br>Os indicadores e gráficos são atualizados automaticamente conforme os dados do relatório são alterados.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Como Usar a Análise</h4>
-
-                                            <p>Comece importando um arquivo exportado do SPX ou uma planilha. Assim que o arquivo for importado, uma prévia será montada com base nos dados presentes nele. Na primeira opção, “Prévia da Planilha”, você terá ferramentas para realizar uma análise, como botões para mostrar ou ocultar colunas, filtros e controle de linhas.
-
-                                                <br><br>
-
-                                            Também há outras opções nas demais guias desse painel, como “Comparação de Dados”, que permite comparar os dados de uma determinada coluna com os valores inseridos. Essa função é muito útil para comparar BRs.
-
-                                                <br><br>
-
-                                            A “Montagem de Gráficos” também pode ser muito útil para criar um gráfico simples para apresentações, como nas reuniões de RMR. Ela permite escolher entre até três tipos de gráficos.
-
-                                            <br><br>
-
-                                            Já a “Análise de Planilha” foi criada para encontrar padrões, identificar os identificadores de cada base de dados, entre outras funções. Recomenda-se utilizar esse recurso principalmente para analisar o arquivo de Parcel, gerado pelo SPX, ou alguma tarefa específica da Gestão Audit.
-
-                                            </p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Recomendações</h4>
-
-                                            <p>Utilize sempre a base oficial mais recente, confirme se o arquivo pertence à janela ou ao mês analisado e compare o volume importado com a fonte antes de divulgar o resultado. Revise também nomes, filtros, períodos e valores preenchidos manualmente.
-
-                                            <br><br>
-
-                                            Para continuar o trabalho em outro momento, salve uma sessão antes de limpar o relatório, atualizar a página ou fechar o navegador.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Peculiaridades</h4>
-
-                                            <p>O importador de cada relatório procura colunas, abas e formatos específicos. Por isso, alterações no nome de um cabeçalho ou na estrutura da planilha podem impedir a leitura correta. Um traço (—) representa uma informação ainda não disponível ou não aplicável e não deve ser interpretado automaticamente como zero. Os resultados apresentados são calculados a partir das bases e dos dados importados.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- DOCUMENTAÇÃO PAINÉIS DO DASHBOARD -->
-
-                                <div class="tabs-panel" id="docs-panels">
-                                    <div class="title">
-                                        <h3>Painéis do Dashboard</h3>
-                                    </div>
-
-                                    <div class="padding">
-                                        <h4>Planilhas</h4>
-
-                                        <p>Reúne atalhos para planilhas operacionais utilizadas no dia a dia. O painel permite visualizar o conteúdo de uma planilha, fazer pequenas alterações e acessar links que direcionam às respectivas fontes externas no Google Planilhas. <br><br>O conteúdo dessas planilhas não é alterado de nenhuma forma pelo dashboard. Ele apenas abre uma janela do Google Planilhas dentro do painel, utilizando o link da planilha em tags HTML conhecidas como &lt;iframe&gt;. Toda alteração nas planilhas é feita por meio da plataforma do Google.
-
-                                        <br><br>
-
-                                        É responsabilidade do usuário do Dashboard do Inventário manter os links de suas respectivas planilhas sempre atualizados. O inventário de cada operação da Shopee possui suas próprias planilhas; por isso, cada operação deve mapear as suas para utilizar este painel.
-                                        </p>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Relatórios</h4>
-
-                                            <p>É o núcleo operacional do dashboard, dividido em seis relatórios: Processamento, Expedição, Planejamento, Avarias e Perdas, Taxa de Perdas e Análise Geral. Cada um possui funções, atribuições e bases de dados específicas para importação, sejam elas do SPX ou de planilhas.
-
-                                            <br><br>
-
-                                            Processamento
-
-                                            <br><br>
-
-                                            Acompanha os descarregamentos de LHs, a mesa de recebimento e o desempenho dos recebedores, permitindo uma análise completa de todo o ciclo do processamento, desde o descarregamento do primeiro LH até o último pacote recebido pela operação, com dados do SPX.
-
-                                            <br><br>
-
-                                            Expedição
-
-                                            <br><br>
-
-                                            Oferece uma análise precisa de todo o processo de expedição. Apresenta o resumo da expedição, o ranking de conferentes, a análise de erros e as ocorrências categorizadas por rua, permitindo analisar detalhadamente o desempenho de cada uma.
-
-                                            <br><br>
-
-                                            Planejamento
-
-                                            <br><br>
-
-                                            Organiza LHs, TOs para segregação, operações na Collection Pool e indicadores de capacidade. Foi desenvolvido para planejar o volume da próxima janela de processamento, apresentando informações precisas sobre a quantidade de pacotes em cada LH e o total de backlog da janela anterior.
-
-                                            <br><br>
-
-                                            Avarias e Perdas
-
-                                            <br><br>Reaproveita a base de dados mantida pelos analistas de inventário para criar painéis visuais, consolidando ocorrências por período, origem, composição, situação e valores. O relatório gera gráficos e organiza os dados sobre avarias e perdas para uma análise mais completa.
-
-                                            <br><br>
-
-                                            Taxa de Perdas
-                                                
-                                            <br><br>
-
-                                            Acompanha a composição mensal de avarias e perdas, permitindo uma análise mais ampla do desempenho do Hub.
-
-                                            <br><br>
-
-                                            Análise Geral
-                                                
-                                            <br><br>
-                                            Combina os principais dados dos demais relatórios em uma visão geral da janela, funcionando como um grande resumo dos acontecimentos daquela janela. O conteúdo é gerado dinamicamente a partir do preenchimento dos relatórios anteriores.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Análises</h4>
-
-                                            <p>Permite explorar arquivos XLSX, XLS e CSV sem depender de um relatório predefinido. É possível visualizar a planilha, controlar as colunas exibidas, comparar dados, aplicar condições, calcular estatísticas e montar gráficos de colunas, linhas ou pizza.
-
-                                            <br><br>
-
-                                            As tabelas e os gráficos gerados também podem ser baixados para uso em outras análises.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Documentação</h4>
-
-                                            <p>Apresenta orientações sobre o funcionamento do dashboard, suas áreas, limitações e cuidados de uso. Este conteúdo acompanha a evolução da ferramenta e deve ser sempre consultado quando houver dúvidas sobre importações, interpretações ou sobre como usar uma função.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- DOCUMENTAÇÃO VERSÕES E FUNCIONALIDADES -->
-
-                                <div class="tabs-panel" id="docs-versions">
-                                    <div class="title">
-                                        <h3>Versões e Funcionalidades</h3>
-                                    </div>
-
-                                    <div class="padding">
-                                        <div>
-                                            <h4>Versão Atual</h4>
-
-                                            <p>Esta documentação descreve o funcionamento completo do Dashboard do Inventário em sua primeira versão, 1.0.<br>Ela reúne os fluxos de Processamento, Expedição, Planejamento, Avarias e Perdas, Taxa de Perdas, Análise Geral e análise livre de planilhas.
-
-                                            <br><br>
-
-                                            Como o projeto continua evoluindo, nomes, regras de cálculo e formatos de arquivos aceitos podem receber ajustes.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Principais Funcionalidades</h4>
-
-                                            <p>Entre as funções disponíveis estão a importação de bases operacionais para o preenchimento automático de relatórios e a atualização de prévias, indicadores e rankings. Também estão disponíveis filtros por período, tabelas analíticas, gráficos interativos, cópia ou download de relatórios e salvamento da sessão de trabalho para uso posterior no próximo turno ou para consultas pontuais de determinadas janelas.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Compatibilidade das Bases</h4>
-
-                                            <p>Os formatos aceitos dependem do painel. Em geral, o dashboard trabalha com arquivos XLSX, XLS e CSV, mas cada importador possui regras próprias para localizar abas, cabeçalhos e colunas. Uma planilha pode abrir normalmente no Excel e, ainda assim, não ser reconhecida se sua estrutura não corresponder ao modelo esperado pela função que você está tentando utilizar.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- DOCUMENTAÇÃO SEGURANÇA E PRIVACIDADE -->
-
-                                <div class="tabs-panel" id="docs-security">
-                                    <div class="title">
-                                        <h3>Segurança e Privacidade</h3>
-                                    </div>
-
-                                    <div class="padding">
-                                        <div>
-                                            <h4>Processamento dos Dados</h4>
-
-                                            <p>As bases importadas nos relatórios e nas análises são lidas pelo navegador para produzir as visualizações exibidas na página. O dashboard não deve ser tratado como um banco de dados permanente. Mantenha os arquivos oficiais em seus locais autorizados, utilize o salvamento de sessão apenas quando precisar preservar o trabalho realizado e mantenha o arquivo salvo somente nas máquinas corporativas da empresa ou nos drives das contas corporativas. O salvamento de sessão é opcional, e o arquivo gerado deve ser tratado como dado potencialmente sensível. Mesmo que sua leitura não seja fácil fora do dashboard, tenha responsabilidade com o arquivo salvo.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Informações Sensíveis</h4>
-
-                                            <p>Importe somente arquivos necessários para a análise e aos quais você tenha acesso autorizado. NÃO compartilhe sessões, imagens ou relatórios que contenham nomes, identificadores, rastreios ou informações operacionais com pessoas que não participem do processo ou que não possuam autorização para consultar tais informações.
-
-                                            <br><br>
-
-                                            O dashboard não envia, salva nem armazena nenhum tipo de informação em servidores externos e também não possui um banco de dados conectado ao sistema. Nenhuma informação sensível da empresa é enviada para outro local que não seja a própria máquina corporativa do usuário, e esses dados somente são baixados para a máquina local por meio das ações do usuário.
-
-                                            <br><br>
-                                            As planilhas exibidas no painel Planilhas são protegidas pelo login do Google. É necessário estar conectado à conta corporativa para visualizar suas informações. O dashboard funciona como se abrisse uma nova guia do navegador dentro do painel Planilhas, limitada à planilha cujo link foi fornecido pelo próprio usuário. O link, por si só, não concede acesso: sem uma conta corporativa autorizada, o conteúdo da planilha permanece indisponível.
-
-                                            </p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Permissões do Navegador</h4>
-
-                                            <p>Algumas ações no dashboard podem solicitar acesso à área de transferência ou iniciar downloads. 
-
-                                            <br><br>
-                                            Essas permissões são usadas para importar dados copiados, copiar relatórios e salvar arquivos gerados. Autorize apenas quando reconhecer a ação executada e confira o conteúdo antes de compartilhá-lo.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Serviços Externos</h4>
-                                            <p>Os atalhos de planilhas abrem serviços externos. Esses serviços possuem suas próprias regras de acesso, armazenamento e privacidade.
-
-                                            <br><br>
-                                            O dashboard não controla as permissões desses serviços. Utilize sempre sua conta corporativa autorizada.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- DOCUMENTAÇÃO DÚVIDAS COMUNS -->
-
-                                <div class="tabs-panel" id="docs-doubts">
-                                    <div class="title">
-                                        <h3>Dúvidas Comuns</h3>
-                                    </div>
-
-                                    <div class="padding">
-                                        <div>
-                                            <h4>Por que meu arquivo não foi importado?</h4>
-
-                                            <p>Verifique o formato do arquivo, o nome da aba, os cabeçalhos obrigatórios e se a base pertence ao relatório selecionado. Leia também a mensagem exibida na barra de notificações, pois ela normalmente indica a coluna, aba ou informação que não foi encontrada.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>O que significa o traço nos indicadores?</h4>
-
-                                            <p>O traço (—) indica que o dashboard ainda não possui dados suficientes para calcular ou exibir aquela informação. Ele pode representar um campo não preenchido, uma base ainda não importada ou um cálculo que não se aplica ao período analisado.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Por que alguns campos começam desativados?</h4>
-
-                                            <p>Determinados controles dependem da importação ou da seleção de dados anteriores. Eles são habilitados automaticamente quando o dashboard identifica as informações necessárias, evitando preenchimentos incompatíveis com a base em uso.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Os dados podem ser recuperados depois de fechar a página?</h4>
-
-                                            <p>Apenas se a sessão tiver sido salva antes do fechamento. A atualização da página, a limpeza de um relatório ou o encerramento do navegador podem descartar informações que ainda não foram exportadas. Salve a sessão sempre que precisar interromper e continuar o trabalho.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Por que os números mudam quando seleciono outro período?</h4>
-
-                                            <p>Nos painéis com filtros temporais, a seleção atualiza os cards, gráficos e tabelas relacionados ao mesmo conjunto de dados. Essa sincronização permite comparar períodos sem misturar informações de intervalos diferentes.</p>
-                                        </div>
-
-                                        <hr>
-
-                                        <div>
-                                            <h4>Qual o contato para suporte?</h4>
-
-                                            <p>Você pode falar diretamente com Lucas Campos Junqueira por meio do <a class="link" href="https://chat.whatsapp.com/Kr5rdRRfJjiKbzHhPK3geA">WhatsApp de contato ↗</a>.
-                                            
-                                            <br>
-                                            <br>
-
-                                            Ou por e-mail: lukejunqueira@hotmail.com ou the.luke.junqueira@gmail.com
-
-                                            </p>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <ul class="tabs" data-tabs id="docs-tabs">
-                            <li class="tabs-title is-active">
-                                <a href="#docs-what-is-it">O que é o Dashboard</a>
-                            </li>
+                <!-- PAINEL FILTRAGEM -->
 
-                            <li class="tabs-title">
-                                <a href="#docs-panels">Painéis do Dashboard</a>
-                            </li>
+                <div class="tabs-panel" id="filter">
+                    <div class="flex-box-start">
+                        <div class="warning" id="filterNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                            <div class="flex-box-start">
+                                <img id="filterNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="" aria-hidden="true">
 
-                            <li class="tabs-title">
-                                <a href="#docs-versions">Versões e Funcionalidades</a>
-                            </li>
+                                <h4 id="filterNotificationText">Importe o relatório final do seu respectivo hub ou o rastreio de pedidos para montar a base de dados filtrada.</h4>
+                            </div>
+                        </div>
 
-                            <li class="tabs-title">
-                                <a href="#docs-security">Segurança e Privacidade</a>
-                            </li>
+                        <div class="report-actions">
+                            <button id="filterCopyButton" type="button" title="Copia os dados filtrados" aria-label="Copia os dados filtrados" disabled>
+                                <img src="images/geral-icons/copy-icon.svg" alt="" aria-hidden="true">
+                            </button>
 
-                            <li class="tabs-title">
-                                <a href="#docs-doubts">Dúvidas Comuns</a>
-                            </li>
-                        </ul>
+                            <button id="filterSaveButton" type="button" title="Salvar arquivo filtrado em CSV" aria-label="Salvar arquivo filtrado em CSV" disabled>
+                                <img src="images/geral-icons/save-icon.svg" alt="" aria-hidden="true">
+                            </button>
+
+                            <button id="filterImportButton" type="button" title="Importar base de dados" aria-label="Importar base de dados">
+                                <img src="images/geral-icons/import-icon.svg" alt="" aria-hidden="true">
+                            </button>
+
+                            <input id="filterFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+
+                            <button id="filterClearButton" type="button" title="Descartar arquivo importado" aria-label="Descartar arquivo importado" disabled>
+                                <img src="images/geral-icons/trash-basket-icon.svg" alt="" aria-hidden="true">
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex-box-start">
+
+                        <!-- CONTROLES -->
+
+                        <div class="filter-controls">
+                            <div class="title">
+                                <h4>Filtragem de Dados</h4>
+                            </div>
+
+                            <div class="padding">
+                                <label class="x" for="filterPurpose">Finalidade?</label>
+
+                                <select class="standard-select" id="filterPurpose" style="width: 100%;" disabled>
+                                    <option value="">Selecione uma finalidade</option>
+                                    <option value="export-analysis">Export Análises</option>
+                                    <option value="export-damage">Export Avaria</option>
+                                    <option value="not-listed" disabled>Não Listada (em breve)</option>
+                                </select>
+
+                                <div class="comparison-textarea-title flex-box-between">
+                                    <label for="filterValues">Filtrar linhas por valores</label>
+                                    <span id="filterLineCount">0 linhas</span>
+                                </div>
+
+                                <textarea id="filterValues" rows="14" placeholder="Cole um valor por linha." aria-describedby="filterLineCount" disabled></textarea>
+
+                                <div class="filter-submit">
+                                    <button class="button" id="filterApplyButton" type="button" disabled>Filtrar Linhas</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PREVIA -->
+
+                        <div class="filter-preview">
+                            <div class="title">
+                                <h4>Prévia da Filtragem</h4>
+                            </div>
+
+                            <div class="padding filter-preview-content">
+                                <p id="filterPreviewEmpty">A prévia será exibida depois que a filtragem for aplicada.</p>
+
+                                <div id="filterPreviewResult" hidden>
+                                    <p id="filterPreviewSummary"></p>
+
+                                    <div>
+                                        <table class="filter-table" id="filterPreviewTable">
+                                            <thead></thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3326,6 +2843,14 @@
 
         <footer>
             <div>
+                <div>
+                    <img src="images/geral-icons/docs-icon.svg">
+
+                    <button type="button" class="external-link" data-url="https://combatplatypus.github.io/dashboard/docs.html">
+                        Documentação ↗
+                    </button>
+                </div>
+
                 <div>
                     <img src="images/links-icons/box-icon.svg">
 
@@ -3345,7 +2870,7 @@
                 <div>
                     <img src="images/links-icons/forms-icon.svg">
                     <button id="footerReverseFormLink" type="button" class="external-link" data-url="" disabled>
-                        Forms da Reversa ↗
+                        Forms Reversa ↗
                     </button>
                 </div>
 
@@ -3353,7 +2878,7 @@
                     <img src="images/links-icons/recovery-icon.svg">
 
                     <button id="footerPackRecoveryLink" type="button" class="external-link" data-url="" disabled>
-                        Pack Recovery AppSheet ↗
+                        Pack Recovery ↗
                     </button>
                 </div>
 
@@ -3361,7 +2886,7 @@
                     <img src="images/links-icons/avarias-icon.svg">
 
                     <button id="footerDamageAppLink" type="button" class="external-link" data-url="" disabled>
-                        Avarias AppSheet ↗
+                        App das Avarias ↗
                     </button>
                 </div>
 
@@ -3369,7 +2894,7 @@
                     <img src="images/links-icons/coleta-icon.svg">
 
                     <button id="footerCollectionAppLink" type="button" class="external-link" data-url="" disabled>
-                        Coletas AppSheet ➚
+                        App das Coletas ➚
                     </button>
                 </div>
             </div>
@@ -3536,13 +3061,11 @@
 
         <!-- JS - PAINEL DE ANÁLISE -->  
 
-        <script src="js/data-analysis/core.js" defer></script>
-        <script src="js/data-analysis/import.js" defer></script>
-        <script src="js/data-analysis/table.js" defer></script>
-        <script src="js/data-analysis/analysis.js" defer></script>
-        <script src="js/data-analysis/charts.js" defer></script>
-        <script src="js/data-analysis/comparison.js" defer></script>
-        <script src="js/data-analysis/init.js" defer></script>
+        <script type="module" src="js/data-analysis/index.js"></script>
+
+        <!-- JS - PAINEL DE FILTRAGEM -->
+
+        <script type="module" src="js/filter/init.js"></script>
 
         <!-- AJUSTES TABS -->
 

@@ -29,7 +29,7 @@ const SPX_LINEHAUL_IMPORT_NOTIFICATION =
         type: "idle",
 
         message:
-            "No SPX, acesse Transporte Principal / Viagens de Carga Direta, escolha Inbound e aperte Crtl A, depois Crtl C, então volte aqui e clique em importar.",
+            "No SPX, Transporte Principal / Viagens de Carga, escolha Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.",
     });
 
 const DAMAGE_AND_LOSSES_IMPORT_NOTIFICATION =
@@ -37,7 +37,7 @@ const DAMAGE_AND_LOSSES_IMPORT_NOTIFICATION =
         type: "idle",
 
         message:
-            "Importe uma planilha com a aba Histórico de Avarias e Histórico de Análises, seguindo exatamente o modelo fornecido no footer do dashboard.",
+            "Importe a planilha de Avarias e Perdas com as abas Histórico de Avarias, Histórico de Análises e Taxa de Perdas.",
     });
 
 const LOSSES_RATE_IMPORT_NOTIFICATION =
@@ -45,7 +45,7 @@ const LOSSES_RATE_IMPORT_NOTIFICATION =
         type: "idle",
 
         message:
-            "Importe uma planilha com a aba Taxa de Perdas, seguindo exatamente o modelo fornecido no footer do dashboard.",
+            "Importe a planilha de Avarias e Perdas com a aba Taxa de Perdas; os dois relatórios serão atualizados.",
     });
 
 const EXPEDITION_IMPORT_NOTIFICATION =
@@ -53,7 +53,7 @@ const EXPEDITION_IMPORT_NOTIFICATION =
         type: "idle",
 
         message:
-            "No SPX, acesse Gestão Audit / Conferencia: LM Hub AT/TO, escolha uma tarefa para exportar, então volte aqui e clique em importar.",
+            "No SPX, acesse Gestão Audit / Conferência: LM Hub AT/TO, escolha uma tarefa para exportar e, em seguida, volte aqui e clique em importar.",
     });
 
 const OVERALL_ANALYSIS_NOTIFICATION =
@@ -61,7 +61,7 @@ const OVERALL_ANALYSIS_NOTIFICATION =
         type: "idle",
 
         message:
-            "Preencha os relatórios para completar a análise geral, tudo aqui vai se atualizar automaticamente.",
+            "Preencha os relatórios para completar a análise geral. Todas as informações serão atualizadas automaticamente.",
     });
 
 const DEFAULT_REPORT_NOTIFICATIONS =
