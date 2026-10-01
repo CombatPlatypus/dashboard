@@ -49,16 +49,41 @@ const FILTER_PURPOSES =
                         "Shipment_id",
                         "binding_entity",
                         "AT_Number",
-                        "valor_produto",
                         "driver_id",
                         "motorista",
                         "item_names",
                     ]),
 
-                columnFormatters:
+                exportIgnoredColumns:
+                    Object.freeze([
+                        "Shipment_id",
+                    ]),
+
+                includeCsvHeaders:
+                    false,
+
+                preserveUnmatchedRows:
+                    true,
+
+                keepFirstOccurrence:
+                    true,
+
+                previewColumnLabels:
                     Object.freeze({
-                        valor_produto:
-                            formatDecimalWithComma,
+                        Shipment_id:
+                            "Código BR",
+
+                        binding_entity:
+                            "Rota",
+
+                        AT_Number:
+                            "AT",
+
+                        driver_id:
+                            "ID do Motorista",
+
+                        motorista:
+                            "Motorista",
                     }),
 
                 previewHiddenColumns:
@@ -85,6 +110,11 @@ const FILTER_PURPOSES =
                         "Current Station",
                     ]),
 
+                exportIgnoredColumns:
+                    Object.freeze([
+                        "Order ID",
+                    ]),
+
                 requiredColumns:
                     Object.freeze([
                         "Order ID",
@@ -95,6 +125,18 @@ const FILTER_PURPOSES =
 
                 oldestByColumn:
                     "Current Station Received Time",
+
+                previewColumnLabels:
+                    Object.freeze({
+                        "Order ID":
+                            "Código BR",
+
+                        Status:
+                            "Status Inicial",
+
+                        "Current Station":
+                            "Estação Inicial",
+                    }),
             }),
     });
 
@@ -215,17 +257,6 @@ function formatCellValue(value) {
     }
 
     return String(value);
-}
-
-function formatDecimalWithComma(value) {
-    const formattedValue =
-        formatCellValue(value)
-            .trim();
-
-    return formattedValue.replace(
-        /^([+-]?\d+)\.(\d+)$/,
-        "$1,$2",
-    );
 }
 
 function formatPurposeColumnValue(
@@ -855,7 +886,8 @@ function createTableCell(
 
 function renderPreview(
     purpose,
-    resultRows,
+    previewRows,
+    matchedRowCount,
     unmatchedValues,
 ) {
     const tableHead =
@@ -908,7 +940,11 @@ function renderPreview(
             headerRow.appendChild(
                 createTableCell(
                     "th",
-                    purpose.columns[
+                    purpose.previewColumnLabels?.[
+                        purpose.columns[
+                            columnIndex
+                        ]
+                    ] ?? purpose.columns[
                         columnIndex
                     ],
                 ),
@@ -923,7 +959,7 @@ function renderPreview(
     const bodyFragment =
         document.createDocumentFragment();
 
-    if (resultRows.length === 0) {
+    if (previewRows.length === 0) {
         const emptyRow =
             document.createElement("tr");
 
@@ -948,7 +984,7 @@ function renderPreview(
             emptyRow,
         );
     } else {
-        resultRows.forEach(
+        previewRows.forEach(
             function (row) {
                 const tableRow =
                     document.createElement(
@@ -982,7 +1018,7 @@ function renderPreview(
     );
 
     const rowLabel =
-        resultRows.length === 1
+        matchedRowCount === 1
             ? "linha encontrada"
             : "linhas encontradas";
 
@@ -997,7 +1033,7 @@ function renderPreview(
             : "";
 
     elements.previewSummary.textContent =
-        `${resultRows.length} ${rowLabel} na aba "${filterState.sourceSheetName}".${unmatchedMessage}`;
+        `${matchedRowCount} ${rowLabel} na aba "${filterState.sourceSheetName}".${unmatchedMessage}`;
 
     elements.previewEmpty.hidden = true;
     elements.previewResult.hidden =
@@ -1123,20 +1159,26 @@ function filterRows() {
 
             const shouldReplace =
                 !selectedResult ||
-                oldestColumnIndex ===
-                    undefined ||
                 (
-                    Number.isFinite(
-                        priorityTimestamp,
-                    ) &&
+                    purpose.keepFirstOccurrence !==
+                        true &&
                     (
-                        !Number.isFinite(
-                            selectedResult
-                                .priorityTimestamp,
-                        ) ||
-                        priorityTimestamp <
-                            selectedResult
-                                .priorityTimestamp
+                        oldestColumnIndex ===
+                            undefined ||
+                        (
+                            Number.isFinite(
+                                priorityTimestamp,
+                            ) &&
+                            (
+                                !Number.isFinite(
+                                    selectedResult
+                                        .priorityTimestamp,
+                                ) ||
+                                priorityTimestamp <
+                                    selectedResult
+                                        .priorityTimestamp
+                            )
+                        )
                     )
                 );
 
@@ -1155,11 +1197,12 @@ function filterRows() {
     /*
      * Mantém uma única linha para cada valor colado.
      * Finalidades com oldestByColumn usam a data mais
-     * antiga; as demais mantêm a última ocorrência.
+     * antiga; keepFirstOccurrence mantém a primeira
+     * linha da planilha; as demais mantêm a última.
      * A montagem abaixo preserva a ordem da textarea.
      */
 
-    const resultRows =
+    const orderedResultRows =
         uniqueValues
             .map(
                 function (value) {
@@ -1171,8 +1214,40 @@ function filterRows() {
                         )
                         ?.resultRow;
                 },
+            );
+
+    const matchedRows =
+        orderedResultRows.filter(
+            Boolean,
+        );
+
+    const previewRows =
+        purpose.preserveUnmatchedRows
+            ? orderedResultRows.map(
+                function (
+                    resultRow,
+                    valueIndex,
+                ) {
+                    if (resultRow) {
+                        return resultRow;
+                    }
+
+                    return purpose.columns.map(
+                        function (column) {
+                            return normalizeText(
+                                column,
+                            ) === normalizeText(
+                                purpose.filterColumn,
+                            )
+                                ? uniqueValues[
+                                    valueIndex
+                                ]
+                                : "-";
+                        },
+                    );
+                },
             )
-            .filter(Boolean);
+            : matchedRows;
 
     const matchedValues =
         new Set(
@@ -1189,19 +1264,22 @@ function filterRows() {
         );
 
     filterState.resultRows =
-        resultRows;
+        purpose.preserveUnmatchedRows
+            ? previewRows
+            : matchedRows;
 
     filterState.unmatchedValues =
         unmatchedValues;
 
     renderPreview(
         purpose,
-        resultRows,
+        previewRows,
+        matchedRows.length,
         unmatchedValues,
     );
 
     const hasResults =
-        resultRows.length > 0;
+        filterState.resultRows.length > 0;
 
     elements.copyButton.disabled =
         !hasResults;
@@ -1218,7 +1296,7 @@ function filterRows() {
             ? ` ${duplicateCount} valor(es) repetido(s) foram considerados uma única vez.`
             : "";
 
-    if (resultRows.length === 0) {
+    if (matchedRows.length === 0) {
         setNotification(
             "Nenhum valor informado foi encontrado no arquivo.",
             "warning",
@@ -1233,7 +1311,7 @@ function filterRows() {
             : "";
 
     setNotification(
-        `Filtragem concluída com ${resultRows.length} linha(s).${unmatchedMessage}${duplicateMessage}`,
+        `Filtragem concluída com ${matchedRows.length} linha(s).${unmatchedMessage}${duplicateMessage}`,
         unmatchedValues.length > 0
             ? "warning"
             : "success",
@@ -1286,13 +1364,64 @@ function createFilteredWorksheet(
     purpose,
     includeHeaders = true,
 ) {
+    const ignoredExportColumns =
+        new Set(
+            (
+                purpose.exportIgnoredColumns ??
+                []
+            ).map(
+                normalizeText,
+            ),
+        );
+
+    const exportColumnIndexes =
+        purpose.columns.reduce(
+            function (
+                columnIndexes,
+                column,
+                columnIndex,
+            ) {
+                if (
+                    !ignoredExportColumns.has(
+                        normalizeText(
+                            column,
+                        ),
+                    )
+                ) {
+                    columnIndexes.push(
+                        columnIndex,
+                    );
+                }
+
+                return columnIndexes;
+            },
+            [],
+        );
+
+    const exportRows =
+        filterState.resultRows.map(
+            function (row) {
+                return exportColumnIndexes.map(
+                    function (columnIndex) {
+                        return row[columnIndex];
+                    },
+                );
+            },
+        );
+
     const matrix =
         includeHeaders
             ? [
-                [...purpose.columns],
-                ...filterState.resultRows,
+                exportColumnIndexes.map(
+                    function (columnIndex) {
+                        return purpose.columns[
+                            columnIndex
+                        ];
+                    },
+                ),
+                ...exportRows,
             ]
-            : filterState.resultRows;
+            : exportRows;
 
     return window.XLSX.utils
         .aoa_to_sheet(
@@ -1401,6 +1530,8 @@ function saveFilteredFile() {
     const worksheet =
         createFilteredWorksheet(
             purpose,
+            purpose.includeCsvHeaders !==
+                false,
         );
 
     const csvContent =
