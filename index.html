@@ -1504,7 +1504,7 @@
                                         <img id="damageAndLossesNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="damageAndLossesNotificationText">
-                                            Importe a planilha de Avarias e Perdas com as abas Histórico de Avarias, Histórico de Análises e Taxa de Perdas.
+                                            Importe a planilha de Avarias e Perdas.
                                         </h4>
                                     </div>
                                 </div>
@@ -1821,7 +1821,7 @@
                                             </div>
 
                                             <div class="damage-and-losses-charts flex-box-start">
-                                                <div class="horizontal-bars-chart" style="flex: 1 1 0;">
+                                                <div class="horizontal-bars-chart">
                                                     <div class="chart-title">
                                                         <h4>Pack Recovery</h4>
                                                     </div>
@@ -1831,6 +1831,15 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="horizontal-bars-chart">
+                                                    <div class="chart-title">
+                                                        <h4>Pacotes Retornados x Perdidos x Em Análise</h4>
+                                                    </div>
+
+                                                    <div id="lossesReturnedComparisonChartContainer" class="losses-horizontal-chart-canvas">
+                                                        <canvas id="lossesReturnedComparisonChart" role="img" aria-label="Pacotes retornados, perdidos e em análise"></canvas>
+                                                    </div>
+                                                </div>
                                             </div>
                                             
                                             <table id="lossesTraditionalAnalysisTable">
@@ -1876,8 +1885,8 @@
                                                 </tbody>
 
                                                 <tbody>
-                                                    <tr data-losses-analysis-field="savedAwaitingTicket">
-                                                        <th scope="row">Salvos Aguardando Ticket</th>
+                                                    <tr data-losses-analysis-field="returnedPackages">
+                                                        <th scope="row">Pacotes Retornados</th>
                                                         <td>-</td>
                                                         <td>-</td>
                                                         <td>-</td>
@@ -1888,18 +1897,6 @@
                                                     </tr>
                                                 </tbody>
 
-                                                <tbody>
-                                                    <tr data-losses-analysis-field="emptyAwaitingTicket">
-                                                        <th scope="row">Vazios Aguardando Ticket</th>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                    </tr>
-                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -2379,31 +2376,6 @@
                                                 </tr>
                                             </tbody>
 
-                                            <tbody hidden>
-                                                <tr data-overall-damage-losses-field="savedAwaitingTicket">
-                                                    <th scope="row">Salvos Aguardando Ticket</th>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                </tr>
-                                            </tbody>
-
-                                            <tbody hidden>
-                                                <tr data-overall-damage-losses-field="emptyAwaitingTicket">
-                                                    <th scope="row">Vazios Aguardando Ticket</th>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
-                                                </tr>
-                                            </tbody>
                                         </table>
                                     </div>
                                 </div>
