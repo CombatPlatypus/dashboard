@@ -30,7 +30,7 @@
         <link rel="stylesheet" href="css/data-analysis.css">
         <link rel="stylesheet" href="css/docs.css">
         <link rel="stylesheet" href="css/filter.css">
-    </head>	
+    </head>
 
     <!-- CONTEÚDO DA PÁGINA -->
 
@@ -48,7 +48,7 @@
 
                     <div>
                         <h3>Dashboard do Inventário</h3>
-                        <p><i>Versão 1.1 - Operações Last Mile</i></p>
+                        <p><i>Versão 1.2 - Operações Last Mile</i></p>
                     </div>
                 </div>
 
@@ -196,51 +196,31 @@
                     <div class="flex-box-start">
                         <ul class="tabs" data-tabs id="report-choice">
                             <li class="tabs-title is-active">
-                                <a href="#receipt">
-                                    <div class="flex-box-full-center">
-                                        <h4>Processamento</h4>
-                                    </div>
-                                </a>
+                                <a href="#receipt">Processamento</a>
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#expedition">
-                                    <div class="flex-box-full-center">
-                                        <h4>Expedição</h4>
-                                    </div>
-                                </a>
+                                <a href="#expedition">Expedição</a>
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#planning">
-                                    <div class="flex-box-full-center">
-                                        <h4>Planejamento</h4>
-                                    </div>
-                                </a>
+                                <a href="#planning">Planejamento</a>
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#damage-and-losses">
-                                    <div class="flex-box-full-center">
-                                        <h4>Avarias e Perdas</h4>
-                                    </div>
-                                </a>
+                                <a href="#damage-and-losses">Avarias e Perdas</a>
                             </li>
 
                             <li class="tabs-title">
-                                <a href="#losses-rate">
-                                    <div class="flex-box-full-center">
-                                        <h4>Taxa de Perdas</h4>
-                                    </div>
-                                </a>
+                                <a href="#losses-rate">Taxa de Perdas</a>
                             </li> 
 
                             <li class="tabs-title">
-                                <a href="#overall-analysis">
-                                    <div class="flex-box-full-center">
-                                        <h4>Análise Geral</h4>
-                                    </div>
-                                </a>
+                                <a href="#parcel">Parcel Sweeper</a>
+                            </li> 
+
+                            <li class="tabs-title">
+                                <a href="#overall-analysis">Análise Geral</a>
                             </li>
                         </ul>
                     </div>
@@ -327,6 +307,7 @@
                                                         <tr>
                                                             <th>Janela</th>
                                                             <th>Volume Esperado</th>
+                                                            <th id="receiptLinehaulPreviewVolumeLabel">Volume Restante</th>
                                                             <th>Volume Descarregado</th>
                                                             <th>LHs Descarregados</th>
                                                         </tr>
@@ -336,6 +317,7 @@
                                                         <tr>
                                                             <td id="receiptLinehaulPreviewWindow">—</td>
                                                             <td id="receiptLinehaulPreviewExpected">—</td>
+                                                            <td id="receiptLinehaulPreviewRemainingVolume">—</td>
                                                             <td id="receiptLinehaulPreviewUnloadedVolume">—</td>
                                                             <td id="receiptLinehaulPreviewUnloadedCount">—</td>
                                                         </tr>
@@ -1618,26 +1600,24 @@
                                                 <div class="doughnut-chart">
                                                     <h4>Composição das Avarias</h4>
 
-                                                    <div class="flex-box-start">
-                                                        <div>
-                                                            <canvas id="damageCompositionChart" role="img" aria-label="Composição das avarias entre sólidas, líquidas e de vidro"></canvas>
+                                                    <div>
+                                                        <canvas id="damageCompositionChart" role="img" aria-label="Composição das avarias entre sólidas, líquidas e de vidro"></canvas>
+                                                    </div>
+
+                                                    <div>
+                                                        <div class="type">
+                                                            <div style="background-color: #F44336;"></div>
+                                                            <p>Avarias Sólidas <span id="damageSolidValue">—</span></p>
                                                         </div>
 
-                                                        <div>
-                                                            <div class="type">
-                                                                <div style="background-color: #F44336;"></div>
-                                                                <p>Avarias Sólidas <span id="damageSolidValue">—</span></p>
-                                                            </div>
+                                                        <div class="type">
+                                                            <div style="background-color: #ff9800;"></div>
+                                                            <p>Avarias Líquidas <span id="damageLiquidValue">—</span></p>
+                                                        </div>
 
-                                                            <div class="type">
-                                                                <div style="background-color: #ff9800;"></div>
-                                                                <p>Avarias Líquidas <span id="damageLiquidValue">—</span></p>
-                                                            </div>
-
-                                                            <div class="type">
-                                                                <div style="background-color: #3F51B5;"></div>
-                                                                <p>Avarias de Vidro <span id="damageGlassValue">—</span></p>
-                                                            </div>
+                                                        <div class="type">
+                                                            <div style="background-color: #3F51B5;"></div>
+                                                            <p>Avarias de Vidro <span id="damageGlassValue">—</span></p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2005,6 +1985,23 @@
                                                         Seu navegador não suporta gráficos em canvas.
                                                     </canvas>
                                                 </div>
+
+                                                <div>
+                                                    <div class="type">
+                                                        <div style="background-color: #8b8d91;"></div>
+                                                        <p>Possíveis Perdas - <span id="lossesRateCompositionPossibleLosses">—</span></p>
+                                                    </div>
+
+                                                    <div class="type">
+                                                        <div style="background-color: #d9534f;"></div>
+                                                        <p>Lost - <span id="lossesRateCompositionLost">—</span></p>
+                                                    </div>
+
+                                                    <div class="type">
+                                                        <div style="background-color: #f0ad4e;"></div>
+                                                        <p>Avaria - <span id="lossesRateCompositionDamage">—</span></p>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="line-chart">
@@ -2015,6 +2012,297 @@
                                                         Seu navegador não suporta gráficos em canvas.
                                                     </canvas>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RELATÓRIO DO PARCEL -->
+
+                        <div class="tabs-panel" id="parcel">
+
+                            <!-- BARRA DE NOTIFICAÇÕES E BOTÕES DE AÇÃO -->
+
+                            <div class="flex-box-start">
+                                <div class="warning" id="parcelNotification" role="status" aria-live="polite" aria-atomic="true" data-notification-type="idle">
+                                    <div class="flex-box-start">
+                                        <img id="parcelNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
+
+                                        <h4 id="parcelNotificationText">
+                                            No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo parcel para exportar e, em seguida, volte aqui e clique em importar.
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="report-actions">
+                                    <button id="parcelCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório do parcel; segure por 1,5 segundo para baixar">
+                                        <img src="images/geral-icons/image-icon.svg" alt="">
+                                    </button>
+
+                                    <button id="parcelImportActionButton" type="button" title="Importar dados do Parcel Sweeper" aria-label="Importar arquivo do Parcel Sweeper">
+                                        <img src="images/geral-icons/import-icon.svg" alt="">
+                                    </button>
+
+                                    <input id="parcelFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
+
+                                    <button id="parcelClearReportButton" type="button" title="Limpar relatório" aria-label="Limpar relatório do parcel">
+                                        <img src="images/geral-icons/trash-basket-icon.svg" alt="">
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- CONTEÚDO DO RELATÓRIO -->
+
+                            <div class="preview">
+                                <div class="preview-style" id="parcelPreview">
+                                    <div class="title">
+                                        <h2>Parcel Sweeper</h2>
+                                    </div> 
+
+                                    <!-- CARDS PRINCIAPAIS -->
+
+                                    <div class="cards">
+                                        <div>
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/barcode-scanner-icon.svg">
+                                                <h4 id="parcelTotalScanned">—</h4>
+                                            </div>
+
+                                            <p>Total de Bipado</p>
+                                        </div>
+
+                                        <div>
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/box-icon.svg">
+                                                <h4 id="parcelBacklogTotal">—</h4>
+                                            </div>
+
+                                            <p>Pacotes Backlog</p>
+                                        </div>
+
+                                        <div>
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/error-icon.svg">
+                                                <h4 id="parcelExceptionTotal">—</h4>
+                                            </div>
+
+                                            <p>Pacotes Exception</p>
+                                        </div>
+
+                                        <div>
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/missorted-icon.svg">
+                                                <h4 id="parcelMissortedTotal">—</h4>
+                                            </div>
+
+                                            <p>Pacotes Missorted</p>
+                                        </div>
+
+                                        <div>
+                                            <div class="flex-box-start">
+                                                <img src="images/geral-icons/alert-icon.svg">
+                                                <h4 id="parcelUnscannedTotal">—</h4>
+                                            </div>
+
+                                            <p>Não Escaneados</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- GRAFICO DE COBERTURA E TABELA DE OPERADORES -->
+
+                                    <div class="distribution flex-box-start">
+                                        <div class="doughnut-chart">
+                                            <h3>Cobertura da Varredura</h3>
+
+                                            <div>
+                                                <canvas id="parcelCoverageChart" role="img" aria-label="Cobertura da varredura entre pacotes escaneados e não escaneados"></canvas>
+                                            </div>
+
+                                            <div>
+                                                <div class="type">
+                                                    <div style="background-color: #3F51B5;"></div>
+                                                    <p>Escaneados <span id="parcelCoverageScanned">—</span></p>
+                                                </div>
+
+                                                <div class="type">
+                                                    <div style="background-color: #e4e6eb;"></div>
+                                                    <p>Não Escaneados <span id="parcelCoverageUnscanned">—</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="distribution-by-operator">
+                                            <table>
+                                                <caption>Distribuição por Operador</caption>
+
+                                                <thead>
+                                                    <tr>
+                                                        <th>Operador</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Percentual</th>
+                                                        <th>Volumoso?</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="parcelOperatorDistributionBody">
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                    <tr class="empty-row">
+                                                        <td>-</td><td>-</td><td>-</td><td>-</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- BOTÕES DO BACKLOG -->
+
+                                    <div class="data-selector" id="parcelPackageFilter" role="tablist" aria-label="Filtrar pacotes por tipo de contagem">
+                                        <button class="is-active" type="button" role="tab" aria-selected="true" data-parcel-filter="all" disabled>
+                                            <span>Todos os Pacotes</span>
+                                        </button>
+
+                                        <button type="button" role="tab" aria-selected="false" data-parcel-filter="backlog" disabled>
+                                            <span>Backlog</span>
+                                        </button>
+
+                                        <button type="button" role="tab" aria-selected="false" data-parcel-filter="exception" disabled>
+                                            <span>Exception</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- LISTA DE PACOTES BIPADOS POR OPERADOR -->
+
+                                    <div class="distribution-tables flex-box-start">
+                                        <div>
+                                            <table id="parcelCommonPackagesTable">
+                                                <caption>
+                                                    <div class="flex-box-start">
+
+                                                        <span>Pacotes Comuns</span>
+
+                                                        <button id="parcelCopyCommonPackagesButton" type="button" data-parcel-copy="common" title="Copiar BRs de pacotes comuns" aria-label="Copiar BRs de pacotes comuns" disabled>
+                                                            <img src="images/geral-icons/copy-mini-icon.svg" alt="">
+                                                        </button>
+                                                    </div>
+                                                </caption>
+
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" aria-sort="none">
+                                                            <button class="parcel-sort-button" type="button" data-parcel-sort="operator" aria-label="Ordenar pela coluna Operador">
+                                                                <span>Operador</span><span class="parcel-sort-indicator" aria-hidden="true">↕</span>
+                                                            </button>
+                                                        </th>
+                                                        <th scope="col" aria-sort="none">
+                                                            <button class="parcel-sort-button" type="button" data-parcel-sort="trackingNumber" aria-label="Ordenar pela coluna Código BR">
+                                                                <span>Código BR</span><span class="parcel-sort-indicator" aria-hidden="true">↕</span>
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="parcelCommonPackagesBody">
+                                                    <tr class="empty-row">
+                                                        <td colspan="2">—</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div>
+                                            <table id="parcelBulkyPackagesTable">
+                                                <caption>
+                                                    <div class="flex-box-start">
+                                                        <span>Pacotes Volumosos</span>
+                                                        
+                                                        <button id="parcelCopyBulkyPackagesButton" type="button" data-parcel-copy="bulky" title="Copiar BRs de pacotes volumosos" aria-label="Copiar BRs de pacotes volumosos" disabled>
+                                                            <img src="images/geral-icons/copy-mini-icon.svg" alt="">
+                                                        </button>
+                                                    </div>
+                                                </caption>
+
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" aria-sort="none">
+                                                            <button class="parcel-sort-button" type="button" data-parcel-sort="operator" aria-label="Ordenar pela coluna Operador">
+                                                                <span>Operador</span><span class="parcel-sort-indicator" aria-hidden="true">↕</span>
+                                                            </button>
+                                                        </th>
+                                                        <th scope="col" aria-sort="none">
+                                                            <button class="parcel-sort-button" type="button" data-parcel-sort="trackingNumber" aria-label="Ordenar pela coluna Código BR">
+                                                                <span>Código BR</span><span class="parcel-sort-indicator" aria-hidden="true">↕</span>
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="parcelBulkyPackagesBody">
+                                                    <tr class="empty-row">
+                                                        <td colspan="2">—</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- GRAFICO DE AGING -->
+
+                                    <div class="vertical-bars-chart">
+                                        <div class="chart-title">
+                                            <div class="flex-box-between">
+                                                <h4>Distribuição por Aging</h4>
+                                            </div>
+                                        </div>
+
+                                        <div id="parcelAgingChartContainer">
+                                            <div>
+                                                <canvas id="parcelAgingChart" role="img" aria-label="Quantidade de pacotes escaneados por faixa de aging"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- GRÁFICOS DE FINAL STATUS E NEXT STEP ACTION -->
+
+                                    <div class="flex-box-start" id="parcelStatusCharts">
+                                        <div class="horizontal-bars-chart">
+                                            <div class="chart-title">
+                                                <h4>Distribuição por Final Status</h4>
+                                            </div>
+
+                                            <div id="parcelFinalStatusChartContainer" class="parcel-horizontal-chart-canvas">
+                                                <canvas id="parcelFinalStatusChart" role="img" aria-label="Quantidade de pacotes por Final Status"></canvas>
+                                            </div>
+                                        </div>
+
+                                        <div class="horizontal-bars-chart">
+                                            <div class="chart-title">
+                                                <h4>Distribuição por Next Step Action</h4>
+                                            </div>
+
+                                            <div id="parcelNextStepActionChartContainer" class="parcel-horizontal-chart-canvas">
+                                                <canvas id="parcelNextStepActionChart" role="img" aria-label="Quantidade de pacotes por Next Step Action"></canvas>
                                             </div>
                                         </div>
                                     </div>
@@ -2376,6 +2664,19 @@
                                                 </tr>
                                             </tbody>
 
+                                            <tbody>
+                                                <tr data-overall-damage-losses-field="returnedPackages">
+                                                    <th scope="row">Pacotes Retornados</th>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
+                                                </tr>
+                                            </tbody>
+
                                         </table>
                                     </div>
                                 </div>
@@ -2469,6 +2770,21 @@
                                             <option value="all">Todas as Linhas</option>
                                         </select>
 
+                                        <div class="columns no-file">
+                                            <div>
+                                                <h4>Lista de Colunas</h4>
+
+                                                <div>
+                                                    <button class="button" id="analysisShowAllColumns" type="button" data-analysis-requires-data disabled>Marcar todas</button>
+                                                    <button class="button" id="analysisHideAllColumns" type="button" data-analysis-requires-data disabled>Desmarcar todas</button>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <div id="analysisVisibleColumns" aria-live="polite"></div>
+                                            </div>
+                                        </div>
+                                        
                                         <div class="filters">
 
                                             <!-- SELETOR DE COLUNAS -->
@@ -2511,19 +2827,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="columns no-file">
-                                            <div>
-                                                <h4>Lista de Colunas</h4>
-
-                                                <div>
-                                                    <button class="button" id="analysisShowAllColumns" type="button" data-analysis-requires-data disabled>Marcar todas</button>
-                                                    <button class="button" id="analysisHideAllColumns" type="button" data-analysis-requires-data disabled>Desmarcar todas</button>
-                                                </div>
-                                            </div>
-
-                                            <div id="analysisVisibleColumns" aria-live="polite"></div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -2534,7 +2837,7 @@
                                         <h4>Prévia da Planilha</h4>
                                     </div>
 
-                                    <div class="padding">
+                                    <div class="padding" style="min-height: 806px;">
                                         <p id="analysisPreviewSummary" class="analysis-preview-summary" hidden></p>
 
                                         <p id="analysisPreviewWaiting" class="analysis-preview-waiting">A prévia será exibida depois que uma planilha for importada.</p>
@@ -2766,7 +3069,7 @@
                                     <span id="filterLineCount">0 linhas</span>
                                 </div>
 
-                                <textarea id="filterValues" rows="14" placeholder="Cole um valor por linha." aria-describedby="filterLineCount" disabled></textarea>
+                                <textarea id="filterValues" rows="16" placeholder="Cole um valor por linha." aria-describedby="filterLineCount" disabled></textarea>
 
                                 <div class="filter-submit">
                                     <button class="button" id="filterApplyButton" type="button" disabled>Filtrar Linhas</button>

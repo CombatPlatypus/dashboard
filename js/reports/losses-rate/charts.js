@@ -5,6 +5,10 @@ import {
     subscribeLossesRateState,
 } from "./state.js";
 
+import {
+    drawDoughnut3D,
+} from "../core/doughnut-3d.js";
+
 /* INSTÂNCIAS DOS GRÁFICOS */
 
 let lossesRateCompositionChart =
@@ -15,6 +19,8 @@ let lossesRateHistoryChart =
 
 let lossesRateCompositionMonthElement =
     null;
+
+let lossesRateCompositionIndicators = {};
 
 let lossesRateHistoryYearElement =
     null;
@@ -48,10 +54,32 @@ const lossesRateCompositionPercentageFormatter =
         "pt-BR",
         {
             style: "percent",
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
+            maximumFractionDigits: 0,
         },
     );
+
+/* PROJEÇÃO 3D DA COMPOSIÇÃO */
+
+const lossesRateCompositionProjection = {
+    id: "losses-rate-composition-3d",
+
+    beforeDatasetDraw(chart, args) {
+        if (args.index !== 0) {
+            return;
+        }
+
+        const dataset = chart.data.datasets[0];
+        chart.$lossesRateCompositionGeometry = drawDoughnut3D({
+            context: chart.ctx,
+            area: chart.chartArea,
+            values: dataset.data,
+            colors: dataset.backgroundColor,
+        });
+
+        // Substitui somente as fatias planas deste gráfico.
+        return false;
+    },
+};
 
 /* TEXTO CENTRAL DO GRÁFICO DE ROSCA */
 
@@ -63,24 +91,18 @@ const lossesRateCenterTextPlugin = {
         args,
         options,
     ) {
-        const chartArea =
-            chart.chartArea;
+        const geometry =
+            chart.$lossesRateCompositionGeometry;
 
-        if (!chartArea) {
+        if (!geometry) {
             return;
         }
 
         const centerX =
-            (
-                chartArea.left +
-                chartArea.right
-            ) / 2;
+            geometry.centerX;
 
         const centerY =
-            (
-                chartArea.top +
-                chartArea.bottom
-            ) / 2;
+            geometry.textCenterY;
 
         const context =
             chart.ctx;
@@ -124,142 +146,6 @@ const lossesRateCenterTextPlugin = {
                 "Ocorrências",
             centerX,
             centerY + 16,
-        );
-
-        context.restore();
-    },
-};
-
-/* MOSTRA AS PORCENTAGENS NAS FATIAS DO GRÁFICO DE ROSCA */
-
-const lossesRateCompositionLabelsPlugin = {
-    id: "lossesRateCompositionLabels",
-
-    afterDatasetsDraw(chart) {
-        if (
-            chart.config.type !==
-            "doughnut"
-        ) {
-            return;
-        }
-
-        const dataset =
-            chart.data.datasets[0];
-
-        const metadata =
-            chart.getDatasetMeta(0);
-
-        const total =
-            dataset.data.reduce(
-                function (
-                    sum,
-                    item,
-                ) {
-                    return (
-                        sum +
-                        (
-                            Number(item) ||
-                            0
-                        )
-                    );
-                },
-                0,
-            );
-
-        if (total <= 0) {
-            return;
-        }
-
-        const context =
-            chart.ctx;
-
-        context.save();
-
-        context.font =
-            '400 12px "Open Sans", sans-serif';
-
-        context.textBaseline =
-            "middle";
-
-        context.textAlign =
-            "center";
-
-        context.lineWidth =
-            3;
-
-        metadata.data.forEach(
-            function (
-                arc,
-                index,
-            ) {
-                if (
-                    !chart.getDataVisibility(index)
-                ) {
-                    return;
-                }
-
-                const value =
-                    Number(
-                        dataset.data[index],
-                    );
-
-                if (
-                    !Number.isFinite(value) ||
-                    value <= 0
-                ) {
-                    return;
-                }
-
-                const angle =
-                    (
-                        arc.startAngle +
-                        arc.endAngle
-                    ) /
-                    2;
-
-                const radius =
-                    (
-                        arc.innerRadius +
-                        arc.outerRadius
-                    ) / 2;
-
-                const positionX =
-                    arc.x +
-                    Math.cos(angle) *
-                        radius;
-
-                const positionY =
-                    arc.y +
-                    Math.sin(angle) *
-                        radius;
-
-                const text =
-                    lossesRateCompositionPercentageFormatter.format(
-                        value /
-                            total,
-                    );
-
-                context.lineWidth =
-                    3;
-
-                context.strokeStyle =
-                    "#18191a";
-
-                context.fillStyle =
-                    "#e4e6eb";
-
-                context.strokeText(
-                    text,
-                    positionX,
-                    positionY,
-                );
-
-                context.fillText(
-                    text,
-                    positionX,
-                    positionY,
-                );
-            },
         );
 
         context.restore();
@@ -529,7 +415,8 @@ function createLossesRateCompositionChart(
                         2,
                     ),
 
-                cutout: "62%",
+                cutout: "66%",
+                events: [],
 
                 layout: {
                     padding: {
@@ -540,68 +427,15 @@ function createLossesRateCompositionChart(
                     },
                 },
 
-                animation: {
-                    duration: 250,
-                },
+                animation: false,
 
                 plugins: {
                     legend: {
-                        position: "bottom",
-                        onClick: null,
-
-                        labels: {
-                            color: "#e4e6eb",
-                            boxWidth: 14,
-                            padding: 18,
-                        },
+                        display: false,
                     },
 
                     tooltip: {
                         enabled: false,
-
-                        callbacks: {
-                            label(
-                                context,
-                            ) {
-                                const value =
-                                    Number(
-                                        context.raw,
-                                    ) || 0;
-
-                                const values =
-                                    context.dataset.data;
-
-                                const total =
-                                    values.reduce(
-                                        function (
-                                            sum,
-                                            item,
-                                        ) {
-                                            return (
-                                                sum +
-                                                (
-                                                    Number(
-                                                        item,
-                                                    ) || 0
-                                                )
-                                            );
-                                        },
-                                        0,
-                                    );
-
-                                const proportion =
-                                    total > 0
-                                        ? value /
-                                          total
-                                        : 0;
-
-                                return (
-                                    `${context.label}: ` +
-                                    `${lossesRateChartIntegerFormatter.format(value)} ` +
-                                    `(${lossesRateChartPercentageFormatter.format(proportion * 100)}%)`
-                                );
-                            },
-                        },
                     },
 
                     lossesRateCenterText: {
@@ -613,8 +447,8 @@ function createLossesRateCompositionChart(
             },
 
             plugins: [
+                lossesRateCompositionProjection,
                 lossesRateCenterTextPlugin,
-                lossesRateCompositionLabelsPlugin,
             ],
         },
     );
@@ -832,6 +666,26 @@ function updateLossesRateCompositionChart(
                 );
     lossesRateCompositionChart.update();
 
+    Object.entries(lossesRateCompositionIndicators).forEach(
+        function ([field, element]) {
+            if (!(element instanceof HTMLElement)) {
+                return;
+            }
+
+            const quantity = summary[field];
+            if (quantity === null || quantity === undefined) {
+                element.textContent = "—";
+                return;
+            }
+
+            const percentage = compositionTotal > 0
+                ? quantity / compositionTotal
+                : 0;
+            element.textContent = `${lossesRateChartIntegerFormatter.format(quantity)} ` +
+                `(${lossesRateCompositionPercentageFormatter.format(percentage)})`;
+        },
+    );
+
     lossesRateCompositionMonthElement
         .textContent =
         LOSSES_RATE_MONTHS[
@@ -1027,6 +881,18 @@ function initializeLossesRateCharts(
             "#lossesRateHistoryYear",
         );
 
+    lossesRateCompositionIndicators = {
+        possibleLosses: rootElement.querySelector(
+            "#lossesRateCompositionPossibleLosses",
+        ),
+        lost: rootElement.querySelector(
+            "#lossesRateCompositionLost",
+        ),
+        damage: rootElement.querySelector(
+            "#lossesRateCompositionDamage",
+        ),
+    };
+
     if (
         !(compositionCanvas instanceof HTMLCanvasElement) ||
         !(historyCanvas instanceof HTMLCanvasElement) ||
@@ -1101,5 +967,7 @@ function initializeLossesRateCharts(
 }
 
 export {
+    createLossesRateCompositionChart,
+    createLossesRateHistoryChart,
     initializeLossesRateCharts,
 };
