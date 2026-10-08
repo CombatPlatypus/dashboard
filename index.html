@@ -263,7 +263,7 @@
                                         <img id="receiptNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="receiptNotificationText">
-                                            No SPX, Transporte Principal / Viagens de Carga, escolha Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
+                                            No SPX, Transporte Principal / Viagens de Carga / Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -1138,12 +1138,16 @@
                                         <img id="planningNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="planningNotificationText">
-                                            No SPX, Transporte Principal / Viagens de Carga, escolha Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
+                                            No SPX, Transporte Principal / Viagens de Carga / Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
 
                                 <div class="report-actions">
+                                    <button id="planningSpreadsheetDownloadButton" type="button" title="Baixar planilha de planejamento" aria-label="Baixar planilha de planejamento">
+                                        <img src="images/geral-icons/file-xlsx-icon.svg" alt="">
+                                    </button>
+
                                     <button id="planningCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de planejamento; segure por 1,5 segundo para baixar">
                                         <img src="images/geral-icons/image-icon.svg" alt="">
                                     </button>
@@ -3316,6 +3320,7 @@
         <script src="js/libraries/html2canvas.min.js"></script>
         <script src="js/libraries/xlsx.full.min.js"></script>
         <script src="js/libraries/chart.umd.min.js"></script>
+        <script src="js/libraries/jszip.min.js"></script>
 
         <!-- JS - PAINEL DE PLANILHAS -->  
 
