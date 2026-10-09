@@ -10,9 +10,11 @@ import {
 } from "node:test";
 
 import {
+    createPlanningSpreadsheetBlob,
     createPlanningSpreadsheetCells,
     createPlanningSpreadsheetFileName,
     createPlanningSpreadsheetLayout,
+    createPlanningSpreadsheetSheetName,
 } from "../js/reports/planning/spreadsheet.js";
 
 import {
@@ -80,6 +82,12 @@ function createPlanningState() {
             added: 32,
             removed: 2,
         },
+        backlog: {
+            packages:
+                "BR-PACOTE-001\nBR-PACOTE-002\nbr-pacote-001",
+            bulky:
+                "BR-VOLUMOSO-001\nBR-PACOTE-002",
+        },
         lhs: [
             {
                 id: 1,
@@ -140,16 +148,39 @@ test(
                 D11: cells.D11,
             },
             {
-                B3: 8999,
+                B3: 8970,
                 C3: 95,
                 D3: 20000,
-                B7: 20,
-                C7: 12,
+                B7: 2,
+                C7: 1,
                 D7: 8967,
-                B11: 32,
+                B11: 3,
                 C11: 2,
                 D11: 2,
             },
+        );
+
+        assert.deepEqual(
+            [
+                cells.F3,
+                cells.F4,
+                cells.G3,
+            ],
+            [
+                "BR-PACOTE-001",
+                "BR-PACOTE-002",
+                "BR-VOLUMOSO-001",
+            ],
+        );
+
+        assert.equal(
+            cells.F5,
+            undefined,
+        );
+
+        assert.equal(
+            cells.G4,
+            undefined,
         );
 
         assert.deepEqual(
@@ -302,6 +333,14 @@ test(
         assert.ok(
             layout.tos.rowCount > 20,
         );
+
+        assert.deepEqual(
+            layout.backlog,
+            {
+                startRow: 3,
+                rowCount: 3019,
+            },
+        );
     },
 );
 
@@ -414,7 +453,7 @@ test(
 
         assert.match(
             worksheetXml,
-            /<c r="B3" s="7"><v>8999<\/v><\/c>/,
+            /<c r="B3" s="7"><v>8970<\/v><\/c>/,
         );
 
         assert.match(
@@ -425,6 +464,16 @@ test(
         assert.match(
             worksheetXml,
             /<c r="F1" s="1" t="s"><v>1<\/v><\/c>/,
+        );
+
+        assert.match(
+            worksheetXml,
+            /<c r="F3" s="9" t="inlineStr"><is><t>BR-PACOTE-001<\/t><\/is><\/c>/,
+        );
+
+        assert.match(
+            worksheetXml,
+            /<c r="G3" s="9" t="inlineStr"><is><t>BR-VOLUMOSO-001<\/t><\/is><\/c>/,
         );
 
         const output =
@@ -467,7 +516,7 @@ test(
 
         assert.equal(
             sheet.B3.v,
-            8999,
+            8970,
         );
 
         assert.equal(
@@ -478,6 +527,16 @@ test(
         assert.equal(
             sheet.F1.v,
             "Backlog Adicionado",
+        );
+
+        assert.equal(
+            sheet.F3.v,
+            "BR-PACOTE-001",
+        );
+
+        assert.equal(
+            sheet.G3.v,
+            "BR-VOLUMOSO-001",
         );
     },
 );
@@ -499,6 +558,84 @@ test(
                 date,
             ),
             "relatorio-de-planejamento-2026-10-07.xlsx",
+        );
+    },
+);
+
+test(
+    "renomeia a aba gerada com a data local",
+    async function () {
+        const date =
+            new Date(
+                2026,
+                9,
+                7,
+                20,
+                30,
+            );
+
+        assert.equal(
+            createPlanningSpreadsheetSheetName(
+                date,
+            ),
+            "07-10",
+        );
+
+        const template =
+            await readFile(
+                templatePath,
+            );
+
+        const outputBlob =
+            await createPlanningSpreadsheetBlob(
+                createPlanningState(),
+                date,
+                {
+                    fetchFunction:
+                        async function () {
+                            return {
+                                ok: true,
+                                status: 200,
+                                arrayBuffer:
+                                    async function () {
+                                        return template;
+                                    },
+                            };
+                        },
+                    jsZipLibrary:
+                        JSZip,
+                },
+            );
+
+        const output =
+            Buffer.from(
+                await outputBlob.arrayBuffer(),
+            );
+
+        const workbook =
+            XLSX.read(
+                output,
+                {
+                    type: "buffer",
+                    cellStyles: true,
+                },
+            );
+
+        assert.deepEqual(
+            workbook.SheetNames,
+            [
+                "07-10",
+            ],
+        );
+
+        assert.equal(
+            workbook.Sheets["07-10"].F3.v,
+            "BR-PACOTE-001",
+        );
+
+        assert.equal(
+            workbook.Sheets["07-10"].G3.v,
+            "BR-VOLUMOSO-001",
         );
     },
 );
@@ -547,7 +684,12 @@ test(
 
         assert.match(
             view,
-            /await createPlanningSpreadsheetBlob\(\s*state/,
+            /await createPlanningSpreadsheetBlob\(\s*state,\s*exportDate/,
+        );
+
+        assert.match(
+            view,
+            /createPlanningSpreadsheetFileName\(\s*exportDate/,
         );
     },
 );
