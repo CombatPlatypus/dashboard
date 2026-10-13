@@ -33,12 +33,18 @@
 
         <style>
 
+            /* REVERSA */
+
             #reports #reverse .preview {
                 flex: 1 1 0;
             }
             #reports #reverse #reversePreview > .flex-box-start {
                 gap: 15px;
                 align-items: flex-start;
+            }
+            #reports #reverse #reversePreview > .flex-box-start > .chart,
+            #reports #reverse #reversePreview > .flex-box-start > div {
+                flex: 1 1 0;
             }
 
         </style>
@@ -60,7 +66,7 @@
 
                     <div>
                         <h3>Dashboard do Inventário</h3>
-                        <p><i>Versão 1.2 - Operações Last Mile</i></p>
+                        <p><i>Versão 1.3 - Operações Last Mile</i></p>
                     </div>
                 </div>
 
@@ -68,7 +74,7 @@
 
                     <!-- PAINEL - PLANILHAS -->
 
-                    <li class="tabs-title is-active">
+                    <li class="tabs-title">
                         <a href="#spreadsheets">
                             <div class="flex-box-center">
                                 <img src="images/geral-icons/sheets-icon.svg">
@@ -79,7 +85,7 @@
 
                     <!-- PAINEL - REPORTS -->
 
-                    <li class="tabs-title">
+                    <li class="tabs-title is-active">
                         <a href="#reports">
                             <div class="flex-box-center">
                                 <img src="images/geral-icons/reports-icon.svg">
@@ -150,7 +156,7 @@
 
                 <!-- PAINEL - PLANILHAS -->
 
-                <div class="tabs-panel is-active" id="spreadsheets">
+                <div class="tabs-panel" id="spreadsheets">
                     <div class="spreadsheets-layout">
 
                         <!-- MENU DE NAVEGAÇÃO DAS PLANILHAS -->
@@ -165,7 +171,7 @@
 
                 <!-- PAINEL - REPORTS -->
 
-                <div class="tabs-panel" id="reports">
+                <div class="tabs-panel is-active" id="reports">
 
                     <!-- INPUTS E INFORMAÇÕES GLOBAIS -->
 
@@ -197,8 +203,8 @@
                             </div>
 
                             <div>
-                                <h4>Capacidade do Turno</h4>
-                                <input type="text" id="reportCapacityInput" maxlength="9" autocomplete="off" inputmode="numeric" pattern="[0-9]*" aria-label="Capacidade do Turno">
+                                <h4>Capacidade do Hub</h4>
+                                <input type="text" id="reportCapacityInput" maxlength="9" autocomplete="off" inputmode="numeric" pattern="[0-9]*" aria-label="Capacidade do Hub">
                             </div>
                         </div>
                     </div>
@@ -231,9 +237,9 @@
                                 <a href="#parcel">Parcel Sweeper</a>
                             </li> 
 
-                            <!-- <li class="tabs-title">
+                            <li class="tabs-title">
                                 <a href="#reverse">Reversa</a>
-                            </li>  -->
+                            </li>
 
                             <li class="tabs-title">
                                 <a href="#overall-analysis">Análise Geral</a>
@@ -599,14 +605,11 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="aligned-comparison-chart">
-
-                                                    <div id="receiptAlignedComparisonChartContainer">
-                                                        <canvas id="receiptAlignedComparisonChart" role="img" aria-label="Comparação alinhada entre volume recebido e taxa de erros por recebedor"></canvas>
+                                                <div class="chart">
+                                                    <div class="chart-canvas-container" id="receiptAlignedComparisonChartContainer">
+                                                        <canvas id="receiptAlignedComparisonChart" role="img"></canvas>
                                                     </div>
-
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -796,7 +799,6 @@
                                                 </table>
 
                                                 <table>
-
                                                     <thead>
                                                         <tr>
                                                             <th>Pacotes Ausentes</th>
@@ -858,6 +860,8 @@
                                                     <h2>Ranking de Conferentes</h2>
                                                 </div>
 
+                                                <!-- CARDS DE DESTAQUES DE CONFERENTES -->
+
                                                 <div class="cards">
                                                     <div>
                                                         <div class="flex-box-start">
@@ -880,13 +884,12 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- GRAFICO DE COMPARAÇÃO ENTRE CONFERENTES -->
 
-                                                <div class="aligned-comparison-chart">
-                        
-                                                    <div id="expeditionAlignedComparisonChartContainer">
-                                                        <canvas id="expeditionAlignedComparisonChart" role="img" aria-label="Comparação alinhada entre rotas conferidas e tempo médio por conferente"></canvas>
+                                                <div class="chart">
+                                                    <div class="chart-canvas-container" id="expeditionAlignedComparisonChartContainer" style="min-height: 1224px;">
+                                                        <canvas id="expeditionAlignedComparisonChart" role="img"></canvas>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -939,32 +942,13 @@
                                                     </tbody>
                                                 </table>
 
-                                                <div class="horizontal-bars-chart">
+                                                <div class="chart horizontal-bars-chart">
                                                     <div class="chart-title">
-                                                        <div class="flex-box-between">
-                                                            <h4>Identificados x Revertidos x Saldo Final</h4>
-
-                                                            <div class="flex-box-start">
-                                                                <div class="type">
-                                                                    <div style="background-color: #ffc107;"></div>
-                                                                    <p>Identificados</p>
-                                                                </div>
-
-                                                                <div class="type">
-                                                                    <div style="background-color: #8BC34A;"></div>
-                                                                    <p>Revertidos</p>
-                                                                </div>
-
-                                                                <div class="type">
-                                                                    <div style="background-color: #FF5722;"></div>
-                                                                    <p>Saldo Final</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        <h4>Identificados x Revertidos x Saldo Final</h4>
                                                     </div>
 
-                                                    <div class="expedition-error-balance-chart">
-                                                        <canvas id="expeditionErrorBalanceChart" role="img" aria-label="Comparação entre erros identificados, revertidos e saldo final"></canvas>
+                                                    <div class="chart-canvas-container">
+                                                        <canvas id="expeditionErrorBalanceChart" role="img"></canvas>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1020,26 +1004,24 @@
                                                     </tbody>
                                                 </table>
 
-                                                <div class="horizontal-bars-chart">
+                                                <div class="chart vertical-bars-chart">
                                                     <div class="chart-title">
-                                                        <div class="flex-box-between">
-                                                            <h4>Ocorrências por Rua</h4>
+                                                        <h4>Ocorrências por Rua</h4>
+                                                    </div>
 
-                                                            <div class="flex-box-start">
-                                                                <div class="type">
-                                                                    <div style="background-color: #ffc107;"></div>
-                                                                    <p>Pacotes Ausentes</p>
-                                                                </div>
+                                                    <div class="chart-label">
+                                                        <div class="type">
+                                                            <div style="background-color: #ffc107;"></div>
+                                                            <p>Pacotes Ausentes</p>
+                                                        </div>
 
-                                                                <div class="type">
-                                                                    <div style="background-color: #F44336;"></div>
-                                                                    <p>Erros da Rua</p>
-                                                                </div>
-                                                            </div>
+                                                        <div class="type">
+                                                            <div style="background-color: #F44336;"></div>
+                                                            <p>Erros da Rua</p>
                                                         </div>
                                                     </div>
 
-                                                    <div class="expedition-street-occurrences-chart" id="expeditionStreetOccurrencesChartContainer">
+                                                    <div class="chart-canvas-container" id="expeditionStreetOccurrencesChartContainer">
                                                         <canvas id="expeditionStreetOccurrencesChart" role="img"></canvas>
                                                     </div>
                                                 </div>
@@ -1084,7 +1066,6 @@
 
                                             <div class="input-group" id="expeditionOperatorControls"></div>
                                         </div>
-
                                     </div>
 
                                     <!-- ANÁLISE DOS ERROS ENCONTRADOS NA GESTÃO AUDIT -->
@@ -1114,7 +1095,6 @@
 
                                             <div class="input-group" id="expeditionStreetGuardianControls"></div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -1603,41 +1583,39 @@
                                                 </button>
                                             </div>
 
-                                            <div class="vertical-bars-chart">
+                                            <div class="chart vertical-bars-chart">
                                                 <div class="chart-title">
-                                                    <div class="flex-box-between">
-                                                        <h4 id="damageChartPeriodTitle">Últimos 7 dias</h4>
-
-                                                        <div class="flex-box-start">
-                                                            <div class="type">
-                                                                <div style="background-color: #ffc107;"></div>
-                                                                <p>Avarias do SOC</p>
-                                                            </div>
-
-                                                            <div class="type">
-                                                                <div style="background-color: #F44336;"></div>
-                                                                <p>Avarias do Hub</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <h4 id="damageChartPeriodTitle">Últimos 7 dias</h4>
                                                 </div>
 
-                                                <div id="damageLastSevenDaysChartContainer">
-                                                    <div class="damage-period-chart-canvas">
-                                                        <canvas id="damageLastSevenDaysChart" role="img" aria-label="Avarias do Soc e do Hub nos últimos sete dias"></canvas>
+                                                <div class="chart-canvas-container" id="damageLastSevenDaysChartContainer">
+                                                    <canvas id="damageLastSevenDaysChart" role="img"></canvas>
+                                                </div>
+
+                                                <div class="chart-label">
+                                                    <div class="type">
+                                                        <div style="background-color: #ffc107;"></div>
+                                                        <p>Avarias do SOC</p>
+                                                    </div>
+
+                                                    <div class="type">
+                                                        <div style="background-color: #F44336;"></div>
+                                                        <p>Avarias do Hub</p>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="damage-and-losses-charts flex-box-start">
-                                                <div class="doughnut-chart">
-                                                    <h4>Composição das Avarias</h4>
-
-                                                    <div>
-                                                        <canvas id="damageCompositionChart" role="img" aria-label="Composição das avarias entre sólidas, líquidas e de vidro"></canvas>
+                                                <div class="chart doughnut-chart">
+                                                    <div class="chart-title">
+                                                        <h4>Composição das Avarias do Hub</h4>
                                                     </div>
 
-                                                    <div>
+                                                    <div class="chart-canvas-container">
+                                                        <canvas id="damageCompositionChart" role="img"></canvas>
+                                                    </div>
+
+                                                    <div class="chart-label">
                                                         <div class="type">
                                                             <div style="background-color: #F44336;"></div>
                                                             <p>Avarias Sólidas <span id="damageSolidValue">—</span></p>
@@ -1655,13 +1633,13 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="horizontal-bars-chart">
+                                                <div class="chart horizontal-bars-chart">
                                                     <div class="chart-title">
                                                         <h4>Avarias por SOC</h4>
                                                     </div>
 
-                                                    <div id="damageSocChartContainer" class="damage-soc-chart-container">
-                                                        <canvas id="damageSocChart" role="img" aria-label="Quantidade de avarias por Soc"></canvas>
+                                                    <div class="chart-canvas-container" id="damageSocChartContainer">
+                                                        <canvas id="damageSocChart" role="img"></canvas>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1675,9 +1653,9 @@
                                                         <th scope="col">Hoje</th>
                                                         <th scope="col">Ontem</th>
                                                         <th scope="col">Anteontem</th>
-                                                        <th scope="col">Dê 3 a 7<br>Dias Atrás</th>
-                                                        <th scope="col">Dê 8 a 14<br>Dias Atrás</th>
-                                                        <th scope="col">Dê 15 Dias Atrás<br>Até o Começo do Mês</th>
+                                                        <th scope="col">De 3 a 7<br>Dias Atrás</th>
+                                                        <th scope="col">De 8 a 14<br>Dias Atrás</th>
+                                                        <th scope="col">De 15 Dias Atrás<br>Até o Começo do Mês</th>
                                                         <th scope="col">Total do Mês</th>
                                                     </tr>
                                                 </thead>
@@ -1697,7 +1675,7 @@
 
                                                 <tbody>
                                                     <tr data-damage-analysis-field="soc">
-                                                        <th scope="row">Avarias do Soc</th>
+                                                        <th scope="row">Avarias do SOC</th>
                                                         <td>-</td>
                                                         <td>-</td>
                                                         <td>-</td>
@@ -1807,50 +1785,46 @@
                                                 </button>
                                             </div>
 
-                                            <div class="vertical-bars-chart">
+                                            <div class="chart vertical-bars-chart">
                                                 <div class="chart-title">
-                                                    <div class="flex-box-between">
-                                                        <h4 id="lossesChartPeriodTitle">Últimos 7 dias</h4>
-
-                                                        <div class="flex-box-start">
-                                                            <div class="type">
-                                                                <div style="background-color: #ffc107;"></div>
-                                                                <p>Pacotes em Análise</p>
-                                                            </div>
-
-                                                            <div class="type">
-                                                                <div style="background-color: #F44336;"></div>
-                                                                <p>Perdas Confirmadas</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <h4 id="lossesChartPeriodTitle">Últimos 7 dias</h4>
                                                 </div>
 
-                                                <div id="lossesLastSevenDaysChartContainer">
-                                                    <div class="losses-period-chart-canvas">
-                                                        <canvas id="lossesLastSevenDaysChart" role="img" aria-label="Pacotes em análise e perdas confirmadas nos últimos sete dias"></canvas>
+                                                <div class="chart-canvas-container" id="lossesLastSevenDaysChartContainer">
+                                                    <canvas id="lossesLastSevenDaysChart" role="img"></canvas>
+                                                </div>
+
+                                                <div class="chart-label">
+                                                    <div class="type">
+                                                        <div style="background-color: #ffc107;"></div>
+                                                        <p>Pacotes em Análise</p>
+                                                    </div>
+
+                                                    <div class="type">
+                                                        <div style="background-color: #F44336;"></div>
+                                                        <p>Perdas Confirmadas</p>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="damage-and-losses-charts flex-box-start">
-                                                <div class="horizontal-bars-chart">
+                                                <div class="chart horizontal-bars-chart">
                                                     <div class="chart-title">
                                                         <h4>Pack Recovery</h4>
                                                     </div>
 
-                                                    <div id="lossesPackRecoveryChartContainer" class="losses-horizontal-chart-canvas">
-                                                        <canvas id="lossesPackRecoveryChart" role="img" aria-label="Pack Recovery"></canvas>
+                                                    <div class="chart-canvas-container" id="lossesPackRecoveryChartContainer">
+                                                        <canvas id="lossesPackRecoveryChart" role="img"></canvas>
                                                     </div>
                                                 </div>
 
-                                                <div class="horizontal-bars-chart">
+                                                <div class="chart horizontal-bars-chart">
                                                     <div class="chart-title">
                                                         <h4>Pacotes Retornados x Perdidos x Em Análise</h4>
                                                     </div>
 
-                                                    <div id="lossesReturnedComparisonChartContainer" class="losses-horizontal-chart-canvas">
-                                                        <canvas id="lossesReturnedComparisonChart" role="img" aria-label="Pacotes retornados, perdidos e em análise"></canvas>
+                                                    <div class="chart-canvas-container" id="lossesReturnedComparisonChartContainer">
+                                                        <canvas id="lossesReturnedComparisonChart" role="img"></canvas>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1864,16 +1838,16 @@
                                                         <th scope="col">Hoje</th>
                                                         <th scope="col">Ontem</th>
                                                         <th scope="col">Anteontem</th>
-                                                        <th scope="col">Dê 3 a 7<br>Dias Atrás</th>
-                                                        <th scope="col">Dê 8 a 14<br>Dias Atrás</th>
-                                                        <th scope="col">Dê 15 Dias Atrás<br>Até o Começo do Mês</th>
+                                                        <th scope="col">De 3 a 7<br>Dias Atrás</th>
+                                                        <th scope="col">De 8 a 14<br>Dias Atrás</th>
+                                                        <th scope="col">De 15 Dias Atrás<br>Até o Começo do Mês</th>
                                                         <th scope="col">Total do Mês</th>
                                                     </tr>
                                                 </thead>
 
                                                 <tbody>
                                                     <tr data-losses-analysis-field="underReview">
-                                                        <th scope="row">Pacotes Em Análise</th>
+                                                        <th scope="row">Pacotes em Análise</th>
                                                         <td>-</td>
                                                         <td>-</td>
                                                         <td>-</td>
@@ -1967,6 +1941,8 @@
                                             <h2>Taxa de Perdas</h2>
                                         </div>
 
+                                        <!-- TABELA PRINCIPAL -->
+
                                         <table>
                                             <thead>
                                                 <tr>
@@ -1975,7 +1951,7 @@
                                                     <th>Lost</th>
                                                     <th>Avarias</th>
                                                     <th>Total de Perdas</th>
-                                                    <th>Taxa de Perda</th>
+                                                    <th>Taxa de Perdas</th>
                                                 </tr>
                                             </thead>
 
@@ -1991,17 +1967,21 @@
                                             </tbody>
                                         </table>
 
-                                        <div class="losses-rate-charts">
-                                            <div class="doughnut-chart">
-                                                <h3>Composição das Ocorrências — <span id="lossesRateCompositionMonth"></span></h3>
+                                        <!-- GRAFICOS DE COMPOSIÇÃO E LINHA -->
 
-                                                <div>
+                                        <div class="losses-rate-charts flex-box-start">
+                                            <div class="chart doughnut-chart">
+                                                <div class="chart-title">
+                                                    <h4>Composição das Ocorrências - <span id="lossesRateCompositionMonth"></span></h4>
+                                                </div>
+
+                                                <div class="chart-canvas-container">
                                                     <canvas id="lossesRateCompositionChart">
                                                         Seu navegador não suporta gráficos em canvas.
                                                     </canvas>
                                                 </div>
 
-                                                <div>
+                                                <div class="chart-label">
                                                     <div class="type">
                                                         <div style="background-color: #8b8d91;"></div>
                                                         <p>Possíveis Perdas <span id="lossesRateCompositionPossibleLosses">—</span></p>
@@ -2019,10 +1999,12 @@
                                                 </div>
                                             </div>
 
-                                            <div class="line-chart">
-                                                <h3>Histórico da Taxa de Perda — <span id="lossesRateHistoryYear"></span></h3>
+                                            <div class="chart line-chart">
+                                                <div class="chart-title">
+                                                    <h4>Histórico da Taxa de Perdas - <span id="lossesRateHistoryYear"></span></h4>
+                                                </div>
 
-                                                <div>
+                                                <div class="chart-canvas-container">
                                                     <canvas id="lossesRateHistoryChart">
                                                         Seu navegador não suporta gráficos em canvas.
                                                     </canvas>
@@ -2076,66 +2058,43 @@
                                         <h2>Parcel Sweeper</h2>
                                     </div> 
 
-                                    <!-- CARDS PRINCIAPAIS -->
+                                    <!-- TABELA PRINCIPAL  -->
 
-                                    <div class="cards">
-                                        <div>
-                                            <div class="flex-box-start">
-                                                <img src="images/geral-icons/barcode-scanner-icon.svg">
-                                                <h4 id="parcelTotalScanned">—</h4>
-                                            </div>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Total de Bipado</th>
+                                                <th>Não Escaneados</th>
+                                                <th>Pacotes Backlog</th>
+                                                <th>Pacotes Exception</th>
+                                                <th>Pacotes Missorted</th>
+                                            </tr>
+                                        </thead>
 
-                                            <p>Total de Bipado</p>
-                                        </div>
-
-                                        <div>
-                                            <div class="flex-box-start">
-                                                <img src="images/geral-icons/box-icon.svg">
-                                                <h4 id="parcelBacklogTotal">—</h4>
-                                            </div>
-
-                                            <p>Pacotes Backlog</p>
-                                        </div>
-
-                                        <div>
-                                            <div class="flex-box-start">
-                                                <img src="images/geral-icons/alert-icon.svg">
-                                                <h4 id="parcelExceptionTotal">—</h4>
-                                            </div>
-
-                                            <p>Pacotes Exception</p>
-                                        </div>
-
-                                        <div>
-                                            <div class="flex-box-start">
-                                                <img src="images/geral-icons/missorted-icon.svg">
-                                                <h4 id="parcelMissortedTotal">—</h4>
-                                            </div>
-
-                                            <p>Pacotes Missorted</p>
-                                        </div>
-
-                                        <div>
-                                            <div class="flex-box-start">
-                                                <img src="images/geral-icons/missing-icon.svg">
-                                                <h4 id="parcelUnscannedTotal">—</h4>
-                                            </div>
-
-                                            <p>Não Escaneados</p>
-                                        </div>
-                                    </div>
+                                        <tbody>
+                                            <tr>
+                                                <td id="parcelTotalScanned">—</td>
+                                                <td id="parcelUnscannedTotal">—</td>
+                                                <td id="parcelBacklogTotal">—</td>
+                                                <td id="parcelExceptionTotal">—</td>
+                                                <td id="parcelMissortedTotal">—</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
                                     <!-- GRAFICO DE COBERTURA E TABELA DE OPERADORES -->
 
                                     <div class="distribution flex-box-start">
-                                        <div class="doughnut-chart">
-                                            <h3>Cobertura da Varredura</h3>
-
-                                            <div>
+                                        <div class="chart doughnut-chart">
+                                            <div class="chart-title">
+                                                <h4>Cobertura da Varredura</h4>
+                                            </div>
+                                            
+                                            <div class="chart-canvas-container">
                                                 <canvas id="parcelCoverageChart" role="img" aria-label="Cobertura da varredura entre pacotes escaneados e não escaneados"></canvas>
                                             </div>
 
-                                            <div>
+                                            <div class="chart-label">
                                                 <div class="type">
                                                     <div style="background-color: #3F51B5;"></div>
                                                     <p>Escaneados <span id="parcelCoverageScanned">—</span></p>
@@ -2284,57 +2243,49 @@
 
                                     <!-- GRAFICO DE AGING -->
 
-                                    <div class="vertical-bars-chart">
+                                    <div class="chart vertical-bars-chart">
                                         <div class="chart-title">
-                                            <div class="flex-box-between">
-                                                <h4>Distribuição por Aging</h4>
-                                            </div>
+                                            <h4>Distribuição por Aging</h4>
                                         </div>
 
-                                        <div id="parcelAgingChartContainer">
-                                            <div>
-                                                <canvas id="parcelAgingChart" role="img" aria-label="Quantidade de pacotes escaneados por faixa de aging"></canvas>
-                                            </div>
+                                        <div class="chart-canvas-container" id="parcelAgingChartContainer">
+                                            <canvas id="parcelAgingChart" role="img" aria-label="Quantidade de pacotes escaneados por faixa de aging"></canvas>
                                         </div>
                                     </div>
 
                                     <!-- GRÁFICOS DE SCANNED STATUS E FINAL STATUS -->
 
                                     <div class="flex-box-start" id="parcelStatusCharts">
-                                        <div class="horizontal-bars-chart">
+                                        <div class="chart horizontal-bars-chart">
                                             <div class="chart-title">
                                                 <h4>Distribuição por Scanned Status</h4>
                                             </div>
 
-                                            <div id="parcelScannedStatusChartContainer" class="parcel-horizontal-chart-canvas">
-                                                <canvas id="parcelScannedStatusChart" role="img" aria-label="Quantidade de pacotes por Scanned Status"></canvas>
+                                            <div class="chart-canvas-container" id="parcelScannedStatusChartContainer">
+                                                <canvas id="parcelScannedStatusChart" role="img"></canvas>
                                             </div>
                                         </div>
 
-                                        <div class="horizontal-bars-chart">
+                                        <div class="chart horizontal-bars-chart">
                                             <div class="chart-title">
                                                 <h4>Distribuição por Final Status</h4>
                                             </div>
 
-                                            <div id="parcelFinalStatusChartContainer" class="parcel-horizontal-chart-canvas">
-                                                <canvas id="parcelFinalStatusChart" role="img" aria-label="Quantidade de pacotes por Final Status"></canvas>
+                                            <div class="chart-canvas-container" id="parcelFinalStatusChartContainer">
+                                                <canvas id="parcelFinalStatusChart" role="img"></canvas>
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- GRÁFICO DE NEXT STEP ACTION -->
 
-                                    <div class="vertical-bars-chart">
+                                    <div class="chart vertical-bars-chart">
                                         <div class="chart-title">
-                                            <div class="flex-box-between">
-                                                <h4>Distribuição por Next Step Action</h4>
-                                            </div>
+                                            <h4>Distribuição por Next Step Action</h4>
                                         </div>
 
-                                        <div id="parcelNextStepActionChartContainer">
-                                            <div>
-                                                <canvas id="parcelNextStepActionChart" role="img" aria-label="Quantidade de pacotes por Next Step Action"></canvas>
-                                            </div>
+                                        <div class="chart-canvas-container" id="parcelNextStepActionChartContainer">
+                                            <canvas id="parcelNextStepActionChart" role="img"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -2353,23 +2304,23 @@
                                         <img id="reverseNotificationIcon" src="images/geral-icons/bell-icon.svg" alt="">
 
                                         <h4 id="reverseNotificationText">
-                                            No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo parcel para exportar e, em seguida, volte aqui e clique em importar.
+                                            No SPX, acesse Saída / Gerenciamento de Pedidos, escolha uma TO para exportar e, em seguida, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
 
                                 <div class="report-actions">
-                                    <button id="reverseCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório do parcel; segure por 1,5 segundo para baixar">
+                                    <button id="reverseCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de reversa; segure por 1,5 segundo para baixar">
                                         <img src="images/geral-icons/image-icon.svg" alt="">
                                     </button>
 
-                                    <button id="reverseImportActionButton" type="button" title="" aria-label="">
+                                    <button id="reverseImportActionButton" type="button" title="Importar arquivo de reversa do SPX" aria-label="Importar arquivo de reversa do SPX">
                                         <img src="images/geral-icons/import-icon.svg" alt="">
                                     </button>
 
                                     <input id="reverseFileInput" type="file" accept=".csv,.xlsx,.xls" hidden>
 
-                                    <button id="reverseClearReportButton" type="button" title="Limpar relatório" aria-label="">
+                                    <button id="reverseClearReportButton" type="button" title="Limpar relatório" aria-label="Limpar relatório de reversa">
                                         <img src="images/geral-icons/trash-basket-icon.svg" alt="">
                                     </button>
                                 </div>
@@ -2380,13 +2331,93 @@
                             <div class="preview">
                                 <div class="preview-style" id="reversePreview">
                                     <div class="title">
-                                        <h2>Parcel Sweeper</h2>
+                                        <h2>Reversa</h2>
                                     </div> 
+
+                                    <!-- TABELA PRINCIPAL -->
+                                
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Total da Reversa</th>
+                                                <th>Return</th>
+                                                <th>Missorted</th>
+                                                <th>Liquidate</th>
+                                                <th>Confiscado</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td id="reverseTotal">—</td>
+                                                <td id="reverseReturn">—</td>
+                                                <td id="reverseMissorted">—</td>
+                                                <td id="reverseLiquidate">—</td>
+                                                <td id="reverseConfiscated">—</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- GRAFICO DE COMPOSIÇÃO E TABELA DE DISTRIBUIÇÃO POR TO -->
+
+                                    <div class="flex-box-start">
+                                        <div class="chart doughnut-chart">
+                                            <div class="chart-title">
+                                                <h4>Composição da Reversa</h4>
+                                            </div>
+
+                                            <div class="chart-canvas-container" id="reverseCompositionChartContainer">
+                                                <canvas id="reverseCompositionChart" role="img" aria-label="Composição da reversa por tipo"></canvas>
+                                            </div>
+
+                                            <div class="chart-label">
+                                                <div class="type">
+                                                    <div style="background-color: #4caf50;"></div>
+                                                    <p>Return <span id="reverseCompositionReturn">—</span></p>
+                                                </div>
+
+                                                <div class="type">
+                                                    <div style="background-color: #FF5722;"></div>
+                                                    <p>Missorted <span id="reverseCompositionMissorted">—</span></p>
+                                                </div>
+
+                                                <div class="type">
+                                                    <div style="background-color: #3F51B5;"></div>
+                                                    <p>Liquidate <span id="reverseCompositionLiquidate">—</span></p>
+                                                </div>
+
+                                                <div class="type">
+                                                    <div style="background-color: #f0ad4e;"></div>
+                                                    <p>Confiscado <span id="reverseCompositionConfiscated">—</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <table>
+                                                <caption>Distribuição por TO</caption>
+
+                                                <thead>
+                                                    <tr>
+                                                        <th>TO</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Percentual</th>
+                                                        <th>Tipo</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="reverseDistributionBody">
+                                                    <tr>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div> 
-
-
-
-
                             </div> 
                         </div>
 
@@ -2563,7 +2594,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="final-report-highlights">
+                                        <div class="final-report-highlights" style="display: none;">
                                             <div class="final-report-title">
                                                 <h4>Destaques da Janela</h4>
                                             </div>
@@ -2619,15 +2650,9 @@
                                                 </tbody>
                                             </table>
 
-                                            <div class="horizontal-bars-chart">
-                                                <div class="chart-title">
-                                                    <div class="flex-box-between">
-                                                        <h4>Situação do Processamento</h4>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <canvas id="overallAnalysisReceiptChart" role="img" aria-label="Comparação entre volume esperado, volume recebido e gap do processamento">
+                                            <div class="chart horizontal-bars-chart">
+                                                <div class="chart-canvas-container">
+                                                    <canvas id="overallAnalysisReceiptChart" role="img">
                                                         Seu navegador não suporta gráficos em canvas.
                                                     </canvas>
                                                 </div>
@@ -2657,15 +2682,9 @@
                                                 </tbody>
                                             </table>
 
-                                            <div class="horizontal-bars-chart">
-                                                <div class="chart-title">
-                                                    <div class="flex-box-between">
-                                                        <h4>Situação da Expedição</h4>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <canvas id="overallAnalysisExpeditionChart" role="img" aria-label="Comparação entre volume expedido e volume no piso da expedição">
+                                            <div class="chart horizontal-bars-chart">
+                                                <div class="chart-canvas-container">
+                                                    <canvas id="overallAnalysisExpeditionChart" role="img">
                                                         Seu navegador não suporta gráficos em canvas.
                                                     </canvas>
                                                 </div>
@@ -2685,9 +2704,9 @@
                                                     <th scope="col">Hoje</th>
                                                     <th scope="col">Ontem</th>
                                                     <th scope="col">Anteontem</th>
-                                                    <th scope="col">Dê 3 a 7<br>Dias Atrás</th>
-                                                    <th scope="col">Dê 8 a 14<br>Dias Atrás</th>
-                                                    <th scope="col">Dê 15 Dias Atrás<br>Até o Começo do Mês</th>
+                                                    <th scope="col">De 3 a 7<br>Dias Atrás</th>
+                                                    <th scope="col">De 8 a 14<br>Dias Atrás</th>
+                                                    <th scope="col">De 15 Dias Atrás<br>Até o Começo do Mês</th>
                                                     <th scope="col">Total do Mês</th>
                                                 </tr>
                                             </thead>
@@ -2707,7 +2726,7 @@
 
                                             <tbody>
                                                 <tr data-overall-damage-losses-field="soc">
-                                                    <th scope="row">Avarias do Soc</th>
+                                                    <th scope="row">Avarias do SOC</th>
                                                     <td>-</td>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -2720,7 +2739,7 @@
 
                                             <tbody>
                                                 <tr data-overall-damage-losses-field="underReview">
-                                                    <th scope="row">Pacotes Em Análise</th>
+                                                    <th scope="row">Pacotes em Análise</th>
                                                     <td>-</td>
                                                     <td>-</td>
                                                     <td>-</td>
@@ -3216,7 +3235,7 @@
                 <div>
                     <img src="images/links-icons/forms-icon.svg">
                     <button id="footerReverseFormLink" type="button" class="external-link" data-url="" disabled>
-                        Forms Reversa ↗
+                        Forms de Reversa ↗
                     </button>
                 </div>
 
@@ -3245,6 +3264,36 @@
                 </div>
             </div>
         </footer>
+
+        <!-- REVEAL - REVERSA -->
+
+        <div class="reveal small" id="reverseImportTypeModal" data-reveal data-close-on-click="true" aria-labelledby="reverseImportTypeTitle">
+            <div class="title">
+                <h4 id="reverseImportTypeTitle">O que é essa TO?</h4>
+            </div>
+
+            <div class="padding">
+                <p>Escolha uma das opções abaixo para classificar a TO.</p>
+
+                <form id="reverseImportTypeForm">
+                    <fieldset>
+                        <label><input type="radio" name="reverseImportType" value="return" required> Return</label>
+                        <label><input type="radio" name="reverseImportType" value="missorted" required> Missorted</label>
+                        <label><input type="radio" name="reverseImportType" value="liquidate" required> Liquidate</label>
+                        <label><input type="radio" name="reverseImportType" value="intercept" required> Intercept</label>
+                    </fieldset>
+
+                    <div class="flex-box-center">
+                        <button class="button" type="button" data-close>Cancelar</button>
+                        <button class="button" id="reverseImportTypeConfirm" type="submit" disabled>Importar TO</button>
+                    </div>
+                </form>
+            </div>
+
+            <button class="close-button" data-close type="button" aria-label="Cancelar importação">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
 
         <!-- REVEAL - CONFIGURAÇÕES -->
 
@@ -3392,6 +3441,7 @@
         <script src="js/libraries/html2canvas.min.js"></script>
         <script src="js/libraries/xlsx.full.min.js"></script>
         <script src="js/libraries/chart.umd.min.js"></script>
+        <script src="js/charts/defaults.js"></script>
         <script src="js/libraries/jszip.min.js"></script>
 
         <!-- JS - PAINEL DE PLANILHAS -->  

@@ -32,6 +32,13 @@ const TIME_MAXIMUM_REFERENCE_SECONDS =
 const TIME_AXIS_INTERVAL_SECONDS =
     2 * 60;
 const COMPARISON_COLUMN_GAP = 30;
+const COMPARISON_CONTENT_PADDING = Object.freeze({
+    top: 12,
+    right: 10,
+    left: 10,
+});
+const COMPARISON_LABEL_HEIGHT = 14;
+const COMPARISON_LABEL_BAR_GAP = 8;
 const ROUTES_BAR_COLOR = "#e4e6eb";
 const TIME_BAR_COLOR = "#ffc107";
 
@@ -102,17 +109,6 @@ function formatDuration(value) {
     return (
         `${formattedMinutes}:` +
         formattedSeconds
-    );
-}
-
-function formatTimeAxisTick(value) {
-    const totalSeconds = Math.max(
-        Number(value) || 0,
-        0,
-    );
-
-    return (
-        `${Math.round(totalSeconds / 60)}M`
     );
 }
 
@@ -362,31 +358,15 @@ function drawRoundedBar(
 function drawMetricLabel(
     context,
     label,
-    barEnd,
-    panelEnd,
+    positionX,
     positionY,
+    alignment,
     color = "#e4e6eb",
 ) {
-    const labelWidth =
-        context.measureText(
-            label,
-        ).width;
-
-    let positionX =
-        barEnd + 10;
-
     context.textAlign =
-        "left";
-
-    if (
-        positionX + labelWidth >
-        panelEnd - 4
-    ) {
-        positionX =
-            panelEnd - 8;
-        context.textAlign =
-            "right";
-    }
+        alignment;
+    context.textBaseline =
+        "bottom";
 
     context.strokeStyle =
         "#18191a";
@@ -448,48 +428,42 @@ function drawComparisonStructure(chart) {
     const volumeEnd =
         volumeStart +
         columnWidth;
-    const timeStart =
+    const timeGridStart =
         volumeEnd +
         COMPARISON_COLUMN_GAP;
-    const timeEnd =
-        timeStart +
+    const timeGridEnd =
+        timeGridStart +
         columnWidth;
-    const nameStart =
-        volumeStart + 10;
-    const routeStart = Math.min(
-        volumeStart + 120,
-        volumeEnd - 80,
-    );
+    const routeStart =
+        volumeStart +
+        COMPARISON_CONTENT_PADDING.left;
     const routeEnd =
-        volumeEnd;
-    const axisY =
-        chartArea.bottom + 8;
+        volumeEnd -
+        COMPARISON_CONTENT_PADDING.right;
+    const timeStart =
+        timeGridStart +
+        COMPARISON_CONTENT_PADDING.left;
+    const timeEnd =
+        timeGridEnd -
+        COMPARISON_CONTENT_PADDING.right;
     const barHeight = 20;
 
     context.save();
-    context.textBaseline =
-        "middle";
-
-    context.font =
-        '500 14px "Open Sans", sans-serif';
-    context.fillStyle =
-        "#bfc2c8";
-
     context.strokeStyle =
         "rgba(82, 82, 82, 0.45)";
     context.lineWidth = 1;
 
     for (
-        let routeValue = 0;
-        routeValue <= routeMaximum;
+        let routeValue = ROUTE_AXIS_INTERVAL;
+        routeValue < routeMaximum;
         routeValue += ROUTE_AXIS_INTERVAL
     ) {
         const ratio =
             routeValue /
             routeMaximum;
         const positionX =
-            routeStart +
-            (routeEnd - routeStart) *
+            volumeStart +
+            (volumeEnd - volumeStart) *
                 ratio;
 
         context.beginPath();
@@ -502,34 +476,24 @@ function drawComparisonStructure(chart) {
             chartArea.bottom,
         );
         context.stroke();
-
-        context.textAlign =
-            routeValue === 0
-                ? "left"
-                : routeValue ===
-                    routeMaximum
-                    ? "right"
-                    : "center";
-        context.fillStyle =
-            "#bfc2c8";
-        context.fillText(
-            formatQuantity(
-                routeValue,
-            ),
-            positionX,
-            axisY + 16,
-        );
     }
 
     getTimeAxisTicks(
         timeMaximum,
     ).forEach(
         function (timeValue) {
+            if (
+                timeValue <= 0 ||
+                timeValue >= timeMaximum
+            ) {
+                return;
+            }
+
             const positionX =
-                timeStart +
+                timeGridStart +
                 (
-                    timeEnd -
-                    timeStart
+                    timeGridEnd -
+                    timeGridStart
                 ) *
                 (
                     timeValue /
@@ -546,43 +510,6 @@ function drawComparisonStructure(chart) {
                 chartArea.bottom,
             );
             context.stroke();
-
-            context.textAlign =
-                timeValue === 0
-                    ? "left"
-                    : timeValue ===
-                        timeMaximum
-                        ? "right"
-                        : "center";
-            context.fillStyle =
-                "#bfc2c8";
-            context.fillText(
-                formatTimeAxisTick(
-                    timeValue,
-                ),
-                positionX,
-                axisY + 16,
-            );
-        },
-    );
-
-    context.strokeStyle =
-        "rgba(82, 82, 82, 0.7)";
-    [
-        chartArea.top,
-        chartArea.bottom,
-    ].forEach(
-        function (positionY) {
-            context.beginPath();
-            context.moveTo(
-                volumeStart,
-                positionY,
-            );
-            context.lineTo(
-                timeEnd,
-                positionY,
-            );
-            context.stroke();
         },
     );
 
@@ -593,6 +520,8 @@ function drawComparisonStructure(chart) {
             "#bfc2c8";
         context.textAlign =
             "center";
+        context.textBaseline =
+            "middle";
         context.fillText(
             "Importe os dados para comparar os conferentes.",
             (
@@ -610,14 +539,29 @@ function drawComparisonStructure(chart) {
 
     rows.forEach(
         function (operator, index) {
-            const positionY =
+            const rowTop =
                 yScale.getPixelForValue(
-                    index,
+                    index - 0.5,
+                );
+            const positionY =
+                Math.max(
+                    yScale.getPixelForValue(
+                        index,
+                    ),
+                    rowTop +
+                        COMPARISON_CONTENT_PADDING.top +
+                        COMPARISON_LABEL_HEIGHT +
+                        COMPARISON_LABEL_BAR_GAP +
+                        barHeight / 2,
                 );
             const rowBottom =
                 yScale.getPixelForValue(
                     index + 0.5,
                 );
+            const labelY =
+                positionY -
+                barHeight / 2 -
+                COMPARISON_LABEL_BAR_GAP;
             const routeBarEnd =
                 routeStart +
                 (
@@ -646,19 +590,21 @@ function drawComparisonStructure(chart) {
                             1,
                         );
 
-            context.strokeStyle =
-                "rgba(82, 82, 82, 0.4)";
-            context.lineWidth = 1;
-            context.beginPath();
-            context.moveTo(
-                volumeStart,
-                rowBottom,
-            );
-            context.lineTo(
-                timeEnd,
-                rowBottom,
-            );
-            context.stroke();
+            if (index < rows.length - 1) {
+                context.strokeStyle =
+                    "rgba(82, 82, 82, 0.4)";
+                context.lineWidth = 1;
+                context.beginPath();
+                context.moveTo(
+                    volumeStart,
+                    rowBottom,
+                );
+                context.lineTo(
+                    timeGridEnd,
+                    rowBottom,
+                );
+                context.stroke();
+            }
 
             context.font =
                 '600 14px "Open Sans", sans-serif';
@@ -666,12 +612,14 @@ function drawComparisonStructure(chart) {
                 "#e4e6eb";
             context.textAlign =
                 "left";
+            context.textBaseline =
+                "bottom";
             context.fillText(
                 getOperatorName(
                     operator.operator,
                 ),
-                nameStart,
-                positionY,
+                routeStart,
+                labelY,
             );
 
             drawRoundedBar(
@@ -723,16 +671,10 @@ function drawComparisonStructure(chart) {
                 context,
                 formatQuantity(
                     operator.routesChecked,
-                ) +
-                    (
-                        operator.routesChecked ===
-                        1
-                            ? " rota"
-                            : " rotas"
-                    ),
-                routeBarEnd,
+                ),
                 routeEnd,
-                positionY,
+                labelY,
+                "right",
             );
 
             if (receivedTime === null) {
@@ -742,8 +684,8 @@ function drawComparisonStructure(chart) {
                     "left";
                 context.fillText(
                     "—",
-                    timeStart + 8,
-                    positionY,
+                    timeStart,
+                    labelY,
                 );
             } else {
                 drawMetricLabel(
@@ -751,9 +693,9 @@ function drawComparisonStructure(chart) {
                     formatDuration(
                         receivedTime,
                     ),
-                    timeBarEnd,
-                    timeEnd,
-                    positionY,
+                    timeStart,
+                    labelY,
+                    "left",
                     receivedTime >
                         TIME_MAXIMUM_REFERENCE_SECONDS
                         ? TIME_BAR_COLOR
@@ -878,7 +820,7 @@ function createComparisonChart(canvas) {
                     padding: {
                         top: 38,
                         right: 16,
-                        bottom: 46,
+                        bottom: 16,
                         left: 16,
                     },
                 },

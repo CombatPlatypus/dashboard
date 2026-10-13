@@ -40,23 +40,6 @@ const lossesRateColumnAliases =
         ],
     });
 
-const lossesRateIdentificationAliases =
-    Object.freeze({
-        description: [
-            "descricao",
-        ],
-
-        hubCode: [
-            "codigo do hub",
-            "codigo hub",
-        ],
-
-        subRegional: [
-            "sub regional",
-            "subregional",
-        ],
-    });
-
 function normalizeLossesRateColumnName(
     value,
 ) {
@@ -414,141 +397,6 @@ function createLossesRateHistory(
     };
 }
 
-function getLossesRateIdentification(
-    rows,
-) {
-    const aliasesByName =
-        new Map(
-            Object.entries(
-                lossesRateIdentificationAliases,
-            ).flatMap(
-                function (
-                    [
-                        field,
-                        aliases,
-                    ],
-                ) {
-                    return aliases.map(
-                        function (alias) {
-                            return [
-                                alias,
-                                field,
-                            ];
-                        },
-                    );
-                },
-            ),
-        );
-
-    const identification = {
-        description: "",
-        hubCode: "",
-        subRegional: "",
-    };
-
-    const searchLimit =
-        Math.min(
-            rows.length,
-            50,
-        );
-
-    for (
-        let rowIndex = 0;
-        rowIndex < searchLimit;
-        rowIndex += 1
-    ) {
-        rows[rowIndex].forEach(
-            function (
-                value,
-                columnIndex,
-            ) {
-                const field =
-                    aliasesByName.get(
-                        normalizeLossesRateColumnName(
-                            value,
-                        ),
-                    );
-
-                if (
-                    !field ||
-                    identification[field]
-                ) {
-                    return;
-                }
-
-                for (
-                    let valueRowIndex =
-                        rowIndex + 1;
-                    valueRowIndex <
-                        searchLimit;
-                    valueRowIndex += 1
-                ) {
-                    const receivedValue =
-                        String(
-                            rows[
-                                valueRowIndex
-                            ]?.[
-                                columnIndex
-                            ] ?? "",
-                        ).trim();
-
-                    if (!receivedValue) {
-                        continue;
-                    }
-
-                    if (
-                        aliasesByName.has(
-                            normalizeLossesRateColumnName(
-                                receivedValue,
-                            ),
-                        )
-                    ) {
-                        break;
-                    }
-
-                    if (
-                        receivedValue !== "-" &&
-                        receivedValue !== "—"
-                    ) {
-                        identification[field] =
-                            receivedValue;
-                    }
-
-                    break;
-                }
-            },
-        );
-    }
-
-    for (
-        const {
-            key,
-            label,
-        } of [
-            {
-                key: "description",
-                label: "Descrição",
-            },
-            {
-                key: "hubCode",
-                label: "Código do Hub",
-            },
-            {
-                key: "subRegional",
-                label: "Sub Regional",
-            },
-        ]
-    ) {
-        if (!identification[key]) {
-            throw new Error(
-                `O campo ${label} não foi informado na aba Taxa de Perdas.`,
-            );
-        }
-    }
-
-    return identification;
-}
-
 function findLossesRateWorkbookHistory(
     workbook,
 ) {
@@ -630,11 +478,6 @@ function findLossesRateWorkbookHistory(
             headerRowIndex,
             columnIndexes,
         ),
-
-        identification:
-            getLossesRateIdentification(
-                rows,
-            ),
 
         sourceSheetName:
             sheetName,
