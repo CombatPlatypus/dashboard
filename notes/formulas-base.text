@@ -572,12 +572,9 @@ EXEMPLOS PRATICOS
 
         =QUERY(
             
-            {
+            { A12:A \ 'Base do Processamento'!D2:D \ 'Base do Processamento'!A2:A \ 'Base de Erros'!A2:A };
 
-                
-            };
-
-            "SELECT Col2, Col1, Col3, Col4 WHERE Col1 IS NOT NULL AND Col2 IS NOT NULL ORDER BY Col2 DESC, Col5 ASC"; 
+            "SELECT COUNT(Col3) WHERE Col"; 
 
             0
         )
