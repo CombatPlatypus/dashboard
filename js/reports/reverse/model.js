@@ -1,20 +1,21 @@
+import { CHART_COLORS } from "../../charts/theme.js";
 const REVERSE_TYPE_DEFINITIONS =
     Object.freeze({
         return: {
             label: "Return",
-            color: "#4caf50",
+            color: CHART_COLORS.green,
         },
         missorted: {
             label: "Missorted",
-            color: "#FF5722",
+            color: CHART_COLORS.red,
         },
         liquidate: {
             label: "Liquidate",
-            color: "#3F51B5",
+            color: CHART_COLORS.blue,
         },
         confiscated: {
             label: "Confiscado",
-            color: "#f0ad4e",
+            color: CHART_COLORS.yellow,
         },
     });
 
@@ -136,6 +137,65 @@ function createEmptyReverseQuantities() {
     );
 }
 
+function createEmptyReversePackages() {
+    return Object.fromEntries(
+        REVERSE_TYPE_KEYS.map(
+            function (typeKey) {
+                return [typeKey, []];
+            },
+        ),
+    );
+}
+
+function normalizeReversePackages(
+    values,
+) {
+    const packages =
+        createEmptyReversePackages();
+
+    const seenTrackingNumbers =
+        new Set();
+
+    REVERSE_TYPE_KEYS.forEach(
+        function (typeKey) {
+            const trackingNumbers =
+                Array.isArray(
+                    values?.[typeKey],
+                )
+                    ? values[typeKey]
+                    : [];
+
+            trackingNumbers.forEach(
+                function (value) {
+                    const trackingNumber =
+                        normalizeReverseText(
+                            value,
+                        ).toUpperCase();
+
+                    if (
+                        !trackingNumber ||
+                        seenTrackingNumbers.has(
+                            trackingNumber,
+                        )
+                    ) {
+                        return;
+                    }
+
+                    seenTrackingNumbers.add(
+                        trackingNumber,
+                    );
+
+                    packages[typeKey].push(
+                        trackingNumber,
+                    );
+                },
+            );
+        },
+    );
+
+    return packages;
+}
+
 function createReverseTransfer(
     values = {},
 ) {
@@ -150,6 +210,11 @@ function createReverseTransfer(
 
     const quantities =
         createEmptyReverseQuantities();
+
+    const packages =
+        normalizeReversePackages(
+            values.packages,
+        );
 
     REVERSE_TYPE_KEYS.forEach(
         function (typeKey) {
@@ -196,6 +261,7 @@ function createReverseTransfer(
             normalizeReverseText(
                 values.sourceFileName,
             ),
+        packages,
         quantities,
         quantity,
     };
@@ -239,6 +305,9 @@ function createReverseSummary(
     const quantities =
         createEmptyReverseQuantities();
 
+    const packages =
+        createEmptyReversePackages();
+
     normalizedTransfers.forEach(
         function (transfer) {
             REVERSE_TYPE_KEYS.forEach(
@@ -248,6 +317,20 @@ function createReverseSummary(
                             .quantities[
                                 typeKey
                             ];
+
+                    transfer.packages[
+                        typeKey
+                    ].forEach(
+                        function (
+                            trackingNumber,
+                        ) {
+                            packages[typeKey]
+                                .push({
+                                    trackingNumber,
+                                    to: transfer.to,
+                                });
+                        },
+                    );
                 },
             );
         },
@@ -267,6 +350,7 @@ function createReverseSummary(
             normalizedTransfers.length > 0,
         total,
         quantities,
+        packages,
         transfers:
             normalizedTransfers
                 .slice()
@@ -293,6 +377,7 @@ function createReverseSummary(
 export {
     REVERSE_TYPE_DEFINITIONS,
     REVERSE_TYPE_KEYS,
+    createEmptyReversePackages,
     createEmptyReverseQuantities,
     createReverseSummary,
     createReverseTransfer,

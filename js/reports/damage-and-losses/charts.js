@@ -1,4 +1,12 @@
-import { CHART_TEXT_COLOR } from "../../charts/theme.js";
+import { createDashboardChart } from "../../charts/standard.js";
+import { CHART_TEXT_COLOR, CHART_VALUE_FONT } from "../../charts/theme.js";
+
+import {
+    DAMAGE_AND_LOSSES_RED,
+    DAMAGE_AND_LOSSES_YELLOW,
+    DAMAGE_AND_LOSSES_BLUE,
+    getDamageAndLossesPixelRatio,
+} from "./chart-style.js";
 
 import {
     getDamageAndLossesState,
@@ -12,20 +20,32 @@ import {
     drawDoughnut3DCenterText,
 } from "../core/doughnut-3d.js";
 
+import {
+    STACKED_BAR_3D_DEPTH,
+    createStackedBars3DPlugin,
+} from "../core/stacked-bars-3d.js";
+
+import {
+    HORIZONTAL_BAR_3D_DEPTH,
+    createHorizontalBars3DPlugin,
+    horizontalBarGridColor,
+    getHorizontalBarLabelPosition,
+} from "../core/horizontal-bars-3d.js";
+
 const DAMAGE_SOC_COLOR =
-    "#ffc107";
+    DAMAGE_AND_LOSSES_YELLOW;
 
 const DAMAGE_HUB_COLOR =
-    "#F44336";
+    DAMAGE_AND_LOSSES_RED;
 
 const DAMAGE_SOLID_COLOR =
-    "#F44336";
+    DAMAGE_AND_LOSSES_RED;
 
 const DAMAGE_LIQUID_COLOR =
-    "#ff9800";
+    DAMAGE_AND_LOSSES_YELLOW;
 
 const DAMAGE_GLASS_COLOR =
-    "#3F51B5";
+    DAMAGE_AND_LOSSES_BLUE;
 
 const damageChartQuantityFormatter =
     new Intl.NumberFormat(
@@ -90,7 +110,7 @@ function drawDamageChartText(
         color = CHART_TEXT_COLOR,
         align = "center",
         font =
-            '600 14px "Open Sans", sans-serif',
+            CHART_VALUE_FONT,
     } = {},
 ) {
     context.font = font;
@@ -183,13 +203,18 @@ const damageChartAveragePlugin = {
             {
                 align: "center",
                 font:
-                    '600 14px "Open Sans", sans-serif',
+                    CHART_VALUE_FONT,
             },
         );
 
         context.restore();
     },
 };
+
+const damagePeriodBars3DPlugin =
+    createStackedBars3DPlugin({
+        id: "damagePeriodBars3D",
+    });
 
 const damageChartLabelsPlugin = {
     id: "damageChartLabels",
@@ -222,6 +247,9 @@ const damageChartLabelsPlugin = {
                     day.soc +
                     day.hub;
 
+                const hasMultipleTypes =
+                    day.soc > 0 && day.hub > 0;
+
                 const socElement =
                     socElements[index];
 
@@ -229,7 +257,7 @@ const damageChartLabelsPlugin = {
                     hubElements[index];
 
                 if (
-                    day.soc > 0 &&
+                    hasMultipleTypes &&
                     socElement
                 ) {
                     const properties =
@@ -264,7 +292,7 @@ const damageChartLabelsPlugin = {
                 }
 
                 if (
-                    day.hub > 0 &&
+                    hasMultipleTypes &&
                     hubElement
                 ) {
                     const properties =
@@ -316,10 +344,14 @@ const damageChartLabelsPlugin = {
                         context,
                         damageChartQuantityFormatter
                             .format(total),
-                        positionX,
+                        positionX +
+                            STACKED_BAR_3D_DEPTH.x /
+                            2,
                         yScale.getPixelForValue(
                             total,
-                        ) - 11,
+                        ) -
+                            STACKED_BAR_3D_DEPTH.y -
+                            11,
                     );
                 }
             },
@@ -367,6 +399,11 @@ const damageCompositionCenterPlugin = {
     },
 };
 
+const damageSocBars3DPlugin =
+    createHorizontalBars3DPlugin({
+        id: "damageSocBars3D",
+    });
+
 const damageSocLabelsPlugin = {
     id: "damageSocLabels",
 
@@ -400,29 +437,17 @@ const damageSocLabelsPlugin = {
                     return;
                 }
 
-                const properties =
-                    bar.getProps(
-                        ["x", "y"],
-                        true,
-                    );
-
-                const hasSpaceAfterBar =
-                    properties.x + 42 <
-                    chartArea.right;
+                const position =
+                    getHorizontalBarLabelPosition(bar);
 
                 drawDamageChartText(
                     context,
                     damageChartQuantityFormatter
                         .format(value),
-                    hasSpaceAfterBar
-                        ? properties.x + 9
-                        : chartArea.right - 4,
-                    properties.y,
+                    position.x,
+                    position.y,
                     {
-                        align:
-                            hasSpaceAfterBar
-                                ? "left"
-                                : "right",
+                        align: "left",
                     },
                 );
             },
@@ -435,7 +460,7 @@ const damageSocLabelsPlugin = {
 function createDamageCompositionChart(
     canvas,
 ) {
-    return new window.Chart(
+    return createDashboardChart(
         canvas,
         {
             type: "doughnut",
@@ -470,10 +495,7 @@ function createDamageCompositionChart(
                 maintainAspectRatio: false,
 
                 devicePixelRatio:
-                    Math.max(
-                        window.devicePixelRatio || 1,
-                        2,
-                    ),
+                    getDamageAndLossesPixelRatio(),
 
                 cutout: "66%",
                 events: [],
@@ -511,7 +533,7 @@ function createDamageCompositionChart(
 function createDamageLastSevenDaysChart(
     canvas,
 ) {
-    return new window.Chart(
+    return createDashboardChart(
         canvas,
         {
             type: "bar",
@@ -546,6 +568,8 @@ function createDamageLastSevenDaysChart(
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                devicePixelRatio:
+                    getDamageAndLossesPixelRatio(),
 
                 animation: {
                     duration: 350,
@@ -636,6 +660,7 @@ function createDamageLastSevenDaysChart(
             },
 
             plugins: [
+                damagePeriodBars3DPlugin,
                 damageChartAveragePlugin,
                 damageChartLabelsPlugin,
             ],
@@ -646,7 +671,7 @@ function createDamageLastSevenDaysChart(
 function createDamageSocChart(
     canvas,
 ) {
-    return new window.Chart(
+    return createDashboardChart(
         canvas,
         {
             type: "bar",
@@ -660,6 +685,7 @@ function createDamageSocChart(
                         backgroundColor: [],
                         borderWidth: 0,
                         borderSkipped: false,
+                        inflateAmount: 0,
                         barThickness: 24,
                     },
                 ],
@@ -669,6 +695,8 @@ function createDamageSocChart(
                 indexAxis: "y",
                 responsive: true,
                 maintainAspectRatio: false,
+                devicePixelRatio:
+                    getDamageAndLossesPixelRatio(),
 
                 animation: {
                     duration: 350,
@@ -676,7 +704,9 @@ function createDamageSocChart(
 
                 layout: {
                     padding: {
-                        right: 38,
+                        top: HORIZONTAL_BAR_3D_DEPTH.y,
+                        bottom: HORIZONTAL_BAR_3D_DEPTH.y,
+                        right: 64,
                     },
                 },
 
@@ -703,14 +733,14 @@ function createDamageSocChart(
                         ticks: {
                             color: CHART_TEXT_COLOR,
                             precision: 0,
+                            padding: 10,
                             font: {
                                 size: 14,
                             },
                         },
 
                         grid: {
-                            color:
-                                "rgba(82, 82, 82, 0.35)",
+                            color: horizontalBarGridColor,
                         },
 
                         border: {
@@ -721,6 +751,7 @@ function createDamageSocChart(
                     y: {
                         ticks: {
                             color: CHART_TEXT_COLOR,
+                            padding: 22,
                             font: {
                                 size: 14,
                             },
@@ -731,13 +762,14 @@ function createDamageSocChart(
                         },
 
                         border: {
-                            color: "#525252",
+                            display: false,
                         },
                     },
                 },
             },
 
             plugins: [
+                damageSocBars3DPlugin,
                 damageSocLabelsPlugin,
             ],
         },

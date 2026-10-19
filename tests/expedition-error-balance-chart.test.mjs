@@ -17,7 +17,7 @@ import {
 } from "../js/reports/expedition/view.js";
 
 const labels = ["Erros de Etiqueta", "Erros de Sorting", "Revertidos", "Saldo Final"];
-const colors = ["#3F51B5", "#f0ad4e", "#8BC34A", "#FF5722"];
+const colors = ["#2538a5", "#f99400", "#007A48", "#8B0000"];
 
 function replaceGlobal(t, name, value) {
     const original = Object.getOwnPropertyDescriptor(globalThis, name);
@@ -79,6 +79,28 @@ test("gráfico usa o novo título e mantém Etiqueta, Sorting, Revertidos e Sald
     assert.deepEqual(chart.data.labels, labels);
     assert.deepEqual(chart.data.datasets[0].data, [0, 0, 0, 0]);
     assert.deepEqual(chart.data.datasets[0].backgroundColor, colors);
+    assert.deepEqual(chart.plugins.map(plugin => plugin.id), [
+        "expeditionErrorsTextSpacing",
+        "expeditionErrorBalance3D",
+        "expeditionErrorBalanceValues",
+        "dashboardPalette",
+    ]);
+    assert.deepEqual(chart.options.scales.y.ticks.font, {
+        family: '"Open Sans", sans-serif',
+        size: 14,
+    });
+    assert.equal(chart.options.scales.y.ticks.padding, 22);
+    const textContext = { letterSpacing: "0px" };
+    chart.ctx = textContext;
+    chart.plugins[0].beforeDraw(chart);
+    assert.equal(textContext.letterSpacing, "1px");
+    const labelScale = { width: 120 };
+    chart.options.scales.y.afterFit(labelScale);
+    assert.equal(labelScale.width, 136);
+    assert.equal(chart.options.scales.y.border.display, false);
+    assert.equal(chart.options.scales.x.ticks.padding, 10);
+    assert.equal(chart.options.scales.x.grid.color({ tick: { value: 0 } }), "rgba(0, 0, 0, 0)");
+    assert.equal(chart.options.scales.x.grid.color({ tick: { value: 20 } }), "rgba(82, 82, 82, 0.35)");
     const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
     assert.match(html, /<h4>Acompanhamento dos Erros<\/h4>/);
     assert.doesNotMatch(html, /(?:Identificados|Erros de Etiqueta x Erros de Sorting) x? Revertidos x Saldo Final/);
@@ -87,6 +109,99 @@ test("gráfico usa o novo título e mantém Etiqueta, Sorting, Revertidos e Sald
         ["sortingErrorsInput", "sortingErrors"], ["revertedInput", "revertedErrors"]]) {
         assert.match(view, new RegExp(`bindExpeditionErrorQuantityInput\\(\\s*elements\\.${element},\\s*"${field}"`));
     }
+});
+
+test("projeção 3D desenha a base e as faces inferior e lateral de cada barra", t => {
+    const { chart } = createCharts(t);
+    const paths = [];
+    const context = {
+        currentPath: [],
+        strokes: [],
+        save() {},
+        restore() {},
+        beginPath() { this.currentPath = []; },
+        moveTo(x, y) { this.currentPath.push([x, y]); },
+        lineTo(x, y) { this.currentPath.push([x, y]); },
+        closePath() {},
+        fill() { paths.push({ points: this.currentPath, color: this.fillStyle }); },
+        stroke() { this.strokes.push({ color: this.strokeStyle, width: this.lineWidth }); },
+    };
+    const bar = {
+        getProps(properties, final) {
+            assert.deepEqual(properties, ["x", "y", "base", "height"]);
+            assert.equal(final, false);
+            return { x: 112, y: 50, base: 12, height: 32 };
+        },
+    };
+    chart.ctx = context;
+    chart.data.datasets[0].data = [100];
+    chart.chartArea = { left: 12, top: 10, right: 300, bottom: 220 };
+    chart.plugins[1].beforeDatasetsDraw(chart);
+    chart.plugins[1].beforeDatasetDraw(chart, { index: 0, meta: { data: [bar] } });
+    assert.deepEqual(paths, [
+        {
+            points: [[2, 1], [22, 19], [22, 229], [2, 211]],
+            color: "#29292a",
+        },
+        {
+            points: [[12, 66], [112, 66], [122, 75], [22, 75]],
+            color: "#152060",
+        },
+        {
+            points: [[112, 34], [122, 43], [122, 75], [112, 66]],
+            color: "#6270be",
+        },
+    ]);
+    assert.deepEqual(context.strokes, [{
+        color: "rgba(168, 169, 173, 0.34)",
+        width: 1,
+    }]);
+    assert.deepEqual(chart.options.layout.padding, { top: 9, right: 64, bottom: 9 });
+});
+
+test("valores ficam fora das barras com a tipografia e alinhamento do dashboard", t => {
+    const { chart } = createCharts(t);
+    const texts = [];
+    const context = {
+        letterSpacing: "0px",
+        save() {},
+        restore() {},
+        fillText(text, x, y) {
+            texts.push({
+                text, x, y,
+                color: this.fillStyle,
+                align: this.textAlign,
+                baseline: this.textBaseline,
+                font: this.font,
+                spacing: this.letterSpacing,
+            });
+        },
+    };
+    const values = [100, 74, 23, 151];
+    const rightEdges = [112, 92, 62, 162];
+    const bars = rightEdges.map((x, index) => ({
+        horizontal: true,
+        getProps(properties, final) {
+            assert.deepEqual(properties, ["x", "y", "base"]);
+            assert.equal(final, false);
+            return { x, y: 40 + index * 50, base: 12 };
+        },
+    }));
+    chart.ctx = context;
+    chart.chartArea = { left: 12, top: 10, right: 300, bottom: 220 };
+    chart.data.datasets[0].data = values;
+    chart.getDatasetMeta = () => ({ data: bars });
+    chart.plugins[2].afterDatasetsDraw(chart);
+    assert.deepEqual(texts, [
+        { text: "100", x: 132, y: 47, color: "#e4e6eb", align: "left",
+            baseline: "middle", font: '600 15px "Open Sans", sans-serif', spacing: "1px" },
+        { text: "74", x: 112, y: 97, color: "#e4e6eb", align: "left",
+            baseline: "middle", font: '600 15px "Open Sans", sans-serif', spacing: "1px" },
+        { text: "23", x: 82, y: 147, color: "#e4e6eb", align: "left",
+            baseline: "middle", font: '600 15px "Open Sans", sans-serif', spacing: "1px" },
+        { text: "151", x: 182, y: 197, color: "#e4e6eb", align: "left",
+            baseline: "middle", font: '600 15px "Open Sans", sans-serif', spacing: "1px" },
+    ]);
 });
 
 test("cada controle atualiza as barras durante a digitação, sem recriar os gráficos", t => {

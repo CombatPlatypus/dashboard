@@ -9,7 +9,7 @@ import {
     resetDamageAndLossesState,
 } from "../js/reports/damage-and-losses/state.js";
 
-const colors = ["#F44336", "#ff9800", "#3F51B5"];
+const colors = ["#8B0000", "#f99400", "#2538a5"];
 
 function replaceGlobal(t, name, value) {
     const original = Object.getOwnPropertyDescriptor(globalThis, name);
@@ -30,7 +30,7 @@ test("composição de avarias usa a projeção 3D e mantém as cores, sem rótul
     assert.equal(config.options.animation, false);
     assert.deepEqual(config.options.events, []);
     assert.deepEqual(config.plugins.map(plugin => plugin.id), [
-        "damage-composition-3d", "damageCompositionCenter",
+        "damage-composition-3d", "damageCompositionCenter", "dashboardPalette",
     ]);
 });
 
@@ -58,7 +58,7 @@ test("texto central fica frontal à projeção, inclusive com categoria única o
         assert.deepEqual(ctx.texts, [[text, geometry.centerX, geometry.textCenterY - 10.5],
             ["Classificadas", geometry.centerX, geometry.textCenterY + 10.5]]);
         assert.equal(ctx.font, '15px "Open Sans", sans-serif');
-        assert.equal(ctx.fillStyle, "#a8a9ad");
+        assert.equal(ctx.fillStyle, "#e4e6eb");
         assert.equal(ctx.letterSpacing, "1px");
         assert.ok(ctx.fills > 2);
         assert.equal(ctx.balance, 0);
@@ -107,9 +107,13 @@ test("gráfico e indicadores acompanham período, importação, restauração e 
     assert.equal(initializeDamageAndLossesCharts(panel), true);
     assert.equal(initializeDamageAndLossesCharts(panel), true);
     assert.equal(charts.length, 3);
+    assert.deepEqual(charts.map(chart => chart.options.devicePixelRatio), [2, 2, 2]);
     assert.equal(charts[0].type, "bar");
     assert.equal(charts[2].type, "bar");
-    assert.deepEqual(charts[2].data.datasets[0].backgroundColor, ["#ffc107", "#ffc107"]);
+    assert.ok(charts[0].plugins.some(
+        plugin => plugin.id === "damagePeriodBars3D",
+    ));
+    assert.deepEqual(charts[2].data.datasets[0].backgroundColor, ["#f99400", "#f99400"]);
     const composition = charts[1];
     const values = () => elements.slice(5).map(element => element.textContent);
     assert.deepEqual(composition.data.datasets[0].data, [2, 4, 2]);
@@ -122,7 +126,7 @@ test("gráfico e indicadores acompanham período, importação, restauração e 
     assert.deepEqual(composition.data.datasets[0].data, [10, 8, 6]);
     assert.equal(composition.options.plugins.damageCompositionCenter.text, "24");
     assert.deepEqual(values(), ["10 (42%)", "8 (33%)", "6 (25%)"]);
-    assert.deepEqual(charts[2].data.datasets[0].backgroundColor, ["#ffc107", "#ffc107", "#ffc107"]);
+    assert.deepEqual(charts[2].data.datasets[0].backgroundColor, ["#f99400", "#f99400", "#f99400"]);
     replaceDamageAndLossesData({ monthIndex: 9, year: 2026,
         days: [{ date: "2026-10-10", hub: 2185, liquid: 2185 }] });
     assert.deepEqual(values(), ["0 (0%)", "2.185 (100%)", "0 (0%)"]);

@@ -22,16 +22,17 @@ function configure(fonts, instances = {}) {
     return { chartLibrary, frames, warnings };
 }
 
-test("Open Sans é o padrão global antes da criação dos gráficos, sem alterar tamanho ou peso", () => {
+test("Open Sans 14px e densidade mínima 2x são o padrão antes da criação dos gráficos", () => {
     const { chartLibrary, frames } = configure(undefined);
-    assert.deepEqual(chartLibrary.defaults.font, { family: "'Open Sans', sans-serif", size: 12, weight: null });
+    assert.deepEqual(chartLibrary.defaults.font, { family: "'Open Sans', sans-serif", size: 14, weight: null });
+    assert.equal(chartLibrary.defaults.devicePixelRatio(), 2);
     assert.equal(frames.length, 0);
     assert.doesNotThrow(() => runInNewContext(source, { window: {}, document: {} }));
 });
 
-test("textos e tooltips dos gráficos atuais e futuros usam #a8a9ad por padrão", () => {
+test("textos e tooltips dos gráficos atuais e futuros usam #e4e6eb por padrão", () => {
     const { chartLibrary } = configure(undefined);
-    assert.equal(CHART_TEXT_COLOR, "#a8a9ad");
+    assert.equal(CHART_TEXT_COLOR, "#e4e6eb");
     assert.equal(chartLibrary.defaults.color, CHART_TEXT_COLOR);
     for (const property of ["titleColor", "bodyColor", "footerColor"]) {
         assert.equal(chartLibrary.defaults.plugins.tooltip[property], CHART_TEXT_COLOR);
@@ -82,6 +83,8 @@ test("o HTML aplica o padrão a relatórios e análises, usando arquivos de font
     assert.ok(defaultsPosition < html.indexOf('<script type="module" src="js/reports/init.js"></script>'));
     assert.ok(defaultsPosition < html.indexOf('<script type="module" src="js/data-analysis/index.js"></script>'));
     const styles = readFileSync(new URL("../css/dashboard-style.css", import.meta.url), "utf8");
+    const reportStyles = readFileSync(new URL("../css/reports-style.css", import.meta.url), "utf8");
+    assert.match(reportStyles, /\.chart-label p\s*\{[^}]*color:\s*var\(--color-text\)/);
     assert.match(styles, /canvas\s*\{\s*font-family:\s*'Open Sans', sans-serif;/);
     const fontCssUrl = new URL("../css/font-face.css", import.meta.url);
     const fontCss = readFileSync(fontCssUrl, "utf8");

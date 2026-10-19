@@ -1,4 +1,12 @@
-import { CHART_TEXT_COLOR } from "../../charts/theme.js";
+import { createDashboardChart } from "../../charts/standard.js";
+import { CHART_TEXT_COLOR, CHART_VALUE_FONT } from "../../charts/theme.js";
+
+import {
+    DAMAGE_AND_LOSSES_RED,
+    DAMAGE_AND_LOSSES_YELLOW,
+    DAMAGE_AND_LOSSES_GREEN,
+    getDamageAndLossesPixelRatio,
+} from "./chart-style.js";
 
 import {
     getLossesState,
@@ -6,12 +14,24 @@ import {
     subscribeLossesState,
 } from "./losses-state.js";
 
-const LOSSES_REVIEW_COLOR = "#ffc107";
-const LOSSES_CONFIRMED_COLOR = "#F44336";
-const LOSSES_RETURNED_COLOR = "#66bb6a";
-const LOSSES_RECOVERY_DONE_COLOR = "#43a047";
-const LOSSES_RECOVERY_NOT_DONE_COLOR = "#ef5350";
-const LOSSES_RECOVERY_INVALID_ID_COLOR = "#ff9800";
+import {
+    STACKED_BAR_3D_DEPTH,
+    createStackedBars3DPlugin,
+} from "../core/stacked-bars-3d.js";
+
+import {
+    HORIZONTAL_BAR_3D_DEPTH,
+    createHorizontalBars3DPlugin,
+    horizontalBarGridColor,
+    getHorizontalBarLabelPosition,
+} from "../core/horizontal-bars-3d.js";
+
+const LOSSES_REVIEW_COLOR = DAMAGE_AND_LOSSES_YELLOW;
+const LOSSES_CONFIRMED_COLOR = DAMAGE_AND_LOSSES_RED;
+const LOSSES_RETURNED_COLOR = DAMAGE_AND_LOSSES_GREEN;
+const LOSSES_RECOVERY_DONE_COLOR = DAMAGE_AND_LOSSES_GREEN;
+const LOSSES_RECOVERY_NOT_DONE_COLOR = DAMAGE_AND_LOSSES_RED;
+const LOSSES_RECOVERY_INVALID_ID_COLOR = DAMAGE_AND_LOSSES_YELLOW;
 const LOSSES_RECOVERY_UNINFORMED_COLOR = "#a0a4aa";
 
 const lossesQuantityFormatter =
@@ -50,7 +70,7 @@ function drawLossesChartText(
     {
         color = CHART_TEXT_COLOR,
         align = "center",
-        font = '600 14px "Open Sans", sans-serif',
+        font = CHART_VALUE_FONT,
         outline = true,
     } = {},
 ) {
@@ -126,13 +146,18 @@ const lossesAveragePlugin = {
             positionY + 10,
             {
                 align: "center",
-                font: '600 14px "Open Sans", sans-serif',
+                font: CHART_VALUE_FONT,
             },
         );
 
         context.restore();
     },
 };
+
+const lossesPeriodBars3DPlugin =
+    createStackedBars3DPlugin({
+        id: "lossesPeriodBars3D",
+    });
 
 const lossesPeriodLabelsPlugin = {
     id: "lossesPeriodLabels",
@@ -159,6 +184,9 @@ const lossesPeriodLabelsPlugin = {
                     day.underReview,
                     day.confirmedLosses,
                 ];
+                const hasMultipleTypes =
+                    day.underReview > 0 &&
+                    day.confirmedLosses > 0;
                 const bars = [
                     reviewBars[index],
                     confirmedBars[index],
@@ -168,7 +196,7 @@ const lossesPeriodLabelsPlugin = {
                     function (value, valueIndex) {
                         const bar = bars[valueIndex];
 
-                        if (value <= 0 || !bar) {
+                        if (!hasMultipleTypes || value <= 0 || !bar) {
                             return;
                         }
 
@@ -209,48 +237,14 @@ const lossesPeriodLabelsPlugin = {
                     drawLossesChartText(
                         context,
                         lossesQuantityFormatter.format(total),
-                        positionX,
-                        yScale.getPixelForValue(total) - 11,
+                        positionX +
+                            STACKED_BAR_3D_DEPTH.x /
+                            2,
+                        yScale.getPixelForValue(total) -
+                            STACKED_BAR_3D_DEPTH.y -
+                            11,
                     );
                 }
-            },
-        );
-
-        context.restore();
-    },
-};
-
-const lossesHorizontalTrackPlugin = {
-    id: "lossesHorizontalTrack",
-
-    beforeDatasetsDraw(chart) {
-        const chartArea = chart.chartArea;
-        const bars =
-            chart.getDatasetMeta(0).data;
-
-        if (!chartArea || bars.length === 0) {
-            return;
-        }
-
-        const context = chart.ctx;
-        context.save();
-        context.fillStyle =
-            "rgba(82, 82, 82, 0.34)";
-
-        bars.forEach(
-            function (bar) {
-                const properties =
-                    bar.getProps(
-                        ["y", "height"],
-                        true,
-                    );
-
-                context.fillRect(
-                    chartArea.left,
-                    properties.y - properties.height / 2,
-                    chartArea.right - chartArea.left,
-                    properties.height,
-                );
             },
         );
 
@@ -271,6 +265,11 @@ const lossesHorizontalTextStylePlugin = {
     },
 };
 
+const lossesHorizontalBars3DPlugin =
+    createHorizontalBars3DPlugin({
+        id: "lossesHorizontalBars3D",
+    });
+
 const lossesRecoveryLabelsPlugin = {
     id: "lossesRecoveryLabels",
 
@@ -290,16 +289,16 @@ const lossesRecoveryLabelsPlugin = {
 
         bars.forEach(
             function (bar, index) {
-                const properties =
-                    bar.getProps(["y"], true);
+                const position =
+                    getHorizontalBarLabelPosition(bar);
 
                 drawLossesChartText(
                     context,
                     lossesQuantityFormatter.format(
                         Number(values[index]) || 0,
                     ),
-                    chartArea.right + 12,
-                    properties.y,
+                    position.x,
+                    position.y,
                     {
                         align: "left",
                         outline: false,
@@ -313,7 +312,7 @@ const lossesRecoveryLabelsPlugin = {
 };
 
 function createLossesPeriodChart(canvas) {
-    return new window.Chart(canvas, {
+    return createDashboardChart(canvas, {
         type: "bar",
         data: {
             labels: [],
@@ -323,6 +322,7 @@ function createLossesPeriodChart(canvas) {
                     data: [],
                     backgroundColor: LOSSES_REVIEW_COLOR,
                     borderWidth: 0,
+                    borderSkipped: false,
                     stack: "losses",
                 },
                 {
@@ -330,6 +330,7 @@ function createLossesPeriodChart(canvas) {
                     data: [],
                     backgroundColor: LOSSES_CONFIRMED_COLOR,
                     borderWidth: 0,
+                    borderSkipped: false,
                     stack: "losses",
                 },
             ],
@@ -337,6 +338,7 @@ function createLossesPeriodChart(canvas) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            devicePixelRatio: getDamageAndLossesPixelRatio(),
             animation: false,
             layout: {
                 padding: {
@@ -361,7 +363,7 @@ function createLossesPeriodChart(canvas) {
                     stacked: true,
                     ticks: {
                         color: CHART_TEXT_COLOR,
-                        font: { size: 13 },
+                        font: { size: 14 },
                     },
                     grid: {
                         color: "rgba(82, 82, 82, 0.35)",
@@ -374,7 +376,7 @@ function createLossesPeriodChart(canvas) {
                     ticks: {
                         color: CHART_TEXT_COLOR,
                         precision: 0,
-                        font: { size: 13 },
+                        font: { size: 14 },
                     },
                     grid: {
                         color: "rgba(82, 82, 82, 0.35)",
@@ -384,6 +386,7 @@ function createLossesPeriodChart(canvas) {
             },
         },
         plugins: [
+            lossesPeriodBars3DPlugin,
             lossesAveragePlugin,
             lossesPeriodLabelsPlugin,
         ],
@@ -391,7 +394,7 @@ function createLossesPeriodChart(canvas) {
 }
 
 function createLossesPackRecoveryChart(canvas) {
-    return new window.Chart(canvas, {
+    return createDashboardChart(canvas, {
         type: "bar",
         data: {
             labels: [
@@ -410,7 +413,9 @@ function createLossesPackRecoveryChart(canvas) {
                         LOSSES_RECOVERY_UNINFORMED_COLOR,
                     ],
                     borderWidth: 0,
-                    borderRadius: 3,
+                    borderRadius: 0,
+                    borderSkipped: false,
+                    inflateAmount: 0,
                     barThickness: 24,
                 },
             ],
@@ -419,9 +424,14 @@ function createLossesPackRecoveryChart(canvas) {
             indexAxis: "y",
             responsive: true,
             maintainAspectRatio: false,
+            devicePixelRatio: getDamageAndLossesPixelRatio(),
             animation: false,
             layout: {
-                padding: { right: 52 },
+                padding: {
+                    top: HORIZONTAL_BAR_3D_DEPTH.y,
+                    bottom: HORIZONTAL_BAR_3D_DEPTH.y,
+                    right: 64,
+                },
             },
             plugins: {
                 legend: { display: false },
@@ -440,13 +450,20 @@ function createLossesPackRecoveryChart(canvas) {
             scales: {
                 x: {
                     beginAtZero: true,
-                    display: false,
+                    ticks: {
+                        color: CHART_TEXT_COLOR,
+                        precision: 0,
+                        padding: 10,
+                        font: { size: 14 },
+                    },
+                    grid: { color: horizontalBarGridColor },
+                    border: { color: "#525252" },
                 },
                 y: {
                     ticks: {
                         color: CHART_TEXT_COLOR,
                         font: { size: 14 },
-                        padding: 12,
+                        padding: 22,
                     },
                     grid: { display: false },
                     border: { display: false },
@@ -455,14 +472,14 @@ function createLossesPackRecoveryChart(canvas) {
         },
         plugins: [
             lossesHorizontalTextStylePlugin,
-            lossesHorizontalTrackPlugin,
+            lossesHorizontalBars3DPlugin,
             lossesRecoveryLabelsPlugin,
         ],
     });
 }
 
 function createLossesReturnedComparisonChart(canvas) {
-    return new window.Chart(canvas, {
+    return createDashboardChart(canvas, {
         type: "bar",
         data: {
             labels: [
@@ -479,7 +496,9 @@ function createLossesReturnedComparisonChart(canvas) {
                         LOSSES_RETURNED_COLOR,
                     ],
                     borderWidth: 0,
-                    borderRadius: 3,
+                    borderRadius: 0,
+                    borderSkipped: false,
+                    inflateAmount: 0,
                     barThickness: 24,
                 },
             ],
@@ -488,9 +507,14 @@ function createLossesReturnedComparisonChart(canvas) {
             indexAxis: "y",
             responsive: true,
             maintainAspectRatio: false,
+            devicePixelRatio: getDamageAndLossesPixelRatio(),
             animation: false,
             layout: {
-                padding: { right: 52 },
+                padding: {
+                    top: HORIZONTAL_BAR_3D_DEPTH.y,
+                    bottom: HORIZONTAL_BAR_3D_DEPTH.y,
+                    right: 64,
+                },
             },
             plugins: {
                 legend: { display: false },
@@ -509,13 +533,20 @@ function createLossesReturnedComparisonChart(canvas) {
             scales: {
                 x: {
                     beginAtZero: true,
-                    display: false,
+                    ticks: {
+                        color: CHART_TEXT_COLOR,
+                        precision: 0,
+                        padding: 10,
+                        font: { size: 14 },
+                    },
+                    grid: { color: horizontalBarGridColor },
+                    border: { color: "#525252" },
                 },
                 y: {
                     ticks: {
                         color: CHART_TEXT_COLOR,
                         font: { size: 14 },
-                        padding: 12,
+                        padding: 22,
                     },
                     grid: { display: false },
                     border: { display: false },
@@ -524,7 +555,7 @@ function createLossesReturnedComparisonChart(canvas) {
         },
         plugins: [
             lossesHorizontalTextStylePlugin,
-            lossesHorizontalTrackPlugin,
+            lossesHorizontalBars3DPlugin,
             lossesRecoveryLabelsPlugin,
         ],
     });

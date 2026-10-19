@@ -1,4 +1,5 @@
 import {
+    REVERSE_TYPE_DEFINITIONS,
     REVERSE_TYPE_KEYS,
     createReverseSummary,
 } from "./model.js";
@@ -7,6 +8,10 @@ import {
     getReverseState,
     subscribeReverseState,
 } from "./state.js";
+
+import {
+    bindReversePackageCopyButton,
+} from "./package-copy.js";
 
 const reverseIntegerFormatter =
     new Intl.NumberFormat(
@@ -39,6 +44,33 @@ function getReverseViewElements(
             );
         };
 
+    const packageBodies = {};
+    const packageCopyButtons = {};
+    const packageSections = {};
+
+    REVERSE_TYPE_KEYS.forEach(
+        function (typeKey) {
+            const idSuffix =
+                `${typeKey[0]
+                    .toUpperCase()}${typeKey.slice(1)}`;
+
+            packageBodies[typeKey] =
+                getElement(
+                    `reverse${idSuffix}PackagesBody`,
+                );
+
+            packageCopyButtons[typeKey] =
+                getElement(
+                    `reverseCopy${idSuffix}PackagesButton`,
+                );
+
+            packageSections[typeKey] =
+                getElement(
+                    `reverse${idSuffix}PackagesSection`,
+                );
+        },
+    );
+
     return {
         total:
             getElement("reverseTotal"),
@@ -70,13 +102,49 @@ function getReverseViewElements(
             getElement(
                 "reverseDistributionBody",
             ),
+        packageTables:
+            getElement(
+                "reversePackageTables",
+            ),
+        packageBodies,
+        packageCopyButtons,
+        packageSections,
     };
 }
 
 function hasReverseViewElements(
     elements,
 ) {
-    return Object.values(elements)
+    const viewElements =
+        Object.entries(elements)
+            .filter(
+                function ([key]) {
+                    return key !==
+                            "packageBodies" &&
+                        key !==
+                            "packageCopyButtons" &&
+                        key !==
+                            "packageSections";
+                },
+            )
+            .map(
+                function ([, element]) {
+                    return element;
+                },
+            );
+
+    return [
+        ...viewElements,
+        ...Object.values(
+            elements.packageBodies,
+        ),
+        ...Object.values(
+            elements.packageCopyButtons,
+        ),
+        ...Object.values(
+            elements.packageSections,
+        ),
+    ]
         .every(
             function (element) {
                 return element instanceof
@@ -160,6 +228,85 @@ function renderReverseDistribution(
     body.replaceChildren(fragment);
 }
 
+function createReversePackageRow(
+    packageRow,
+) {
+    const row =
+        document.createElement("tr");
+
+    [
+        packageRow.trackingNumber,
+        packageRow.to,
+    ].forEach(
+        function (value) {
+            const cell =
+                document.createElement(
+                    "td",
+                );
+
+            cell.textContent = value;
+            row.appendChild(cell);
+        },
+    );
+
+    return row;
+}
+
+function renderReversePackageTable(
+    body,
+    packageRows,
+    copyButton = null,
+    section = null,
+    showWhenEmpty = false,
+) {
+    if (section instanceof HTMLElement) {
+        section.hidden =
+            packageRows.length === 0 &&
+            !showWhenEmpty;
+    }
+
+    if (
+        copyButton instanceof
+            HTMLButtonElement
+    ) {
+        copyButton.disabled =
+            copyButton.dataset
+                .reversePackageCopyBusy ===
+                "true" ||
+            packageRows.length === 0;
+    }
+
+    if (packageRows.length === 0) {
+        const row =
+            document.createElement("tr");
+        const cell =
+            document.createElement("td");
+
+        row.className = "empty-row";
+        cell.colSpan = 2;
+        cell.textContent = "—";
+        row.appendChild(cell);
+        body.replaceChildren(row);
+
+        return;
+    }
+
+    const fragment =
+        document.createDocumentFragment();
+
+    packageRows.forEach(
+        function (packageRow) {
+            fragment.appendChild(
+                createReversePackageRow(
+                    packageRow,
+                ),
+            );
+        },
+    );
+
+    body.replaceChildren(fragment);
+}
+
 function renderReverseView(
     state = getReverseState(),
 ) {
@@ -224,6 +371,41 @@ function renderReverseView(
         summary.transfers,
     );
 
+    const hasPackageRows =
+        REVERSE_TYPE_KEYS.some(
+            function (typeKey) {
+                return summary.packages[
+                    typeKey
+                ].length > 0;
+            },
+        );
+
+    reverseViewElements
+        .packageTables.hidden = false;
+
+    REVERSE_TYPE_KEYS.forEach(
+        function (typeKey) {
+            renderReversePackageTable(
+                reverseViewElements
+                    .packageBodies[
+                        typeKey
+                    ],
+                summary.packages[
+                    typeKey
+                ],
+                reverseViewElements
+                    .packageCopyButtons[
+                        typeKey
+                    ],
+                reverseViewElements
+                    .packageSections[
+                        typeKey
+                    ],
+                !hasPackageRows,
+            );
+        },
+    );
+
     return true;
 }
 
@@ -241,6 +423,23 @@ function initializeReverseView(
 
     reverseViewElements = elements;
 
+    REVERSE_TYPE_KEYS.forEach(
+        function (typeKey) {
+            bindReversePackageCopyButton(
+                elements
+                    .packageCopyButtons[
+                        typeKey
+                    ],
+                elements.packageBodies[
+                    typeKey
+                ],
+                REVERSE_TYPE_DEFINITIONS[
+                    typeKey
+                ].label,
+            );
+        },
+    );
+
     subscribeReverseState(
         renderReverseView,
     );
@@ -254,5 +453,6 @@ function initializeReverseView(
 
 export {
     initializeReverseView,
+    renderReversePackageTable,
     renderReverseView,
 };
