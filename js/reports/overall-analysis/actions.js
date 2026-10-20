@@ -19,6 +19,12 @@ import {
     setReportNotification,
 } from "../report-notifications.js";
 
+import { getOverallAnalysisMissingSections, isOverallAnalysisComplete } from "./completeness.js";
+import {
+    createStandaloneOverallAnalysisHtml,
+    createStandaloneOverallAnalysisFileName,
+} from "./standalone-export.js";
+
 const OVERALL_ANALYSIS_SOURCE_REPORT_IDS =
     Object.freeze([
         "planning",
@@ -26,6 +32,8 @@ const OVERALL_ANALYSIS_SOURCE_REPORT_IDS =
         "expedition",
         "damage-and-losses",
         "losses-rate",
+        "parcel",
+        "reverse",
     ]);
 
 let overallAnalysisActionsInitialized =
@@ -40,6 +48,8 @@ let overallAnalysisHasExportableData =
 let overallAnalysisCopyButton = null;
 let overallAnalysisClearButton = null;
 let overallAnalysisExportArea = null;
+let overallAnalysisHtmlButton = null;
+let overallAnalysisCurrentData = null;
 
 /* IDENTIFICA SE EXISTE ALGUMA INFORMAÇÃO PARA LIMPAR */
 
@@ -86,7 +96,9 @@ function canClearOverallAnalysisSources() {
 
 function renderOverallAnalysisActions(
     hasExportableData,
+    data = overallAnalysisCurrentData,
 ) {
+    overallAnalysisCurrentData = data;
     overallAnalysisHasExportableData =
         Boolean(
             hasExportableData,
@@ -99,6 +111,10 @@ function renderOverallAnalysisActions(
         ) ||
         !(
             overallAnalysisClearButton instanceof
+                HTMLButtonElement
+        ) ||
+        !(
+            overallAnalysisHtmlButton instanceof
                 HTMLButtonElement
         )
     ) {
@@ -113,7 +129,53 @@ function renderOverallAnalysisActions(
         overallAnalysisExportBusy ||
         !canClearOverallAnalysisSources();
 
+    const missing = getOverallAnalysisMissingSections(data);
+    overallAnalysisHtmlButton.disabled = overallAnalysisExportBusy || missing.length > 0;
+    overallAnalysisHtmlButton.title = overallAnalysisExportBusy
+        ? "Gerando relatório..."
+        : missing.length
+            ? `Complete a análise geral. Falta: ${missing.join("; ")}.`
+            : "Baixar resumo HTML interativo";
+
     return true;
+}
+
+/* BAIXA O RETRATO COMPLETO DA JANELA EM UM ÚNICO HTML */
+
+async function runOverallAnalysisHtmlExport() {
+    if (overallAnalysisExportBusy || !isOverallAnalysisComplete(overallAnalysisCurrentData)) {
+        return false;
+    }
+
+    overallAnalysisExportBusy = true;
+    overallAnalysisHtmlButton.setAttribute("aria-busy", "true");
+    renderOverallAnalysisActions(overallAnalysisHasExportableData);
+    const generatedAt = new Date();
+    const fileName = createStandaloneOverallAnalysisFileName(
+        generatedAt, overallAnalysisCurrentData.context.window,
+    );
+
+    try {
+        const html = await createStandaloneOverallAnalysisHtml(overallAnalysisCurrentData, { generatedAt });
+        downloadReportBlob(new Blob([html], { type: "text/html;charset=utf-8" }),
+            fileName);
+        setReportNotification({
+            reportId: "overall-analysis", type: "success",
+            message: "Resumo HTML interativo baixado.",
+        });
+        return true;
+    } catch (error) {
+        console.error("Não foi possível gerar o resumo HTML:", error);
+        setReportNotification({
+            reportId: "overall-analysis", type: "error",
+            message: "Não foi possível gerar o resumo HTML. Tente novamente.",
+        });
+        return false;
+    } finally {
+        overallAnalysisExportBusy = false;
+        overallAnalysisHtmlButton.removeAttribute("aria-busy");
+        renderOverallAnalysisActions(overallAnalysisHasExportableData);
+    }
 }
 
 /* EXPORTA A ANÁLISE GERAL */
@@ -294,6 +356,8 @@ function initializeOverallAnalysisActions(
             "#overallAnalysisCopyReportButton",
         );
 
+    overallAnalysisHtmlButton = panel?.querySelector("#overallAnalysisExportHtmlButton");
+
     overallAnalysisClearButton =
         panel?.querySelector(
             "#overallAnalysisClearReportButton",
@@ -316,6 +380,10 @@ function initializeOverallAnalysisActions(
         !(
             overallAnalysisExportArea instanceof
                 HTMLElement
+        ) ||
+        !(
+            overallAnalysisHtmlButton instanceof
+                HTMLButtonElement
         )
     ) {
         return false;
@@ -339,6 +407,8 @@ function initializeOverallAnalysisActions(
                 },
         },
     );
+
+    overallAnalysisHtmlButton.addEventListener("click", runOverallAnalysisHtmlExport);
 
     overallAnalysisClearButton
         .addEventListener(
@@ -365,5 +435,6 @@ function initializeOverallAnalysisActions(
 export {
     initializeOverallAnalysisActions,
     renderOverallAnalysisActions,
+    runOverallAnalysisHtmlExport,
     resetOverallAnalysisSources,
 };

@@ -1,3 +1,7 @@
+import {
+    REVERSE_TYPE_KEYS,
+} from "../reverse/model.js";
+
 const overallAnalysisNumberFormatter =
     new Intl.NumberFormat(
         "pt-BR",
@@ -20,6 +24,15 @@ const overallAnalysisCapacityRateFormatter =
             style: "percent",
             minimumFractionDigits: 1,
             maximumFractionDigits: 1,
+        },
+    );
+
+const overallAnalysisCompositionRateFormatter =
+    new Intl.NumberFormat(
+        "pt-BR",
+        {
+            style: "percent",
+            maximumFractionDigits: 0,
         },
     );
 
@@ -271,7 +284,21 @@ function getOverallAnalysisViewElements(
             );
         };
 
+    const parcelAndReverseElements = {};
+
+    [
+        "ParcelScanned", "ParcelBacklog", "ParcelException", "ParcelMissorted",
+        "ParcelCoverageScanned", "ParcelCoverageUnscanned",
+        "ReverseReturn", "ReverseMissorted", "ReverseLiquidate", "ReverseConfiscated",
+        "ReverseCompositionReturn", "ReverseCompositionMissorted",
+        "ReverseCompositionLiquidate", "ReverseCompositionConfiscated",
+    ].forEach(function (suffix) {
+        parcelAndReverseElements[suffix] =
+            getElement(`overallAnalysis${suffix}`);
+    });
+
     return {
+        ...parcelAndReverseElements,
         date:
             getElement(
                 "overallAnalysisDate",
@@ -340,26 +367,6 @@ function getOverallAnalysisViewElements(
         flowStatus:
             getElement(
                 "overallAnalysisFlowStatus",
-            ),
-
-        fastestReceiver:
-            getElement(
-                "overallAnalysisFastestReceiver",
-            ),
-
-        mostPackages:
-            getElement(
-                "overallAnalysisMostPackages",
-            ),
-
-        fastestChecker:
-            getElement(
-                "overallAnalysisFastestChecker",
-            ),
-
-        mostRoutesChecker:
-            getElement(
-                "overallAnalysisMostRoutesChecker",
             ),
 
         expectedVolume:
@@ -513,17 +520,65 @@ function renderOverallDamageAndLossesTable(
 
 /* RENDERIZAÇÃO */
 
+function renderOverallParcelAndReverse(
+    elements,
+    parcel,
+    reverse,
+) {
+    [
+        ["ParcelScanned", "scannedCount"],
+        ["ParcelBacklog", "backlogCount"],
+        ["ParcelException", "exceptionCount"],
+        ["ParcelMissorted", "missortedCount"],
+    ].forEach(function ([elementKey, field]) {
+        elements[elementKey].textContent =
+            formatOverallAnalysisQuantity(
+                parcel.hasData ? parcel[field] : null,
+            );
+    });
+
+    [
+        ["ParcelCoverageScanned", "expectedScannedCount"],
+        ["ParcelCoverageUnscanned", "expectedUnscannedCount"],
+    ].forEach(function ([elementKey, field]) {
+        elements[elementKey].textContent =
+            formatOverallAnalysisRate(
+                parcel.expectedTotalCount > 0
+                    ? parcel[field] / parcel.expectedTotalCount
+                    : null,
+            );
+    });
+
+    REVERSE_TYPE_KEYS.forEach(function (typeKey) {
+        const suffix =
+            `${typeKey[0].toUpperCase()}${typeKey.slice(1)}`;
+        const quantity = reverse.quantities[typeKey];
+
+        elements[`Reverse${suffix}`].textContent =
+            formatOverallAnalysisQuantity(
+                reverse.hasData ? quantity : null,
+            );
+
+        elements[`ReverseComposition${suffix}`].textContent =
+            reverse.hasData
+                ? `${formatOverallAnalysisQuantity(quantity)} (${overallAnalysisCompositionRateFormatter.format(
+                    reverse.total > 0 ? quantity / reverse.total : 0,
+                )})`
+                : "—";
+    });
+}
+
 function renderOverallAnalysisView(
     data,
+    elements = overallAnalysisViewElements,
+    date = new Date(),
 ) {
-    if (!overallAnalysisViewElements) {
+    if (!elements) {
         return false;
     }
 
-    const elements =
-        overallAnalysisViewElements;
-
-    renderOverallAnalysisDate();
+    elements.date.textContent =
+        formatOverallAnalysisDate(date);
 
     elements.window.textContent =
         data.context?.window || "—";
@@ -631,37 +686,10 @@ function renderOverallAnalysisView(
             : data.flow.gap === 0
                 ? "Piso zerado"
                 : (
-                    "Gap de " +
-                    formatOverallAnalysisQuantity(
-                        data.flow.gap,
-                    ) +
-                    " em relação ao planejamento"
+                    `${formatOverallAnalysisQuantity(data.flow.planned)} Pacotes foram planejados para essa janela, ` +
+                    `mas somente ${formatOverallAnalysisQuantity(data.flow.expedited)} foram expedidos, ` +
+                    `temos um gap de ${formatOverallAnalysisQuantity(data.flow.gap)} ${data.flow.gap === 1 ? "pacote" : "pacotes"}.`
                 );
-
-    elements.fastestReceiver.textContent =
-        data.highlights.fastestReceiver ||
-        "—";
-
-    elements.mostPackages.textContent =
-        data.highlights.mostPackages !==
-            null
-            ? (
-                formatOverallAnalysisQuantity(
-                    data.highlights
-                        .mostPackages,
-                ) +
-                " pacotes"
-            )
-            : "—";
-
-    elements.fastestChecker.textContent =
-        data.highlights.fastestChecker ||
-        "—";
-
-    elements.mostRoutesChecker.textContent =
-        data.highlights
-            .mostRoutesChecker ||
-        "—";
 
     elements.expectedVolume.textContent =
         formatOverallAnalysisQuantity(
@@ -708,6 +736,12 @@ function renderOverallAnalysisView(
         data.damageAndLosses,
     );
 
+    renderOverallParcelAndReverse(
+        elements,
+        data.parcel,
+        data.reverse,
+    );
+
     return true;
 }
 
@@ -744,6 +778,7 @@ export {
     formatOverallAnalysisDate,
     formatOverallAnalysisDuration,
     formatOverallAnalysisQuantity,
+    getOverallAnalysisViewElements,
     initializeOverallAnalysisView,
     renderOverallAnalysisView,
 };

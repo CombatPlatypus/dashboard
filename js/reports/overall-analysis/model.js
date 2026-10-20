@@ -3,7 +3,6 @@ import {
 } from "../receipt/state.js";
 
 import {
-    getExpeditionOperatorRanking,
     getExpeditionSummary,
 } from "../expedition/state.js";
 
@@ -20,8 +19,12 @@ import {
 } from "../damage-and-losses/losses-state.js";
 
 import {
-    formatReportPersonFirstName,
-} from "../core/person-name.js";
+    createParcelSummary,
+} from "../parcel-sweeper/model.js";
+
+import {
+    createReverseSummary,
+} from "../reverse/model.js";
 
 const OVERALL_ANALYSIS_CAPACITY =
     20000;
@@ -50,159 +53,6 @@ function getOverallAnalysisContextQuantity(
         : null;
 }
 
-/* NORMALIZA O NOME EXIBIDO NOS DESTAQUES */
-
-function getOverallAnalysisPersonName(
-    value,
-) {
-    return formatReportPersonFirstName(
-        value,
-        null,
-    );
-}
-
-/* OBTÉM O DESTAQUE DO RANK DE RECEBEDORES */
-
-function getReceiptHighlights(
-    state,
-) {
-    const topVolumeOperator =
-        (
-            Array.isArray(
-                state?.operators,
-            )
-                ? state.operators
-                : []
-        )
-            .filter(
-                function (operator) {
-                    return (
-                        operator.selected !==
-                            false &&
-                        operator.packagesReceived !==
-                            null &&
-                        operator.packagesReceived !==
-                            undefined
-                    );
-                },
-            )
-            .slice()
-            .sort(
-                function (
-                    first,
-                    second,
-                ) {
-                    return (
-                        Number(
-                            second.packagesReceived,
-                        ) -
-                        Number(
-                            first.packagesReceived,
-                        )
-                    );
-                },
-            )[0] || null;
-
-    return {
-        fastestReceiver:
-            topVolumeOperator
-                ? getOverallAnalysisPersonName(
-                    topVolumeOperator.receiver,
-                )
-                : null,
-
-        mostPackages:
-            topVolumeOperator
-                ? getOverallAnalysisPersonName(
-                    topVolumeOperator.receiver,
-                )
-                : null,
-    };
-}
-
-/* OBTÉM OS DESTAQUES DO RANK DE CONFERENTES */
-
-function getExpeditionHighlights(
-    state,
-) {
-    const operators =
-        getExpeditionOperatorRanking(
-            state,
-        ).filter(
-            function (operator) {
-                return operator.selected !==
-                    false;
-            },
-        );
-
-    const topRoutesOperator =
-        operators
-            .slice()
-            .sort(
-                function (
-                    first,
-                    second,
-                ) {
-                    return (
-                        second.routesChecked -
-                            first.routesChecked ||
-
-                        first.operator.localeCompare(
-                            second.operator,
-                            "pt-BR",
-                        )
-                    );
-                },
-            )[0] || null;
-
-    const fastestOperator =
-        operators
-            .filter(
-                function (operator) {
-                    return (
-                        operator.averageDurationSeconds !==
-                        null
-                    );
-                },
-            )
-            .slice()
-            .sort(
-                function (
-                    first,
-                    second,
-                ) {
-                    return (
-                        first.averageDurationSeconds -
-                            second.averageDurationSeconds ||
-
-                        second.routesChecked -
-                            first.routesChecked ||
-
-                        first.operator.localeCompare(
-                            second.operator,
-                            "pt-BR",
-                        )
-                    );
-                },
-            )[0] || null;
-
-    return {
-        fastestChecker:
-            fastestOperator
-                ? getOverallAnalysisPersonName(
-                    fastestOperator.operator,
-                )
-                : null,
-
-        mostRoutesChecker:
-            topRoutesOperator
-                ? getOverallAnalysisPersonName(
-                    topRoutesOperator.operator,
-                )
-                : null,
-    };
-}
-
 /* REÚNE AVARIAS E PERDAS NOS MESMOS PERÍODOS DA TABELA */
 
 function getOverallDamageAndLossesAnalysis(
@@ -220,10 +70,16 @@ function getOverallDamageAndLossesAnalysis(
         );
 
     const damageHasData =
-        damageSummary.hasData;
+        damageSummary.hasData ||
+        Boolean(damageSummary.traditionalAnalysis &&
+            damageState?.days?.some(day =>
+                Number.isFinite(day.hub) || Number.isFinite(day.soc)));
 
     const lossesHasData =
-        lossesSummary.hasData;
+        lossesSummary.hasData ||
+        Boolean(lossesSummary.traditionalAnalysis &&
+            lossesState?.days?.some(day =>
+                Number.isFinite(day.underReview) || Number.isFinite(day.confirmedLosses)));
 
     const returnedHasData =
         lossesHasData ||
@@ -312,6 +168,8 @@ function createOverallAnalysisData(
     reportContext = {},
     damageState = null,
     lossesState = null,
+    parcelState = null,
+    reverseState = null,
 ) {
     const receiptSummary =
         getReceiptSummary(
@@ -433,13 +291,25 @@ function createOverallAnalysisData(
     const packagesAnalysisRate =
         damageAndLossesAnalysis
             .packagesUnderReview !== null &&
-        damageAndLossesAnalysis
-            .lossesTotal > 0
-            ? damageAndLossesAnalysis
+        damageAndLossesAnalysis.lossesTotal !== null
+            ? damageAndLossesAnalysis.lossesTotal === 0
+                ? 0
+                : damageAndLossesAnalysis
                 .packagesUnderReview /
                 damageAndLossesAnalysis
                     .lossesTotal
             : null;
+
+    const parcelSummary =
+        createParcelSummary(
+            parcelState?.rows,
+            parcelState?.operatorKindOverrides,
+        );
+
+    const reverseSummary =
+        createReverseSummary(
+            reverseState?.transfers,
+        );
 
     return {
         context: {
@@ -558,22 +428,28 @@ function createOverallAnalysisData(
                     .expeditionDurationSeconds,
         },
 
-        highlights: {
-            ...getReceiptHighlights(
-                receiptState,
-            ),
-
-            ...getExpeditionHighlights(
-                expeditionState,
-            ),
-        },
-
         damageAndLosses:
             damageAndLossesAnalysis,
+
+        parcel: {
+            hasData: parcelSummary.hasData,
+            scannedCount: parcelSummary.scannedCount,
+            backlogCount: parcelSummary.backlogCount,
+            exceptionCount: parcelSummary.exceptionCount,
+            missortedCount: parcelSummary.missortedCount,
+            expectedTotalCount: parcelSummary.expectedTotalCount,
+            expectedScannedCount: parcelSummary.expectedScannedCount,
+            expectedUnscannedCount: parcelSummary.expectedUnscannedCount,
+        },
+
+        reverse: {
+            hasData: reverseSummary.hasData,
+            total: reverseSummary.total,
+            quantities: reverseSummary.quantities,
+        },
     };
 }
 
 export {
     createOverallAnalysisData,
-    getOverallAnalysisPersonName,
 };
