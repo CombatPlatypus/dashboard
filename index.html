@@ -1468,6 +1468,12 @@
                                 </li> 
 
                                 <li class="tabs-title">
+                                    <a href="#consolidated-history">
+                                        <h4>Histórico Consolidado</h4>
+                                    </a>
+                                </li>
+
+                                <li class="tabs-title">
                                     <a href="#losses">
                                         <h4>Perdas do Mês</h4>
                                     </a>
@@ -1708,6 +1714,205 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- HISTÓRICO CONSOLIDADO -->
+
+                                    <div class="tabs-panel" id="consolidated-history">
+                                        <div class="preview-style" id="consolidatedExportArea">
+                                            <div class="title">
+                                                <h2>Histórico Consolidado</h2>
+                                            </div>
+
+                                            <div class="cards">
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/hub-icon.svg">
+                                                        <h4 id="consolidatedHubValue">—</h4>
+                                                    </div>
+
+                                                    <p id="">Avarias do Hub</p>
+                                                </div>
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/truck-icon.svg">
+                                                        <h4 id="consolidatedSocValue">—</h4>
+                                                    </div>
+
+                                                    <p id="">Avarias do SOC</p>
+                                                </div>
+
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/percentage-icon.svg">
+                                                        <h4 id="consolidatedLossRateValue">—</h4>
+                                                    </div>
+
+                                                    <p id="">Taxa de Perdas</p>
+                                                </div>
+
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/clock-icon.svg">
+                                                        <h4 id="consolidatedUnderReviewValue">—</h4>
+                                                    </div>
+
+                                                    <p>Pacotes em Análise</p>
+                                                </div>
+
+                                                <div>
+                                                    <div class="flex-box-start">
+                                                        <img src="images/geral-icons/alert-icon.svg">
+                                                        <h4 id="consolidatedConfirmedLossesValue">—</h4>
+                                                    </div>
+
+                                                    <p>Perdas Confirmadas</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="consolidated-history flex-box-start">
+
+                                                <!-- HISTÓRICO DE AVARIAS -->
+
+                                                <div class="consolidated-history-table" tabindex="0" role="region" aria-label="Histórico mensal de avarias">
+                                                    <table id="consolidatedDamageHistoryTable">
+                                                        <caption>
+                                                            <div class="flex-box-start">
+
+                                                                <span>Histórico de Avarias</span>
+
+                                                                <button id="consolidatedCopyDamageButton" type="button" title="Copiar registros exibidos de avarias" aria-label="Copiar registros exibidos de avarias" data-html2canvas-ignore="true" disabled>
+                                                                    <img src="images/geral-icons/copy-mini-icon.svg" alt="">
+                                                                </button>
+                                                            </div>
+                                                        </caption>
+
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Data</th>
+                                                                <th>Código BR</th>
+                                                                <th>Situação</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody id="consolidatedDamageHistoryBody">
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- GRÁFICO DE ROSCA E INCADORES -->
+
+                                                <div>
+                                                    <div class="chart doughnut-chart">
+                                                        <div class="chart-title">
+                                                            <h4>Composição das Ocorrências</h4>
+                                                        </div>
+
+                                                        <div class="chart-canvas-container">
+                                                            <canvas id="consolidatedCompositionChart" role="img" aria-label="Composição das ocorrências: sem dados importados.">
+                                                                Seu navegador não suporta gráficos em canvas.
+                                                            </canvas>
+                                                        </div>
+
+                                                        <div class="chart-label">
+                                                            <div class="type">
+                                                                <div style="background-color: #2538a5;"></div>
+                                                                <p>Em Análise <span id="consolidatedCompositionUnderReview">—</span></p>
+                                                            </div>
+
+                                                            <div class="type">
+                                                                <div style="background-color: #8B0000;"></div>
+                                                                <p>Lost <span id="consolidatedCompositionLost">—</span></p>
+                                                            </div>
+
+                                                            <div class="type">
+                                                                <div style="background-color: #f99400;"></div>
+                                                                <p>Avarias (Hub) <span id="consolidatedCompositionDamage">—</span></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- HISTÓRICO DE PERDAS -->
+
+                                                <div class="consolidated-history-table" tabindex="0" role="region" aria-label="Histórico mensal de perdas">
+                                                    <table id="consolidatedLossesHistoryTable">
+                                                        <caption>
+                                                            <div class="flex-box-start">
+
+                                                                <span>Histórico de Perdas</span>
+
+                                                                <button id="consolidatedCopyLossesButton" type="button" title="Copiar registros exibidos de perdas" aria-label="Copiar registros exibidos de perdas" data-html2canvas-ignore="true" disabled>
+                                                                    <img src="images/geral-icons/copy-mini-icon.svg" alt="">
+                                                                </button>
+                                                            </div>
+                                                        </caption>
+
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Data</th>
+                                                                <th>Código BR</th>
+                                                                <th>Situação</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody id="consolidatedLossesHistoryBody">
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
