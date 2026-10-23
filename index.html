@@ -30,6 +30,53 @@
         <link rel="stylesheet" href="css/data-analysis.css">
         <link rel="stylesheet" href="css/docs.css">
         <link rel="stylesheet" href="css/filter.css">
+
+        <style>
+
+
+            .consolidated-history {
+                gap: 15px
+            }
+            .consolidated-history > div {
+                flex: 1 1 0;
+            }
+            .consolidated-history > div:first-of-type,
+            .consolidated-history > div:last-of-type {
+                max-height: 419px;
+                overflow: auto;
+                border: 1px solid var(--color-border);
+                border-radius: 4px;
+            }
+            .consolidated-history > div::-webkit-scrollbar {
+                width: 7px;
+                height: 5px;
+                background-color: var(--color-container-focus);
+                border-left: 1px solid var(--color-border);
+            }
+            .consolidated-history > div::-webkit-scrollbar-thumb {
+                border-radius: 0px 3px 3px 0px;
+                background-color: var(--color-text);
+            }
+            .consolidated-history > div::-webkit-scrollbar-track {
+                background-color: transparent;
+            }
+            .consolidated-history > div caption .flex-box-start button img {
+                width: 20px;
+                cursor: pointer;
+            }
+            .consolidated-history > div caption .flex-box-start {
+                gap: 10px;
+                width: max-content;
+            }
+            .consolidated-history div table thead {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                background-color: var(--color-table-th);
+            }
+
+
+        </style>
     </head>
 
     <!-- CONTEÚDO DA PÁGINA -->
@@ -1725,6 +1772,8 @@
                                                 <h2>Histórico Consolidado</h2>
                                             </div>
 
+                                            <!-- CARDS PRINCIPAIS -->
+
                                             <div class="cards">
                                                 <div>
                                                     <div class="flex-box-start">
@@ -1773,6 +1822,8 @@
                                                     <p>Perdas Confirmadas</p>
                                                 </div>
                                             </div>
+
+                                            <!-- HISTÓRICOS CONSOLIDADOS -->
 
                                             <div class="consolidated-history flex-box-start">
 
@@ -1824,11 +1875,14 @@
                                                             <tr class="empty-row">
                                                                 <td>—</td><td>—</td><td>—</td>
                                                             </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
 
-                                                <!-- GRÁFICO DE ROSCA E INCADORES -->
+                                                <!-- GRÁFICO DE ROSCA E INDICADORES -->
 
                                                 <div>
                                                     <div class="chart doughnut-chart">
@@ -1842,7 +1896,7 @@
                                                             </canvas>
                                                         </div>
 
-                                                        <div class="chart-label">
+                                                        <div class="chart-label" id="consolidatedCompositionLegend" style="max-width: 385px; margin: 0 auto 20px auto;">
                                                             <div class="type">
                                                                 <div style="background-color: #2538a5;"></div>
                                                                 <p>Em Análise <span id="consolidatedCompositionUnderReview">—</span></p>
@@ -1854,8 +1908,13 @@
                                                             </div>
 
                                                             <div class="type">
-                                                                <div style="background-color: #f99400;"></div>
+                                                                <div style="background-color: #007A48;"></div>
                                                                 <p>Avarias (Hub) <span id="consolidatedCompositionDamage">—</span></p>
+                                                            </div>
+
+                                                            <div class="type">
+                                                                <div style="background-color: #f99400;"></div>
+                                                                <p>Avarias (SOC) <span id="consolidatedCompositionSoc">—</span></p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1909,10 +1968,85 @@
                                                             <tr class="empty-row">
                                                                 <td>—</td><td>—</td><td>—</td>
                                                             </tr>
+                                                            <tr class="empty-row">
+                                                                <td>—</td><td>—</td><td>—</td>
+                                                            </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
+
+                                            <!-- ANÁLISE TRADICIONAL -->
+
+                                            <table id="consolidatedTraditionalAnalysisTable">
+                                                <caption>Situação das Avarias e Perdas</caption>
+
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 230px;">Ocorrência</th>
+                                                        <th scope="col">Hoje</th>
+                                                        <th scope="col">Ontem</th>
+                                                        <th scope="col">Anteontem</th>
+                                                        <th scope="col">De 3 a 7<br>Dias Atrás</th>
+                                                        <th scope="col">De 8 a 14<br>Dias Atrás</th>
+                                                        <th scope="col">De 15 Dias Atrás<br>Até o Começo do Mês</th>
+                                                        <th scope="col">Total do Mês</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr data-consolidated-analysis-field="hub">
+                                                        <th scope="row">Avarias do Hub</th>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-consolidated-analysis-field="soc">
+                                                        <th scope="row">Avarias do Soc</th>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-consolidated-analysis-field="underReview">
+                                                        <th scope="row">Pacotes em Análise</th>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                    </tr>
+                                                </tbody>
+
+                                                <tbody>
+                                                    <tr data-consolidated-analysis-field="confirmedLosses">
+                                                        <th scope="row">Perdas Confirmadas</th>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                        <td>—</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
                                         </div>
                                     </div>
 
