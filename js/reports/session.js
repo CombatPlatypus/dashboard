@@ -18,11 +18,20 @@ import {
 import {
     exportDashboardSettings,
     importDashboardSettings,
+    readDashboardSettingsFromSession,
+    saveDashboardSettingsToSession,
     validateDashboardSettings,
 } from "../spreadsheets/load-spreadsheets.js";
+import {
+    DASHBOARD_SETTINGS_SCHEMA,
+    parseDashboardDataFile,
+    parseDashboardSettingsFile,
+} from "../settings/settings-file.js";
 
 const REPORT_SESSION_SCHEMA =
     "dashboard-report-session";
+
+const REPORT_SESSION_STORAGE_KEY = "dashboard-report-session-v1";
 
 const REPORT_SESSION_VERSION = 1;
 
@@ -47,6 +56,9 @@ const REPORT_SESSION_FEEDBACK_ICONS =
 
         success:
             "images/geral-icons/success-icon.svg",
+
+        warning:
+            "images/geral-icons/alert-icon.svg",
 
         error:
             "images/geral-icons/error-icon.svg",
@@ -467,13 +479,15 @@ function renderRestoredOverallAnalysis() {
 
 function restoreReportSession(
     payload,
+    { includeAllReports = false } = {},
 ) {
     validateReportSessionPayload(
         payload,
     );
 
-    const previousReports =
-        exportSessionReports();
+    const previousReports = includeAllReports
+        ? reportManager.exportSession()
+        : exportSessionReports();
 
     const previousContext =
         getReportContext();
@@ -497,7 +511,7 @@ function restoreReportSession(
         );
 
         reportManager.importSession(
-            selectSessionReports(
+            includeAllReports ? payload.reports : selectSessionReports(
                 payload.reports,
             ),
         );
@@ -597,12 +611,12 @@ function createReportSessionFileName(
     );
 }
 
-function downloadReportSession() {
+function downloadReportSession(payload = createReportSessionPayload()) {
     const fileName =
         createReportSessionFileName();
 
     const fileContent =
-        serializeReportSession();
+        serializeReportSession(payload);
 
     const blob =
         new Blob(
@@ -619,6 +633,39 @@ function downloadReportSession() {
     );
 
     return fileName;
+}
+
+function saveReportSessionToStorage(payload = createReportSessionPayload()) {
+    const snapshot = {
+        ...payload,
+        reports: { ...payload.reports, ...reportManager.exportSession() },
+    };
+    validateReportSessionPayload(snapshot);
+    saveDashboardSettingsToSession(snapshot.settings ?? exportDashboardSettings());
+    window.sessionStorage.setItem(REPORT_SESSION_STORAGE_KEY, JSON.stringify(snapshot));
+}
+
+function restoreSavedReportSession() {
+    const source = window.sessionStorage.getItem(REPORT_SESSION_STORAGE_KEY);
+    if (!source) return false;
+    const payload = JSON.parse(source);
+    validateReportSessionPayload(payload);
+    const savedSettings = readDashboardSettingsFromSession();
+
+    // Restaura os campos operacionais sem substituí-los pelos padrões do perfil.
+    restoreReportSession({ ...payload, settings: undefined }, { includeAllReports: true });
+    const settings = savedSettings ?? payload.settings;
+    if (settings) {
+        const previousProfile = payload.settings?.profile;
+        // Alterar apenas a aparência ou os links não substitui os campos operacionais salvos.
+        const profileChanged = savedSettings !== null && (
+            savedSettings.profile.name !== (previousProfile?.name ?? "") ||
+            savedSettings.profile.shift !== (previousProfile?.shift ?? "AM")
+        );
+        importDashboardSettings(settings, { applyProfileToReports: profileChanged });
+    }
+    setReportSessionNotification({ type: "success", message: "Relatórios recuperados da sessão desta aba." });
+    return true;
 }
 
 /* IMPORTAÇÃO */
@@ -871,13 +918,23 @@ function initializeReportSession() {
         "click",
         function () {
             try {
+                const payload = createReportSessionPayload();
                 const fileName =
-                    downloadReportSession();
+                    downloadReportSession(payload);
+
+                try {
+                    saveReportSessionToStorage(payload);
+                } catch (error) {
+                    console.warn("O arquivo foi salvo, mas não foi possível guardar os relatórios na sessão.", error);
+                    setReportSessionNotification({ type: "warning", message:
+                        `Arquivo ${fileName} salvo. Não foi possível guardar os relatórios na sessão desta aba.` });
+                    return;
+                }
 
                 setReportSessionNotification({
                     type: "success",
                     message:
-                        `Sessão salva em ${fileName}.`,
+                        `Sessão salva em ${fileName} e nesta aba.`,
                 });
             } catch (error) {
                 console.error(
@@ -930,19 +987,31 @@ function initializeReportSession() {
                         file,
                     );
 
-                const payload =
-                    parseReportSession(
-                        source,
-                    );
+                const data = parseDashboardDataFile(source);
+                const settingsOnly = data?.schema === DASHBOARD_SETTINGS_SCHEMA;
+                if (settingsOnly) {
+                    importDashboardSettings(parseDashboardSettingsFile(source));
+                } else {
+                    const payload = parseReportSession(source);
+                    restoreReportSession(payload);
+                }
 
-                restoreReportSession(
-                    payload,
-                );
+                let sessionSaved = true;
+                try {
+                    if (settingsOnly) saveDashboardSettingsToSession();
+                    else saveReportSessionToStorage();
+                } catch (error) {
+                    sessionSaved = false;
+                    console.warn("Os dados foram importados, mas não foi possível guardá-los na sessão.", error);
+                }
 
                 setReportSessionNotification({
-                    type: "success",
+                    type: sessionSaved ? "success" : "warning",
                     message:
-                        `Sessão restaurada de ${file.name}.`,
+                        (settingsOnly
+                            ? `Configurações importadas de ${file.name}.`
+                            : `Sessão restaurada de ${file.name}.`) +
+                        (sessionSaved ? "" : " Não foi possível guardar os dados na sessão desta aba."),
                 });
             } catch (error) {
                 console.error(
@@ -965,6 +1034,14 @@ function initializeReportSession() {
             }
         },
     );
+
+    try {
+        restoreSavedReportSession();
+    } catch (error) {
+        console.warn("Não foi possível recuperar os relatórios da sessão da aba.", error);
+        setReportSessionNotification({ type: "warning", message:
+            "Não foi possível recuperar os relatórios da sessão desta aba. Você pode importar o arquivo salvo." });
+    }
 
     reportSessionInitialized = true;
 
