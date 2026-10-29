@@ -17,16 +17,6 @@ const overallAnalysisRateFormatter =
         },
     );
 
-const overallAnalysisCapacityRateFormatter =
-    new Intl.NumberFormat(
-        "pt-BR",
-        {
-            style: "percent",
-            minimumFractionDigits: 1,
-            maximumFractionDigits: 1,
-        },
-    );
-
 const overallAnalysisCompositionRateFormatter =
     new Intl.NumberFormat(
         "pt-BR",
@@ -41,15 +31,6 @@ const overallAnalysisLossRateFormatter =
         "pt-BR",
         {
             style: "percent",
-            minimumFractionDigits: 3,
-            maximumFractionDigits: 3,
-        },
-    );
-
-const overallAnalysisPercentagePointFormatter =
-    new Intl.NumberFormat(
-        "pt-BR",
-        {
             minimumFractionDigits: 3,
             maximumFractionDigits: 3,
         },
@@ -123,25 +104,6 @@ function formatOverallAnalysisRate(
         );
 }
 
-function formatOverallAnalysisCapacityRate(
-    value,
-) {
-    if (
-        value === null ||
-        value === undefined ||
-        !Number.isFinite(
-            Number(value),
-        )
-    ) {
-        return "—";
-    }
-
-    return overallAnalysisCapacityRateFormatter
-        .format(
-            Number(value),
-        );
-}
-
 function formatOverallAnalysisLossRate(
     value,
 ) {
@@ -156,25 +118,6 @@ function formatOverallAnalysisLossRate(
     }
 
     return overallAnalysisLossRateFormatter
-        .format(
-            Number(value),
-        );
-}
-
-function formatOverallAnalysisPercentagePoints(
-    value,
-) {
-    if (
-        value === null ||
-        value === undefined ||
-        !Number.isFinite(
-            Number(value),
-        )
-    ) {
-        return "—";
-    }
-
-    return overallAnalysisPercentagePointFormatter
         .format(
             Number(value),
         );
@@ -314,34 +257,14 @@ function getOverallAnalysisViewElements(
                 "overallAnalysisAnalyst",
             ),
 
-        capacityUsage:
-            getElement(
-                "overallAnalysisCapacityUsage",
-            ),
-
-        capacityStatus:
-            getElement(
-                "overallAnalysisCapacityStatus",
-            ),
-
-        packagesAnalysisValue:
-            getElement(
-                "overallAnalysisPackagesAnalysisValue",
-            ),
-
-        packagesAnalysisStatus:
-            getElement(
-                "overallAnalysisPackagesAnalysisStatus",
-            ),
+        damageSoc: getElement("overallAnalysisDamageSoc"),
+        damageHub: getElement("overallAnalysisDamageHub"),
+        packagesUnderReview: getElement("overallAnalysisPackagesUnderReview"),
+        confirmedLosses: getElement("overallAnalysisConfirmedLosses"),
 
         lossRate:
             getElement(
                 "overallAnalysisLossRate",
-            ),
-
-        lossRateStatus:
-            getElement(
-                "overallAnalysisLossRateStatus",
             ),
 
         planned:
@@ -586,79 +509,15 @@ function renderOverallAnalysisView(
     elements.analyst.textContent =
         data.context?.analyst || "—";
 
-    elements.capacityUsage.textContent =
-        formatOverallAnalysisCapacityRate(
-            data.cards.capacity.usageRate,
-        );
-
-    if (
-        data.cards.capacity.balance ===
-        null
-    ) {
-        elements.capacityStatus.textContent =
-            "Folga de — pacotes";
-    } else if (
-        data.cards.capacity.balance >= 0
-    ) {
-        elements.capacityStatus.textContent =
-            "Folga de " +
-            formatOverallAnalysisQuantity(
-                data.cards.capacity.balance,
-            ) +
-            " pacotes";
-    } else {
-        elements.capacityStatus.textContent =
-            "Excesso de " +
-            formatOverallAnalysisQuantity(
-                Math.abs(
-                    data.cards.capacity.balance,
-                ),
-            ) +
-            " pacotes";
-    }
-
-    elements.packagesAnalysisValue.textContent =
-        formatOverallAnalysisQuantity(
-            data.cards.packagesAnalysis
-                .value,
-        );
-
-    elements.packagesAnalysisStatus.textContent =
-        data.cards.packagesAnalysis.rate ===
-            null
-            ? "—"
-            : (
-                formatOverallAnalysisCapacityRate(
-                    data.cards
-                        .packagesAnalysis
-                        .rate,
-                ) +
-                " dos registros"
-            );
+    elements.damageSoc.textContent = formatOverallAnalysisQuantity(data.cards.damage.soc);
+    elements.damageHub.textContent = formatOverallAnalysisQuantity(data.cards.damage.hub);
+    elements.packagesUnderReview.textContent = formatOverallAnalysisQuantity(data.cards.packagesAnalysis.value);
+    elements.confirmedLosses.textContent = formatOverallAnalysisQuantity(data.cards.packagesAnalysis.confirmedLosses);
 
     elements.lossRate.textContent =
         formatOverallAnalysisLossRate(
             data.cards.lossesRate.rate,
         );
-
-    elements.lossRateStatus.textContent =
-        data.cards.lossesRate.rate ===
-            null
-            ? "—"
-            : (
-                formatOverallAnalysisPercentagePoints(
-                    data.cards.lossesRate
-                        .differencePercentagePoints,
-                ) +
-                " p.p. " +
-                (
-                    data.cards.lossesRate
-                        .withinLimit
-                        ? "abaixo"
-                        : "acima"
-                ) +
-                " do limite"
-            );
 
     elements.planned.textContent =
         formatOverallAnalysisQuantity(

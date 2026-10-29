@@ -259,12 +259,16 @@
                                         <img id="receiptNotificationIcon" src="images/geral-icons/bell-icon.svg">
 
                                         <h4 id="receiptNotificationText">
-                                            No SPX, Transporte Principal / Viagens de Carga / Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
+                                            No SPX, Transporte Principal / Viagens de Carga / Inbound, pressione Ctrl + A e Ctrl + C. Depois, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
 
                                 <div class="report-actions">
+                                    <button id="receiptSpreadsheetDownloadButton" type="button" title="Baixar planilha de processamento" aria-label="Baixar planilha de processamento" hidden disabled>
+                                        <img src="images/geral-icons/file-xlsx-icon.svg">
+                                    </button>
+
                                     <button id="receiptCopySummaryButton" type="button" title="Copiar resumo de processamento para a planilha" aria-label="Copiar resumo de processamento para a planilha" disabled>
                                         <img src="images/geral-icons/copy-icon.svg" alt="">
                                     </button>
@@ -720,6 +724,10 @@
                                 </div>
 
                                 <div class="report-actions">
+                                    <button id="expeditionSpreadsheetDownloadButton" type="button" title="Baixar planilha de expedição" aria-label="Baixar planilha de expedição" hidden disabled>
+                                        <img src="images/geral-icons/file-xlsx-icon.svg">
+                                    </button>
+
                                     <button id="expeditionCopySummaryButton" type="button" title="Copiar resumo de expedição e erros para a planilha" aria-label="Copiar resumo de expedição e erros para a planilha" disabled>
                                         <img src="images/geral-icons/copy-icon.svg" alt="">
                                     </button>
@@ -1061,17 +1069,17 @@
                                         <div class="padding">
                                             <div class="input-group">
                                                 <div>
-                                                    <h4>Erros de Sorting</h4>
+                                                    <h4>Sorting</h4>
                                                     <input id="expeditionSortingErrorsInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
                                                 </div>
                                                 
                                                 <div>
-                                                    <h4>Erros de Etiqueta</h4>
+                                                    <h4>Etiquetagem</h4>
                                                     <input id="expeditionLabelingErrorsInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
                                                 </div>
 
                                                 <div>
-                                                    <h4>Erros Revertidos</h4>
+                                                    <h4>Revertidos</h4>
                                                     <input id="expeditionRevertedInput" type="text" inputmode="numeric" maxlength="8" autocomplete="off" disabled>
                                                 </div>
                                             </div>
@@ -1123,7 +1131,7 @@
                                         <img id="planningNotificationIcon" src="images/geral-icons/bell-icon.svg">
 
                                         <h4 id="planningNotificationText">
-                                            No SPX, Transporte Principal / Viagens de Carga / Inbound e pressione Ctrl + A e, em seguida, Ctrl + C. Depois, volte aqui e clique em importar.
+                                            No SPX, Transporte Principal / Viagens de Carga / Inbound, pressione Ctrl + A e Ctrl + C. Depois, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
@@ -1999,7 +2007,6 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-
                                         </div>
                                     </div>
 
@@ -2862,76 +2869,143 @@
 
                                     <!-- CARDS -->
 
-                                    <div class="final-report-cards">
-                                        <div>
-                                            <div class="final-report-title">
-                                                <h4>Uso da Capacidade</h4>
-                                            </div>
-
-                                            <div class="final-report-card">
-                                                <div class="flex-box-start">
-                                                    <div class="final-report-mini-chart">
-                                                        <canvas id="overallAnalysisCapacityChart" role="img">
-                                                            Seu navegador não suporta gráficos em canvas.
-                                                        </canvas>
-
-                                                        <img src="images/geral-icons/box-icon.svg" aria-hidden="true">
-                                                    </div>
-
-                                                    <div>
-                                                        <h2 id="overallAnalysisCapacityUsage">—</h2>
-                                                        <p id="overallAnalysisCapacityStatus">Folga de — pacotes</p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div>
+                                        <div class="final-report-title">
+                                            <h4>Análise das Avarias e Perdas</h4>
                                         </div>
 
-                                        <div>
-                                            <div class="final-report-title">
-                                                <h4>Pacotes em Análise</h4>
-                                            </div>
-
-                                            <div class="final-report-card">
+                                        <div class="cards" id="overallAnalysisIndicators">
+                                            <div>
                                                 <div class="flex-box-start">
-                                                    <div class="final-report-mini-chart">
-                                                        <canvas id="overallAnalysisPackagesAnalysisChart" role="img">
-                                                            Seu navegador não suporta gráficos em canvas.
-                                                        </canvas>
-
-                                                        <img src="images/geral-icons/clock-icon.svg" aria-hidden="true">
-                                                    </div>
-
-                                                    <div>
-                                                        <h2 id="overallAnalysisPackagesAnalysisValue">—</h2>
-                                                        <p id="overallAnalysisPackagesAnalysisStatus">—</p>
-                                                    </div>
+                                                    <img src="images/geral-icons/hub-icon.svg">
+                                                    <h4 id="overallAnalysisDamageHub">—</h4>
                                                 </div>
-                                            </div>
-                                        </div>
 
-                                        <div>
-                                            <div class="final-report-title">
-                                                <h4>Taxa de Perdas</h4>
+                                                <p>Avarias do Hub</p>
                                             </div>
 
-                                            <div class="final-report-card">
+                                            <div>
                                                 <div class="flex-box-start">
-                                                    <div class="final-report-mini-chart">
-                                                        <canvas id="overallAnalysisLossRateChart" role="img">
-                                                            Seu navegador não suporta gráficos em canvas.
-                                                        </canvas>
-
-                                                        <img src="images/geral-icons/bars-icon.svg" aria-hidden="true">
-                                                    </div>
-
-                                                    <div>
-                                                        <h2 id="overallAnalysisLossRate">—</h2>
-                                                        <p id="overallAnalysisLossRateStatus">—</p>
-                                                    </div>
+                                                    <img src="images/geral-icons/truck-icon.svg">
+                                                    <h4 id="overallAnalysisDamageSoc">—</h4>
                                                 </div>
+
+                                                <p>Avarias do SOC</p>
+                                            </div>
+
+
+                                            <div>
+                                                <div class="flex-box-start">
+                                                    <img src="images/geral-icons/percentage-icon.svg">
+                                                    <h4 id="overallAnalysisLossRate">—</h4>
+                                                </div>
+
+                                                <p>Taxa de Perdas</p>
+                                            </div>
+
+
+                                            <div>
+                                                <div class="flex-box-start">
+                                                    <img src="images/geral-icons/clock-icon.svg">
+                                                    <h4 id="overallAnalysisPackagesUnderReview">—</h4>
+                                                </div>
+
+                                                <p>Pacotes em Análise</p>
+                                            </div>
+
+                                            <div>
+                                                <div class="flex-box-start">
+                                                    <img src="images/geral-icons/alert-icon.svg">
+                                                    <h4 id="overallAnalysisConfirmedLosses">—</h4>
+                                                </div>
+
+                                                <p>Perdas Confirmadas</p>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- AVARIAS E PERDAS -->
+
+                                    <table id="overallAnalysisDamageAndLossesTable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" style="width: 230px;">Ocorrência</th>
+                                                <th scope="col">Hoje</th>
+                                                <th scope="col">Ontem</th>
+                                                <th scope="col">Anteontem</th>
+                                                <th scope="col">De 3 a 7<br>Dias Atrás</th>
+                                                <th scope="col">De 8 a 14<br>Dias Atrás</th>
+                                                <th scope="col">De 15 Dias Atrás<br>Até o Começo do Mês</th>
+                                                <th scope="col">Total do Mês</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr data-overall-damage-losses-field="hub">
+                                                <th scope="row">Avarias do Hub</th>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tbody>
+                                            <tr data-overall-damage-losses-field="soc">
+                                                <th scope="row">Avarias do SOC</th>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tbody>
+                                            <tr data-overall-damage-losses-field="underReview">
+                                                <th scope="row">Pacotes em Análise</th>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tbody>
+                                            <tr data-overall-damage-losses-field="confirmedLosses">
+                                                <th scope="row">Perdas Confirmadas</th>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tbody>
+                                            <tr data-overall-damage-losses-field="returnedPackages">
+                                                <th scope="row">Pacotes Retornados</th>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                                <td>—</td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
 
                                     <!-- FLUXO DO DIA E DASTAQUES DA OPERAÇÃO -->
 
@@ -2961,7 +3035,7 @@
                                                 </div>
 
                                                 <div class="flex-box-center">
-                                                    <img src="images/geral-icons/van-icon.svg" style="width: 40px;">
+                                                    <img src="images/geral-icons/van-icon.svg" style="width: 40px;height: 40px;">
 
                                                     <div>
                                                         <h4>Expedido</h4>
@@ -3052,91 +3126,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- AVARIAS E PERDAS -->
-
-                                    <table id="overallAnalysisDamageAndLossesTable">
-                                        <caption>Situação das Avarias e Perdas</caption>
-
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" style="width: 230px;">Ocorrência</th>
-                                                <th scope="col">Hoje</th>
-                                                <th scope="col">Ontem</th>
-                                                <th scope="col">Anteontem</th>
-                                                <th scope="col">De 3 a 7<br>Dias Atrás</th>
-                                                <th scope="col">De 8 a 14<br>Dias Atrás</th>
-                                                <th scope="col">De 15 Dias Atrás<br>Até o Começo do Mês</th>
-                                                <th scope="col">Total do Mês</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr data-overall-damage-losses-field="hub">
-                                                <th scope="row">Avarias do Hub</th>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody>
-                                            <tr data-overall-damage-losses-field="soc">
-                                                <th scope="row">Avarias do SOC</th>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody>
-                                            <tr data-overall-damage-losses-field="underReview">
-                                                <th scope="row">Pacotes em Análise</th>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody>
-                                            <tr data-overall-damage-losses-field="confirmedLosses">
-                                                <th scope="row">Perdas Confirmadas</th>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody>
-                                            <tr data-overall-damage-losses-field="returnedPackages">
-                                                <th scope="row">Pacotes Retornados</th>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                                <td>—</td>
-                                            </tr>
-                                        </tbody>
-
-                                    </table>
 
                                     <!-- PARCEL E REVERSA -->
 
