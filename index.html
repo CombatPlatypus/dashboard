@@ -46,11 +46,11 @@
                 <!-- FOTO, NOME DO SISTEMA E VERSÃO -->
 
                 <div class="flex-box-start">
-                    <img src="images/geral-icons/hub-logo-menu.svg" data-dashboard-profile-icon alt="Ícone do dashboard">
+                    <img id="dashboardSpreadsheetPresetLogo" src="images/geral-icons/hub-logo-menu.svg" data-dashboard-profile-icon alt="Ícone do dashboard" role="button" tabindex="0" draggable="false" aria-label="Carregar planilhas da operação" title="Clique duas vezes ou pressione Enter para carregar as planilhas da operação">
 
                     <div>
                         <h3>Dashboard do Inventário</h3>
-                        <p><i>Versão 1.5 - Operações Last Mile</i></p>
+                        <p><i>Versão 1.6 - Operações Last Mile</i></p>
                     </div>
                 </div>
 
@@ -2311,6 +2311,10 @@
                                 </div>
 
                                 <div class="report-actions">
+                                    <button id="parcelCopySummaryButton" type="button" title="Copiar resumo do Parcel Sweeper para a planilha" aria-label="Copiar resumo do Parcel Sweeper para a planilha" disabled>
+                                        <img src="images/geral-icons/copy-icon.svg" alt="">
+                                    </button>
+
                                     <button id="parcelCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório do parcel; segure por 1,5 segundo para baixar">
                                         <img src="images/geral-icons/image-icon.svg">
                                     </button>
@@ -2587,6 +2591,10 @@
                                 </div>
 
                                 <div class="report-actions">
+                                    <button id="reverseCopySummaryButton" type="button" title="Copiar resumo de reversa para a planilha" aria-label="Copiar resumo de reversa para a planilha" disabled>
+                                        <img src="images/geral-icons/copy-icon.svg" alt="">
+                                    </button>
+
                                     <button id="reverseCopyReportButton" type="button" title="Clique para copiar; segure por 1,5 s para baixar" aria-label="Copiar relatório de reversa; segure por 1,5 segundo para baixar">
                                         <img src="images/geral-icons/image-icon.svg">
                                     </button>
