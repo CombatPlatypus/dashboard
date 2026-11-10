@@ -3,15 +3,18 @@ import { formatReportPersonWithOps } from "./core/person-name.js";
 import { getReceiptState, getReceiptSummary, subscribeReceiptState } from "./receipt/state.js";
 import { getReceiptLinehaulState, getReceiptLinehaulSummary, subscribeReceiptLinehaulState } from "./receipt/linehaul-state.js";
 import { getExpeditionState, getExpeditionSummary, getExpeditionErrorAnalysis, getExpeditionOperatorRanking, subscribeExpeditionState } from "./expedition/state.js";
+import { getPlanningState, subscribePlanningState } from "./planning/state.js";
+import { columnWidths as planningColumnWidths, createPlanningClipboardRows, getPlanningClipboardData } from "./planning/clipboard.js";
 import { createParcelSummary } from "./parcel-sweeper/model.js";
 import { getParcelState, subscribeParcelState } from "./parcel-sweeper/state.js";
 import { createReverseSummary } from "./reverse/model.js";
 import { getReverseState, subscribeReverseState } from "./reverse/state.js";
 import { setReportNotification } from "./report-notifications.js";
 
-const shiftRows = { AM: 11, PM1: 70, PM2: 129 };
-// Each window reserves rows 11:66, 70:125 or 129:184 for the two report blocks.
+const shiftRows = { AM: 7, PM1: 67, PM2: 127 };
+// Each window reserves rows 7:62, 67:122 or 127:182 for the two report blocks.
 const summaryRowCount = 56;
+const shiftClipboardPalette = { background: "#101010", color: "#f8faf8", borderColor: "#626262" };
 const rateFormatter = new Intl.NumberFormat("pt-BR", {
     style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2,
 });
@@ -20,6 +23,7 @@ const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
 });
 // Sheets' clipboard fields: centered alignment (64 | 128), font family (4096) and size (8192).
 const sheetsFormatFields = 64 | 128 | 4096 | 8192;
+const sheetsColorFields = 2 | 2048;
 
 function formatDuration(seconds) {
     if (seconds === null || seconds === undefined) return "";
@@ -34,22 +38,75 @@ function escapeHtml(value) {
     })[character]);
 }
 
+function sheetsColor(hex) {
+    return { "1": 2, "2": Number.parseInt(hex.slice(1), 16) };
+}
+
+function createStyledCellAttributes({ background, fontSize, bold, border, bottom }) {
+    const color = "#e4e6eb";
+    const borderColor = "#626262";
+    // Sheets stores fill, text color and bold in fields 4, 14 and 17, with bit flags for each.
+    const format = {
+        "2": sheetsFormatFields | sheetsColorFields | (bold ? 16384 : 0),
+        "4": sheetsColor(background), "9": 1, "10": bottom ? 2 : 1,
+        "14": sheetsColor(color), "15": "Open Sans", "16": fontSize,
+    };
+    if (bold) format["17"] = 1;
+    const alignment = bottom ? "bottom" : "middle";
+    const css = [
+        `background-color:${background}`, `color:${color}`, "font-family:Open Sans",
+        `font-size:${fontSize}pt`, `font-weight:${bold ? "bold" : "normal"}`,
+        "text-align:center", `vertical-align:${alignment}`, "white-space:nowrap",
+        border ? `border:1px solid ${borderColor}` : "border:none",
+    ].join(";");
+    return `data-sheets-userformat='${JSON.stringify(format)}' align="center" valign="${alignment}" style="${css}"`;
+}
+
+function createStyledClipboardCell({ value, span, rowSpan, style }, attributes) {
+    if (!attributes.has(style)) attributes.set(style, createStyledCellAttributes(style));
+    let typedValue = "";
+    if (value != null && value !== "") {
+        const data = typeof value === "number" ? { "1": 3, "3": value } : { "1": 2, "2": String(value) };
+        typedValue = ` data-sheets-value="${escapeHtml(JSON.stringify(data))}"`;
+    }
+    return `<td rowspan="${rowSpan}" colspan="${span}" ${attributes.get(style)}${typedValue}>${escapeHtml(value)}</td>`;
+}
+
 // HTML carries the template's merges; TSV keeps a placeholder for every physical column.
-function createClipboardTable(rows, { columnWidth = 150 } = {}) {
-    const text = rows.map(row => row.flatMap(({ value, span }) =>
-        [String(value ?? ""), ...Array(span - 1).fill("")],
-    ).join("\t")).join("\n");
+function createClipboardTable(rows, { columnWidth = 150, columnWidths, palette } = {}) {
+    const text = rows.map(row => row.flatMap(cell => {
+        if (!cell) return [""];
+        const { value, span, style } = cell;
+        const content = String(value ?? "");
+        const field = style && /[\t\r\n"]/.test(content) ? `"${content.replaceAll('"', '""')}"` : content;
+        return [field, ...Array(span - 1).fill("")];
+    }).join("\t")).join("\n");
     // Sheets only applies data-sheets-* formatting when its clipboard origin marker is present.
     const columnCount = rows[0].reduce((total, cell) => total + cell.span, 0);
-    const columns = '<colgroup>' + `<col width="${columnWidth}" style="width:${columnWidth}px">`.repeat(columnCount) + '</colgroup>';
+    const widths = columnWidths ?? Array(columnCount).fill(columnWidth);
+    const columns = '<colgroup>' + widths.map(width => `<col width="${width}" style="width:${width}px">`).join("") + '</colgroup>';
+    const baseFormat = { "2": sheetsFormatFields, "9": 1, "10": 1 };
+    const borderColor = palette?.borderColor ?? "#000000";
+    let colorStyles = "";
+    if (palette) {
+        const { background, color } = palette;
+        baseFormat["2"] |= sheetsColorFields;
+        baseFormat["4"] = sheetsColor(background);
+        baseFormat["14"] = sheetsColor(color);
+        colorStyles = `background-color:${background};color:${color};`;
+    }
+    const styledAttributes = new WeakMap();
     const html = '<html><head><meta charset="utf-8"></head><body><!--StartFragment-->' +
         '<google-sheets-html-origin><table xmlns="http://www.w3.org/1999/xhtml" data-sheets-root="1" data-sheets-baot="1" ' +
         'cellspacing="0" cellpadding="0" dir="ltr" style="table-layout:fixed;border-collapse:collapse;font-family:Roboto;font-size:10pt">' +
         columns + '<tbody>' + rows.map(row =>
-        '<tr style="height:25px">' + row.map(({ value, span, fontSize, fontFamily }) => {
-            const format = JSON.stringify({ "2": sheetsFormatFields, "9": 1, "10": 1, "15": fontFamily, "16": fontSize });
+        '<tr style="height:25px">' + row.map(cell => {
+            if (!cell) return "";
+            if (cell.style) return createStyledClipboardCell(cell, styledAttributes);
+            const { value, span, fontSize, fontFamily } = cell;
+            const format = JSON.stringify({ ...baseFormat, "15": fontFamily, "16": fontSize });
             return `<td rowspan="1" colspan="${span}" width="${columnWidth * span}" data-sheets-userformat='${format}' align="center" valign="middle" ` +
-                `style="border:1px solid #000000;width:${columnWidth * span}px;text-align:center;vertical-align:middle;font-family:${fontFamily};font-size:${fontSize}pt;font-weight:normal;white-space:nowrap">${escapeHtml(value)}</td>`;
+                `style="${colorStyles}border:1px solid ${borderColor};width:${columnWidth * span}px;text-align:center;vertical-align:middle;font-family:${fontFamily};font-size:${fontSize}pt;font-weight:normal;white-space:nowrap">${escapeHtml(value)}</td>`;
         }).join("") + "</tr>",
     ).join("") + '</tbody></table></google-sheets-html-origin><!--EndFragment--></body></html>';
     return { text, html };
@@ -60,6 +117,7 @@ function createReportSummaryClipboard(kind, {
     receipt = getReceiptState(),
     linehaul = getReceiptLinehaulState(),
     expedition = getExpeditionState(),
+    planning,
     parcel,
     reverse,
     now = new Date(),
@@ -72,6 +130,14 @@ function createReportSummaryClipboard(kind, {
     const title = (value, fontSize = 12) => [cell(value, 4, fontSize)];
     const rate = value => value === null || value === undefined ? "" : rateFormatter.format(value);
 
+    if (kind === "planning") {
+        const state = planning ?? getPlanningState();
+        const data = getPlanningClipboardData(state);
+        const { status } = data;
+        if (!status.hasData || status.copyError) return { ...status, text: "", html: "" };
+        const rows = createPlanningClipboardRows(state, data);
+        return { ...status, ...createClipboardTable(rows, { columnWidths: planningColumnWidths }) };
+    }
     if (kind === "parcel") {
         const state = parcel ?? getParcelState();
         const summary = createParcelSummary(state.rows, state.operatorKindOverrides);
@@ -86,7 +152,7 @@ function createReportSummaryClipboard(kind, {
                 summary.hasData ? summary.missortedCount : null),
         ];
         return { ...createClipboardTable(rows, { columnWidth: 100 }),
-            target: "G10", sheet: "Base da Visão Geral", label: "Relatório Parcel Sweeper",
+            target: "G5", sheet: "Base da Visão Geral", label: "Relatório Parcel Sweeper",
             shift: null, hasData: summary.hasData, copyError: "",
         };
     }
@@ -100,7 +166,7 @@ function createReportSummaryClipboard(kind, {
             types.map(type => cell(summary.hasData ? summary.quantities[type] : null, 1)),
         ];
         return { ...createClipboardTable(rows, { columnWidth: 125 }),
-            target: "G16", sheet: "Base da Visão Geral", label: "Resumo de reversa",
+            target: "G11", sheet: "Base da Visão Geral", label: "Resumo de reversa",
             shift: null, hasData: summary.hasData, copyError: "",
         };
     }
@@ -137,9 +203,10 @@ function createReportSummaryClipboard(kind, {
         const analysis = getExpeditionErrorAnalysis(expedition);
         rows = [
             title("Última Expedição"),
-            heading("Rotas Conferidas", "Volume Expedido"),
-            pair(summary.hasData ? summary.validatedRoutes : null,
-                summary.hasData ? summary.volumeChecked : null),
+            heading("Rotas Conferidas", "Volume Expedido e Inicial"),
+            [cell(summary.hasData ? summary.validatedRoutes : null),
+                cell(summary.hasData ? summary.volumeChecked : null, 1),
+                cell(summary.hasData ? summary.totalInitialOrders : null, 1)],
             heading("Volume no Piso", "Duração"),
             pair(summary.hasData ? summary.floorVolume : null,
                 summary.hasData ? formatDuration(summary.expeditionDurationSeconds) : null),
@@ -172,7 +239,7 @@ function createReportSummaryClipboard(kind, {
         : "";
     // Empty rows remove names left by a previous, longer list without touching the next window.
     rows.push(...Array.from({ length: listCapacity }, (_, index) => createOperatorRow(operators[index])));
-    return { ...createClipboardTable(rows), target, sheet: "Base dos Turnos", label, shift, hasData, copyError };
+    return { ...createClipboardTable(rows, { palette: shiftClipboardPalette }), target, sheet: "Base dos Turnos", label, shift, hasData, copyError };
 }
 
 function writeSummaryCopyEvent(payload) {
@@ -210,7 +277,9 @@ async function writeSummaryClipboard(payload) {
     }
 }
 
-function bindReportSummaryCopyButton(button, { reportId, kind, subscribe }) {
+function bindReportSummaryCopyButton(button, {
+    reportId, kind, subscribe, getStatus = () => createReportSummaryClipboard(kind),
+}) {
     if (!(button instanceof HTMLButtonElement)) return false;
     if (button.dataset.summaryCopyInitialized === "true") return true;
     button.dataset.summaryCopyInitialized = "true";
@@ -219,7 +288,7 @@ function bindReportSummaryCopyButton(button, { reportId, kind, subscribe }) {
     const destination = payload => `${payload.target} da ${payload.sheet ? `aba ${payload.sheet}` : "planilha"}`;
 
     function render() {
-        const payload = createReportSummaryClipboard(kind);
+        const payload = getStatus();
         button.disabled = busy || !payload.hasData;
         if (!busy) {
             button.title = payload.copyError || `${payload.label}: copiar para ${destination(payload)}.`;
@@ -265,6 +334,7 @@ function bindReportSummaryCopyButton(button, { reportId, kind, subscribe }) {
 function initializeReportSummaryCopy(root = document) {
     const receiptButton = root.querySelector("#receiptCopySummaryButton");
     const expeditionButton = root.querySelector("#expeditionCopySummaryButton");
+    const planningButton = root.querySelector("#planningCopySummaryButton");
     const parcelButton = root.querySelector("#parcelCopySummaryButton");
     const reverseButton = root.querySelector("#reverseCopySummaryButton");
     const receiptBound = bindReportSummaryCopyButton(receiptButton, {
@@ -275,13 +345,17 @@ function initializeReportSummaryCopy(root = document) {
         reportId: "expedition", kind: "expedition",
         subscribe: [subscribeExpeditionState, subscribeReportContext],
     });
+    const planningBound = bindReportSummaryCopyButton(planningButton, {
+        reportId: "planning", kind: "planning", subscribe: [subscribePlanningState],
+        getStatus: () => getPlanningClipboardData(getPlanningState()).status,
+    });
     const parcelBound = bindReportSummaryCopyButton(parcelButton, {
         reportId: "parcel", kind: "parcel", subscribe: [subscribeParcelState],
     });
     const reverseBound = bindReportSummaryCopyButton(reverseButton, {
         reportId: "reverse", kind: "reverse", subscribe: [subscribeReverseState],
     });
-    return receiptBound && expeditionBound && parcelBound && reverseBound;
+    return receiptBound && expeditionBound && planningBound && parcelBound && reverseBound;
 }
 
 export { bindReportSummaryCopyButton, createReportSummaryClipboard, initializeReportSummaryCopy };

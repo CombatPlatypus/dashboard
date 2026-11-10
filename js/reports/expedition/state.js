@@ -571,21 +571,16 @@ function getExpeditionSummary(
                 .filter(Boolean),
         ).size;
 
-    const volumeChecked =
+    const { volumeChecked, totalInitialOrders } =
         validatedRoutes.reduce(
-            function (
-                total,
-                route,
-            ) {
-                return (
-                    total +
-                    (
-                        route.finalOrders ??
-                        0
-                    )
-                );
+            function (volumes, route) {
+                volumes.volumeChecked += route.finalOrders ?? 0;
+                if (route.initialOrders != null) {
+                    volumes.totalInitialOrders = (volumes.totalInitialOrders ?? 0) + route.initialOrders;
+                }
+                return volumes;
             },
-            0,
+            { volumeChecked: 0, totalInitialOrders: validatedRoutes.length ? null : 0 },
         );
 
     const totals =
@@ -722,6 +717,7 @@ function getExpeditionSummary(
             0,
 
         volumeChecked,
+        totalInitialOrders,
 
         ...totals,
     };
@@ -1407,6 +1403,12 @@ function getExpeditionErrorAnalysis(
         ? summary.missortedOrders
         : null;
 
+    const errorRate =
+        calculateExpeditionRate(
+            spxTotal,
+            summary.totalInitialOrders,
+        );
+
     const rawSortingErrors =
         normalizeExpeditionQuantity(
             state.errorTotals?.sortingErrors,
@@ -1457,13 +1459,7 @@ function getExpeditionErrorAnalysis(
                     ? rawLabelingErrors
                     : null,
             totalErrors: visibleTotal,
-            errorRate:
-                calculateExpeditionRate(
-                    visibleTotal,
-                    hasSpXData
-                        ? summary.volumeChecked
-                        : null,
-                ),
+            errorRate,
             totalRevertedErrors: null,
             revertedRate: null,
             finalErrors: null,
@@ -1518,11 +1514,7 @@ function getExpeditionErrorAnalysis(
         sortingErrors,
         labelingErrors,
         totalErrors: spxTotal,
-        errorRate:
-            calculateExpeditionRate(
-                spxTotal,
-                summary.volumeChecked,
-            ),
+        errorRate,
         totalRevertedErrors,
         revertedRate:
             calculateExpeditionRate(
