@@ -14,6 +14,8 @@ Para criar ou alterar gráficos no painel ou no HTML do Relatório Final, siga o
 
 O botão de imagem captura a visualização de dados da subaba aberta. Quando as subabas alternam apenas os controles, a captura usa a prévia compartilhada. Consulte o [contexto da cópia de imagem](copia-de-imagem.md) para os destinos de cada relatório.
 
+O botão de cópia de dados gera os blocos de colagem para o Resumo da Operação e a planilha de Planejamento. Consulte os intervalos e o formato no [contexto da cópia de dados para planilha](copia-de-dados-para-planilha.md).
+
 ## Processamento
 
 Acompanha **Descarregamento de LHs**, **Mesa de Recebimento** e **Ranking de Recebedores**. O [importador de LHs](../../js/reports/receipt/linehaul-import.js) trata a leitura e a seleção da janela. O [estado de LHs](../../js/reports/receipt/linehaul-state.js) deriva o volume restante a partir do volume esperado e dos LHs marcados como descarregados. O [importador de recebimento](../../js/reports/receipt/import.js) agrupa os registros por operador para a mesa e o ranking. A sessão reúne os dois estados no [controlador](../../js/reports/receipt/controller.js).
@@ -22,9 +24,17 @@ Verifique alinhamento, confirmação da importação e recálculo de volume em [
 
 O [exportador de Processamento](../../js/reports/receipt/export.js) usa os dados da subaba ativa tanto para habilitar o botão de imagem quanto para executar a captura. Descarregamento de LHs pode ser copiado assim que houver LHs cadastrados. Mesa de Recebimento e Ranking de Recebedores usam a validação dos dados de recebimento.
 
+As prévias de **Descarregamento de LHs** e **Mesa de Recebimento** começam pelo Volume Esperado. A seleção da janela fica no controle **Janela do Turno**, no topo do painel. [Estrutura das prévias](../../index.html)
+
+Na lista da **Mesa de Recebimento**, as colunas Recebedor e Etiquetador exibem o código OPS seguido de um espaço e do primeiro nome com inicial maiúscula, como `[ops12345] Lucas`. A prévia usa o mesmo formatador da cópia para planilha. Se o registro trouxer apenas o código ou o nome, a lista mostra o dado disponível. A célula sem identificação exibe `—`. [Renderização da mesa](../../js/reports/receipt/view.js) · [Formatador de nomes](../../js/reports/core/person-name.js)
+
 ## Expedição
 
 Acompanha rotas expedidas, ranking de conferentes, erros e ocorrências por rua. O [importador de expedição](../../js/reports/expedition/import.js) identifica as colunas e monta os registros por rota. A [importação de erros](../../js/reports/expedition/errors-import.js) alimenta as visões de erros e ruas. O [estado](../../js/reports/expedition/state.js) reúne rotas, volumes, erros e ajustes usados no resumo e no Relatório Final.
+
+A prévia do **Resumo de Expedição** começa pela coluna Conferentes. A janela vem do controle **Janela do Turno**, no topo do painel. [Estrutura da prévia](../../index.html)
+
+Na lista do **Resumo de Expedição**, a coluna Conferente usa o mesmo formato da Mesa de Recebimento e da cópia para planilha. [Renderização da lista](../../js/reports/expedition/view.js)
 
 Verifique o botão de importação nas quatro abas em [expedition-import-tabs.test.mjs](../../tests/expedition-import-tabs.test.mjs) e o volume de retirados em [expedition-withdrawn.test.mjs](../../tests/expedition-withdrawn.test.mjs).
 
@@ -63,5 +73,7 @@ Verifique o tipo obrigatório, a reimportação sem duplicar totais e a compatib
 ## Relatório Final
 
 A aba **Relatório Final** corresponde ao módulo `overall-analysis`. O [controlador](../../js/reports/overall-analysis/controller.js) coleta os dados dos demais módulos e o [modelo](../../js/reports/overall-analysis/model.js) calcula o resumo da janela. A [verificação de completude](../../js/reports/overall-analysis/completeness.js) determina quando o HTML autônomo pode ser gerado. Parcel Sweeper e Reversa são opcionais nessa verificação. O [exportador](../../js/reports/overall-analysis/standalone-export.js) gera o HTML a partir de uma cópia dos dados da janela.
+
+A cópia em imagem captura a própria prévia. O HTML baixado incorpora o CSS do seu modelo e abre offline. Ao mudar as tabelas do painel, confira no modelo os cabeçalhos, títulos, tipografia, bordas e espaçamento das cinco tabelas. [Modelo HTML](../../final-report.html) · [Teste de paridade das tabelas](../../tests/overall-analysis-standalone-template.test.mjs)
 
 Verifique indicadores e critérios de exportação em [overall-analysis-cards.test.mjs](../../tests/overall-analysis-cards.test.mjs) e [overall-analysis-html.test.mjs](../../tests/overall-analysis-html.test.mjs).

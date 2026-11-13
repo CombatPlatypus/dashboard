@@ -420,9 +420,21 @@
             border-right: 1px solid var(--color-border);
             border-left: 1px solid var(--color-border);
             border-top: 1px solid var(--color-border);
+            /* border-radius: 5px 5px 0 0; */
         }
         table thead {
             color: var(--color-text);
+        }
+        table thead th {
+            font-weight: 600;
+            background-color: var(--color-table-th);
+            padding: 10px 0;
+            height: auto;
+            font-size: 14px;
+            color: var(--color-text);
+            font-family: 'Open Sans', sans-serif;
+            overflow-wrap: anywhere;
+            text-align: center;
         }
         table tfoot {
             background: var(--color-container);
@@ -435,21 +447,15 @@
         tr {
             border-top: 1px solid var(--color-border);
         }
-        table thead th, table thead td, table tfoot th, table tfoot td {
-            padding: 15px 20px;
-            font-size: 14px;
-            text-align: center;
-            font-family: 'Open Sans', sans-serif;
-            font-weight: 400;
-            background: transparent;
-            letter-spacing: 1px;
-        }
         table tbody th, table tbody td {
             padding: 10px 0;
+            height: auto;
             font-size: 14px;
+            color: var(--color-text);
             font-family: 'Open Sans', sans-serif;
             font-weight: 400;
             background: transparent;
+            overflow-wrap: anywhere;
             text-align: center;
         }
         table tbody tr:nth-child(even) {

@@ -188,7 +188,7 @@
     #reports td {
         height: 38px;
         padding: 8px 10px;
-        font-size: 13px;
+        font-size: 14px;
         color: var(--color-text);
         border: 1px solid var(--color-border);
         overflow-wrap: anywhere;
@@ -386,6 +386,12 @@
 
         /* AJUSTES POR RELATÓRIO */
 
+            /* PROCESSAMENTO */
+
+            #receiptAlignedComparisonChartContainer {
+                min-height: 470px !important;
+            }
+
             /* EXPEDIÇÃO */
 
             #expeditionAlignedComparisonChartContainer {
@@ -397,7 +403,7 @@
                 margin: 0 20px 20px 20px;
             }
             #expedition-streets .vertical-bars-chart .chart-canvas-container {
-                height: 252px;
+                height: 251px;
                 margin: 0 20px 20px 20px;
             }
             #expedition-streets .vertical-bars-chart .chart-label{
@@ -538,8 +544,6 @@
         }
         #expedition .expedition-operator-table th:first-child,
         #expedition .expedition-operator-table td:first-child {
-            padding-left: 15px;
-            text-align: left;
             white-space: normal;
             overflow-wrap: anywhere;
         }
@@ -582,7 +586,7 @@
             padding-right: 15px;
         }
         #expedition #expeditionStreetGuardianControls.is-errors-tab-active {
-            max-height: 465px;
+            max-height: 465;
         }
         #expedition #expeditionWindowInput {
             width: 100%;
@@ -667,7 +671,7 @@
             row-gap: 20px;
             overflow: auto;
             padding-right: 15px;
-            max-height: 420px !important;
+            max-height: 375px !important;
         }
         .lhs-list label {
             display: flex;
@@ -799,7 +803,7 @@
         /* BACKLOG */
 
         #planning-backlog textarea {
-            min-height: 403px;
+            min-height: 358px;
         }
 
         /* SELEÇÃO DE JANELA PARA IMPORTAR */
@@ -1094,7 +1098,8 @@
             gap: 10px;
             width: max-content;
         }
-        #reports #parcel caption .flex-box-start button img {
+        #reports #parcel caption .flex-box-start button img,
+        #analysis .analysis-copy-column-button img {
             width: 20px;
             cursor: pointer;
         }
