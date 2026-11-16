@@ -1,18 +1,24 @@
 import { getDamageAndLossesState, subscribeDamageAndLossesState } from "./state.js";
 import { getLossesState, subscribeLossesState } from "./losses-state.js";
 import { subscribeLossesRateState } from "../losses-rate/state.js";
+import { requestReportUpdate } from "../core/report-updates.js";
 import { setReportNotification } from "../report-notifications.js";
 import { createHistoryClipboardText, formatOccurrenceDate, getOccurrenceHistoryForPeriod } from "./history.js";
-import { CONSOLIDATED_ANALYSIS_PERIODS, getConsolidatedSummary } from "./consolidated-model.js";
-import { createConsolidatedCompositionChart } from "./consolidated-charts.js";
+import { CONSOLIDATED_ANALYSIS_PERIODS, getConsolidatedLossRate, getConsolidatedSummary } from "./consolidated-model.js";
+import {
+    createConsolidatedCompositionChart,
+    getConsolidatedCompositionIndicators,
+    updateConsolidatedCompositionChart,
+} from "./consolidated-charts.js";
 
 const quantity = new Intl.NumberFormat("pt-BR");
-const percentage = new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 });
 const lossRate = new Intl.NumberFormat("pt-BR", {
     style: "percent", minimumFractionDigits: 3, maximumFractionDigits: 3,
 });
 let elements = null;
 let compositionChart = null;
+let consolidatedSummary = null;
+let consolidatedReferenceMonth = null;
 const renderedHistories = new WeakMap();
 const copyingButtons = new Set();
 
@@ -48,12 +54,27 @@ function renderHistory(body, records) {
     renderedHistories.set(body, records);
 }
 
-function renderConsolidatedView() {
+function updateConsolidatedLossRate(value) {
+    const text = value === null ? "—" : lossRate.format(value);
+    if (elements.lossRate.textContent !== text) {
+        elements.lossRate.textContent = text;
+    }
+}
+
+function renderConsolidatedView({ damage, losses, rate } = {}) {
     if (!elements || !compositionChart) return false;
-    const damage = getDamageAndLossesState();
-    const losses = getLossesState();
     const referenceDate = new Date();
-    const summary = getConsolidatedSummary(damage, losses, undefined, referenceDate);
+    const referenceMonth = referenceDate.getFullYear() * 12 + referenceDate.getMonth();
+    if (!damage && !losses && rate && referenceMonth === consolidatedReferenceMonth) {
+        updateConsolidatedLossRate(getConsolidatedLossRate(consolidatedSummary, rate));
+        return true;
+    }
+
+    damage ??= getDamageAndLossesState();
+    losses ??= getLossesState();
+    const summary = getConsolidatedSummary(damage, losses, rate, referenceDate);
+    consolidatedSummary = summary;
+    consolidatedReferenceMonth = referenceMonth;
     elements.compositionLegend.style.maxWidth = summary.hasData ? "max-content" : "385px";
     for (const [key, value, available] of [
         ["hub", summary.hub, summary.hasDamageData],
@@ -63,7 +84,7 @@ function renderConsolidatedView() {
     ]) {
         elements[key].textContent = available ? quantity.format(value) : "—";
     }
-    elements.lossRate.textContent = summary.lossRate === null ? "—" : lossRate.format(summary.lossRate);
+    updateConsolidatedLossRate(summary.lossRate);
 
     const damageHistory = getOccurrenceHistoryForPeriod(damage.history, summary);
     const lossesHistory = getOccurrenceHistoryForPeriod(losses.history, summary);
@@ -72,21 +93,7 @@ function renderConsolidatedView() {
     elements.copyDamage.disabled = damageHistory.length === 0 || copyingButtons.has(elements.copyDamage);
     elements.copyLosses.disabled = lossesHistory.length === 0 || copyingButtons.has(elements.copyLosses);
 
-    [elements.compositionUnderReview, elements.compositionLost, elements.compositionDamage, elements.compositionSoc]
-        .forEach((element, index) => {
-            const value = summary.composition[index];
-            const available = index >= 2 ? summary.hasDamageData : summary.hasLossesData;
-            element.textContent = available
-                ? `${quantity.format(value)} (${percentage.format(summary.total ? value / summary.total : 0)})`
-                : "—";
-        });
-    compositionChart.data.datasets[0].data = summary.composition;
-    compositionChart.options.plugins.consolidatedCenterText.text =
-        summary.hasData ? quantity.format(summary.total) : "—";
-    elements.canvas.setAttribute("aria-label", summary.hasData
-        ? `Composição das ocorrências de ${summary.monthName} de ${summary.year}: ${summary.underReview} em análise, ${summary.confirmedLosses} perdas confirmadas, ${summary.hub} avarias do Hub e ${summary.soc} avarias do SOC.`
-        : "Composição das ocorrências: sem dados importados.");
-    compositionChart.update("none");
+    updateConsolidatedCompositionChart(compositionChart, summary, elements.compositionIndicators);
 
     elements.traditionalAnalysisTable.querySelectorAll("[data-consolidated-analysis-field]")
         .forEach(row => {
@@ -139,23 +146,25 @@ function initializeConsolidatedView(rootElement = document.getElementById("damag
         copyDamage: "consolidatedCopyDamageButton", copyLosses: "consolidatedCopyLossesButton",
         canvas: "consolidatedCompositionChart",
         compositionLegend: "consolidatedCompositionLegend",
-        compositionUnderReview: "consolidatedCompositionUnderReview",
-        compositionLost: "consolidatedCompositionLost", compositionDamage: "consolidatedCompositionDamage",
-        compositionSoc: "consolidatedCompositionSoc",
         traditionalAnalysisTable: "consolidatedTraditionalAnalysisTable",
     };
     const found = Object.fromEntries(Object.entries(ids).map(([key, id]) => [key, panel.querySelector(`#${id}`)]));
-    if (!Object.values(found).every(element => element instanceof HTMLElement)) return false;
-    elements = found;
+    const compositionIndicators = getConsolidatedCompositionIndicators(panel, "consolidatedComposition");
+    if (![...Object.values(found), ...compositionIndicators].every(element => element instanceof HTMLElement)) return false;
+    elements = { ...found, compositionIndicators };
     compositionChart = createConsolidatedCompositionChart(elements.canvas);
     panel.dataset.consolidatedInitialized = "true";
     elements.copyDamage.addEventListener("click", () =>
         copyHistory(elements.copyDamage, () => renderedHistories.get(elements.damageBody) ?? [], "avarias"));
     elements.copyLosses.addEventListener("click", () =>
         copyHistory(elements.copyLosses, () => renderedHistories.get(elements.lossesBody) ?? [], "perdas"));
-    subscribeDamageAndLossesState(renderConsolidatedView);
-    subscribeLossesState(renderConsolidatedView);
-    subscribeLossesRateState(renderConsolidatedView);
+    subscribeDamageAndLossesState(damage => requestReportUpdate(renderConsolidatedView, { damage }));
+    subscribeLossesState(losses => requestReportUpdate(renderConsolidatedView, { losses }));
+    subscribeLossesRateState((rate, change) => {
+        if (change.type !== "active-month-changed") {
+            requestReportUpdate(renderConsolidatedView, { rate });
+        }
+    });
     new MutationObserver(() => {
         if (!rootElement.classList.contains("is-active") || !panel.classList.contains("is-active")) return;
         window.requestAnimationFrame(() => {

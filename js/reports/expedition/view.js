@@ -1,8 +1,8 @@
 import {
-    getExpeditionErrorAnalysis,
-    getExpeditionOperatorRanking,
+    createExpeditionDerivations,
+    getExpeditionChangeScope,
+    getExpeditionErrorInputValue,
     getExpeditionState,
-    getExpeditionSummary,
     reconcileExpeditionErrorQuantities,
     resetExpeditionReport,
     subscribeExpeditionState,
@@ -59,6 +59,12 @@ const expeditionRateFormatter =
             maximumFractionDigits: 2,
         },
     );
+
+const expeditionProgressFormatter = new Intl.NumberFormat("pt-BR", {
+    style: "percent",
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+});
 
 /* FORMATAÇÕES */
 
@@ -290,6 +296,12 @@ function getExpeditionElements(
             getElementById(
                 "expeditionPreviewValidatedRoutes",
             ),
+
+        progressCompleted: getElementById("expeditionProgressCompleted"),
+        progressPending: getElementById("expeditionProgressPending"),
+        progressPercentage: getElementById("expeditionProgressPercentage"),
+        progressBar: getElementById("expeditionProgressBar"),
+        progressFill: getElementById("expeditionProgressFill"),
 
         previewFloorVolume:
             getElementById(
@@ -846,96 +858,47 @@ function renderExpeditionRankingCards(
 
 /* TABELAS DE ERROS */
 
-function createExpeditionStreetRow(
-    street,
-) {
-    const row =
-        document.createElement(
-            "tr",
-        );
+function renderExpeditionGuardianCell(cell, guardian) {
+    const match = String(guardian ?? "").match(/^(\[ops\d+\])\s*(.*)$/i);
+    cell.classList.toggle("expedition-guardian-name", !match);
+    if (match) {
+        const code = document.createElement("span");
+        code.textContent = match[1].toLowerCase();
+        const name = document.createElement("span");
+        name.classList.add("expedition-guardian-name");
+        name.textContent = match[2];
+        cell.replaceChildren(code, " ", name);
+    } else {
+        cell.textContent = guardian || "—";
+    }
+}
 
-    const values =
-        street
-            ? [
-                street.name || "—",
-                street.guardian || "—",
-                formatExpeditionQuantity(
-                    street.missingOrders,
-                ),
-                formatExpeditionQuantity(
-                    street.totalErrors,
-                ),
-                formatExpeditionRate(
-                    street.errorRate,
-                ),
-            ]
-            : [
-                "—",
-                "—",
-                "—",
-                "—",
-                "—",
-            ];
+function createExpeditionStreetRow(street) {
+    const row = document.createElement("tr");
+    if (street) row.dataset.expeditionStreet = street.name;
+    const values = street
+        ? [street.name || "—", street.guardian || "—", formatExpeditionQuantity(street.missingOrders),
+            formatExpeditionQuantity(street.totalErrors), formatExpeditionRate(street.errorRate)]
+        : ["—", "—", "—", "—", "—"];
 
-    values.forEach(
-        function (value, index) {
-            const cell =
-                document.createElement(
-                    "td",
-                );
-
-            const guardianMatch =
-                index === 1 && street
-                    ? String(value).match(
-                        /^(\[ops\d+\])\s*(.*)$/i,
-                    )
-                    : null;
-
-            if (guardianMatch) {
-                const code =
-                    document.createElement(
-                        "span",
-                    );
-
-                code.textContent =
-                    guardianMatch[1]
-                        .toLowerCase();
-
-                const name =
-                    document.createElement(
-                        "span",
-                    );
-
-                name.classList.add(
-                    "expedition-guardian-name",
-                );
-
-                name.textContent =
-                    guardianMatch[2];
-
-                cell.append(
-                    code,
-                    " ",
-                    name,
-                );
-            } else {
-                if (index === 1 && street) {
-                    cell.classList.add(
-                        "expedition-guardian-name",
-                    );
-                }
-
-                cell.textContent =
-                    value;
-            }
-
-            row.append(
-                cell,
-            );
-        },
-    );
-
+    values.forEach((value, index) => {
+        const cell = document.createElement("td");
+        if (index === 1 && street) {
+            renderExpeditionGuardianCell(cell, value);
+        } else {
+            cell.textContent = value;
+        }
+        row.append(cell);
+    });
     return row;
+}
+
+function updateExpeditionGuardian(elements, street, guardian) {
+    const row = [...elements.previewStreetBody.rows].find(item => item.dataset.expeditionStreet === street);
+    if (row) renderExpeditionGuardianCell(row.cells[1], guardian);
+    const input = [...elements.streetGuardianControls.querySelectorAll("[data-expedition-guardian-input]")]
+        .find(item => item.dataset.expeditionStreet === street);
+    if (input) setExpeditionInputValue(input, guardian);
 }
 
 function renderExpeditionStreetTable(
@@ -1203,203 +1166,92 @@ function renderExpeditionErrorTables(
             : null,
     );
 
-    renderExpeditionStreetTable(
-        elements,
-        analysis.streets,
-    );
+}
+
+/* RENDERIZA O PROGRESSO DA CONFERÊNCIA */
+
+function renderExpeditionProgress(elements, summary) {
+    const { hasData, completedRoutes, pendingRoutes, totalRoutes } = summary;
+    elements.progressCompleted.textContent = formatExpeditionQuantity(hasData ? completedRoutes : null);
+    elements.progressPending.textContent = formatExpeditionQuantity(hasData ? pendingRoutes : null);
+
+    if (!hasData) {
+        elements.progressPercentage.textContent = "—";
+        elements.progressFill.style.width = "0%";
+        elements.progressBar.removeAttribute("aria-valuenow");
+        elements.progressBar.setAttribute("aria-valuetext", "Aguardando a importação do relatório Gestão Audit.");
+        return;
+    }
+
+    const ratio = completedRoutes / totalRoutes;
+    const percentage = expeditionProgressFormatter.format(ratio);
+    const progressValue = String(ratio * 100);
+    elements.progressPercentage.textContent = percentage;
+    elements.progressFill.style.width = `${progressValue}%`;
+    elements.progressBar.setAttribute("aria-valuenow", progressValue);
+    elements.progressBar.setAttribute("aria-valuetext", percentage);
 }
 
 /* RENDERIZA O RELATÓRIO */
 
-function renderExpeditionReport(
-    elements,
-    state,
-) {
-    const summary =
-        getExpeditionSummary(
-            state,
-        );
+const expeditionManualMetrics = {
+    floorVolume: ["floorVolumeInput", "previewFloorVolume", null],
+    duplicatedOrders: ["duplicatedInput", "previewDuplicated", 0],
+    exceptionOrders: ["exceptionInput", "previewException", 0],
+    withdrawnOrders: ["withdrawnInput", "previewWithdrawn", 0],
+};
 
-    const errorAnalysis =
-        getExpeditionErrorAnalysis(
-            state,
-        );
+function renderExpeditionManualMetric(elements, state, field) {
+    const [input, preview, fallback] = expeditionManualMetrics[field];
+    const value = state.routes.length > 0 ? state[field] ?? fallback : null;
+    elements[preview].textContent = formatExpeditionQuantity(value);
+    setExpeditionInputValue(elements[input], value);
+}
 
-    const hasImportedFile =
-        state.routes.length > 0;
+function renderExpeditionReport(elements, state, change, derived = createExpeditionDerivations(state)) {
+    const scope = getExpeditionChangeScope(change);
+    if (scope.routes) {
+        const summary = derived.getSummary();
+        setExpeditionGeneralControlsAvailability(elements, summary.hasData);
+        renderExpeditionProgress(elements, summary);
+        for (const field of Object.keys(expeditionManualMetrics)) {
+            renderExpeditionManualMetric(elements, state, field);
+        }
+    } else if (Object.hasOwn(expeditionManualMetrics, scope.manualField)) {
+        renderExpeditionManualMetric(elements, state, scope.manualField);
+    }
 
-    setExpeditionGeneralControlsAvailability(
-        elements,
-        hasImportedFile,
-    );
+    if (scope.ranking) {
+        const summary = derived.getSummary();
+        const quantity = value => formatExpeditionQuantity(summary.hasData ? value : null);
+        elements.previewOperatorCount.textContent = quantity(summary.operatorCount);
+        elements.previewVolumeChecked.textContent = quantity(summary.volumeChecked);
+        elements.previewValidatedRoutes.textContent = quantity(summary.validatedRoutes);
+        elements.previewDuration.textContent = formatExpeditionDuration(summary.hasData ? summary.expeditionDurationSeconds : null);
+        elements.previewMissing.textContent = quantity(summary.missingOrders);
+        elements.previewMissorted.textContent = quantity(summary.missortedOrders);
 
-    const operators =
-        getExpeditionOperatorRanking(
-            state,
-        );
+        const operators = derived.getRanking();
+        const selected = operators.filter(operator => operator.selected !== false);
+        renderExpeditionOperators(elements, selected);
+        renderExpeditionRankingCards(elements, selected);
+        renderExpeditionOperatorControls(elements, operators);
 
-     const selectedOperators =
-        operators.filter(
-            function (operator) {
-                return operator.selected !==
-                    false;
-            },
-        );   
+        const streets = derived.getStreets();
+        renderExpeditionStreetTable(elements, streets);
+        renderExpeditionGuardianControls(elements, streets);
+    } else if (scope.guardian) {
+        updateExpeditionGuardian(elements, scope.guardian, state.streetGuardians[scope.guardian]);
+    }
 
-    const quantityOrDash =
-        function (value) {
-            return summary.hasData
-                ? formatExpeditionQuantity(
-                    value,
-                )
-                : "—";
-        };
-
-    elements.previewOperatorCount
-        .textContent =
-            summary.hasData
-                ? formatExpeditionQuantity(
-                    summary.operatorCount,
-                )
-                : "—";
-
-    elements.previewVolumeChecked
-        .textContent =
-            quantityOrDash(
-                summary.volumeChecked,
-            );
-
-    elements.previewValidatedRoutes
-        .textContent =
-            quantityOrDash(
-                summary.validatedRoutes,
-            );
-
-    elements.previewFloorVolume
-        .textContent =
-            quantityOrDash(
-                summary.floorVolume,
-            );
-
-    elements.previewDuration
-        .textContent =
-            summary.hasData
-                ? formatExpeditionDuration(
-                    summary
-                        .expeditionDurationSeconds,
-                )
-                : "—";
-    elements.previewMissing
-        .textContent =
-            quantityOrDash(
-                summary.missingOrders,
-            );
-
-    elements.previewDuplicated
-        .textContent =
-            quantityOrDash(
-                summary.duplicatedOrders,
-            );
-
-    elements.previewMissorted
-        .textContent =
-            quantityOrDash(
-                summary.missortedOrders,
-            );
-            
-    elements.previewException
-        .textContent =
-            summary.hasData
-                ? formatExpeditionQuantity(
-                    summary.exceptionOrders,
-                )
-                : "—";   
-
-    setExpeditionInputValue(
-        elements.floorVolumeInput,
-        summary.hasData
-            ? summary.floorVolume
-            : null,
-    );
-
-    setExpeditionInputValue(
-        elements.duplicatedInput,
-        summary.hasData
-            ? summary.duplicatedOrders
-            : null,
-    );
-
-    setExpeditionInputValue(
-        elements.exceptionInput,
-        summary.hasData
-            ? summary.exceptionOrders
-            : null,
-    );
-
-    elements.previewWithdrawn
-        .textContent =
-            quantityOrDash(
-                summary.withdrawnOrders,
-            );
-
-    setExpeditionInputValue(
-        elements.withdrawnInput,
-        summary.hasData
-            ? summary.withdrawnOrders
-            : null,
-    );
-
-    setExpeditionInputValue(
-        elements.sortingErrorsInput,
-        state.hasErrorData
-            ? state.errorTotals
-                .sortingErrors
-            : null,
-    );
-
-    setExpeditionInputValue(
-        elements.labelingErrorsInput,
-        state.hasErrorData
-            ? state.errorTotals
-                .labelingErrors
-            : null,
-    );
-
-    setExpeditionInputValue(
-        elements.revertedInput,
-        state.hasErrorData
-            ? state.revertedErrors
-            : null,
-    );
-
-    renderExpeditionOperators(
-        elements,
-        selectedOperators,
-    );
-
-    renderExpeditionRankingCards(
-        elements,
-        selectedOperators,
-    );
-
-    renderExpeditionOperatorControls(
-        elements,
-        operators,
-    );
-
-    renderExpeditionErrorTables(
-        elements,
-        errorAnalysis,
-    );
-
-    renderExpeditionGuardianControls(
-        elements,
-        errorAnalysis.streets,
-    );
-
-    elements.clearButton.disabled =
-        !summary.hasData &&
-        !errorAnalysis.hasErrorData;
+    if (scope.errors) {
+        setExpeditionInputValue(elements.sortingErrorsInput, state.hasErrorData ? state.errorTotals.sortingErrors : null);
+        setExpeditionInputValue(elements.labelingErrorsInput, state.hasErrorData ? state.errorTotals.labelingErrors : null);
+        renderExpeditionErrorTables(elements, derived.getErrors());
+    }
+    if (scope.availability) {
+        elements.clearButton.disabled = state.routes.length === 0 && !state.hasErrorData;
+    }
 }
 
 /* EVENTOS */
@@ -1469,7 +1321,7 @@ function bindExpeditionErrorQuantityInput(
             );
 
             reconcileExpeditionErrorQuantities();
-            renderExpeditionView();
+            setExpeditionInputValue(input, getExpeditionErrorInputValue(field));
         },
     );
 }
@@ -1687,14 +1539,7 @@ function initializeExpeditionView(
         elements,
     );
 
-    subscribeExpeditionState(
-        function (state) {
-            renderExpeditionReport(
-                elements,
-                state,
-            );
-        },
-    );
+    subscribeExpeditionState((state, change, derived) => renderExpeditionReport(elements, state, change, derived));
 
     renderExpeditionReport(
         elements,

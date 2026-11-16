@@ -282,6 +282,8 @@
                 --color-container-houver: #262626;
                 --color-container-focus: #262626;
                 --color-border: #626262;
+                --color-chart-base: var(--color-container-focus);
+                --color-chart-empty: var(--color-border);
                 --color-text: #e4e6eb;
                 --color-table-title: #262626;
                 --color-table-th: #262626;
@@ -302,12 +304,12 @@
                 -moz-osx-font-smoothing: grayscale;
             }
             .main-structure {
-                max-width: 1600px;
+                width: 1600px;
                 height: auto;
                 margin: 0 auto;
                 padding: 30px 30px;
             }
-            .main-structure > div {
+            .main-structure > .preview-style {
                 display: flex;
                 flex-direction: column;
                 row-gap: 20px;
@@ -316,7 +318,7 @@
                 border: 2px solid var(--color-border);
                 border-radius: 5px;
             }
-            .main-structure > div .main-title {
+            .preview-style > .title {
                 width: 100%;
                 padding: 12px 20px;
                 text-align: center;
@@ -324,7 +326,7 @@
                 border: 1px solid var(--color-border);
                 border-radius: 5px 5px 0 0;
             }
-            .main-structure > div .main-title > h2 {
+            .preview-style > .title > h2 {
                 margin-bottom: 0;
                 font-size: 20px;
                 text-transform: uppercase;
@@ -333,7 +335,7 @@
 
             /* MÍDIA */
 
-            img {
+            img, svg {
                 display: inline-block;
                 max-width: 100%;
                 height: auto;
@@ -641,17 +643,25 @@
                 height: 320px;
                 margin: 20px;
             }
+            .expedition-error-balance-chart > .chart-canvas-container {
+                height: 452px;
+                margin: 20px;
+            }
+            .line-chart .chart-canvas-container {
+                height: 339px;
+                margin: 0 20px 20px 20px;
+            }
 
             /* TITULOS */
 
-            .title {
+            .final-report-title {
                 padding: 0.5rem 0.625rem 0.625rem;
                 background-color: var(--color-table-th);
                 border-right: 1px solid var(--color-border);
                 border-left: 1px solid var(--color-border);
                 border-top: 1px solid var(--color-border);
             }
-            .title h4 {
+            .final-report-title h4 {
                 letter-spacing: 1.5px;
                 font-size: 15px;
                 margin: 0;
@@ -659,21 +669,20 @@
 
             /* HEADER */
 
-            .header {
+            .final-report-header {
                 padding: 15px 20px;
                 border: 1px solid var(--color-border);
                 align-items: center;
             }
-            .header .flex-box-start {
+            .final-report-header .flex-box-start {
                 column-gap: 15px;
                 align-items: center;
             }
-            .header img,
-            .header svg {
+            .final-report-header svg {
                 width: 35px;
                 height: 35px;
             }
-            .header p {
+            .final-report-header p {
                 margin-bottom: 0;
                 line-height: 1;
             }
@@ -709,16 +718,13 @@
                 margin: 0;
                 line-height: 1;
             }
-            .cards svg {
-                width: 25px;
-                height: 25px;
+            .cards > div > .flex-box-start > svg {
+                width: 35px;
             }
-            .cards p {
+            .cards > div > p {
                 font-size: 14px;
-                color: var(--color-gray-p);
                 line-height: 1;
                 margin: 0;
-                text-align: center;
             }
 
             /* FLUXO DA JANELA */
@@ -771,9 +777,47 @@
             .tables-and-charts > div > .chart {
                 margin-top: 15px;
             }
+            .expedition-errors-summary tbody th {
+                font-weight: 600;
+                background-color: var(--color-table-th);
+            }
+            .expedition-errors-summary > .flex-box-start {
+                gap: 15px;
+                margin-top: 15px;
+            }
+            .expedition-errors-summary > .flex-box-start > div {
+                flex: 1 1 0;
+                min-width: 0;
+            }
+            .expedition-errors-summary > .flex-box-start > .chart {
+                justify-content: center;
+            }
+            .losses-rate-charts {
+                gap: 15px;
+                align-items: flex-start;
+            }
+            .losses-rate-charts > .chart {
+                flex: 1 1 0;
+                min-width: 0;
+            }
+            .losses-rate-charts .chart-canvas-container {
+                margin-top: 20px;
+            }
+            .losses-rate-charts .chart-label {
+                flex-wrap: wrap;
+            }
+            .losses-rate-charts .doughnut-chart .chart-label {
+                max-width: 385px;
+                margin: 0 auto 20px;
+            }
+            .losses-rate-charts .doughnut-chart .chart-label[data-has-data="true"] {
+                max-width: 443px;
+            }
 
             @media (max-width: 900px) {
-                .tables-and-charts > div {
+                .tables-and-charts > div,
+                .expedition-errors-summary > .flex-box-start > div,
+                .losses-rate-charts > .chart {
                     flex-basis: 100%;
                     min-width: 0;
                 }
@@ -786,16 +830,16 @@
 
     <body>
         <div class="main-structure">
-            <div>
+            <div class="preview-style">
                 <!-- TITULO PRINCIPAL -->
 
-                <div class="main-title">
+                <div class="title">
                     <h2>Relatório Final - LM HUB SP Santos Praia Grande 02</h2>
                 </div>
 
                 <!-- HEADER DO RELATÓRIO -->
 
-                <div class="header flex-box-between">
+                <div class="final-report-header flex-box-between">
                     <div class="flex-box-start">
                         <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 34 34" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g transform="matrix(1.05,0,0,1.05,-0.8525000572204533,-0.8500000000000014)"><path d="M29.6 2h-3v3c0 .6-.5 1-1 1s-1-.4-1-1V2h-16v3c0 .6-.5 1-1 1s-1-.4-1-1V2h-3C2.1 2 1 3.3 1 5v3.6h32V5c0-1.7-1.8-3-3.4-3M1 10.7V29c0 1.8 1.1 3 2.7 3h26c1.6 0 3.4-1.3 3.4-3V10.7zm8.9 16.8H7.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8H10c.4 0 .8.3.8.8v2.5c-.1.5-.4.8-.9.8m0-9H7.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8H10c.4 0 .8.3.8.8v2.5c-.1.5-.4.8-.9.8m8 9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8m0-9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8m8 9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8m0-9h-2.5c-.4 0-.8-.3-.8-.8v-2.5c0-.4.3-.8.8-.8h2.5c.4 0 .8.3.8.8v2.5c0 .5-.3.8-.8.8" fill="#e4e6eb" opacity="1" data-original="#000000" class=""></path></g></svg>
                         <p><span id="finalReportWindow"></span> — <span id="finalReportDate"></span></p>
@@ -807,7 +851,7 @@
                 <!-- CARDS PRINCIPAIS -->
 
                 <div>
-                    <div class="title">
+                    <div class="final-report-title">
                         <h4>Análise das Avarias e Perdas</h4>
                     </div>
 
@@ -900,6 +944,46 @@
 
                 <!-- AVARIAS E PERDAS -->
 
+                <div class="losses-rate-charts flex-box-start">
+                    <div class="chart doughnut-chart">
+                        <div class="chart-canvas-container">
+                            <canvas id="finalReportDamageAndLossesCompositionChart" role="img" aria-label="Composição das ocorrências">
+                                Seu navegador não suporta gráficos em canvas.
+                            </canvas>
+                        </div>
+
+                        <div class="chart-label" id="finalReportDamageAndLossesLegend">
+                            <div class="type">
+                                <div style="background-color: #2538a5;"></div>
+                                <p>Em Análise <span id="finalReportDamageAndLossesCompositionUnderReview">—</span></p>
+                            </div>
+
+                            <div class="type">
+                                <div style="background-color: #8B0000;"></div>
+                                <p>Lost <span id="finalReportDamageAndLossesCompositionLost">—</span></p>
+                            </div>
+
+                            <div class="type">
+                                <div style="background-color: #007A48;"></div>
+                                <p>Avarias (Hub) <span id="finalReportDamageAndLossesCompositionDamage">—</span></p>
+                            </div>
+
+                            <div class="type">
+                                <div style="background-color: #f99400;"></div>
+                                <p>Avarias (SOC) <span id="finalReportDamageAndLossesCompositionSoc">—</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart line-chart">
+                        <div class="chart-canvas-container">
+                            <canvas id="finalReportLossesRateHistoryChart" role="img" aria-label="Histórico da taxa de perdas">
+                                Seu navegador não suporta gráficos em canvas.
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <table id="finalReport-LossesTable">
                     <thead>
                         <tr>
@@ -983,7 +1067,7 @@
                 <!-- FLUXO DA JANELA -->
 
                 <div>
-                    <div class="title">
+                    <div class="final-report-title">
                         <h4>Fluxo da Janela</h4>
                     </div>
 
@@ -1096,6 +1180,153 @@
                                     Seu navegador não suporta gráficos em canvas.
                                 </canvas>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANÁLISE DE ERROS -->
+
+                <div class="expedition-errors-summary">
+                    <table>
+                        <caption>Análise de Erros</caption>
+
+                        <thead>
+                            <tr>
+                                <th>Erros de Sorting</th>
+                                <th>Erros de Etiquetagem</th>
+                                <th>Total de Erros</th>
+                                <th>Taxa de Erros</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td id="finalReportExpeditionSortingErrors">—</td>
+                                <td id="finalReportExpeditionLabelingErrors">—</td>
+                                <td id="finalReportExpeditionTotalErrors">—</td>
+                                <td id="finalReportExpeditionErrorRate">—</td>
+                            </tr>
+
+                            <tr>
+                                <th id="expeditionRevertedErrorsHeading" scope="col">Erros Revertidos</th>
+                                <th id="expeditionRevertedRateHeading" scope="col">Taxa de Revertidos</th>
+                                <th id="expeditionFinalErrorsHeading" scope="col">Total Final de Erros</th>
+                                <th id="expeditionFinalRateHeading" scope="col">Taxa Final</th>
+                            </tr>
+
+                            <tr>
+                                <td id="finalReportExpeditionRevertedErrors" headers="expeditionRevertedErrorsHeading">—</td>
+                                <td id="finalReportExpeditionRevertedRate" headers="expeditionRevertedRateHeading">—</td>
+                                <td id="finalReportExpeditionFinalErrors" headers="expeditionFinalErrorsHeading">—</td>
+                                <td id="finalReportExpeditionFinalRate" headers="expeditionFinalRateHeading">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="flex-box-start">
+                        <div class="chart horizontal-bars-chart expedition-error-balance-chart">
+                            <div class="chart-canvas-container">
+                                <canvas id="finalReportErrorBalanceChart" role="img" aria-label="Acompanhamento dos Erros"></canvas>
+                            </div>
+                        </div>
+
+                        <div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Rua</th>
+                                        <th>Pacotes Ausentes</th>
+                                        <th>Erros da Rua</th>
+                                        <th>Taxa de Erros</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="finalReportExpeditionStreetBody">
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

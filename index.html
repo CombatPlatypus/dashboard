@@ -298,7 +298,7 @@
 
                                     <div class="tabs-content" data-tabs-content="receipt-view-tabs">
 
-                                        <!-- DESCARGGA DE LHs -->
+                                        <!-- DESCARGA DE LHs -->
 
                                         <div class="tabs-panel is-active" id="linehaul">
                                             <div class="preview-style" id="receiptLinehaulExportArea">
@@ -805,6 +805,24 @@
                                                     </tbody>
                                                 </table>
 
+                                                <div class="chart-progress">
+                                                    <div class="chart-progress-header">
+                                                        <div>
+                                                            <h4 id="expeditionProgressTitle">Progresso da Conferência</h4>
+
+                                                            <p id="expeditionProgressCounts">
+                                                                Rotas feitas <span id="expeditionProgressCompleted">—</span> Rotas pendentes <span id="expeditionProgressPending">—</span>
+                                                            </p>
+                                                        </div>
+
+                                                        <p class="chart-progress-percentage" id="expeditionProgressPercentage">—</p>
+                                                    </div>
+
+                                                    <div class="chart-progress-track" id="expeditionProgressBar" role="progressbar" aria-labelledby="expeditionProgressTitle" aria-describedby="expeditionProgressCounts" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Aguardando a importação do relatório Gestão Audit.">
+                                                        <div class="chart-progress-fill" id="expeditionProgressFill"></div>
+                                                    </div>
+                                                </div>
+
                                                 <table class="expedition-operator-table">
                                                     <thead>
                                                         <tr>
@@ -919,13 +937,13 @@
                                                     </tbody>
                                                 </table>
 
-                                                <div class="chart horizontal-bars-chart">
+                                                <div class="chart horizontal-bars-chart expedition-error-balance-chart">
                                                     <div class="chart-title">
-                                                        <h4>Acompanhamento dos Erros</h4>
+                                                        <h4 id="expeditionErrorBalanceTitle">Acompanhamento dos Erros</h4>
                                                     </div>
 
                                                     <div class="chart-canvas-container">
-                                                        <canvas id="expeditionErrorBalanceChart" role="img"></canvas>
+                                                        <canvas id="expeditionErrorBalanceChart" role="img" aria-labelledby="expeditionErrorBalanceTitle"></canvas>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2247,7 +2265,7 @@
 
                                             <div class="chart-label">
                                                 <div class="type">
-                                                    <div style="background-color: #8b8d91;"></div>
+                                                    <div style="background-color: #2538a5;"></div>
                                                     <p>Possíveis Perdas <span id="lossesRateCompositionPossibleLosses">—</span></p>
                                                 </div>
 
@@ -2700,7 +2718,7 @@
 
                                                         <span>Return</span>
 
-                                                        <button id="reverseCopyReturnPackagesButton" type="button" data-reverse-copy="return" title="Copiar BRs de Return" aria-label="Copiar BRs de Return" disabled>
+                                                        <button id="reverseCopyReturnPackagesButton" type="button" data-reverse-copy="return" title="Copiar BRs e TOs de Return" aria-label="Copiar BRs e TOs de Return" disabled>
                                                             <img src="images/geral-icons/copy-mini-icon.svg">
                                                         </button>
                                                     </div>
@@ -2728,7 +2746,7 @@
 
                                                         <span>Missorted</span>
 
-                                                        <button id="reverseCopyMissortedPackagesButton" type="button" data-reverse-copy="missorted" title="Copiar BRs de Missorted" aria-label="Copiar BRs de Missorted" disabled>
+                                                        <button id="reverseCopyMissortedPackagesButton" type="button" data-reverse-copy="missorted" title="Copiar BRs e TOs de Missorted" aria-label="Copiar BRs e TOs de Missorted" disabled>
                                                             <img src="images/geral-icons/copy-mini-icon.svg">
                                                         </button>
                                                     </div>
@@ -2756,7 +2774,7 @@
 
                                                         <span>Liquidate</span>
 
-                                                        <button id="reverseCopyLiquidatePackagesButton" type="button" data-reverse-copy="liquidate" title="Copiar BRs de Liquidate" aria-label="Copiar BRs de Liquidate" disabled>
+                                                        <button id="reverseCopyLiquidatePackagesButton" type="button" data-reverse-copy="liquidate" title="Copiar BRs e TOs de Liquidate" aria-label="Copiar BRs e TOs de Liquidate" disabled>
                                                             <img src="images/geral-icons/copy-mini-icon.svg">
                                                         </button>
                                                     </div>
@@ -2784,7 +2802,7 @@
 
                                                         <span>Confiscado</span>
 
-                                                        <button id="reverseCopyConfiscatedPackagesButton" type="button" data-reverse-copy="confiscated" title="Copiar BRs de Confiscado" aria-label="Copiar BRs de Confiscado" disabled>
+                                                        <button id="reverseCopyConfiscatedPackagesButton" type="button" data-reverse-copy="confiscated" title="Copiar BRs e TOs de Confiscado" aria-label="Copiar BRs e TOs de Confiscado" disabled>
                                                             <img src="images/geral-icons/copy-mini-icon.svg">
                                                         </button>
                                                     </div>
@@ -2920,6 +2938,46 @@
 
                                     <!-- AVARIAS E PERDAS -->
 
+                                    <div class="losses-rate-charts flex-box-start">
+                                        <div class="chart doughnut-chart">
+                                            <div class="chart-canvas-container">
+                                                <canvas id="overallAnalysisDamageAndLossesCompositionChart" role="img" aria-label="Composição das ocorrências">
+                                                    Seu navegador não suporta gráficos em canvas.
+                                                </canvas>
+                                            </div>
+
+                                            <div class="chart-label" id="overallAnalysisDamageAndLossesLegend">
+                                                <div class="type">
+                                                    <div style="background-color: #2538a5;"></div>
+                                                    <p>Em Análise <span id="overallAnalysisDamageAndLossesCompositionUnderReview">—</span></p>
+                                                </div>
+
+                                                <div class="type">
+                                                    <div style="background-color: #8B0000;"></div>
+                                                    <p>Lost <span id="overallAnalysisDamageAndLossesCompositionLost">—</span></p>
+                                                </div>
+
+                                                <div class="type">
+                                                    <div style="background-color: #007A48;"></div>
+                                                    <p>Avarias (Hub) <span id="overallAnalysisDamageAndLossesCompositionDamage">—</span></p>
+                                                </div>
+
+                                                <div class="type">
+                                                    <div style="background-color: #f99400;"></div>
+                                                    <p>Avarias (SOC) <span id="overallAnalysisDamageAndLossesCompositionSoc">—</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="chart line-chart">
+                                            <div class="chart-canvas-container">
+                                                <canvas id="overallAnalysisLossesRateHistoryChart" role="img" aria-label="Histórico da taxa de perdas">
+                                                    Seu navegador não suporta gráficos em canvas.
+                                                </canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <table id="overallAnalysisDamageAndLossesTable">
                                         <thead>
                                             <tr>
@@ -2998,7 +3056,6 @@
                                                 <td>—</td>
                                             </tr>
                                         </tbody>
-
                                     </table>
 
                                     <!-- FLUXO DO DIA E DASTAQUES DA OPERAÇÃO -->
@@ -3117,6 +3174,153 @@
                                                         Seu navegador não suporta gráficos em canvas.
                                                     </canvas>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ANÁLISE DE ERROS -->
+
+                                    <div class="expedition-errors-summary">
+                                        <table>
+                                            <caption>Análise de Erros</caption>
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Erros de Sorting</th>
+                                                    <th>Erros de Etiquetagem</th>
+                                                    <th>Total de Erros</th>
+                                                    <th>Taxa de Erros</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td id="overallAnalysisExpeditionSortingErrors">—</td>
+                                                    <td id="overallAnalysisExpeditionLabelingErrors">—</td>
+                                                    <td id="overallAnalysisExpeditionTotalErrors">—</td>
+                                                    <td id="overallAnalysisExpeditionErrorRate">—</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th id="expeditionRevertedErrorsHeading" scope="col">Erros Revertidos</th>
+                                                    <th id="expeditionRevertedRateHeading" scope="col">Taxa de Revertidos</th>
+                                                    <th id="expeditionFinalErrorsHeading" scope="col">Total Final de Erros</th>
+                                                    <th id="expeditionFinalRateHeading" scope="col">Taxa Final</th>
+                                                </tr>
+
+                                                <tr>
+                                                    <td id="overallAnalysisExpeditionRevertedErrors" headers="expeditionRevertedErrorsHeading">—</td>
+                                                    <td id="overallAnalysisExpeditionRevertedRate" headers="expeditionRevertedRateHeading">—</td>
+                                                    <td id="overallAnalysisExpeditionFinalErrors" headers="expeditionFinalErrorsHeading">—</td>
+                                                    <td id="overallAnalysisExpeditionFinalRate" headers="expeditionFinalRateHeading">—</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div class="flex-box-start">
+                                            <div class="chart horizontal-bars-chart expedition-error-balance-chart">
+                                                <div class="chart-canvas-container">
+                                                    <canvas id="overallAnalysisErrorBalanceChart" role="img" aria-label="Acompanhamento dos Erros"></canvas>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Rua</th>
+                                                            <th>Pacotes Ausentes</th>
+                                                            <th>Erros da Rua</th>
+                                                            <th>Taxa de Erros</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="overallAnalysisExpeditionStreetBody">
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                            <td>—</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>

@@ -1,10 +1,17 @@
 import { CHART_COLORS, getChartPixelRatio } from "../../charts/theme.js";
-import { createHorizontalBars3DPlugin, getHorizontalBarLabelPosition } from "../core/horizontal-bars-3d.js";
 import { createDashboardChart } from "../../charts/standard.js";
 import { CHART_TEXT_COLOR, CHART_VALUE_FONT } from "../../charts/theme.js";
+import {
+    applyExpeditionErrorsTextSpacing,
+    createErrorBalanceChart,
+    expeditionErrorsTextSpacingPlugin,
+    formatErrorChartQuantity,
+    updateErrorBalanceChart,
+} from "./error-balance-chart.js";
 
 import {
-    getExpeditionErrorAnalysis,
+    createExpeditionDerivations,
+    getExpeditionChangeScope,
     getExpeditionState,
     subscribeExpeditionState,
 } from "./state.js";
@@ -21,28 +28,10 @@ const ERROR_CHART_FONT = {
     size: 14,
 };
 
-const ERROR_BALANCE_3D_DEPTH = {
-    x: 10,
-    y: 9,
-};
-
-const ERROR_BALANCE_VALUE_FONT =
-    CHART_VALUE_FONT;
-
-const ERROR_BALANCE_VALUE_COLOR =
-    CHART_TEXT_COLOR;
-
-const ERROR_BALANCE_VALUE_RIGHT_PADDING = 64;
-
 const STREET_OCCURRENCES_3D_DEPTH = {
     x: 8,
     y: 7,
 };
-
-const errorChartQuantityFormatter =
-    new Intl.NumberFormat(
-        "pt-BR",
-    );
 
 const errorChartRateFormatter =
     new Intl.NumberFormat(
@@ -53,25 +42,6 @@ const errorChartRateFormatter =
             maximumFractionDigits: 2,
         },
     );
-
-function formatErrorChartQuantity(
-    value,
-) {
-    if (
-        value === null ||
-        value === undefined ||
-        !Number.isFinite(
-            Number(value),
-        )
-    ) {
-        return "—";
-    }
-
-    return errorChartQuantityFormatter
-        .format(
-            Number(value),
-        );
-}
 
 function formatErrorChartRate(
     value,
@@ -189,40 +159,6 @@ function hasExpeditionErrorsChartElements(
     );
 }
 
-function applyExpeditionErrorsTextSpacing(
-    chart,
-) {
-    if (
-        "letterSpacing" in
-        chart.ctx
-    ) {
-        chart.ctx.letterSpacing =
-            "1px";
-    }
-}
-
-const expeditionErrorsTextSpacingPlugin = {
-    id: "expeditionErrorsTextSpacing",
-
-    beforeDraw(chart) {
-        applyExpeditionErrorsTextSpacing(
-            chart,
-        );
-    },
-
-    beforeDatasetsDraw(chart) {
-        applyExpeditionErrorsTextSpacing(
-            chart,
-        );
-    },
-
-    beforeTooltipDraw(chart) {
-        applyExpeditionErrorsTextSpacing(
-            chart,
-        );
-    },
-};
-
 function mixErrorChartColor(
     color,
     target,
@@ -302,71 +238,6 @@ function drawErrorChartFace(
         context.stroke();
     }
 }
-
-const expeditionErrorBalance3DPlugin = createHorizontalBars3DPlugin({ id: "expeditionErrorBalance3D" });
-
-const expeditionErrorBalanceValuesPlugin = {
-    id: "expeditionErrorBalanceValues",
-
-    afterDatasetsDraw(chart) {
-        if (!chart.chartArea) {
-            return;
-        }
-
-        const dataset =
-            chart.data.datasets[0];
-
-        const bars =
-            chart.getDatasetMeta(0).data;
-
-        const context = chart.ctx;
-
-        context.save();
-        applyExpeditionErrorsTextSpacing(chart);
-        context.font =
-            ERROR_BALANCE_VALUE_FONT;
-        context.fillStyle =
-            ERROR_BALANCE_VALUE_COLOR;
-        context.textBaseline = "middle";
-
-        bars.forEach(function (
-            bar,
-            index,
-        ) {
-            if (bar.horizontal !== true) {
-                return;
-            }
-
-            const value =
-                Number(
-                    dataset.data[index],
-                );
-
-            if (
-                !Number.isFinite(value) ||
-                value === 0
-            ) {
-                return;
-            }
-
-            const position = getHorizontalBarLabelPosition(bar);
-
-            const label =
-                formatErrorChartQuantity(
-                    value,
-                );
-
-            context.textAlign = "left";
-            context.fillText(
-                label,
-                position.x,
-                position.y,
-            );
-        });
-
-        context.restore();
-    },
-};
 
 const expeditionStreetBars3DPlugin = {
     id: "expeditionStreetBars3D",
@@ -580,155 +451,6 @@ const expeditionStreetBarValuesPlugin = {
     },
 };
 
-function createErrorBalanceChart(
-    canvas,
-) {
-    return createDashboardChart(
-        canvas,
-        {
-            type: "bar",
-
-            data: {
-                labels: [
-                    "Erros de Etiquetagem",
-                    "Erros de Sorting",
-                    "Revertidos",
-                    "Saldo Final",
-                ],
-
-                datasets: [
-                    {
-                        data: [0, 0, 0, 0],
-                        backgroundColor: [
-                            CHART_COLORS.blue,
-                            CHART_COLORS.yellow,
-                            CHART_COLORS.green,
-                            CHART_COLORS.red,
-                        ],
-                        borderWidth: 0,
-                        maxBarThickness: 42,
-                        categoryPercentage: 0.8,
-                        barPercentage: 0.9,
-                    },
-                ],
-            },
-
-            plugins: [
-                expeditionErrorsTextSpacingPlugin,
-                expeditionErrorBalance3DPlugin,
-                expeditionErrorBalanceValuesPlugin,
-            ],
-
-            options: {
-                indexAxis: "y",
-                responsive: true,
-                maintainAspectRatio: false,
-                devicePixelRatio:
-                    ERROR_CHART_PIXEL_RATIO,
-
-                animation: {
-                    duration: 250,
-                },
-
-                layout: {
-                    padding: {
-                        right:
-                            ERROR_BALANCE_VALUE_RIGHT_PADDING,
-                        bottom:
-                            ERROR_BALANCE_3D_DEPTH.y,
-                    },
-                },
-
-                interaction: {
-                    intersect: false,
-                    mode: "index",
-                },
-
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-
-                    tooltip: {
-                        enabled: false,
-
-                        titleFont: {
-                            ...ERROR_CHART_FONT,
-                            weight: "600",
-                        },
-
-                        bodyFont:
-                            ERROR_CHART_FONT,
-
-                        callbacks: {
-                            label(context) {
-                                return (
-                                    `${context.label}: ` +
-                                    formatErrorChartQuantity(
-                                        context.raw,
-                                    )
-                                );
-                            },
-                        },
-                    },
-                },
-
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        grace: "12%",
-
-                        ticks: {
-                            color: CHART_TEXT_COLOR,
-                            precision: 0,
-                            padding: 10,
-                            font:
-                                ERROR_CHART_FONT,
-
-                            callback(value) {
-                                return formatErrorChartQuantity(
-                                    value,
-                                );
-                            },
-                        },
-
-                        grid: {
-                            color(context) {
-                                return Number(
-                                    context.tick?.value,
-                                ) === 0
-                                    ? "rgba(0, 0, 0, 0)"
-                                    : "rgba(82, 82, 82, 0.45)";
-                            },
-                        },
-                    },
-
-                    y: {
-                        afterFit(scale) {
-                            scale.width += 16;
-                        },
-
-                        ticks: {
-                            color: CHART_TEXT_COLOR,
-                            font:
-                                ERROR_CHART_FONT,
-                            padding: 12,
-                        },
-
-                        grid: {
-                            display: false,
-                        },
-
-                        border: {
-                            display: false,
-                        },
-                    },
-                },
-            },
-        },
-    );
-}
-
 function createStreetOccurrencesChart(
     canvas,
 ) {
@@ -901,39 +623,6 @@ function createStreetOccurrencesChart(
     );
 }
 
-function updateErrorBalanceChart(
-    analysis,
-    animate,
-) {
-    const labelingErrors =
-        analysis.labelingErrors ?? 0;
-
-    const sortingErrors =
-        analysis.sortingErrors ?? 0;
-
-    const revertedErrors =
-        analysis.totalRevertedErrors ?? 0;
-
-    const finalErrors =
-        analysis.finalErrors ?? 0;
-
-    errorBalanceChart
-        .data
-        .datasets[0]
-        .data = [
-            labelingErrors,
-            sortingErrors,
-            revertedErrors,
-            finalErrors,
-        ];
-
-    errorBalanceChart.update(
-        animate
-            ? undefined
-            : "none",
-    );
-}
-
 function updateStreetOccurrencesChart(
     elements,
     streets,
@@ -1078,44 +767,26 @@ function updateStreetCards(
         );
 }
 
-function renderExpeditionErrorsCharts(
-    elements,
-    state,
-) {
-    const analysis =
-        getExpeditionErrorAnalysis(
-            state,
-        );
-
-    const animateErrors =
-        elements.errorsPanel
-            .classList
-            .contains(
-                "is-active",
-            );
-
-    const animateStreets =
-        elements.streetsPanel
-            .classList
-            .contains(
-                "is-active",
-            );
-
-    updateStreetCards(
-        elements,
-        analysis.streets,
-    );
-
-    updateErrorBalanceChart(
-        analysis,
-        animateErrors,
-    );
-
-    updateStreetOccurrencesChart(
-        elements,
-        analysis.streets,
-        animateStreets,
-    );
+function renderExpeditionErrorsCharts(elements, state, change, derived = createExpeditionDerivations(state)) {
+    const scope = getExpeditionChangeScope(change);
+    if (scope.errors) {
+        const animate = elements.errorsPanel.classList.contains("is-active");
+        updateErrorBalanceChart(errorBalanceChart, derived.getErrors(), animate ? undefined : "none");
+    }
+    if (scope.ranking) {
+        const streets = derived.getStreets();
+        updateStreetCards(elements, streets);
+        updateStreetOccurrencesChart(elements, streets, elements.streetsPanel.classList.contains("is-active"));
+    } else if (scope.guardian) {
+        // O nome do guardião aparece nos detalhes da rua e não altera as barras.
+        const datasets = streetOccurrencesChart.data.datasets;
+        const streets = datasets[0].expeditionStreets.map(street => street.name === scope.guardian
+            ? { ...street, guardian: state.streetGuardians[scope.guardian] ?? "" }
+            : street);
+        for (const dataset of datasets) {
+            dataset.expeditionStreets = streets;
+        }
+    }
 }
 
 function resizeExpeditionErrorsCharts() {
@@ -1239,14 +910,7 @@ function initializeExpeditionErrorsCharts(
             elements.streetOccurrencesCanvas,
         );
 
-    subscribeExpeditionState(
-        function (state) {
-            renderExpeditionErrorsCharts(
-                elements,
-                state,
-            );
-        },
-    );
+    subscribeExpeditionState((state, change, derived) => renderExpeditionErrorsCharts(elements, state, change, derived));
 
     renderExpeditionErrorsCharts(
         elements,

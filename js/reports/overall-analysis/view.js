@@ -261,6 +261,7 @@ function getOverallAnalysisViewElements(
         damageHub: getElement("overallAnalysisDamageHub"),
         packagesUnderReview: getElement("overallAnalysisPackagesUnderReview"),
         confirmedLosses: getElement("overallAnalysisConfirmedLosses"),
+        damageAndLossesLegend: getElement("overallAnalysisDamageAndLossesLegend"),
 
         lossRate:
             getElement(
@@ -331,6 +332,16 @@ function getOverallAnalysisViewElements(
             getElement(
                 "overallAnalysisExpeditionTime",
             ),
+
+        expeditionSortingErrors: getElement("overallAnalysisExpeditionSortingErrors"),
+        expeditionLabelingErrors: getElement("overallAnalysisExpeditionLabelingErrors"),
+        expeditionTotalErrors: getElement("overallAnalysisExpeditionTotalErrors"),
+        expeditionErrorRate: getElement("overallAnalysisExpeditionErrorRate"),
+        expeditionRevertedErrors: getElement("overallAnalysisExpeditionRevertedErrors"),
+        expeditionRevertedRate: getElement("overallAnalysisExpeditionRevertedRate"),
+        expeditionFinalErrors: getElement("overallAnalysisExpeditionFinalErrors"),
+        expeditionFinalRate: getElement("overallAnalysisExpeditionFinalRate"),
+        expeditionStreetBody: getElement("overallAnalysisExpeditionStreetBody"),
 
         damageAndLossesTable:
             getElement(
@@ -443,11 +454,29 @@ function renderOverallDamageAndLossesTable(
 
 /* RENDERIZAÇÃO */
 
-function renderOverallParcelAndReverse(
-    elements,
-    parcel,
-    reverse,
-) {
+function renderOverallExpeditionStreets(body, streets) {
+    const rowCount = Math.max(12, streets.length);
+    while (body.rows.length > rowCount) {
+        body.deleteRow(-1);
+    }
+
+    for (let index = 0; index < rowCount; index += 1) {
+        const row = body.rows[index] ?? body.insertRow();
+        const street = streets[index];
+        const values = [
+            street?.name || "—",
+            formatOverallAnalysisQuantity(street?.missingOrders),
+            formatOverallAnalysisQuantity(street?.totalErrors),
+            formatOverallAnalysisRate(street?.errorRate),
+        ];
+        values.forEach((value, column) => {
+            const cell = row.cells[column] ?? row.insertCell();
+            cell.textContent = value;
+        });
+    }
+}
+
+function renderOverallParcel(elements, parcel) {
     [
         ["ParcelScanned", "scannedCount"],
         ["ParcelBacklog", "backlogCount"],
@@ -472,6 +501,9 @@ function renderOverallParcelAndReverse(
             );
     });
 
+}
+
+function renderOverallReverse(elements, reverse) {
     REVERSE_TYPE_KEYS.forEach(function (typeKey) {
         const suffix =
             `${typeKey[0].toUpperCase()}${typeKey.slice(1)}`;
@@ -491,117 +523,105 @@ function renderOverallParcelAndReverse(
     });
 }
 
-function renderOverallAnalysisView(
-    data,
-    elements = overallAnalysisViewElements,
-    date = new Date(),
-) {
+function renderOverallAnalysisContext(data, elements = overallAnalysisViewElements) {
     if (!elements) {
         return false;
     }
 
-    elements.date.textContent =
-        formatOverallAnalysisDate(date);
+    const { context, flow, processing } = data;
+    const flowStatus = flow.gap === null
+        ? "—"
+        : flow.gap === 0
+            ? "Piso zerado"
+            : `${formatOverallAnalysisQuantity(flow.planned)} Pacotes foram planejados para essa janela, ` +
+                `mas somente ${formatOverallAnalysisQuantity(flow.expedited)} foram expedidos, ` +
+                `temos um gap de ${formatOverallAnalysisQuantity(flow.gap)} ${flow.gap === 1 ? "pacote" : "pacotes"}.`;
+    const texts = {
+        window: context.window || "—",
+        analyst: context.analyst || "—",
+        planned: formatOverallAnalysisQuantity(flow.planned),
+        floor: formatOverallAnalysisQuantity(flow.floor),
+        flowStatus,
+        expectedVolume: formatOverallAnalysisQuantity(processing.expectedVolume),
+    };
 
-    elements.window.textContent =
-        data.context?.window || "—";
+    for (const [field, text] of Object.entries(texts)) {
+        if (elements[field].textContent !== text) {
+            elements[field].textContent = text;
+        }
+    }
+    return true;
+}
 
-    elements.analyst.textContent =
-        data.context?.analyst || "—";
+function renderOverallAnalysisChanges(data, previous, elements = overallAnalysisViewElements) {
+    if (!elements) {
+        return false;
+    }
 
-    elements.damageSoc.textContent = formatOverallAnalysisQuantity(data.cards.damage.soc);
-    elements.damageHub.textContent = formatOverallAnalysisQuantity(data.cards.damage.hub);
-    elements.packagesUnderReview.textContent = formatOverallAnalysisQuantity(data.cards.packagesAnalysis.value);
-    elements.confirmedLosses.textContent = formatOverallAnalysisQuantity(data.cards.packagesAnalysis.confirmedLosses);
-
-    elements.lossRate.textContent =
-        formatOverallAnalysisLossRate(
-            data.cards.lossesRate.rate,
-        );
-
-    elements.planned.textContent =
-        formatOverallAnalysisQuantity(
-            data.flow.planned,
-        );
-
-    elements.processed.textContent =
-        formatOverallAnalysisQuantity(
-            data.flow.processed,
-        );
-
-    elements.expedited.textContent =
-        formatOverallAnalysisQuantity(
-            data.flow.expedited,
-        );
-
-    elements.floor.textContent =
-        formatOverallAnalysisQuantity(
-            data.flow.floor,
-        );
-
-    elements.flowStatus.textContent =
-        data.flow.gap === null
-            ? "—"
-            : data.flow.gap === 0
-                ? "Piso zerado"
-                : (
-                    `${formatOverallAnalysisQuantity(data.flow.planned)} Pacotes foram planejados para essa janela, ` +
-                    `mas somente ${formatOverallAnalysisQuantity(data.flow.expedited)} foram expedidos, ` +
-                    `temos um gap de ${formatOverallAnalysisQuantity(data.flow.gap)} ${data.flow.gap === 1 ? "pacote" : "pacotes"}.`
-                );
-
-    elements.expectedVolume.textContent =
-        formatOverallAnalysisQuantity(
-            data.processing.expectedVolume,
-        );
-
-    elements.receivedVolume.textContent =
-        formatOverallAnalysisQuantity(
-            data.processing.receivedVolume,
-        );
-
-    elements.receiptErrors.textContent =
-        formatOverallAnalysisQuantity(
-            data.processing.totalErrors,
-        );
-
-    elements.receiptErrorRate.textContent =
-        formatOverallAnalysisRate(
-            data.processing.errorRate,
-        );
-
-    elements.routesChecked.textContent =
-        formatOverallAnalysisQuantity(
-            data.expedition.routesChecked,
-        );
-
-    elements.volumeChecked.textContent =
-        formatOverallAnalysisQuantity(
-            data.expedition.volumeChecked,
-        );
-
-    elements.floorVolume.textContent =
-        formatOverallAnalysisQuantity(
-            data.expedition.floorVolume,
-        );
-
-    elements.expeditionTime.textContent =
-        formatOverallAnalysisDuration(
-            data.expedition.durationSeconds,
-        );
-
-    renderOverallDamageAndLossesTable(
-        elements.damageAndLossesTable,
-        data.damageAndLosses,
-    );
-
-    renderOverallParcelAndReverse(
-        elements,
-        data.parcel,
-        data.reverse,
-    );
+    if (data.context !== previous?.context || data.flow !== previous?.flow ||
+        data.processing.expectedVolume !== previous?.processing.expectedVolume) {
+        renderOverallAnalysisContext(data, elements);
+    }
+    if (data.processing.receivedVolume !== previous?.processing.receivedVolume) {
+        elements.processed.textContent = formatOverallAnalysisQuantity(data.flow.processed);
+        elements.receivedVolume.textContent = formatOverallAnalysisQuantity(data.processing.receivedVolume);
+    }
+    if (data.processing.totalErrors !== previous?.processing.totalErrors) {
+        elements.receiptErrors.textContent = formatOverallAnalysisQuantity(data.processing.totalErrors);
+    }
+    if (data.processing.errorRate !== previous?.processing.errorRate) {
+        elements.receiptErrorRate.textContent = formatOverallAnalysisRate(data.processing.errorRate);
+    }
+    if (data.expedition !== previous?.expedition) {
+        const { routesChecked, volumeChecked, floorVolume, durationSeconds } = data.expedition;
+        elements.expedited.textContent = formatOverallAnalysisQuantity(data.flow.expedited);
+        elements.routesChecked.textContent = formatOverallAnalysisQuantity(routesChecked);
+        elements.volumeChecked.textContent = formatOverallAnalysisQuantity(volumeChecked);
+        elements.floorVolume.textContent = formatOverallAnalysisQuantity(floorVolume);
+        elements.expeditionTime.textContent = formatOverallAnalysisDuration(durationSeconds);
+    }
+    if (data.expeditionErrors !== previous?.expeditionErrors) {
+        const errors = data.expeditionErrors;
+        elements.expeditionSortingErrors.textContent = formatOverallAnalysisQuantity(errors.sortingErrors);
+        elements.expeditionLabelingErrors.textContent = formatOverallAnalysisQuantity(errors.labelingErrors);
+        elements.expeditionTotalErrors.textContent = formatOverallAnalysisQuantity(errors.totalErrors);
+        elements.expeditionErrorRate.textContent = formatOverallAnalysisRate(errors.errorRate);
+        elements.expeditionRevertedErrors.textContent = formatOverallAnalysisQuantity(errors.totalRevertedErrors);
+        elements.expeditionRevertedRate.textContent = formatOverallAnalysisRate(errors.revertedRate);
+        elements.expeditionFinalErrors.textContent = formatOverallAnalysisQuantity(errors.finalErrors);
+        elements.expeditionFinalRate.textContent = formatOverallAnalysisRate(errors.finalRate);
+        if (errors.streets !== previous?.expeditionErrors.streets) {
+            renderOverallExpeditionStreets(elements.expeditionStreetBody, errors.streets);
+        }
+    }
+    if (data.damageAndLosses !== previous?.damageAndLosses) {
+        elements.damageSoc.textContent = formatOverallAnalysisQuantity(data.cards.damage.soc);
+        elements.damageHub.textContent = formatOverallAnalysisQuantity(data.cards.damage.hub);
+        elements.packagesUnderReview.textContent = formatOverallAnalysisQuantity(data.cards.packagesAnalysis.value);
+        elements.confirmedLosses.textContent = formatOverallAnalysisQuantity(data.cards.packagesAnalysis.confirmedLosses);
+        elements.damageAndLossesLegend.dataset.hasData = String(data.damageAndLossesComposition.hasData);
+        renderOverallDamageAndLossesTable(elements.damageAndLossesTable, data.damageAndLosses);
+    }
+    if (data.cards.lossesRate !== previous?.cards.lossesRate) {
+        elements.lossRate.textContent = formatOverallAnalysisLossRate(data.cards.lossesRate.rate);
+    }
+    if (data.parcel !== previous?.parcel) {
+        renderOverallParcel(elements, data.parcel);
+    }
+    if (data.reverse !== previous?.reverse) {
+        renderOverallReverse(elements, data.reverse);
+    }
 
     return true;
+}
+
+function renderOverallAnalysisView(data, elements = overallAnalysisViewElements, date = new Date()) {
+    if (!elements) {
+        return false;
+    }
+
+    elements.date.textContent = formatOverallAnalysisDate(date);
+    return renderOverallAnalysisChanges(data, null, elements);
 }
 
 function initializeOverallAnalysisView(
@@ -639,5 +659,7 @@ export {
     formatOverallAnalysisQuantity,
     getOverallAnalysisViewElements,
     initializeOverallAnalysisView,
+    renderOverallAnalysisChanges,
+    renderOverallAnalysisContext,
     renderOverallAnalysisView,
 };
