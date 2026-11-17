@@ -1,0 +1,510 @@
+// Executar com Playwright disponível em NODE_PATH. Usa um perfil isolado e
+// dados sintéticos; REPORT_QA_OUTPUT pode apontar para a pasta dos artefatos.
+import assert from "node:assert/strict";
+import { createServer } from "node:http";
+import { createRequire } from "node:module";
+import { readFile, mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { createCompleteAnalysis } from "./fixtures/overall-analysis-complete.mjs";
+import { createDamageAndLossesWorkbook } from "./fixtures/damage-and-losses-workbook.mjs";
+import { createStandaloneOverallAnalysisHtml } from "../js/reports/overall-analysis/standalone-export.js";
+
+const require = createRequire(import.meta.url);
+const { chromium } = require("playwright");
+const XLSX = require("../js/libraries/xlsx.full.min.js");
+const errorFields = ["SortingErrors", "LabelingErrors", "TotalErrors", "ErrorRate",
+    "RevertedErrors", "RevertedRate", "FinalErrors", "FinalRate"];
+const errorBarColors = [
+    [37, 56, 165, 255],
+    [249, 148, 0, 255],
+    [0, 122, 72, 255],
+    [139, 0, 0, 255],
+];
+
+function readErrorChart(id) {
+    const chart = Chart.getChart(id);
+    return {
+        labels: chart.data.labels,
+        values: chart.data.datasets[0].data,
+        colors: chart.data.datasets[0].backgroundColor,
+        plugins: chart.config.plugins.map(plugin => plugin.id),
+        axis: chart.options.indexAxis,
+        grace: chart.options.scales.x.grace,
+        tooltips: chart.options.plugins.tooltip.enabled,
+    };
+}
+
+function readErrorBarColors(id) {
+    const chart = Chart.getChart(id);
+    const ratio = chart.currentDevicePixelRatio;
+    return chart.getDatasetMeta(0).data.map(bar => {
+        const x = Math.floor((bar.base + bar.x) / 2 * ratio);
+        const y = Math.floor(bar.y * ratio);
+        return Array.from(chart.ctx.getImageData(x, y, 1, 1).data);
+    });
+}
+
+function errorBarsDrawn(id) {
+    const chart = Chart.getChart(id);
+    const values = chart.data.datasets[0].data;
+    const bars = chart.getDatasetMeta(0).data;
+    return chart.width > 0 && bars.length === values.length && bars.every((bar, index) =>
+        Math.abs(bar.x - chart.scales.x.getPixelForValue(values[index])) < 1);
+}
+
+function readDamageAndLossesComposition(prefix) {
+    const chart = Chart.getChart(`${prefix}Chart`);
+    const categories = ["UnderReview", "Lost", "Damage", "Soc"]
+        .map(field => document.getElementById(`${prefix}${field}`));
+    return {
+        quantities: chart.data.datasets[0].data,
+        colors: chart.data.datasets[0].backgroundColor,
+        center: chart.options.plugins.consolidatedCenterText.text,
+        indicators: categories.map(element => element.textContent),
+        legendColors: categories.map(element => getComputedStyle(element.closest(".type").firstElementChild).backgroundColor),
+        accessibleName: chart.canvas.getAttribute("aria-label"),
+    };
+}
+
+function readLossesRateHistory(prefix) {
+    const history = Chart.getChart(`${prefix}HistoryChart`);
+    const historySeries = history.data.datasets[0];
+    return {
+        months: history.data.labels,
+        rates: historySeries.data,
+        pointColors: historySeries.pointBackgroundColor,
+        pointRadii: historySeries.pointRadius,
+        historyPlugins: history.config.plugins.map(plugin => plugin.id),
+    };
+}
+
+function readHistoryPointColor({ prefix, month }) {
+    const history = Chart.getChart(`${prefix}HistoryChart`);
+    const point = history.getDatasetMeta(0).data[month];
+    const ratio = history.currentDevicePixelRatio;
+    // A linha de referência pode passar pelo centro do marcador.
+    return Array.from(history.ctx.getImageData(Math.floor(point.x * ratio), Math.floor((point.y + 2) * ratio), 1, 1).data);
+}
+
+function readReportAppearance(selector) {
+    const properties = [
+        "display", "flexWrap", "flexBasis", "justifyContent", "alignItems", "rowGap", "columnGap",
+        "marginTop", "marginBottom", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+        "maxWidth", "backgroundColor", "color", "borderTopWidth", "borderBottomWidth", "borderTopColor",
+        "borderRadius", "fontFamily", "fontSize", "lineHeight", "fontWeight", "letterSpacing", "textAlign",
+    ];
+    const records = [];
+    function visit(element) {
+        const icon = element.matches("img, svg");
+        const style = getComputedStyle(element);
+        const { width, height } = element.getBoundingClientRect();
+        const text = icon ? "" : Array.from(element.childNodes)
+            .filter(node => node.nodeType === Node.TEXT_NODE)
+            .map(node => node.textContent.trim()).filter(Boolean).join(" ");
+        records.push({
+            tag: icon ? "icon" : element.localName,
+            text,
+            size: [Math.round(width), Math.round(height)],
+            style: Object.fromEntries(properties.map(property => [property, style[property]])),
+        });
+        if (!icon) Array.from(element.children).forEach(visit);
+    }
+    visit(document.querySelector(selector));
+    return records;
+}
+
+function editGlobalReportInput({ id, value }) {
+    const unchangedIds = [
+        "receiptLinehaulPreviewBody", "receiptPreviewOperatorBody",
+        "expeditionPreviewOperatorBody", "expeditionPreviewStreetBody",
+        "overallAnalysisDamageAndLossesTable", "overallAnalysisExpeditionStreetBody",
+        "overallAnalysisReceivedVolume", "overallAnalysisExpedited",
+    ];
+    const observers = unchangedIds.map(id => {
+        const observer = new MutationObserver(() => {});
+        observer.observe(document.getElementById(id), { childList: true, subtree: true, characterData: true });
+        return observer;
+    });
+    const chartUpdates = [];
+    const originalChartUpdate = Chart.prototype.update;
+    Chart.prototype.update = function (...args) {
+        chartUpdates.push(this.canvas.id);
+        return originalChartUpdate.apply(this, args);
+    };
+    try {
+        const input = document.getElementById(id);
+        input.value = value;
+        input.dispatchEvent(new Event(input.matches("select") ? "change" : "input", { bubbles: true }));
+        const changedElements = unchangedIds.filter((id, index) => observers[index].takeRecords().length > 0);
+        return { changedElements, chartUpdates };
+    } finally {
+        Chart.prototype.update = originalChartUpdate;
+        observers.forEach(observer => observer.disconnect());
+    }
+}
+
+const repo = fileURLToPath(new URL("../", import.meta.url));
+const output = process.env.REPORT_QA_OUTPUT || await mkdtemp(path.join(tmpdir(), "overall-html-"));
+await mkdir(output, { recursive: true });
+const server = createServer(async (request, response) => {
+    try {
+        const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+        const target = path.resolve(repo, `.${pathname === "/" ? "/index.html" : pathname}`);
+        if (!target.startsWith(repo)) throw new Error("Invalid path");
+        const mime = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript",
+            ".css": "text/css", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".json": "application/json" };
+        response.setHeader("Content-Type", `${mime[path.extname(target)] || "application/octet-stream"};charset=utf-8`);
+        response.end(await readFile(target));
+    } catch {
+        response.writeHead(404).end();
+    }
+});
+await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+let browser;
+try {
+    browser = await chromium.launch({ channel: "msedge", headless: true });
+    const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1600, height: 1050 } });
+    const page = await context.newPage();
+    await page.clock.install({ time: new Date("2026-10-28T15:00:00-03:00") });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message));
+    await page.goto(`http://127.0.0.1:${server.address().port}/`);
+    await page.locator('a[href="#reports"]').click();
+    await page.locator('a[href="#overall-analysis"]').click();
+    const button = page.locator("#overallAnalysisExportHtmlButton");
+    assert.equal(await button.isDisabled(), true);
+    for (const id of ["expeditionDuplicatedInput", "expeditionExceptionInput", "expeditionWithdrawnInput"]) {
+        assert.equal(await page.locator(`#${id}`).inputValue(), "");
+    }
+    const legendWidth = () => page.locator("#overallAnalysisDamageAndLossesLegend")
+        .evaluate(element => getComputedStyle(element).maxWidth);
+    assert.equal(await legendWidth(), "385px");
+
+    // Importa o XLSX completo pelo mesmo fluxo usado no dashboard.
+    const workbook = {
+        name: "avarias-e-perdas.xlsx",
+        mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        buffer: Buffer.from(XLSX.write(createDamageAndLossesWorkbook(), { type: "array", bookType: "xlsx" })),
+    };
+    async function importDamageAndLosses({ trackChanges = false } = {}) {
+        await page.locator('#report-choice a[href="#damage-and-losses"]').click();
+        if (trackChanges) {
+            await page.evaluate(async () => {
+                await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                const originalUpdate = Chart.prototype.update;
+                const updates = [];
+                Chart.prototype.update = function (...args) {
+                    updates.push(this.canvas.id);
+                    return originalUpdate.apply(this, args);
+                };
+                window.finishImportTracking = () => {
+                    Chart.prototype.update = originalUpdate;
+                    return updates;
+                };
+            });
+        }
+        await page.locator("#damageAndLossesFileInput").setInputFiles(workbook);
+    }
+    await importDamageAndLosses({ trackChanges: true });
+    await page.waitForFunction(() => document.getElementById("damageAndLossesNotification").dataset.notificationType === "success");
+    const importCharts = await page.evaluate(() => window.finishImportTracking());
+    assert.equal(importCharts.filter(id => id === "consolidatedCompositionChart").length, 1);
+    assert.deepEqual(importCharts.filter(id => id.startsWith("overallAnalysis")).sort(),
+        ["overallAnalysisDamageAndLossesCompositionChart", "overallAnalysisLossesRateHistoryChart"]);
+    await page.locator('a[href="#overall-analysis"]').click();
+    assert.equal(await legendWidth(), "443px");
+    const cardText = suffix => page.locator(`#overallAnalysis${suffix}`).textContent();
+    assert.equal(await page.locator("#overallAnalysisIndicators > div").count(), 5);
+    assert.equal(await page.locator(".final-report-cards, #overallAnalysisDamageChart, #overallAnalysisLossRateChart, #overallAnalysisPackagesAnalysisChart").count(), 0);
+    assert.deepEqual(await Promise.all(["DamageHub", "DamageSoc", "LossRate", "PackagesUnderReview", "ConfirmedLosses"].map(cardText)),
+        ["2", "1", "0,024%", "1", "3"]);
+    await page.evaluate(async () => (await import("/js/reports/losses-rate/state.js")).setActiveLossesRateMonth(0));
+    assert.equal(await cardText("LossRate"), "0,024%", "O seletor mensal não altera o mês atual do card.");
+    assert.equal(await page.evaluate(() => Object.values(Chart.instances).filter(chart => chart.canvas.closest("#overall-analysis")).length), 7);
+    const errorTable = () => Promise.all(errorFields.map(field => cardText(`Expedition${field}`)));
+    assert.deepEqual(await errorTable(), errorFields.map(() => "—"));
+    await page.locator("#overallAnalysisIndicators").screenshot({ path: path.join(output, "cards-importacao-dashboard.png") });
+    const completeness = await page.evaluate(async data => {
+        const [context, receipt, expedition, damage, losses, rate, parcel, reverse] = await Promise.all([
+            import("/js/reports/core/report-context.js"), import("/js/reports/receipt/state.js"),
+            import("/js/reports/expedition/state.js"), import("/js/reports/damage-and-losses/state.js"),
+            import("/js/reports/damage-and-losses/losses-state.js"), import("/js/reports/losses-rate/state.js"),
+            import("/js/reports/parcel-sweeper/state.js"), import("/js/reports/reverse/state.js"),
+        ]);
+        context.restoreReportContext(data.context);
+        receipt.restoreReceiptState({ operators: [{ receiver: "Recebedor teste", selected: true,
+            packagesReceived: data.processing.receivedVolume, errorQuantity: data.processing.totalErrors }] });
+        expedition.restoreExpeditionState({ floorVolume: data.expedition.floorVolume, routes: [{
+            code: "ATTEST", status: "Validated", finalOrders: data.expedition.volumeChecked,
+            initialOrders: 11000, missortedOrders: 56, corridor: "A-01", missingOrders: 7,
+            validationOperator: "Conferente teste", validationStartTime: "2026-10-19 01:00:00",
+            validationEndTime: "2026-10-19 03:10:05",
+        }] });
+        damage.replaceDamageAndLossesData({ monthIndex: 9, year: 2026,
+            days: [{ date: "2026-10-19", hub: 3, soc: 2 }] });
+        losses.replaceLossesData({ monthIndex: 9, year: 2026,
+            days: [{ date: "2026-10-19", underReview: 8, confirmedLosses: 2, returnedPackages: 5 }] });
+        const months = Array.from({ length: 12 }, () => ({}));
+        months[0] = { moved: 100000, lost: 24, damage: 6, possibleLosses: 81 };
+        months[9] = { moved: 1000000, lost: 120, damage: 30, possibleLosses: 8 };
+        rate.replaceLossesRateHistory(months);
+        rate.setActiveLossesRateMonth(9);
+        parcel.replaceParcelRows([
+            { trackingNumber: "BR1", countType: "Backlog", expected: "Y" },
+            { trackingNumber: "BR2", countType: "Exception", expected: "Y" },
+            { trackingNumber: "BR3", countType: "Missing", expected: "Y" },
+            { trackingNumber: "BR4", countType: "Mis-sorted", expected: "N" },
+        ]);
+        reverse.restoreReverseState({ transfers: [{ to: "TOTEST", quantities: data.reverse.quantities }] });
+        return { disabled: document.getElementById("overallAnalysisExportHtmlButton").disabled,
+            title: document.getElementById("overallAnalysisExportHtmlButton").title };
+    }, createCompleteAnalysis());
+    assert.equal(completeness.disabled, false, completeness.title);
+    assert.deepEqual(await errorTable(), ["—", "—", "56", "0,51%", "—", "—", "—", "—"]);
+    const initialHistory = await page.evaluate(readLossesRateHistory, "overallAnalysisLossesRate");
+    assert.equal(initialHistory.pointRadii[9], 6);
+
+    await page.locator('#report-choice a[href="#damage-and-losses"]').click();
+    await page.locator('a[href="#consolidated-history"]').click();
+    const sourceComposition = await page.evaluate(readDamageAndLossesComposition, "consolidatedComposition");
+    assert.deepEqual(sourceComposition.quantities, [8, 2, 3, 2]);
+    assert.deepEqual(sourceComposition.indicators, ["8 (53,3%)", "2 (13,3%)", "3 (20%)", "2 (13,3%)"]);
+    assert.deepEqual(sourceComposition.colors, ["#2538a5", "#8B0000", "#007A48", "#f99400"]);
+    assert.equal(sourceComposition.center, "15");
+
+    await page.locator('#report-choice a[href="#losses-rate"]').click();
+    await page.locator("#lossesRateMonthTabs").getByText("Janeiro", { exact: true }).click();
+    const sourceHistory = await page.evaluate(readLossesRateHistory, "lossesRate");
+    assert.deepEqual(sourceHistory.rates, [0.0003 * 100, ...Array(8).fill(null), 0.00015 * 100, null, null]);
+    assert.equal(sourceHistory.pointColors[0], "#f99400");
+    assert.equal(sourceHistory.pointRadii[0], 6);
+
+    await page.locator('a[href="#expedition"]').click();
+    await page.locator('a[href="#expedition-mistakes"]').click();
+    await page.locator("#expeditionSortingErrorsInput").fill("19");
+    await page.locator("#expeditionLabelingErrorsInput").fill("37");
+    await page.locator("#expeditionRevertedInput").fill("2");
+    const sourceErrors = await Promise.all(errorFields.map(field =>
+        page.locator(`#expeditionPreview${field}`).textContent()));
+    assert.deepEqual(sourceErrors, ["19", "37", "56", "0,51%", "2", "3,57%", "54", "0,49%"]);
+    const sourceChart = await page.evaluate(readErrorChart, "expeditionErrorBalanceChart");
+    assert.deepEqual(sourceChart.values, [37, 19, 2, 54]);
+    await page.waitForFunction(errorBarsDrawn, "expeditionErrorBalanceChart", { timeout: 5000 });
+    assert.deepEqual(await page.evaluate(readErrorBarColors, "expeditionErrorBalanceChart"), errorBarColors);
+
+    await page.locator('a[href="#overall-analysis"]').click();
+    assert.deepEqual(await page.evaluate(readDamageAndLossesComposition, "overallAnalysisDamageAndLossesComposition"), sourceComposition);
+    const finalHistory = await page.evaluate(readLossesRateHistory, "overallAnalysisLossesRate");
+    assert.deepEqual(finalHistory.rates, sourceHistory.rates);
+    assert.deepEqual(finalHistory.months, sourceHistory.months);
+    assert.deepEqual(finalHistory.historyPlugins, sourceHistory.historyPlugins);
+    assert.equal(finalHistory.pointColors[0], "#e4e6eb");
+    assert.equal(finalHistory.pointRadii[0], 4);
+    assert.equal(finalHistory.pointColors[9], "#f99400");
+    assert.equal(finalHistory.pointRadii[9], 6);
+    assert.equal(await page.locator("#overall-analysis .losses-rate-charts .chart-title").count(), 0);
+    assert.deepEqual(await errorTable(), sourceErrors);
+    const streetRows = page.locator("#overallAnalysisExpeditionStreetBody tr");
+    const streetValues = ["A", "7", "56", "100,00%"];
+    assert.equal(await streetRows.count(), 12);
+    assert.deepEqual(await streetRows.first().locator("td").allTextContents(), streetValues);
+    assert.equal(await legendWidth(), "443px");
+    assert.deepEqual(await page.evaluate(readErrorChart, "overallAnalysisErrorBalanceChart"), sourceChart);
+    await page.waitForFunction(errorBarsDrawn, "overallAnalysisErrorBalanceChart", { timeout: 5000 });
+    assert.deepEqual(await page.evaluate(readErrorBarColors, "overallAnalysisErrorBalanceChart"), errorBarColors);
+    assert.equal(await page.evaluate(() => Object.values(Chart.instances)
+        .every(chart => chart.options.plugins.tooltip.enabled === false)), true);
+
+    // Os campos globais atualizam apenas os trechos que dependem deles.
+    async function editGlobal(id, value, chartUpdates = []) {
+        assert.deepEqual(await page.evaluate(editGlobalReportInput, { id, value }),
+            { changedElements: [], chartUpdates }, id);
+    }
+    await editGlobal("reportAnalystInput", "");
+    assert.equal(await cardText("Analyst"), "—");
+    assert.equal(await button.isDisabled(), true);
+    await editGlobal("reportAnalystInput", "Analista atualizado");
+    assert.equal(await cardText("Analyst"), "Analista atualizado");
+    assert.equal(await button.isDisabled(), false);
+    await editGlobal("reportWindowInput", "PM1");
+    assert.equal(await cardText("Window"), "PM1");
+    await editGlobal("reportPlanningInput", "13000", ["overallAnalysisReceiptChart"]);
+    assert.equal(await cardText("Planned"), "13.000");
+    assert.equal(await cardText("ExpectedVolume"), "13.000");
+    assert.equal(await cardText("Floor"), "2.000");
+    assert.equal(await page.locator("#receiptPreviewExpected").textContent(), "13.000");
+    assert.equal(await page.locator("#receiptProgressExpected").textContent(), "13.000");
+    assert.deepEqual((await page.evaluate(readErrorChart, "overallAnalysisReceiptChart")).values, [13000, 11500, 1500]);
+
+    const editedDownloadEvent = page.waitForEvent("download");
+    await button.click();
+    const editedDownload = await editedDownloadEvent;
+    assert.match(editedDownload.suggestedFilename(), /^Relatório Final - PM1 /);
+    const editedHtml = await readFile(await editedDownload.path(), "utf8");
+    const editedReport = JSON.parse(editedHtml.match(/<script id="finalReportData"[^>]*>([\s\S]*?)<\/script>/)[1]).report;
+    assert.equal(editedReport.context.analyst, "Analista atualizado");
+    assert.equal(editedReport.context.window, "PM1");
+    assert.equal(editedReport.flow.planned, 13000);
+    assert.equal(editedReport.processing.expectedVolume, 13000);
+
+    await editGlobal("reportAnalystInput", "Analista de teste");
+    await editGlobal("reportWindowInput", "AM");
+    await editGlobal("reportPlanningInput", "12000", ["overallAnalysisReceiptChart"]);
+    assert.equal(await button.isDisabled(), false);
+    await page.evaluate(async () => {
+        document.documentElement.dataset.theme = "blue";
+        await document.fonts.ready;
+    });
+    const previewAppearance = await page.evaluate(readReportAppearance, "#overallAnalysisReportExportArea");
+    const volumeChartKeys = ["ReceiptChart", "ExpeditionChart"];
+    const previewVolumeCharts = await Promise.all(volumeChartKeys.map(key =>
+        page.evaluate(readErrorChart, `overallAnalysis${key}`)));
+    const downloadEvent = page.waitForEvent("download");
+    await button.click();
+    const download = await downloadEvent;
+    assert.match(download.suggestedFilename(), /^Relatório Final - AM \d{2}\.\d{2}\.\d{4}\.html$/);
+    const downloadedPath = path.join(output, "relatorio-final-baixado.html");
+    await download.saveAs(downloadedPath);
+    const downloaded = await readFile(downloadedPath, "utf8");
+    assert.doesNotMatch(downloaded, /\{\{(?:CHART_JS|REPORT_DATA|REPORT_RENDERER_JS)\}\}/);
+    const snapshot = JSON.parse(downloaded.match(/<script id="finalReportData"[^>]*>([\s\S]*?)<\/script>/)[1]);
+    await page.evaluate(async () => {
+        (await import("/js/reports/reverse/state.js")).resetReverseReport();
+    });
+    assert.equal(await button.isDisabled(), false);
+    await page.evaluate(async () => {
+        (await import("/js/reports/parcel-sweeper/state.js")).resetParcelReport();
+    });
+    assert.equal(await button.isDisabled(), false);
+    const optionalDownloadEvent = page.waitForEvent("download");
+    await button.click();
+    const optionalDownload = await optionalDownloadEvent;
+    const optionalPath = path.join(output, "relatorio-final-sem-parcel-reversa.html");
+    await optionalDownload.saveAs(optionalPath);
+    await page.evaluate(async () => (await import("/js/reports/losses-rate/state.js")).resetLossesRateReport());
+    assert.deepEqual((await page.evaluate(readLossesRateHistory, "overallAnalysisLossesRate")).rates, Array(12).fill(null));
+    assert.deepEqual(await page.evaluate(readDamageAndLossesComposition, "overallAnalysisDamageAndLossesComposition"), sourceComposition);
+    await importDamageAndLosses();
+    await page.waitForFunction(() => document.getElementById("overallAnalysisDamageHub").textContent === "2");
+    assert.deepEqual(await streetRows.first().locator("td").allTextContents(), streetValues);
+    await page.evaluate(async () => (await import("/js/reports/expedition/state.js")).resetExpeditionReport());
+    assert.deepEqual(await errorTable(), errorFields.map(() => "—"));
+    assert.deepEqual((await page.evaluate(readErrorChart, "overallAnalysisErrorBalanceChart")).values, [0, 0, 0, 0]);
+    assert.deepEqual(await streetRows.first().locator("td").allTextContents(), ["—", "—", "—", "—"]);
+    await page.evaluate(async () => {
+        (await import("/js/reports/damage-and-losses/state.js")).resetDamageAndLossesState();
+        (await import("/js/reports/damage-and-losses/losses-state.js")).resetLossesState();
+    });
+    const emptyComposition = await page.evaluate(readDamageAndLossesComposition, "overallAnalysisDamageAndLossesComposition");
+    assert.deepEqual(emptyComposition.quantities, [0, 0, 0, 0]);
+    assert.deepEqual(emptyComposition.indicators, ["—", "—", "—", "—"]);
+    assert.equal(await legendWidth(), "385px");
+    await context.close();
+
+    const offline = await browser.newContext({ offline: true, timezoneId: "Pacific/Auckland",
+        viewport: { width: 1600, height: 1050 } });
+    const report = await offline.newPage();
+    const requests = [];
+    report.on("pageerror", error => errors.push(error.message));
+    report.on("request", request => { if (/^https?:/.test(request.url())) requests.push(request.url()); });
+    await report.goto(pathToFileURL(downloadedPath).href);
+    await report.waitForFunction(() => document.documentElement.dataset.finalReportState === "ready");
+    const downloadedAppearance = await report.evaluate(readReportAppearance, ".main-structure > .preview-style");
+    assert.equal(downloadedAppearance.length, previewAppearance.length);
+    previewAppearance.forEach((element, index) => {
+        assert.deepEqual(downloadedAppearance[index], element, `Elemento ${index} (${element.tag})`);
+    });
+    assert.deepEqual(await Promise.all(volumeChartKeys.map(key =>
+        report.evaluate(readErrorChart, `finalReport${key}`))), previewVolumeCharts);
+    const rendered = await report.evaluate(() => {
+        const text = id => document.getElementById(id).textContent;
+        return {
+            count: Object.values(Chart.instances).length,
+            fonts: [400, 600, 800].every(weight => document.fonts.check(`${weight} 14px "Open Sans"`)),
+            processed: text("finalReportReceivedVolume"),
+            damageSoc: text("finalReportDamageSoc"), damageHub: text("finalReportDamageHub"),
+            underReview: text("finalReportPackagesUnderReview"), confirmedLosses: text("finalReportConfirmedLosses"),
+            lossRate: text("finalReportLossRate"), indicatorCount: document.querySelectorAll("#finalReportIndicators > div").length,
+            expedited: text("finalReportVolumeChecked"), duration: text("finalReportExpeditionTime"),
+            date: text("finalReportDate"), reverse: text("finalReport-ReverseConfiscated"),
+            bars: Chart.getChart("finalReportReceiptChart").data.datasets[0].data,
+            tooltipsDisabled: Object.values(Chart.instances).every(chart => chart.options.plugins.tooltip.enabled === false),
+            sizes: [...document.querySelectorAll("canvas")].map(canvas => [canvas.clientWidth, canvas.clientHeight]),
+        };
+    });
+    assert.equal(rendered.count, 7);
+    assert.equal(rendered.indicatorCount, 5);
+    assert.equal(rendered.fonts, true);
+    assert.equal(rendered.damageSoc, "2");
+    assert.equal(rendered.damageHub, "3");
+    assert.equal(rendered.underReview, "8");
+    assert.equal(rendered.confirmedLosses, "2");
+    assert.equal(rendered.lossRate, "0,015%");
+    assert.equal(rendered.processed, "11.500");
+    assert.equal(rendered.expedited, "11.000");
+    assert.equal(rendered.duration, "02:10:05");
+    assert.equal(rendered.date, snapshot.dateLabel);
+    assert.equal(rendered.reverse, "4 (40%)");
+    assert.equal(rendered.tooltipsDisabled, true);
+    assert.deepEqual(rendered.bars, [12000, 11500, 500]);
+    assert.deepEqual(await report.evaluate(readDamageAndLossesComposition, "finalReportDamageAndLossesComposition"), sourceComposition);
+    assert.deepEqual(await report.evaluate(readLossesRateHistory, "finalReportLossesRate"), finalHistory);
+    assert.equal(await report.locator(".losses-rate-charts .chart-title").count(), 0);
+    assert.deepEqual(await report.evaluate(readHistoryPointColor, { prefix: "finalReportLossesRate", month: 9 }),
+        [249, 148, 0, 255]);
+    assert.deepEqual(await Promise.all(errorFields.map(field =>
+        report.locator(`#finalReportExpedition${field}`).textContent())), sourceErrors);
+    assert.deepEqual(await report.locator("#finalReportExpeditionStreetBody tr").first().locator("td").allTextContents(), streetValues);
+    assert.equal(await report.locator(".losses-rate-charts .doughnut-chart .chart-label")
+        .evaluate(element => getComputedStyle(element).maxWidth), "443px");
+    assert.deepEqual(await report.evaluate(readErrorChart, "finalReportErrorBalanceChart"), sourceChart);
+    assert.deepEqual(await report.evaluate(readErrorBarColors, "finalReportErrorBalanceChart"), errorBarColors);
+    assert.ok(rendered.sizes.every(([width, height]) => width > 0 && height > 0));
+    const legend = report.locator("#finalReport-ReverseChartContainer + .chart-label .type").first();
+    await legend.click();
+    assert.equal(await legend.getAttribute("aria-pressed"), "false");
+    assert.equal(await report.evaluate(() => Chart.getChart("finalReport-ReverseChart").getDataVisibility(0)), false);
+    await legend.press("Enter");
+    assert.equal(await legend.getAttribute("aria-pressed"), "true");
+    assert.equal(await report.locator("#finalReport-LossesTable thead button").count(), 0);
+    assert.equal(await report.locator("#finalReport-LossesTable [aria-sort]").count(), 0);
+    assert.deepEqual(await report.locator("#finalReport-LossesTable tbody tr td:last-child").allTextContents(),
+        ["3", "2", "8", "2", "5"]);
+    await report.screenshot({ path: path.join(output, "relatorio-final-desktop.png"), fullPage: true });
+    await report.locator(".cards").screenshot({ path: path.join(output, "cards-html-exportado.png") });
+    await report.setViewportSize({ width: 800, height: 1000 });
+    await report.screenshot({ path: path.join(output, "relatorio-final-800px.png"), fullPage: true });
+    assert.deepEqual(requests, []);
+    assert.deepEqual(errors, []);
+
+    // Um nome importado nunca pode fechar o JSON nem executar JS no arquivo.
+    const hostile = createCompleteAnalysis();
+    hostile.context.analyst = '</script><script>window.injetado=true</script> $& {{CHART_JS}}';
+    const html = await createStandaloneOverallAnalysisHtml(hostile, {
+        fetchResource: async url => ({ ok: true, text: () => readFile(url, "utf8") }),
+    });
+    const hostilePath = path.join(output, "relatorio-final-escape.html");
+    await writeFile(hostilePath, html);
+    await report.goto(pathToFileURL(hostilePath).href);
+    await report.waitForFunction(() => document.documentElement.dataset.finalReportState === "ready");
+    assert.equal(await report.locator("#finalReportWindowAnalyst").textContent(), hostile.context.analyst);
+    assert.equal(await report.evaluate(() => window.injetado), undefined);
+
+    await report.goto(pathToFileURL(optionalPath).href);
+    await report.waitForFunction(() => document.documentElement.dataset.finalReportState === "ready");
+    assert.equal(await report.locator("#finalReportParcelScanned").textContent(), "—");
+    assert.equal(await report.locator("#finalReportReverseReturn").textContent(), "—");
+    assert.equal(await report.evaluate(() => Object.values(Chart.instances).length), 7);
+    assert.equal(await report.evaluate(() => Object.values(Chart.instances)
+        .every(chart => chart.options.plugins.tooltip.enabled === false)), true);
+    assert.deepEqual(await report.evaluate(() => Chart.getChart("finalReport-ReverseChart").data.datasets[0].data), [0, 0, 0, 0]);
+    assert.deepEqual(requests, []);
+    assert.deepEqual(errors, []);
+    console.log(JSON.stringify({ output, ...rendered, externalRequests: requests.length, errors }, null, 2));
+    await offline.close();
+} finally {
+    await browser?.close();
+    await new Promise(resolve => server.close(resolve));
+}
