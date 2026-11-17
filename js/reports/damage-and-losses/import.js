@@ -20,6 +20,7 @@ import {
 } from "../losses-rate/workbook.js";
 
 import { batchReportUpdates } from "../core/report-updates.js";
+import { normalizeEmployeeRankingName } from "../employee-ranking/model.js";
 
 const MAX_DAMAGE_HEADER_SEARCH_ROWS =
     50;
@@ -143,6 +144,18 @@ const lossesReturnedColumnAliases =
         packageCode:
             lossesColumnAliases.packageCode,
     });
+
+const receivedDamageColumnAliases = {
+    date: damageColumnAliases.date,
+    operator: ["log"],
+};
+const offPackagesColumnAliases = {
+    date: ["expedicao", "data da expedicao", "data de expedicao"],
+    operator: ["log"],
+};
+const operatorCountMonthFormatter = new Intl.DateTimeFormat("pt-BR", {
+    year: "numeric", month: "2-digit", timeZone: "America/Sao_Paulo",
+});
 
 function normalizeDamageText(
     value,
@@ -436,6 +449,9 @@ function findDamageProductSource(
             return {
                 sheetName,
                 valuesByPackageCode,
+                rows,
+                headerRowIndex: rowIndex,
+                operatorCountColumns: findColumnsByAliases(rows[rowIndex], receivedDamageColumnAliases),
             };
         }
     }
@@ -920,6 +936,7 @@ function findLossesReturnedSource(workbook) {
                 rows,
                 columns,
                 headerRowIndex: rowIndex,
+                operatorCountColumns: findColumnsByAliases(rows[rowIndex], offPackagesColumnAliases),
             };
         }
     }
@@ -927,6 +944,35 @@ function findLossesReturnedSource(workbook) {
     throw new Error(
         `A aba ${sheetName} não possui as colunas Devolução e Código BR.`,
     );
+}
+
+function createMonthlyOperatorCounts({ rows, headerRowIndex, operatorCountColumns }, date) {
+    if (!operatorCountColumns) return null;
+
+    const { date: dateColumn, operator: operatorColumn } = operatorCountColumns;
+    const parts = operatorCountMonthFormatter.formatToParts(date);
+    const year = Number(parts.find(part => part.type === "year").value);
+    const month = Number(parts.find(part => part.type === "month").value);
+    const operators = new Map();
+
+    for (let index = headerRowIndex + 1; index < rows.length; index += 1) {
+        const row = rows[index];
+        const occurrenceDate = parseDamageDate(row[dateColumn]);
+        if (occurrenceDate?.year !== year || occurrenceDate.month !== month) continue;
+
+        const operator = normalizeEmployeeRankingName(row[operatorColumn]);
+        if (!operator || /^[-–—]$/.test(operator)) continue;
+
+        const key = operator.toLocaleLowerCase("pt-BR");
+        const record = operators.get(key) ?? { operator, quantity: 0 };
+        record.quantity += 1;
+        operators.set(key, record);
+    }
+
+    return {
+        month: `${year}-${String(month).padStart(2, "0")}`,
+        operators: Array.from(operators.values()),
+    };
 }
 
 function findLossesMonthSource(
@@ -1595,6 +1641,7 @@ async function readDamageAndLossesFile(
             ),
 
             history: createOccurrenceHistory(source),
+            receivedDamage: createMonthlyOperatorCounts(source.productSource, date),
 
             sourceFileName:
                 file.name,
@@ -1611,6 +1658,7 @@ async function readDamageAndLossesFile(
             ),
 
             history: createOccurrenceHistory(lossesSource),
+            offPackages: createMonthlyOperatorCounts(lossesSource.returnedSource, date),
 
             sourceFileName:
                 file.name,

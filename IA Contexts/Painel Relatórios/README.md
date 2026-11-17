@@ -30,6 +30,8 @@ Para cada CPT, vale o primeiro bloco elegível na ordem em que aparece nos dados
 
 Acompanha **Descarregamento de LHs**, **Mesa de Recebimento** e **Ranking de Recebedores**. O [importador de LHs](../../js/reports/receipt/linehaul-import.js) trata a leitura e a seleção da janela. O [estado de LHs](../../js/reports/receipt/linehaul-state.js) deriva o volume restante a partir do volume esperado e dos LHs marcados como descarregados. O [importador de recebimento](../../js/reports/receipt/import.js) agrupa os registros por operador para a mesa e o ranking. A sessão reúne os dois estados no [controlador](../../js/reports/receipt/controller.js).
 
+Os pacotes recebidos por operador e os erros preenchidos na Mesa de Recebimento alimentam Recebimento e Erros de Etiquetagem no [Ranking Mensal de Colaboradores](ranking-de-colaboradores.md#recebimento-e-erros-de-etiquetagem). Cada quantidade de erros fica com o etiquetador indicado ou, quando o campo estiver vazio, com o recebedor.
+
 Verifique alinhamento, confirmação da importação e recálculo de volume em [linehaul-import-alignment.test.mjs](../../tests/linehaul-import-alignment.test.mjs), [linehaul-import-confirmation.test.mjs](../../tests/linehaul-import-confirmation.test.mjs) e [receipt-linehaul-remaining.test.mjs](../../tests/receipt-linehaul-remaining.test.mjs).
 
 O [exportador de Processamento](../../js/reports/receipt/export.js) usa os dados da subaba ativa tanto para habilitar o botão de imagem quanto para executar a captura. Descarregamento de LHs pode ser copiado assim que houver LHs cadastrados. Mesa de Recebimento e Ranking de Recebedores usam a validação dos dados de recebimento.
@@ -56,6 +58,8 @@ Os ouvintes usam o tipo da alteração para decidir se atualizam progresso, rank
 
 Verifique o botão de importação nas quatro abas em [expedition-import-tabs.test.mjs](../../tests/expedition-import-tabs.test.mjs), o progresso por status em [expedition-progress.test.mjs](../../tests/expedition-progress.test.mjs) e o volume de retirados em [expedition-withdrawn.test.mjs](../../tests/expedition-withdrawn.test.mjs).
 
+O ranking de conferentes fornece as rotas e durações ao [Ranking Mensal de Colaboradores](ranking-de-colaboradores.md). Os filtros da tabela de Expedição são locais.
+
 ## Planejamento
 
 Organiza a lista de LHs, as TOs a segregar, o backlog e os indicadores de Collection Pool e veículos. A [importação de Planejamento](../../js/reports/planning/import.js) interpreta dados copiados do SPX e pede uma escolha quando detecta mais de uma janela válida. Os [cálculos](../../js/reports/planning/calculations.js) usam os dados da [janela e do planejamento](../../js/reports/planning/state.js) para montar os totais.
@@ -69,6 +73,8 @@ Verifique a origem do backlog e sua presença nos resumos em [planning-backlog.t
 Mostra Avarias do Mês, Perdas do Mês e Histórico Consolidado. O [importador](../../js/reports/damage-and-losses/import.js) identifica as abas e os blocos do XLSX. O [controlador](../../js/reports/damage-and-losses/controller.js) exporta os estados de avarias e perdas na mesma entrada da sessão. O [modelo consolidado](../../js/reports/damage-and-losses/consolidated-model.js) combina os históricos com o estado da Taxa de Perdas para o mês selecionado.
 
 O importador converte a aba de histórico uma vez e lê os dois blocos a partir das mesmas linhas. Aplica Avarias, Perdas e Taxa em lote e atualiza o Consolidado e o Final uma vez por arquivo. Se a série anual mudar isoladamente, o Consolidado atualiza somente a célula da taxa. [Importação](../../js/reports/damage-and-losses/import.js) · [Consolidado](../../js/reports/damage-and-losses/consolidated-view.js)
+
+As colunas **Data** e **Log** do **Histórico de Avarias Recebidas** alimentam Avarias Recebidas no [Ranking Mensal](ranking-de-colaboradores.md#avarias-recebidas-e-pacotes-off). As colunas **Expedição** e **Log** do **Histórico de Retornados** alimentam Pacotes OFF. Os recortes mensais acompanham os estados de Avarias e de Perdas na sessão.
 
 Em **Perdas do Mês**, o gráfico **Pack Recovery** cruza os códigos BR do histórico com a coluna Pack Recovery da **Base de Análises**. A contagem do período selecionado usa **Feito**, **ID Inválido**, **Sem Dados** e **Aguardando**. Células vazias e pacotes sem correspondência na base entram em **Sem Dados**. Rótulos preenchidos fora da lista ficam fora da contagem do gráfico. [Importação](../../js/reports/damage-and-losses/import.js) · [Gráfico](../../js/reports/damage-and-losses/losses-charts.js) · [Testes](../../tests/damage-and-losses-losses.test.mjs)
 
@@ -121,3 +127,7 @@ Na prévia e no HTML baixado, o gráfico de erros aparece abaixo da tabela de to
 A cópia em imagem captura a própria prévia e pode ser usada quando há dados disponíveis nos gráficos da Taxa de Perdas. O HTML baixado abre offline com as fontes e os ícones incorporados, as cores do tema ativo e o mesmo formato de data da prévia. Processamento e Expedição compartilham a configuração dos gráficos de volume entre a prévia e o HTML. Em telas de até 900 px, o HTML empilha os blocos que aparecem lado a lado no desktop. Ao mudar a prévia, confira no modelo a estrutura, a tipografia, as cores, as bordas e o espaçamento. [Modelo HTML](../../final-report.html) · [Gráficos de volume](../../js/reports/overall-analysis/volume-chart.js) · [Teste de paridade](../../tests/overall-analysis-html.browser.mjs)
 
 Verifique indicadores e critérios de exportação em [overall-analysis-cards.test.mjs](../../tests/overall-analysis-cards.test.mjs) e [overall-analysis-html.test.mjs](../../tests/overall-analysis-html.test.mjs).
+
+### Ranking Mensal de Colaboradores
+
+A subaba [Ranking Mensal de Colaboradores](ranking-de-colaboradores.md) apresenta cinco blocos. Recebimento, Erros de Etiquetagem e Expedição combinam os dados atuais com o acumulado importado do Resumo da Operação pelo OPS quando disponível. Avarias Recebidas e Pacotes OFF usam os históricos da planilha de Avarias e Perdas e exibem os colaboradores em ordem crescente de ocorrências.

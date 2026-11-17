@@ -12,9 +12,13 @@ Ao recarregar a aba, o dashboard restaura os dados gravados e o Relatório Final
 
 As bases importadas em [Análises](../Painel%20An%C3%A1lises/README.md) e [Filtragem](../Painel%20Filtragem/README.md) também são guardadas na aba em chaves próprias.
 
+O [Ranking Mensal de Colaboradores](../Painel%20Relat%C3%B3rios/ranking-de-colaboradores.md) grava o acumulado de Recebimento, Erros de Etiquetagem e Expedição na parte `overall-analysis` quando ele muda ou é descartado. Os registros anteriores de Expedição continuam disponíveis em `employeeRanking` e o acumulado de Processamento fica em `processingRanking`. A prévia recupera os dados atuais das partes de Processamento e Expedição e os recortes mensais da parte de Avarias e Perdas.
+
+As linhas do acumulado guardam `opsCode` quando ele está disponível. O campo opcional `fullNameConfirmed` registra quando o nome completo foi recuperado da fórmula da célula ou da coluna R do formato anterior. A lista R:S importada fica em `operatorDirectory` para ajudar a identificar linhas sem o código na célula. As sessões anteriores continuam legíveis com esses campos ausentes.
+
 ## Arquivo de sessão
 
-`createReportSessionPayload()` coleta o contexto da janela, as preferências e o estado que cada um dos sete relatórios operacionais exporta. `downloadReportSession()` valida o objeto e inicia o download de `sessao-dashboard-AAAA-MM-DD_HH-MM-SS.js`. O arquivo contém JSON dentro de uma atribuição a `DASHBOARD_REPORT_SESSION`, com esquema `dashboard-report-session` e versão 1. O clique só inicia o download.
+`createReportSessionPayload()` coleta o contexto da janela, as preferências, os sete relatórios operacionais e o acumulado importado do Ranking de Colaboradores. `downloadReportSession()` valida o objeto e inicia o download de `sessao-dashboard-AAAA-MM-DD_HH-MM-SS.js`. O arquivo contém JSON dentro de uma atribuição a `DASHBOARD_REPORT_SESSION`, com esquema `dashboard-report-session` e versão 1. O clique só inicia o download.
 
 ## Importação e restauração
 
@@ -29,4 +33,4 @@ As bases importadas em [Análises](../Painel%20An%C3%A1lises/README.md) e [Filtr
 
 ## Verificação
 
-Rode `node --test tests/report-session.test.mjs tests/report-session-autosave.test.mjs tests/dashboard-settings.test.mjs`. As suítes cobrem quais partes são gravadas, a migração, a separação entre gravação e download, a restauração dos sete relatórios e a reversão ou nova tentativa após falhas. O [roteiro de navegador](../../tests/dashboard-settings.browser.mjs) também verifica a recuperação na aba e a prioridade das preferências.
+Rode `node --test tests/report-session.test.mjs tests/report-session-autosave.test.mjs tests/dashboard-settings.test.mjs`. As suítes cobrem quais partes são gravadas, a migração, a separação entre gravação e download, a restauração dos relatórios e do ranking e a reversão ou nova tentativa após falhas. O [roteiro de navegador](../../tests/dashboard-settings.browser.mjs) também verifica a recuperação na aba e a prioridade das preferências.

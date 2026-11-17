@@ -20,9 +20,11 @@ import { subscribePlanningState } from "./planning/state.js";
 import { subscribeReceiptState } from "./receipt/state.js";
 import { subscribeReceiptLinehaulState } from "./receipt/linehaul-state.js";
 import { subscribeExpeditionState } from "./expedition/state.js";
+import { subscribeEmployeeRankingHistory } from "./employee-ranking/state.js";
 import { subscribeLossesRateState } from "./losses-rate/state.js";
 import { subscribeDamageAndLossesState } from "./damage-and-losses/state.js";
 import { subscribeLossesState } from "./damage-and-losses/losses-state.js";
+import { isValidMonthlyOperatorCounts } from "./damage-and-losses/monthly-operator-counts.js";
 import { getParcelSnapshot, hasParcelRowsChanged, subscribeParcelState } from "./parcel-sweeper/state.js";
 import { subscribeReverseState } from "./reverse/state.js";
 
@@ -69,6 +71,7 @@ const REPORT_SESSION_IDS = Object.freeze([
     "damage-and-losses",
     "parcel",
     "reverse",
+    "overall-analysis",
 ]);
 
 const REPORT_SESSION_FEEDBACK_ICONS =
@@ -200,6 +203,14 @@ function createReportSessionPayload({ includeAllReports = false } = {}) {
 const validOccurrenceDays = state => isSessionObject(state) && isSessionObjectList(state.days) &&
     (state.history === undefined || isSessionObjectList(state.history));
 
+const validOpsCode = value => typeof value === "string" && /^ops\d+$/i.test(value);
+const validRankingIdentity = row => typeof row.operator === "string" && row.operator.trim() !== "" &&
+    (row.opsCode === undefined || validOpsCode(row.opsCode)) &&
+    (row.fullNameConfirmed === undefined || typeof row.fullNameConfirmed === "boolean");
+
+const validRankingCounts = rows => isSessionObjectList(rows) && rows.every(row => validRankingIdentity(row) &&
+    Number.isSafeInteger(row.quantity) && row.quantity >= 0);
+
 const sessionReportValidators = {
     planning: ["do Planejamento", state =>
         isSessionObjectList(state.lhs) && state.lhs.every(linehaul => isSessionObjectList(linehaul.tos)) &&
@@ -214,7 +225,8 @@ const sessionReportValidators = {
         const damage = state.damage || state;
         return validOccurrenceDays(damage) &&
             (damage.socStations === undefined || isSessionObjectList(damage.socStations)) &&
-            (state.losses === undefined || validOccurrenceDays(state.losses));
+            isValidMonthlyOperatorCounts(damage.receivedDamage) &&
+            (state.losses === undefined || (validOccurrenceDays(state.losses) && isValidMonthlyOperatorCounts(state.losses.offPackages)));
     }],
     parcel: ["do Parcel Sweeper", state => {
         const overrides = state.operatorKindOverrides;
@@ -226,6 +238,15 @@ const sessionReportValidators = {
         return transfer.packages === undefined || (isSessionObject(transfer.packages) && Object.values(transfer.packages)
             .every(codes => Array.isArray(codes) && codes.every(code => typeof code === "string")));
     })],
+    "overall-analysis": ["do Ranking de Colaboradores", state => {
+        const { employeeRanking, processingRanking, operatorDirectory } = state;
+        const validExpedition = employeeRanking === undefined || (isSessionObjectList(employeeRanking) && employeeRanking.every(row =>
+            validRankingIdentity(row) && Number.isSafeInteger(row.routesChecked) && row.routesChecked >= 0));
+        const validDirectory = operatorDirectory === undefined || (isSessionObjectList(operatorDirectory) &&
+            operatorDirectory.every(row => validRankingIdentity(row) && validOpsCode(row.opsCode)));
+        return validExpedition && validDirectory && (processingRanking === undefined || (isSessionObject(processingRanking) &&
+            validRankingCounts(processingRanking.receipt) && validRankingCounts(processingRanking.labelingErrors)));
+    }],
 };
 
 function validateSessionReport(reportId, state) {
@@ -1170,6 +1191,7 @@ function initializeReportSession() {
         ["damage-and-losses", subscribeDamageAndLossesState],
         ["damage-and-losses", subscribeLossesState],
         ["reverse", subscribeReverseState],
+        ["overall-analysis", subscribeEmployeeRankingHistory],
     ]) {
         subscribe(() => scheduleReportSessionSave({ reportId }));
     }

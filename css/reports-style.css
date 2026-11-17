@@ -77,6 +77,9 @@
 #reports > .tabs-content > #losses-rate .tabs {
     grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
 }
+#reports > .tabs-content > #overall-analysis .tabs {
+    grid-template-columns: repeat(auto-fit, minmax(299px, 1fr));
+}
 #reports > .tabs-content > .tabs-panel > .tabs .tabs-title {
     width: 100%;
 }
@@ -139,6 +142,15 @@
     font-size: 20px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
+}
+
+/* RANKING DE COLABORADORES */
+
+#employee-ranking .employee-ranking {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(11rem, 1fr));
+    align-items: start;
+    gap: 15px;
 }
 
 /* CONTROLES */
@@ -1189,7 +1201,6 @@
         max-height: 412px;
         overflow: auto;
         border: 1px solid var(--color-border);
-        border-radius: 4px;
     }
     #reports #reverse #reversePreview > .distribution-tables > div::-webkit-scrollbar {
         width: 7px;

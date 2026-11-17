@@ -53,9 +53,23 @@ function sheetsColor(hex) {
     return { "1": 2, "2": Number.parseInt(hex.slice(1), 16) };
 }
 
-function createStyledCellAttributes({ background, fontSize, bold, border, bottom }) {
+function createStyledCellAttributes({
+    background, fontSize, bold, border, borderSides, borderColor = "#626262", bottom, inlineFormattingOnly,
+}) {
     const color = "#e4e6eb";
-    const borderColor = "#626262";
+    const alignment = bottom ? "bottom" : "middle";
+    const stroke = `1px solid ${borderColor}`;
+    const borderCss = borderSides
+        ? ["top", "right", "bottom", "left"].map(side => `border-${side}:${borderSides.includes(side) ? stroke : "none"}`).join(";")
+        : `border:${border ? stroke : "none"}`;
+    const css = [
+        `background-color:${background}`, `color:${color}`, "font-family:Open Sans",
+        `font-size:${fontSize}pt`, `font-weight:${bold ? "bold" : "normal"}`,
+        "text-align:center", `vertical-align:${alignment}`, "white-space:nowrap",
+        borderCss,
+    ].join(";");
+    if (inlineFormattingOnly) return `style="${css}"`;
+
     // Sheets stores fill, text color and bold in fields 4, 14 and 17, with bit flags for each.
     const format = {
         "2": sheetsFormatFields | sheetsColorFields | (bold ? 16384 : 0),
@@ -63,24 +77,18 @@ function createStyledCellAttributes({ background, fontSize, bold, border, bottom
         "14": sheetsColor(color), "15": "Open Sans", "16": fontSize,
     };
     if (bold) format["17"] = 1;
-    const alignment = bottom ? "bottom" : "middle";
-    const css = [
-        `background-color:${background}`, `color:${color}`, "font-family:Open Sans",
-        `font-size:${fontSize}pt`, `font-weight:${bold ? "bold" : "normal"}`,
-        "text-align:center", `vertical-align:${alignment}`, "white-space:nowrap",
-        border ? `border:1px solid ${borderColor}` : "border:none",
-    ].join(";");
     return `data-sheets-userformat='${JSON.stringify(format)}' align="center" valign="${alignment}" style="${css}"`;
 }
 
-function createStyledClipboardCell({ value, span, rowSpan, style }, attributes) {
+function createStyledClipboardCell({ value, span, rowSpan, style, inferValueType, formula }, attributes) {
     if (!attributes.has(style)) attributes.set(style, createStyledCellAttributes(style));
     let typedValue = "";
-    if (value != null && value !== "") {
+    if (!inferValueType && value != null && value !== "") {
         const data = typeof value === "number" ? { "1": 3, "3": value } : { "1": 2, "2": String(value) };
         typedValue = ` data-sheets-value="${escapeHtml(JSON.stringify(data))}"`;
     }
-    return `<td rowspan="${rowSpan}" colspan="${span}" ${attributes.get(style)}${typedValue}>${escapeHtml(value)}</td>`;
+    const formulaAttribute = formula ? ` data-sheets-formula="${escapeHtml(formula)}"` : "";
+    return `<td rowspan="${rowSpan}" colspan="${span}" ${attributes.get(style)}${typedValue}${formulaAttribute}>${escapeHtml(value)}</td>`;
 }
 
 // HTML carries the template's merges; TSV keeps a placeholder for every physical column.
@@ -88,7 +96,7 @@ function createClipboardTable(rows, { columnWidth = 150, columnWidths, palette }
     const text = rows.map(row => row.flatMap(cell => {
         if (!cell) return [""];
         const { value, span, style } = cell;
-        const content = String(value ?? "");
+        const content = String(cell.textValue ?? value ?? "");
         const field = style && /[\t\r\n"]/.test(content) ? `"${content.replaceAll('"', '""')}"` : content;
         return [field, ...Array(span - 1).fill("")];
     }).join("\t")).join("\n");
@@ -407,4 +415,10 @@ function initializeReportSummaryCopy(root = document) {
     return receiptBound && expeditionBound && planningBound && parcelBound && reverseBound;
 }
 
-export { bindReportSummaryCopyButton, createReportSummaryClipboard, initializeReportSummaryCopy };
+export {
+    bindReportSummaryCopyButton,
+    createClipboardTable,
+    createReportSummaryClipboard,
+    initializeReportSummaryCopy,
+    writeSummaryClipboard,
+};

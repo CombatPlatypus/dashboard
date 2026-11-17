@@ -3,6 +3,7 @@ import {
 } from "./state.js";
 
 import { normalizeOccurrenceHistory } from "./history.js";
+import { cloneMonthlyOperatorCounts, isValidMonthlyOperatorCounts } from "./monthly-operator-counts.js";
 
 const lossesStateListeners =
     new Set();
@@ -77,6 +78,7 @@ function createInitialLossesState() {
         sourceSheetName: "",
         days: [],
         history: [],
+        offPackages: null,
     };
 }
 
@@ -86,6 +88,7 @@ const lossesState =
 function getLossesState() {
     return {
         history: lossesState.history.map(record => ({ ...record })),
+        offPackages: cloneMonthlyOperatorCounts(lossesState.offPackages),
         monthIndex: lossesState.monthIndex,
         monthName: lossesState.monthName,
         year: lossesState.year,
@@ -156,6 +159,11 @@ function replaceLossesData(values = {}) {
         );
     }
 
+    if (!isValidMonthlyOperatorCounts(values.offPackages)) {
+        throw new TypeError("Os dados de Pacotes OFF são inválidos.");
+    }
+    const offPackages = cloneMonthlyOperatorCounts(values.offPackages);
+    const offPackagesChanged = JSON.stringify(offPackages) !== JSON.stringify(lossesState.offPackages);
     const daysByDate =
         new Map();
 
@@ -214,9 +222,11 @@ function replaceLossesData(values = {}) {
         );
 
     lossesState.history = normalizeOccurrenceHistory(values.history);
+    lossesState.offPackages = offPackages;
 
     notifyLossesState({
         type: "losses-data-replaced",
+        offPackagesChanged,
     });
 
     return true;
@@ -494,6 +504,7 @@ function restoreLossesState(sessionState) {
 }
 
 function resetLossesState() {
+    const offPackagesChanged = lossesState.offPackages !== null;
     Object.assign(
         lossesState,
         createInitialLossesState(),
@@ -501,6 +512,7 @@ function resetLossesState() {
 
     notifyLossesState({
         type: "losses-report-reset",
+        offPackagesChanged,
     });
 
     return true;
