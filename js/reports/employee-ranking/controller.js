@@ -26,6 +26,7 @@ import {
     buildEmployeeLabelingErrorRanking,
     buildEmployeeOccurrenceRanking,
     buildEmployeeReceiptRanking,
+    formatRankedEmployeeName,
 } from "./model.js";
 import {
     getEmployeeRankingHistory,
@@ -60,7 +61,7 @@ function renderRankingRows(body, ranking) {
             row.insertCell();
             addedRows.append(row);
         }
-        const name = entry?.displayName ?? "—";
+        const name = formatRankedEmployeeName(entry?.displayName, index + 1) || "—";
         const stats = entry ? numberFormat.format(entry.quantity) : "—";
         if (row.cells[0].textContent !== name) row.cells[0].textContent = name;
         if (row.cells[1].textContent !== stats) row.cells[1].textContent = stats;
@@ -194,7 +195,7 @@ function initializeEmployeeRankingController(root) {
             return;
         }
         const pending = count === 1 ? "1 registro ficou fora da soma" : `${numberFormat.format(count)} registros ficaram fora da soma`;
-        notify("warning", `${message} ${pending} por falta de OPS identificado. Confira os códigos nos relatórios e nas fórmulas das células copiadas.`);
+        notify("warning", `${message} ${pending} por falta de OPS identificado.`);
     }
 
     async function runAction(button, action) {
@@ -243,7 +244,7 @@ function initializeEmployeeRankingController(root) {
         } catch {
             throw new Error("Não foi possível copiar o ranking com formatação. Verifique a permissão da área de transferência.");
         }
-        notifyWithPendingOps("success", "Ranking copiado. Selecione C2:P3 e cole com Ctrl+V.");
+        notifyWithPendingOps("success", "Ranking copiado. Selecione C2:S3 e cole com Ctrl+V.");
     }));
 
     bindReportImageExportButton(imageButton, {

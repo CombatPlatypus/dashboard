@@ -31,7 +31,7 @@ test("imports the three accumulated blocks from the complete ranking worksheet",
     });
 });
 
-test("copies the formatted ranking from C2:P3 and keeps short names in the visible table", () => {
+test("copia o ranking a partir de C2:S3 com ID OPS nos três acumulados", () => {
     const operators = [
         { operator: "[ops123] Maria da Silva Costa", routesChecked: 12, totalDurationSeconds: 3948, routesWithDuration: 12 },
         { operator: "[ops124] Maria da Silva Souza", routesChecked: 4, totalDurationSeconds: 1200, routesWithDuration: 4 },
@@ -42,7 +42,7 @@ test("copies the formatted ranking from C2:P3 and keeps short names in the visib
         { operator: "Maria da Silva Costa", quantity: 1 },
     ]);
     const offPackagesRanking = buildEmployeeOccurrenceRanking([
-        { operator: "Maria da Silva Souza", quantity: 5 },
+        { operator: "Maria da Silva Souza", quantity: 1 },
         { operator: "Ana da Rocha Costa", quantity: 1 },
     ]);
     const receiptRanking = [{ operator: "Ana da Rocha Costa", opsCode: "ops25", displayName: "Ana Rocha", quantity: 1234 }];
@@ -53,49 +53,49 @@ test("copies the formatted ranking from C2:P3 and keeps short names in the visib
     const rows = text.split("\n").map(row => row.split("\t"));
 
     assert.equal(rows.length, 158);
-    assert.ok(rows.every(row => row.length === 14));
+    assert.ok(rows.every(row => row.length === 17));
     assert.equal(rows[0][0], "RANKING MENSAL DE DESEMPENHO");
-    assert.deepEqual([0, 3, 6, 9, 12].map(column => rows[3][column]), [
+    assert.deepEqual([0, 4, 8, 12, 15].map(column => rows[3][column]), [
         "Mesa de Recebimento", "Erros de Etiquetagem", "Rotas Conferidas", "Avarias Recebidas", "Pacotes OFF",
     ]);
     assert.deepEqual(rows[5], [
-        "Ana Rocha", "1234", "", "Pedro Costa", "0", "", "Maria Silva", "12", "",
-        "Maria Silva", "1", "", "Ana Rocha", "1",
+        "ops25", "1º Ana Rocha", "1234", "", "ops90", "1º Pedro Costa", "0", "", "ops123", "1º Maria Silva", "12", "",
+        "1º Maria Silva", "1", "", "1º Ana Rocha", "1",
     ]);
     assert.deepEqual(rows[6], [
-        "", "", "", "", "", "", "Maria Silva", "4", "", "João Souza", "4", "", "Maria Silva", "5",
+        "", "", "", "", "", "", "", "", "ops124", "2º Maria Silva", "4", "",
+        "2º João Souza", "4", "", "2º Maria Silva", "1",
     ]);
-    for (const column of [0, 3, 6, 9, 12]) {
-        assert.deepEqual(rows[4].slice(column, column + 2), ["Colaborador", "Quantidade"]);
+    for (const column of [0, 4, 8]) {
+        assert.deepEqual(rows[4].slice(column, column + 3), ["ID OPS", "Colaborador", "Quantidade"]);
     }
+    assert.deepEqual(rows[4].slice(12), ["Colaborador", "Quantidade", "", "Colaborador", "Quantidade"]);
     assert.ok(rows.at(-1).every(cell => cell === ""));
 
     assert.match(html, /<google-sheets-html-origin>/);
-    assert.match(html, /<tbody><tr[^>]*><td rowspan="2" colspan="14"[^>]*>RANKING MENSAL DE DESEMPENHO<\/td><\/tr>/);
+    assert.match(html, /<tbody><tr[^>]*><td rowspan="2" colspan="17"[^>]*>RANKING MENSAL DE DESEMPENHO<\/td><\/tr>/);
     const separators = [...html.matchAll(/<td rowspan="155" colspan="1" style="([^"]+)"><\/td>/g)];
     assert.equal(separators.length, 4);
     for (const [, style] of separators) {
         assert.match(style, /;border-top:1px solid #101010;border-right:none;border-bottom:1px solid #101010;border-left:none$/);
     }
     assert.deepEqual([...html.matchAll(/<col width="(\d+)"/g)].map(([, width]) => Number(width)),
-        [181, 121, 21, 181, 121, 21, 181, 121, 21, 181, 121, 21, 201, 121]);
-    assert.doesNotMatch(html, /\bTempo\b|Base de Colaboradores|Código Ops/);
-    assert.doesNotMatch(text, /Nome e id do conferente/);
-    assert.match(html, /data-sheets-formula="=&quot;Maria Silva&quot;&amp;T\(N\(&quot;Nome e id do conferente: \[ops123\] Maria da Silva Costa&quot;\)\)">Maria Silva/);
-    assert.match(html, /data-sheets-formula="=&quot;Maria Silva&quot;&amp;T\(N\(&quot;Nome e id do conferente: \[ops124\] Maria da Silva Souza&quot;\)\)">Maria Silva/);
-    assert.equal([...html.matchAll(/data-sheets-formula=/g)].length, 4);
-    assert.match(html, /data-sheets-formula="=&quot;Pedro Costa&quot;&amp;T\(N\(&quot;Nome e id do conferente: \[ops90\] Pedro da Costa Santos&quot;\)\)">Pedro Costa/);
+        [101, 181, 121, 21, 101, 181, 121, 21, 101, 181, 121, 21, 181, 121, 21, 201, 121]);
+    assert.doesNotMatch(html, /\bTempo\b|Base de Colaboradores|data-sheets-formula/);
+    assert.match(html, /data-sheets-value="\{&quot;1&quot;:2,&quot;2&quot;:&quot;ops123&quot;\}">ops123<\/td>/);
     assert.doesNotMatch(html, /data-sheets-userformat/);
     const cellStyles = new Map(Array.from(html.matchAll(/<td\b[^>]*style="([^"]+)"[^>]*>([^<]*)<\/td>/g),
         ([, style, text]) => [text, style]));
-    const mergedTitles = [...html.matchAll(/<td rowspan="1" colspan="2"[^>]*>([^<]+)<\/td>/g)].map(([, title]) => title);
+    const mergedTitles = [...html.matchAll(/<td rowspan="1" colspan="([23])"[^>]*>([^<]+)<\/td>/g)]
+        .map(([, span, title]) => [title, Number(span)]);
     assert.deepEqual(mergedTitles, [
-        "Mesa de Recebimento", "Erros de Etiquetagem", "Rotas Conferidas", "Avarias Recebidas", "Pacotes OFF",
+        ["Mesa de Recebimento", 3], ["Erros de Etiquetagem", 3], ["Rotas Conferidas", 3],
+        ["Avarias Recebidas", 2], ["Pacotes OFF", 2],
     ]);
-    for (const title of ["RANKING MENSAL DE DESEMPENHO", ...mergedTitles]) {
+    for (const title of ["RANKING MENSAL DE DESEMPENHO", ...mergedTitles.map(([title]) => title)]) {
         assert.match(cellStyles.get(title), /;border-top:1px solid #626262;border-right:1px solid #626262;border-bottom:1px solid #626262;border-left:1px solid #626262$/);
     }
-    for (const cell of ["Colaborador", "Quantidade", "Maria Silva", "12"]) {
+    for (const cell of ["ID OPS", "Colaborador", "Quantidade", "ops123", "1º Maria Silva", "12"]) {
         assert.match(cellStyles.get(cell), /;border:1px solid #626262$/);
     }
     for (const [text, fontSize] of [
@@ -103,11 +103,12 @@ test("copies the formatted ranking from C2:P3 and keeps short names in the visib
         ["Avarias Recebidas", 12],
         ["Rotas Conferidas", 12],
         ["Pacotes OFF", 12],
+        ["ID OPS", 11],
         ["Colaborador", 11],
-        ["Maria Silva", 10],
-        ["Ana Rocha", 10],
-        ["Pedro Costa", 10],
-        ["João Souza", 10],
+        ["1º Maria Silva", 10],
+        ["1º Ana Rocha", 10],
+        ["1º Pedro Costa", 10],
+        ["2º João Souza", 10],
     ]) {
         assert.match(cellStyles.get(text), new RegExp(`font-size:${fontSize}pt;`));
         assert.match(cellStyles.get(text), /text-align:center;vertical-align:middle;/);
@@ -141,6 +142,9 @@ test("imports the quantity from an isolated expedition block and ignores legacy 
     for (const text of [
         "Colaborador\tQuantidade\n[ops123] Ana Santos\t4",
         "Colaborador\tQuantidade\tTempo\n[ops123] Ana Santos\t4\t05:80",
+        "ID OPS\tColaborador\tQuantidade\n[OPS123]\tAna Santos\t4",
+        "ID OPS\tColaborador\tQuantidade\n123\tAna Santos\t4",
+        "ID OPS\tColaborador\tQuantidade\n123\t1º\u00a0Ana Santos\t4",
     ]) {
         assert.deepEqual(parseEmployeeRankingClipboard({ text }).expedition,
             [{ operator: "Ana Santos", opsCode: "ops123", routesChecked: 4 }]);
@@ -153,7 +157,7 @@ test("inclui todos os recebedores na cópia e mantém os blocos vazios com seus 
     const { text } = createEmployeeRankingClipboard({ receiptRanking });
     const rows = text.split("\n");
     assert.equal(rows.length, 156);
-    assert.equal(rows.at(-1).split("\t")[1], "12");
+    assert.deepEqual(rows.at(-1).split("\t").slice(0, 3), ["ops151", "151º Ana Rocha", "12"]);
     assert.deepEqual(parseEmployeeRankingClipboard({ text }).labelingErrors, []);
 });
 
@@ -168,22 +172,67 @@ test("preserva o nome da fórmula mesmo quando o conteúdo vem sem o sinal de ig
     ]);
 });
 
-test("guarda o OPS na fórmula da célula do novo modelo", () => {
-    const receiptRanking = [
-        { operator: "Cayo", opsCode: "ops114012", displayName: "Cayo", quantity: 1949 },
-        { operator: "Mariane Ramos de Oliveira", opsCode: "ops567", displayName: "Mariane Ramos", quantity: 50 },
-    ];
-    const expeditionRanking = [{
-        ...receiptRanking[0], operator: "Cayo Bispo", quantity: 1,
-    }];
-    const { text, html } = createEmployeeRankingClipboard({ receiptRanking, expeditionRanking });
-    const cells = text.split("\n").map(row => row.split("\t"));
-    assert.match(html, /data-sheets-formula="=&quot;Cayo&quot;&amp;T\(N\(&quot;Nome e id do conferente: \[ops114012\] Cayo&quot;\)\)">Cayo/);
-    assert.deepEqual(parseEmployeeRankingClipboard({ text }).expedition, [{ operator: "Cayo", routesChecked: 1 }]);
-    cells[5][0] = '="Cayo"&T(N("Nome e id do conferente: [OPS114012] Cayo"))';
-    assert.deepEqual(parseEmployeeRankingClipboard({ text: cells.map(row => row.join("\t")).join("\n") }).receipt[0], {
-        operator: "Cayo", opsCode: "ops114012", quantity: 1949,
+test("reimporta os IDs dos três rankings operacionais a partir do texto copiado", () => {
+    const { text } = createEmployeeRankingClipboard({
+        receiptRanking: [
+            { opsCode: "ops114012", displayName: "Maria Silva", quantity: 1949 },
+            { opsCode: "ops567", displayName: "Maria Silva", quantity: 50 },
+        ],
+        labelingErrorsRanking: [{ opsCode: "ops71", displayName: "Ana Santos", quantity: 0 }],
+        expeditionRanking: [{ opsCode: "ops114012", displayName: "Maria Silva", quantity: 1 }],
+        offPackagesRanking: [{ displayName: "Ana Santos", quantity: 3 }],
     });
+    const history = parseEmployeeRankingClipboard({ text });
+    assert.deepEqual(history, {
+        receipt: [
+            { operator: "Maria Silva", opsCode: "ops114012", quantity: 1949 },
+            { operator: "Maria Silva", opsCode: "ops567", quantity: 50 },
+        ],
+        labelingErrors: [{ operator: "Ana Santos", opsCode: "ops71", quantity: 0 }],
+        expedition: [{ operator: "Maria Silva", opsCode: "ops114012", routesChecked: 1 }],
+    });
+    const current = [{ receiver: "[ops567] Maria Silva Souza", packagesReceived: 20 }];
+    const { ranking } = buildEmployeeReceiptRanking(current, history.receipt);
+    assert.deepEqual(ranking.map(({ opsCode, quantity }) => [opsCode, quantity]), [["ops114012", 1949], ["ops567", 70]]);
+
+    const textWithoutHiddenColumns = text.split("\n")
+        .map(row => row.split("\t").filter((_, index) => ![0, 4, 8].includes(index)).join("\t")).join("\n");
+    assert.throws(() => parseEmployeeRankingClipboard({ text: textWithoutHiddenColumns }), /ID OPS \(C, G e K\)/);
+});
+
+test("usa a versão da área de transferência que contém as colunas ID OPS", t => {
+    const cell = (textContent, colSpan = 1) => ({
+        textContent, colSpan, rowSpan: 1,
+        getAttribute: () => null,
+        querySelector: () => null,
+    });
+    const withIds = [
+        { cells: [cell("Rotas Conferidas", 3)] },
+        { cells: ["ID OPS", "Colaborador", "Quantidade"].map(value => cell(value)) },
+        { cells: ["ops123", "1º Maria Silva", "12"].map(value => cell(value)) },
+    ];
+    const visibleOnly = [
+        { cells: [cell("Rotas Conferidas", 2)] },
+        ...withIds.slice(1).map(row => ({ cells: row.cells.slice(1) })),
+    ];
+    let tableRows = withIds;
+    const original = Object.getOwnPropertyDescriptor(globalThis, "document");
+    Object.defineProperty(globalThis, "document", {
+        configurable: true,
+        value: { createElement: () => ({ content: { querySelector: () => ({ rows: tableRows }) } }) },
+    });
+    t.after(() => {
+        if (original) Object.defineProperty(globalThis, "document", original);
+        else delete globalThis.document;
+    });
+    const html = "<table></table>";
+    const expected = [{ operator: "Maria Silva", opsCode: "ops123", routesChecked: 12 }];
+    const textWithoutIds = "Rotas Conferidas\t\nColaborador\tQuantidade\n1º Maria Silva\t12";
+    assert.deepEqual(parseEmployeeRankingClipboard({ text: textWithoutIds, html }).expedition, expected);
+
+    tableRows = visibleOnly;
+    const textWithIds = "Rotas Conferidas\t\t\nID OPS\tColaborador\tQuantidade\nops123\tMaria Silva\t12";
+    assert.deepEqual(parseEmployeeRankingClipboard({ text: textWithIds, html }).expedition, expected);
 });
 
 test("ignora a lista OPS de cópias antigas e mantém as linhas sem código pendentes", () => {
@@ -216,6 +265,6 @@ test("exporta apenas os totais de recebimento com OPS identificado", () => {
     assert.deepEqual(pending, [history[0]]);
     const { text, html } = createEmployeeRankingClipboard({ receiptRanking: ranking });
     assert.doesNotMatch(html, /Maria Silva/);
-    assert.match(html, /Nome e id do conferente: \[ops5\] Ana Santos/);
-    assert.deepEqual(parseEmployeeRankingClipboard({ text }).receipt, [{ operator: "Ana Santos", quantity: 60 }]);
+    assert.match(html, />ops5<\/td>/);
+    assert.deepEqual(parseEmployeeRankingClipboard({ text }).receipt, [{ operator: "Ana Santos", opsCode: "ops5", quantity: 60 }]);
 });
