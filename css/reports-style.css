@@ -468,7 +468,7 @@
         #receipt-controls #receipt-controls-1 .input-group {
             /* Contém os selects ocultos do Select2 na área de rolagem. */
             position: relative;
-            max-height: 542px;
+            max-height: 532px;
         }
         #receipt-controls #receipt-controls-2 .input-group {
             max-height: 559px;
@@ -1350,7 +1350,7 @@
             margin: 0px auto 20px;
         }
         #overall-analysis .losses-rate-charts .doughnut-chart .chart-label[data-has-data="true"] {
-            max-width: 443px;
+            max-width: 500px;
         }
         #overall-analysis .expedition-errors-summary .flex-box-start {
             gap: 15px;
