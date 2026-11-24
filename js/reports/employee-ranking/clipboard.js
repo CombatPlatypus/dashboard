@@ -1,24 +1,27 @@
 import { normalizeText, parseClipboardRows } from "../../filter/clipboard-source.js";
 import { createClipboardTable } from "../summary-copy.js";
-import { formatRankedEmployeeName, normalizeEmployeeRankingName, readEmployeeOpsCode } from "./model.js";
+import { normalizeEmployeeRankingName, readEmployeeOpsCode } from "./model.js";
 
 const MIN_EMPLOYEE_RANKING_ROWS = 150;
 const rankingTitle = "RANKING MENSAL DE DESEMPENHO";
-const opsHeader = "ID OPS";
-const operatorHeaders = ["Colaborador", "Quantidade"];
-const opsRankingHeaders = [opsHeader, ...operatorHeaders];
+const positionHeader = "🏅";
+const opsHeader = "ID";
+const operatorHeaders = ["Colaborador", "Qtd"];
+const rankingHeaders = [positionHeader, ...operatorHeaders];
+const opsRankingHeaders = [positionHeader, opsHeader, ...operatorHeaders];
 const receipt = {
-    title: "Mesa de Recebimento", headers: opsRankingHeaders, previousTitles: ["Recebimento", "Recebimento de Pacotes"],
+    title: "Pacotes Recebidos", headers: opsRankingHeaders,
+    previousTitles: ["Mesa de Recebimento", "Recebimento", "Recebimento de Pacotes"],
 };
 const labelingErrors = { title: "Erros de Etiquetagem", headers: opsRankingHeaders };
-const receivedDamage = { title: "Avarias Recebidas", headers: operatorHeaders };
+const receivedDamage = { title: "Avarias Recebidas", headers: rankingHeaders };
 const expedition = {
     title: "Rotas Conferidas", headers: opsRankingHeaders, previousTitles: ["Rotas Conferidas e Tempo Médio"],
 };
-const offPackages = { title: "Pacotes OFF", headers: operatorHeaders };
+const offPackages = { title: "Pacotes OFF", headers: rankingHeaders };
 const operatorFormulaPrefixes = ["Nome e id do conferente: ", "Nome completo do conferente: "];
 const columnWidths = [
-    101, 181, 121, 21, 101, 181, 121, 21, 101, 181, 121, 21, 181, 121, 21, 201, 121,
+    61, 101, 181, 81, 21, 61, 101, 181, 81, 21, 61, 101, 181, 81, 21, 61, 181, 81, 21, 61, 201, 81,
 ];
 // Match the inline cell formatting copied by Google Sheets from the ranking template.
 const blankStyle = { background: "#121212", fontSize: 10, inlineFormattingOnly: true };
@@ -28,6 +31,7 @@ const titleStyle = {
 const sectionStyle = { ...titleStyle, fontSize: 12, bold: false };
 const gapStyle = { ...blankStyle, borderSides: ["top", "bottom"], borderColor: "#101010" };
 const headerStyle = { ...blankStyle, background: "#242424", fontSize: 11, border: true };
+const positionHeaderStyle = { ...headerStyle, fontSize: 17 };
 const offPackagesRowStyle = { ...blankStyle, border: true };
 const rowStyles = [
     { ...blankStyle, background: "#101010", border: true },
@@ -35,19 +39,21 @@ const rowStyles = [
 ];
 
 function isOpsHeader(value) {
-    return normalizeText(value) === "id ops";
+    const header = normalizeText(value);
+    return header === "id" || header === "id ops";
 }
 
 function getRankingHeaderColumns(section, row, column) {
-    const opsColumn = isOpsHeader(row?.[column]) ? column : -1;
-    const nameColumn = opsColumn === -1 ? column : column + 1;
-    const hasHeaders = operatorHeaders.every((header, index) => {
-        const value = normalizeText(row?.[nameColumn + index]);
-        return value === normalizeText(header) ||
-            (header === "Quantidade" && value === "qtd") ||
-            (section === receipt && header === "Quantidade" && value === "total recebido");
-    });
-    return hasHeaders ? { nameColumn, opsColumn } : null;
+    const firstHeader = normalizeText(row?.[column]).replace(/\uFE0F/g, "");
+    const idColumn = firstHeader === positionHeader || firstHeader === "posicao" ? column + 1 : column;
+    const opsColumn = isOpsHeader(row?.[idColumn]) ? idColumn : -1;
+    const nameColumn = opsColumn === -1 ? idColumn : idColumn + 1;
+    const quantityHeader = normalizeText(row?.[nameColumn + 1]);
+    const hasQuantityHeader = ["qtd", "quantidade"].includes(quantityHeader) ||
+        (section === receipt && quantityHeader === "total recebido");
+    return normalizeText(row?.[nameColumn]) === "colaborador" && hasQuantityHeader
+        ? { nameColumn, opsColumn }
+        : null;
 }
 
 function findRankingClipboardBlock(rows, section) {
@@ -66,15 +72,15 @@ function findRankingClipboardBlock(rows, section) {
 }
 
 function findIsolatedExpeditionClipboardBlock(rows) {
-    // An isolated block from the previous model can still have a third column for time.
-    if (rows.every(row => row.length <= 3)) {
+    if (rows.every(row => row.length <= opsRankingHeaders.length)) {
         const firstRow = rows.findIndex(row => row.some(value => normalizeText(value)));
         const columns = getRankingHeaderColumns(expedition, rows[firstRow], 0);
         if (columns) return { ...columns, startRow: firstRow + 1 };
-        return { nameColumn: 0, opsColumn: -1, startRow: 0 };
     }
+    // Untitled selections from the original model can still have a third column for time.
+    if (rows.every(row => row.length <= 3)) return { nameColumn: 0, opsColumn: -1, startRow: 0 };
 
-    throw new Error("Copie a aba Ranking de Colaboradores com os títulos e as colunas ID OPS (C, G e K). Se estiverem ocultas, reexiba essas colunas antes de copiar.");
+    throw new Error("Copie a aba Ranking de Colaboradores com os títulos e os IDs das colunas C, H e M. Reexiba essas colunas se estiverem ocultas.");
 }
 
 function parseRankingQuantity(value) {
@@ -135,7 +141,8 @@ function parseRankingHtmlRows(html) {
 }
 
 function countOpsHeaders(rows) {
-    return rows.reduce((total, row) => total + row.filter(isOpsHeader).length, 0);
+    return rows.reduce((total, row) => total + row.filter((value, column) =>
+        isOpsHeader(value) && normalizeText(row[column + 1]) === "colaborador").length, 0);
 }
 
 async function readEmployeeRankingClipboard(clipboard = navigator.clipboard) {
@@ -224,7 +231,6 @@ function createEmployeeRankingClipboard({
         [offPackages, offPackagesRanking],
     ];
     const rowCount = Math.max(MIN_EMPLOYEE_RANKING_ROWS, previousRowCount, ...sections.map(([, ranking]) => ranking.length));
-    const emptyCell = cell(null, blankStyle);
     const sectionGap = cell(null, gapStyle, 1, rowCount + 2);
     const sectionRow = (createSectionCells, gap = null) =>
         sections.flatMap(([section, ranking], index) => {
@@ -234,9 +240,10 @@ function createEmployeeRankingClipboard({
     const rows = [
         [cell(rankingTitle, titleStyle, columnWidths.length, 2)],
         Array(columnWidths.length).fill(null),
-        Array(columnWidths.length).fill(emptyCell),
+        [cell(null, blankStyle, columnWidths.length)],
         sectionRow(section => [cell(section.title, sectionStyle, section.headers.length)], sectionGap),
-        sectionRow(section => section.headers.map(header => cell(header, headerStyle))),
+        sectionRow(section => section.headers.map(header =>
+            cell(header, header === positionHeader ? positionHeaderStyle : headerStyle))),
     ];
 
     for (let index = 0; index < rowCount; index += 1) {
@@ -244,14 +251,18 @@ function createEmployeeRankingClipboard({
         rows.push(sectionRow((section, ranking) => {
             const entry = ranking[index];
             const style = section === offPackages && stripe === 0 ? offPackagesRowStyle : rowStyles[stripe];
-            const name = formatRankedEmployeeName(entry?.displayName, index + 1);
-            const cells = [cell(name, style), cell(entry?.quantity, style)];
-            if (section.headers[0] === opsHeader) cells.unshift(cell(entry?.opsCode, style));
+            const position = index + 1;
+            const positionCell = entry
+                ? { ...cell(position, style), textValue: `${position}º`, numberFormat: '0"º"' }
+                : cell(null, style);
+            const cells = [positionCell];
+            if (section.headers === opsRankingHeaders) cells.push(cell(entry?.opsCode, style));
+            cells.push(cell(entry?.displayName, style), cell(entry?.quantity, style));
             return cells;
         }));
     }
 
-    return { ...createClipboardTable(rows, { columnWidths }), rowCount };
+    return { ...createClipboardTable(rows, { columnWidths, getRowHeight: index => index === 2 ? 20 : 30 }), rowCount };
 }
 
 export { MIN_EMPLOYEE_RANKING_ROWS, createEmployeeRankingClipboard, parseEmployeeRankingClipboard, readEmployeeRankingClipboard };

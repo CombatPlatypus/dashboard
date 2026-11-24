@@ -106,6 +106,8 @@ Acompanha a cobertura da varredura e apresenta recortes de pacotes por operador,
 
 Prévia e gráficos reaproveitam o resumo até a troca das linhas. O filtro atualiza as duas tabelas de pacotes, a ordem muda só a tabela acionada, e a classificação manual atualiza o operador e a divisão entre comuns e volumosos. O Final usa apenas os totais de pacotes e cobertura. [Resumo compartilhado](../../js/reports/parcel-sweeper/state.js) · [Prévia](../../js/reports/parcel-sweeper/view.js)
 
+A cópia para **Base de Dados** monta os indicadores e a distribuição por operador a partir do resumo compartilhado no momento do clique. O bloco `C185:J199` inclui até 10 operadores e independe dos filtros de pacotes e dos ajustes de classificação. [Cópia do Parcel Sweeper](copia-de-dados-para-planilha.md#parcel-sweeper)
+
 Verifique cobertura, casos de exceção e classificação em [parcel-sweeper.test.mjs](../../tests/parcel-sweeper.test.mjs) e [parcel-sweeper-overrides.test.mjs](../../tests/parcel-sweeper-overrides.test.mjs).
 
 ## Reversa
@@ -113,6 +115,8 @@ Verifique cobertura, casos de exceção e classificação em [parcel-sweeper.tes
 Agrupa os pacotes por TO e mostra a composição de Return, Missorted, Liquidate e Confiscado. O usuário escolhe o tipo antes de o [importador](../../js/reports/reverse/import.js) processar o arquivo SPX. O importador lê o identificador da TO na célula B2 e usa o tipo escolhido para classificar os códigos únicos. Uma nova importação da mesma TO atualiza a entrada existente no [estado](../../js/reports/reverse/state.js).
 
 A composição, o Final e a cópia compartilham os totais normalizados. Quando só os códigos BR mudam, a prévia atualiza as tabelas correspondentes. O gráfico e o bloco do Final acompanham mudanças nos totais. [Modelo](../../js/reports/reverse/model.js) · [Prévia](../../js/reports/reverse/view.js)
+
+O botão de cópia do resumo lê os totais e a lista atual no clique. O bloco `C201:J215` da **Base de Dados** inclui os indicadores e a distribuição de até 10 TOs. [Cópia do resumo da Reversa](copia-de-dados-para-planilha.md#resumo-da-reversa)
 
 Os botões de cópia nas tabelas de pacotes enviam o **Código BR** e a **Respectiva TO** em duas colunas, na ordem exibida em cada tabela. [Cópia das listas de pacotes](copia-de-dados-para-planilha.md#listas-de-pacotes-da-reversa)
 

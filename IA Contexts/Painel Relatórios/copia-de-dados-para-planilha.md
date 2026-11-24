@@ -13,24 +13,48 @@ Cole os blocos na aba **Base de Dados**, começando pela primeira célula do int
 
 Cada bloco por janela tem 56 linhas. Processamento copia o resumo de LHs, os volumes e a lista dos recebedores selecionados. Expedição copia o resumo de rotas e volumes, a análise de erros e o ranking dos conferentes selecionados. As linhas restantes da lista ficam vazias para limpar os dados de uma colagem anterior. A cópia informa quando a seleção excede a capacidade do bloco.
 
-| Relatório | Intervalo | Data | Indicadores |
-| --- | --- | --- | --- |
-| Parcel Sweeper | `C185:J187` | `G185` | Porcentagem em `C187`, separador em `D187`, Total de Bipado em `E187`, Exception em `G187` e Missorted em `I187` |
-| Reversa | `C189:J191` | `G189` | Return em `C191`, Missorted em `E191`, Liquidate em `G191` e Confiscado em `I191` |
+O HTML usa 35 px no título de Processamento e de Expedição. As demais linhas usam 30 px em AM e PM2 e 21 px em PM1, conforme o modelo da Base de Dados.
 
-Parcel Sweeper e Reversa usam o dia da cópia no horário de São Paulo e os totais do relatório. A janela selecionada não altera esses dois destinos.
+| Relatório | Intervalo | Indicadores |
+| --- | --- | --- |
+| Parcel Sweeper | `C185:J199` | Porcentagem em `C187`, separador em `D187`, Total de Bipado em `E187`, Não Escaneados em `F187`, Backlog em `G187`, Exception em `H187` e Missorted em `I187` |
+| Reversa | `C201:J215` | Return em `C203`, Missorted em `E203`, Liquidate em `G203` e Confiscado em `I203` |
+
+Parcel Sweeper e Reversa usam esses destinos em todas as janelas.
+
+### Parcel Sweeper
+
+Selecione o título mesclado `C185:J185` na aba **Base de Dados** e cole com `Ctrl+V`. A Porcentagem Total usa os pacotes esperados como base. **Total de Bipado** e **Não Escaneados** usam todas as linhas importadas. A linha 188 contém o título **Distribuição por Operador** e a linha 189 contém os cabeçalhos. De 190 a 199, o nome ocupa C:F, a quantidade ocupa G:H e o percentual ocupa I:J. O HTML leva os percentuais como números com duas casas decimais.
+
+A lista segue a ordem da prévia, por quantidade decrescente, com a mesma formatação de nomes e o mesmo percentual sobre os pacotes bipados por operadores identificados. Quando houver mais de 10 operadores, a cópia inclui os primeiros 10 e informa quantos entraram. Os indicadores e os percentuais mantêm o cálculo sobre a base completa. As linhas livres são copiadas vazias para apagar registros de uma colagem anterior. [Testes da cópia](../../tests/report-summary-copy.test.mjs)
+
+O HTML leva as 15 linhas com altura de 35 px. As fórmulas em `C14`, `I14` e `K14` da aba **Relatório Parcel** leem respectivamente `C190:C199`, `G190:G199` e `I190:I199` da Base de Dados.
+
+### Resumo da Reversa
+
+Selecione o título mesclado `C201:J201` na aba **Base de Dados** e cole com `Ctrl+V`. O título ocupa a linha inteira. A linha 203 contém os totais por tipo, a linha 204 contém o título **Distribuição por TO** e a linha 205 contém os cabeçalhos. De 206 a 215, a TO ocupa C:D, a quantidade E:F, o percentual G:H e o tipo I:J.
+
+As três primeiras linhas do HTML têm 35 px de altura e as demais têm 30 px.
+
+A lista segue a ordem da prévia, com as últimas TOs adicionadas primeiro. Cada percentual divide a quantidade da TO pelo total de pacotes da Reversa. Uma TO com mais de um tipo mantém todos os rótulos na mesma célula. A cópia preenche as linhas restantes com células vazias e informa quando apenas as 10 primeiras TOs couberem. [Testes da cópia](../../tests/report-summary-copy.test.mjs)
 
 ### Expedição do Ranking Mensal
 
-No [Ranking Mensal de Colaboradores](ranking-de-colaboradores.md), selecione o título mesclado `C2:S3` da aba **Ranking de Colaboradores** e cole com `Ctrl+V`. O HTML aplica o alinhamento horizontal e vertical centralizado e a fonte diretamente às células. A fonte Open Sans usa 20 pt no título mesclado, 12 pt nos títulos das seções, 11 pt nos cabeçalhos das colunas e 10 pt nos dados.
+Selecione o título mesclado `B2:W3` da aba **Ranking de Colaboradores** e cole com `Ctrl+V`. O HTML aplica o alinhamento horizontal e vertical centralizado e a fonte diretamente às células. A fonte Open Sans usa 20 pt no título, 12 pt nos títulos das seções, 17 pt no cabeçalho 🏅, 11 pt nos outros cabeçalhos e 10 pt nos dados. [Ranking Mensal de Colaboradores](ranking-de-colaboradores.md)
 
-Mesa de Recebimento ocupa C:E, Erros de Etiquetagem ocupa G:I e Rotas Conferidas ocupa K:M. Esses blocos têm **ID OPS**, **Colaborador** e **Quantidade**. Os IDs são preenchidos em C, G e K. Avarias Recebidas ocupa O:P e Pacotes OFF ocupa R:S. Esses blocos têm **Colaborador** e **Quantidade**.
+| Bloco | Colunas | Posição | ID |
+| --- | --- | --- | --- |
+| Pacotes Recebidos | B:E | B | C |
+| Erros de Etiquetagem | G:J | G | H |
+| Rotas Conferidas | L:O | L | M |
+| Avarias Recebidas | Q:S | Q | |
+| Pacotes OFF | U:W | U | |
 
-A cópia ocupa as colunas C a S, a partir da linha 2. Os títulos dos blocos ficam na linha 5, os cabeçalhos de coluna na linha 6 e os dados começam na linha 7.
+Os títulos dos blocos ficam na linha 5, os cabeçalhos de coluna na linha 6 e os dados começam na linha 7. A posição é numérica no HTML, com formato ordinal como `1º`. O nome abreviado da prévia vai na coluna **Colaborador**.
 
-A cópia define as quatro bordas externas de cada título mesclado e as quatro bordas de cada célula nos cabeçalhos e dados. Os separadores F, J, N e Q levam as mesclagens e as bordas do modelo.
+A cópia define as quatro bordas externas de cada título mesclado e as quatro bordas de cada célula nos cabeçalhos e dados. A linha 4 fica mesclada de B a W. Os separadores verticais F, K, P e T levam as mesclagens e as bordas do modelo.
 
-O bloco tem pelo menos 150 linhas de dados. Se as tabelas já ocuparam mais linhas na aba do navegador, a cópia inclui vazios até esse tamanho para sobrescrever a colagem anterior. A célula de colaborador leva a posição seguida do nome abreviado, como `1º Bruno Santos`, em HTML e texto tabulado. Na reimportação, a área de transferência precisa incluir os IDs. Se a planilha copiar apenas os nomes, reexiba C, G e K e copie novamente. [Cópia do ranking](../../js/reports/employee-ranking/clipboard.js)
+O bloco tem pelo menos 150 linhas de dados. Se as tabelas já ocuparam mais linhas na aba do navegador, a cópia inclui vazios até esse tamanho para sobrescrever a colagem anterior. Na reimportação, a área de transferência precisa incluir os IDs. Se a planilha copiar apenas os nomes, reexiba C, H e M e copie novamente. [Cópia do ranking](../../js/reports/employee-ranking/clipboard.js)
 
 Recebimento, Erros de Etiquetagem e Rotas Conferidas incluem apenas os totais com OPS identificado. Um aviso junto da confirmação da cópia indica quando há registros pendentes na fonte.
 

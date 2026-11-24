@@ -213,27 +213,28 @@ try {
     await page.waitForFunction(() => window.rankingClipboard.text.startsWith("RANKING MENSAL DE DESEMPENHO\t"));
     const copied = await page.evaluate(() => window.rankingClipboard.text.split("\n").map(row => row.split("\t")));
     assert.equal(copied.length, 158);
-    assert.ok(copied.every(row => row.length === 17));
-    assert.deepEqual([0, 4, 8, 12, 15].map(column => copied[3][column]),
-        ["Mesa de Recebimento", "Erros de Etiquetagem", "Rotas Conferidas", "Avarias Recebidas", "Pacotes OFF"]);
-    assert.deepEqual(copied[5].slice(8, 11), ["ops123", "1º Maria Silva", "14"]);
-    assert.deepEqual(copied[6].slice(8, 11), ["ops321", "2º Maria Silva", "9"]);
-    assert.match(await page.locator("#employeeRankingNotificationText").textContent(), /C2:S3/);
+    assert.ok(copied.every(row => row.length === 22));
+    assert.deepEqual([0, 5, 10, 15, 19].map(column => copied[3][column]),
+        ["Pacotes Recebidos", "Erros de Etiquetagem", "Rotas Conferidas", "Avarias Recebidas", "Pacotes OFF"]);
+    assert.deepEqual(copied[5].slice(10, 14), ["1º", "ops123", "Maria Silva", "14"]);
+    assert.deepEqual(copied[6].slice(10, 14), ["2º", "ops321", "Maria Silva", "9"]);
+    assert.match(await page.locator("#employeeRankingNotificationText").textContent(), /B2:W3/);
 
     const copiedFormat = await page.evaluate(() => {
         const doc = new DOMParser().parseFromString(window.rankingClipboard.html, "text/html");
         const table = doc.querySelector("google-sheets-html-origin table");
         const title = table.rows[0].cells[0];
-        const expeditionCells = Array.from(table.rows[5].cells).slice(6, 9);
+        const expeditionCells = Array.from(table.rows[5].cells).slice(8, 12);
         return {
             titleSpan: [title.colSpan, title.rowSpan],
             centerAligned: expeditionCells.every(cell => cell.style.textAlign === "center" && cell.style.verticalAlign === "middle"),
             values: expeditionCells.map(cell => cell.textContent),
+            position: JSON.parse(expeditionCells[0].getAttribute("data-sheets-value"))["3"],
         };
     });
     assert.deepEqual(copiedFormat, {
-        titleSpan: [17, 2],
-        centerAligned: true, values: ["ops123", "1º Maria Silva", "14"],
+        titleSpan: [22, 2],
+        centerAligned: true, values: ["1º", "ops123", "Maria Silva", "14"], position: 1,
     });
 
     const operatorsFromCopy = await page.evaluate(async () => {
@@ -241,7 +242,7 @@ try {
             await import("/js/reports/employee-ranking/clipboard.js");
         const clipboard = await readEmployeeRankingClipboard();
         const textWithoutIds = clipboard.text.split("\n")
-            .map(row => row.split("\t").filter((_, index) => ![0, 4, 8].includes(index)).join("\t")).join("\n");
+            .map(row => row.split("\t").filter((_, index) => ![1, 6, 11].includes(index)).join("\t")).join("\n");
         return [
             parseEmployeeRankingClipboard({ text: clipboard.text }).expedition.slice(0, 2),
             parseEmployeeRankingClipboard({ text: textWithoutIds, html: clipboard.html }).expedition.slice(0, 2),
@@ -268,7 +269,7 @@ try {
     await copyButton.click();
     await page.waitForFunction(() => window.rankingClipboard.text.startsWith("RANKING MENSAL DE DESEMPENHO\t"));
     const copiedAfterClear = await page.evaluate(() => window.rankingClipboard.text.split("\n").map(row => row.split("\t")));
-    assert.deepEqual(copiedAfterClear[5].slice(8, 11), ["ops123", "1º Maria Silva", "12"]);
+    assert.deepEqual(copiedAfterClear[5].slice(10, 14), ["1º", "ops123", "Maria Silva", "12"]);
     assert.equal(copiedAfterClear.length, 158);
     assert.ok(copiedAfterClear.slice(6).every(row => row.every(value => value === "")));
 

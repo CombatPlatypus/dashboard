@@ -11,7 +11,7 @@ import { resetReceiptReport, restoreReceiptState, subscribeReceiptState } from "
 import { resetReceiptLinehaulState, restoreReceiptLinehaulState, subscribeReceiptLinehaulState } from "../js/reports/receipt/linehaul-state.js";
 import { resetExpeditionReport, restoreExpeditionState } from "../js/reports/expedition/state.js";
 import { resetPlanningReport, restorePlanningState } from "../js/reports/planning/state.js";
-import { replaceParcelRows, resetParcelReport, restoreParcelState, updateParcelFilter } from "../js/reports/parcel-sweeper/state.js";
+import { replaceParcelRows, resetParcelReport, restoreParcelState, toggleParcelOperatorBulky, updateParcelFilter } from "../js/reports/parcel-sweeper/state.js";
 import { resetReverseReport, restoreReverseState, upsertReverseTransfer } from "../js/reports/reverse/state.js";
 
 const require = createRequire(import.meta.url);
@@ -23,18 +23,17 @@ const routes = [{
     validationEndTime: "2026-10-23 09:05:30", validationDurationSeconds: 3930,
 }];
 const parcelRows = [
-    { trackingNumber: "BR1", countType: "Backlog", expected: "Y" },
-    { trackingNumber: "BR2", countType: "Exception", expected: "Y" },
-    { trackingNumber: "BR3", countType: "Missing", expected: "Y" },
+    { trackingNumber: "BR1", countType: "Backlog", expected: "Y", operator: "[Ops100]ANA TESTE" },
+    { trackingNumber: "BR2", countType: "Exception", expected: "Y", operator: "[ops100]ana teste" },
+    { trackingNumber: "BR3", countType: "Missing", expected: "Y", operator: "[Ops100]ANA TESTE" },
     { trackingNumber: "BR4", countType: "Missing", expected: "Y" },
-    { trackingNumber: "BR5", countType: "Mis-sorted", expected: "N" },
+    { trackingNumber: "BR5", countType: "Mis-sorted", expected: "N", operator: "[Ops200]CAIO TESTE" },
     { trackingNumber: "BR6", countType: "Exception", expected: "N" },
 ];
 const reverseTransfers = [
     { to: "TO1", quantities: { return: 5, missorted: 2, liquidate: 0, confiscated: 1 } },
     { to: "TO2", quantities: { return: 3, missorted: 0, liquidate: 7, confiscated: 2 } },
 ];
-const copyDate = new Date("2026-11-02T12:00:00-03:00");
 
 beforeEach(() => {
     resetReceiptReport();
@@ -267,44 +266,53 @@ test("expedição inclui resumo, erros e lista de conferentes em G7:J62", () => 
     assert.doesNotMatch(payload.text, /Processamento|Volume Recebido/);
 });
 
-test("parcel copia C185:J187 com data em G185 e os indicadores na linha 187", () => {
+test("parcel copia indicadores e distribuição por operador em C185:J199", () => {
     replaceParcelRows(parcelRows);
-    const payload = createReportSummaryClipboard("parcel", { now: copyDate });
+    const payload = createReportSummaryClipboard("parcel");
     assert.equal(payload.target, "C185");
     assert.equal(payload.sheet, "Base de Dados");
     assert.equal(payload.hasData, true);
     assert.equal(payload.copyError, "");
-    assert.deepEqual(matrix(payload), [
-        ["Relatório Parcel Sweeper", "", "", "", "02/11/2026", "", "", ""],
-        ["Porcentagem Total", "", "Total de Bipado", "", "Pacotes Exception", "", "Pacotes Missorted", ""],
-        ["50,00%", "-", "4", "", "2", "", "1", ""],
+    const rows = matrix(payload);
+    assert.equal(rows.length, 15);
+    assert.ok(rows.every(row => row.length === 8));
+    assert.deepEqual(rows.slice(0, 7), [
+        ["Relatório Parcel Sweeper", "", "", "", "", "", "", ""],
+        ["Porcentagem Total", "", "Total de Bipado", "Não Escaneados", "Pacotes Backlog", "Pacotes Exception", "Pacotes Missorted", ""],
+        ["50,00%", "-", "4", "2", "1", "2", "1", ""],
+        ["Distribuição por Operador", "", "", "", "", "", "", ""],
+        ["Operador", "", "", "", "Quantidade", "", "Percentual", ""],
+        ["[Ops100] Ana", "", "", "", "2", "", "66,67%", ""],
+        ["[Ops200] Caio", "", "", "", "1", "", "33,33%", ""],
     ]);
+    assert.ok(rows.slice(7).every(row => row.every(value => value === "")));
     const workbook = XLSX.read(payload.html, { type: "string" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     assert.deepEqual(sheet["!merges"].map(XLSX.utils.encode_range), [
-        "A1:D1", "E1:H1", "A2:B2", "C2:D2", "E2:F2", "G2:H2", "C3:D3", "E3:F3", "G3:H3",
+        "A1:H1", "A2:B2", "G2:H2", "G3:H3", "A4:H4",
+        ...Array.from({ length: 11 }, (_, index) => index + 5)
+            .flatMap(row => [`A${row}:D${row}`, `E${row}:F${row}`, `G${row}:H${row}`]),
     ]);
     assert.equal(sheet.B3.v, "-");
-    assert.equal(sheet.C3.v, 4);
-    assert.equal(sheet.E3.v, 2);
-    assert.equal(sheet.G3.v, 1);
+    assert.deepEqual(["C3", "D3", "E3", "F3", "G3"].map(address => sheet[address].v), [4, 2, 1, 2, 1]);
+    assert.equal(sheet.A6.v, "[Ops100] Ana");
+    assert.equal(sheet.E6.v, 2);
     assert.equal([...payload.html.matchAll(/<col width="150"/g)].length, 8);
-    const cells = [...payload.html.matchAll(/<td\b([^>]*)>([^<]*)<\/td>/g)];
-    assert.equal(cells.length, 11);
-    assert.deepEqual(cells.slice(6, 8).map(([, , text]) => text), ["50,00%", "-"]);
-    assert.ok(cells.slice(6, 8).every(([, attributes]) => attributes.includes('colspan="1"')));
-    for (const [, attributes] of cells) {
-        assert.match(attributes, /border:1px solid #000000;/);
-        assert.match(attributes, /text-align:center;vertical-align:middle/);
-        const format = JSON.parse(attributes.match(/data-sheets-userformat='([^']+)'/)[1]);
-        assert.equal(format["9"], 1);
-        assert.equal(format["10"], 1);
-        assert.equal(format["15"], "Roboto");
+    assert.equal([...payload.html.matchAll(/<tr style="height:35px">/g)].length, 15);
+    const percentages = [...payload.html.matchAll(/data-sheets-value="([^"]+)" data-sheets-numberformat="([^"]+)">([^<]+)</g)];
+    const decode = attribute => JSON.parse(attribute.replaceAll("&quot;", '"'));
+    assert.deepEqual(percentages.map(([, value, , text]) => [decode(value), text]), [
+        [{ "1": 3, "3": 0.5 }, "50,00%"],
+        [{ "1": 3, "3": 2 / 3 }, "66,67%"],
+        [{ "1": 3, "3": 1 / 3 }, "33,33%"],
+    ]);
+    for (const [, , format] of percentages) {
+        assert.equal(decode(format)["2"], "0.00%");
     }
-    assert.match(cells[0][1], /colspan="4"/);
-    assert.match(cells[0][1], /font-size:12pt/);
-    assert.match(cells[1][1], /colspan="4"/);
-    assert.equal(cells[1][2], "02/11/2026");
+    assert.match(payload.html, /background-color:#333333[^"]*font-family:Open Sans;.*font-size:12pt/);
+    assert.match(payload.html, /background-color:#262626/);
+    assert.match(payload.html, /background-color:#1b1b1b/);
+    assert.match(payload.html, /text-align:center;vertical-align:middle;white-space:nowrap;border:1px solid #626262/);
 });
 
 test("parcel mantém zeros reais e deixa a porcentagem vazia quando não há base de cobertura", () => {
@@ -314,23 +322,25 @@ test("parcel mantém zeros reais e deixa a porcentagem vazia quando não há bas
     replaceParcelRows([{ trackingNumber: "BR1", countType: "Missing", expected: "Y" }]);
     payload = createReportSummaryClipboard("parcel");
     assert.equal(payload.hasData, true);
-    assert.deepEqual(matrix(payload)[2], ["0,00%", "-", "0", "", "0", "", "0", ""]);
+    assert.deepEqual(matrix(payload)[2], ["0,00%", "-", "0", "1", "0", "0", "0", ""]);
     replaceParcelRows(parcelRows.map(row => ({ ...row, expected: "N" })));
     payload = createReportSummaryClipboard("parcel");
-    assert.deepEqual(matrix(payload)[2], ["", "-", "4", "", "2", "", "1", ""]);
+    assert.deepEqual(matrix(payload)[2], ["", "-", "4", "2", "1", "2", "1", ""]);
     replaceParcelRows(parcelRows.map(({ expected, ...row }) => row));
     assert.equal(matrix(createReportSummaryClipboard("parcel"))[2][0], "66,67%");
 });
 
-test("parcel copia o resumo completo em C185 independentemente da janela e do filtro de pacotes", () => {
+test("parcel copia o resumo completo em C185 independentemente da janela, do filtro e da classificação manual", () => {
     replaceParcelRows(parcelRows);
     const original = createReportSummaryClipboard("parcel");
+    toggleParcelOperatorBulky("[Ops100]ANA TESTE");
     for (const window of ["AM", "PM1", "PM2"]) {
         updateReportContextField("window", window);
         for (const filter of ["backlog", "exception", "all"]) {
             updateParcelFilter(filter);
             const payload = createReportSummaryClipboard("parcel");
             assert.equal(payload.text, original.text);
+            assert.equal(payload.html, original.html);
             assert.equal(payload.target, "C185");
             assert.equal(payload.shift, null);
         }
@@ -366,37 +376,70 @@ test("botão do parcel acompanha importação, limpeza e restauração e orienta
     assert.equal(parcel.disabled, false);
     await parcel.fire();
     const restored = matrix({ text: nativeCopies[1]["text/plain"] });
-    assert.deepEqual(restored[2], ["100,00%", "-", "1", "", "0", "", "1", ""]);
+    assert.deepEqual(restored[2], ["100,00%", "-", "1", "0", "0", "0", "1", ""]);
+    assert.ok(restored.slice(5).every(row => row.every(value => value === "")));
 });
 
-test("reversa copia C189:J191 com data em G189 e os totais das TOs na linha 191", () => {
-    restoreReverseState({ transfers: reverseTransfers });
-    const payload = createReportSummaryClipboard("reverse", { now: copyDate });
-    assert.equal(payload.target, "C189");
+test("parcel avisa quando há mais que 10 operadores e mantém os totais de todo o relatório", async t => {
+    const { nativeCopies, parcelText } = setup(t, {}, { nativeCopy: true });
+    const { parcel, root } = createCopyButtons();
+    initializeReportSummaryCopy(root);
+    replaceParcelRows(Array.from({ length: 13 }, (_, index) => ({
+        trackingNumber: `BR${index}`, countType: "Backlog",
+        operator: `[Ops${100 + index}] Pessoa`,
+    })));
+    await parcel.fire();
+    const rows = matrix({ text: nativeCopies[0]["text/plain"] });
+    assert.deepEqual(rows[2], ["100,00%", "-", "13", "0", "13", "0", "0", ""]);
+    assert.equal(rows.length, 15);
+    assert.equal(rows[14][0], "[Ops109] Pessoa");
+    assert.equal(rows[14][6], "7,69%");
+    assert.match(parcelText.textContent, /A lista inclui 10 de 13 operadores\./);
+    assert.ok(parcelText.textContent.length <= 146);
+});
+
+test("reversa copia totais e distribuição por TO em C201:J215", () => {
+    const payload = createReportSummaryClipboard("reverse", { reverse: { transfers: reverseTransfers } });
+    assert.equal(payload.target, "C201");
     assert.equal(payload.sheet, "Base de Dados");
     assert.equal(payload.hasData, true);
     assert.equal(payload.copyError, "");
-    assert.deepEqual(matrix(payload), [
-        ["Reversa", "", "", "", "02/11/2026", "", "", ""],
+    const rows = matrix(payload);
+    assert.equal(rows.length, 15);
+    assert.ok(rows.every(row => row.length === 8));
+    assert.deepEqual(rows.slice(0, 7), [
+        ["Relatório da Reversa", "", "", "", "", "", "", ""],
         ["Return", "", "Missorted", "", "Liquidate", "", "Confiscado", ""],
         ["8", "", "2", "", "7", "", "3", ""],
+        ["Distribuição por TO", "", "", "", "", "", "", ""],
+        ["TO", "", "Quantidade", "", "Percentual", "", "Tipo", ""],
+        ["TO2", "", "12", "", "60,00%", "", "Return / Liquidate / Confiscado", ""],
+        ["TO1", "", "8", "", "40,00%", "", "Return / Missorted / Confiscado", ""],
     ]);
+    assert.ok(rows.slice(7).every(row => row.every(value => value === "")));
     const workbook = XLSX.read(payload.html, { type: "string" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     assert.deepEqual(sheet["!merges"].map(XLSX.utils.encode_range), [
-        "A1:D1", "E1:H1", "A2:B2", "C2:D2", "E2:F2", "G2:H2", "A3:B3", "C3:D3", "E3:F3", "G3:H3",
+        "A1:H1",
+        ...[2, 3].flatMap(row => [`A${row}:B${row}`, `C${row}:D${row}`, `E${row}:F${row}`, `G${row}:H${row}`]),
+        "A4:H4",
+        ...Array.from({ length: 11 }, (_, index) => index + 5)
+            .flatMap(row => [`A${row}:B${row}`, `C${row}:D${row}`, `E${row}:F${row}`, `G${row}:H${row}`]),
     ]);
     assert.deepEqual([sheet.A3.v, sheet.C3.v, sheet.E3.v, sheet.G3.v], [8, 2, 7, 3]);
     assert.equal([...payload.html.matchAll(/<col width="150"/g)].length, 8);
+    assert.deepEqual([...payload.html.matchAll(/<tr style="height:(\d+)px">/g)].map(([, height]) => Number(height)),
+        [35, 35, 35, ...Array(12).fill(30)]);
     const cells = [...payload.html.matchAll(/<td\b([^>]*)>([^<]*)<\/td>/g)];
-    assert.equal(cells.length, 10);
+    assert.equal(cells.length, 54);
     for (const [, attributes] of cells) {
-        assert.match(attributes, /border:1px solid #000000;/);
+        assert.match(attributes, /border:1px solid #626262/);
         assert.match(attributes, /text-align:center;vertical-align:middle/);
     }
-    assert.match(cells[0][1], /colspan="4"/);
+    assert.match(cells[0][1], /colspan="8"/);
     assert.match(cells[0][1], /font-size:12pt/);
-    assert.match(cells[1][1], /colspan="4"/);
+    assert.match(payload.html, /data-sheets-value="\{&quot;1&quot;:3,&quot;3&quot;:12\}">12<\/td>/);
+    assert.match(payload.html, /data-sheets-value="\{&quot;1&quot;:3,&quot;3&quot;:0.6\}" data-sheets-numberformat="[^"]+">60,00%<\/td>/);
 });
 
 test("reversa deixa totais vazios sem dados e preserva zeros com uma categoria importada", () => {
@@ -409,7 +452,7 @@ test("reversa deixa totais vazios sem dados e preserva zeros com uma categoria i
     assert.deepEqual(matrix(payload)[2], ["10", "", "0", "", "0", "", "0", ""]);
     for (const window of ["AM", "PM1", "PM2"]) {
         updateReportContextField("window", window);
-        assert.equal(createReportSummaryClipboard("reverse").target, "C189");
+        assert.equal(createReportSummaryClipboard("reverse").target, "C201");
         assert.equal(createReportSummaryClipboard("reverse").shift, null);
     }
 });
@@ -425,7 +468,7 @@ test("botão da reversa acompanha TOs atualizadas, limpeza e restauração e cop
     assert.equal(nativeCopies.length, 0);
     restoreReverseState({ transfers: reverseTransfers });
     assert.equal(reverse.disabled, false);
-    assert.equal(reverse.title, "Resumo de reversa: copiar para C189 da aba Base de Dados.");
+    assert.equal(reverse.title, "Resumo de reversa: copiar para C201 da aba Base de Dados.");
     assert.equal(reverse.attributes["aria-label"], reverse.title);
     await reverse.fire();
     const payload = createReportSummaryClipboard("reverse");
@@ -433,41 +476,42 @@ test("botão da reversa acompanha TOs atualizadas, limpeza e restauração e cop
     assert.equal(nativeCopies[0]["text/html"], payload.html);
     assert.equal(reverseNotification.dataset.notificationType, "success");
     assert.equal(reverseText.textContent,
-        "Resumo de reversa copiado. Cole em C189 da aba Base de Dados. Use Ctrl+V para manter mesclagens e alinhamento.");
+        "Resumo de reversa copiado. Cole em C201 da aba Base de Dados. Use Ctrl+V para manter mesclagens e alinhamento.");
     upsertReverseTransfer({ to: "TO1", quantities: { return: 2 } });
     await reverse.fire();
-    assert.deepEqual(matrix({ text: nativeCopies[1]["text/plain"] })[2], ["5", "", "0", "", "7", "", "2", ""]);
+    const updated = matrix({ text: nativeCopies[1]["text/plain"] });
+    assert.deepEqual(updated[2], ["5", "", "0", "", "7", "", "2", ""]);
+    assert.deepEqual(updated[6], ["TO1", "", "2", "", "14,29%", "", "Return", ""]);
     resetReverseReport();
     assert.equal(reverse.disabled, true);
     await reverse.fire();
     assert.equal(nativeCopies.length, 2);
-    restoreReverseState({ transfers: reverseTransfers });
+    restoreReverseState({ transfers: [reverseTransfers[0]] });
     assert.equal(reverse.disabled, false);
     await reverse.fire();
-    assert.deepEqual(matrix({ text: nativeCopies[2]["text/plain"] })[2], ["8", "", "2", "", "7", "", "3", ""]);
+    const restored = matrix({ text: nativeCopies[2]["text/plain"] });
+    assert.deepEqual(restored[2], ["5", "", "2", "", "0", "", "1", ""]);
+    assert.deepEqual(restored[5], ["TO1", "", "8", "", "100,00%", "", "Return / Missorted / Confiscado", ""]);
+    assert.ok(restored.slice(6).every(row => row.every(value => value === "")));
 });
 
-test("data do Parcel e da Reversa usa o dia de São Paulo e muda na próxima cópia após a meia-noite", async t => {
-    const RealDate = Date;
-    let instant = RealDate.parse("2026-11-03T02:59:59Z");
-    replaceGlobal(t, "Date", class extends RealDate {
-        constructor(...args) { super(...(args.length ? args : [instant])); }
-        static now() { return instant; }
+test("reversa copia as primeiras 10 TOs da prévia e calcula os percentuais sobre todos os pacotes", async t => {
+    restoreReverseState({
+        transfers: Array.from({ length: 11 }, (_, index) => ({
+            to: `TO${index + 1}`, quantities: { return: index + 1 },
+        })),
     });
-    replaceParcelRows(parcelRows);
-    restoreReverseState({ transfers: reverseTransfers });
-    const { nativeCopies } = setup(t, {}, { nativeCopy: true, clipboardItem: false });
-    const { parcel, reverse, root } = createCopyButtons();
+    const { nativeCopies, reverseText } = setup(t, {}, { nativeCopy: true });
+    const { reverse, root } = createCopyButtons();
     initializeReportSummaryCopy(root);
-    await parcel.fire();
     await reverse.fire();
-    assert.equal(matrix({ text: nativeCopies[0]["text/plain"] })[0][4], "02/11/2026");
-    assert.equal(matrix({ text: nativeCopies[1]["text/plain"] })[0][4], "02/11/2026");
-    instant = RealDate.parse("2026-11-03T03:00:00Z");
-    await parcel.fire();
-    await reverse.fire();
-    assert.equal(matrix({ text: nativeCopies[2]["text/plain"] })[0][4], "03/11/2026");
-    assert.equal(matrix({ text: nativeCopies[3]["text/plain"] })[0][4], "03/11/2026");
+    const rows = matrix({ text: nativeCopies[0]["text/plain"] });
+    assert.deepEqual(rows[2], ["66", "", "0", "", "0", "", "0", ""]);
+    assert.equal(rows.length, 15);
+    assert.deepEqual(rows[5], ["TO11", "", "11", "", "16,67%", "", "Return", ""]);
+    assert.deepEqual(rows[14], ["TO2", "", "2", "", "3,03%", "", "Return", ""]);
+    assert.match(reverseText.textContent, /A lista inclui 10 de 11 TOs\./);
+    assert.ok(reverseText.textContent.length <= 146);
 });
 
 test("colagem dos turnos na Base de Dados inclui cores, bordas e fontes", () => {
@@ -531,6 +575,8 @@ test("resumos e listas ocupam apenas o bloco reservado de cada janela", () => {
         assert.equal(matrix(expedition).length, 56);
         for (const payload of [receipt, expedition]) {
             assert.ok(matrix(payload).every(row => row.length === 4));
+            const heights = [...payload.html.matchAll(/<tr style="height:(\d+)px">/g)].map(([, height]) => Number(height));
+            assert.deepEqual(heights, [35, ...Array(55).fill(window === "PM1" ? 21 : 30)]);
             const [, column, rowNumber] = payload.target.match(/^([A-Z]+)(\d+)$/);
             const pasted = new Map(matrix(payload).flatMap((row, rowOffset) => row.map((value, columnOffset) => {
                 const cell = `${String.fromCharCode(column.charCodeAt(0) + columnOffset)}${Number(rowNumber) + rowOffset}`;

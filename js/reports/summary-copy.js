@@ -7,7 +7,11 @@ import { getExpeditionChangeScope, getExpeditionState, getExpeditionSummary, get
 import { getPlanningState, subscribePlanningState } from "./planning/state.js";
 import { hasPlanningExportInputChanged } from "./planning/calculations.js";
 import { columnWidths as planningColumnWidths, createPlanningClipboardRows, getPlanningClipboardData } from "./planning/clipboard.js";
+import { formatParcelOperatorName } from "./parcel-sweeper/model.js";
 import { getParcelSnapshot, getParcelStateSummary, hasParcelRowsChanged, subscribeParcelState } from "./parcel-sweeper/state.js";
+import {
+    REVERSE_TYPE_DEFINITIONS, REVERSE_TYPE_KEYS, getReverseDistribution, getReverseTotals, normalizeReverseTransfers,
+} from "./reverse/model.js";
 import { getReverseSnapshot, getReverseStateTotals, subscribeReverseState } from "./reverse/state.js";
 import { setReportNotification } from "./report-notifications.js";
 
@@ -22,15 +26,18 @@ const shiftClipboardReports = {
 const parcelClipboardDestination = {
     target: "C185", sheet: operationDataSheet, label: "Relatório Parcel Sweeper", shift: null, copyError: "",
 };
+const parcelOperatorCapacity = 10;
 const reverseClipboardDestination = {
-    target: "C189", sheet: operationDataSheet, label: "Resumo de reversa", shift: null, copyError: "",
+    target: "C201", sheet: operationDataSheet, label: "Resumo de reversa", shift: null, copyError: "",
 };
+const reverseTransferCapacity = 10;
+const operationDataStyle = { background: "#101010", fontSize: 10, border: true };
+const operationStripedStyle = { ...operationDataStyle, background: "#1b1b1b" };
+const operationHeadingStyle = { ...operationDataStyle, background: "#262626", fontSize: 11 };
+const operationTitleStyle = { ...operationHeadingStyle, background: "#333333", fontSize: 12 };
 const shiftClipboardPalette = { background: "#101010", color: "#f8faf8", borderColor: "#626262" };
 const rateFormatter = new Intl.NumberFormat("pt-BR", {
     style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2,
-});
-const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit", month: "2-digit", year: "numeric", timeZone: "America/Sao_Paulo",
 });
 // Sheets' clipboard fields: centered alignment (64 | 128), font family (4096) and size (8192).
 const sheetsFormatFields = 64 | 128 | 4096 | 8192;
@@ -81,15 +88,18 @@ function createStyledCellAttributes({
     return `data-sheets-userformat='${JSON.stringify(format)}' align="center" valign="${alignment}" style="${css}"`;
 }
 
-function createStyledClipboardCell({ value, span, rowSpan, style, inferValueType, formula }, attributes) {
+function createStyledClipboardCell({ value, span, rowSpan, style, textValue, numberFormat, inferValueType, formula }, attributes) {
     if (!attributes.has(style)) attributes.set(style, createStyledCellAttributes(style));
     let typedValue = "";
     if (!inferValueType && value != null && value !== "") {
         const data = typeof value === "number" ? { "1": 3, "3": value } : { "1": 2, "2": String(value) };
         typedValue = ` data-sheets-value="${escapeHtml(JSON.stringify(data))}"`;
     }
+    const numberFormatAttribute = numberFormat
+        ? ` data-sheets-numberformat="${escapeHtml(JSON.stringify({ "1": 2, "2": numberFormat, "3": 1 }))}"`
+        : "";
     const formulaAttribute = formula ? ` data-sheets-formula="${escapeHtml(formula)}"` : "";
-    return `<td rowspan="${rowSpan}" colspan="${span}" ${attributes.get(style)}${typedValue}${formulaAttribute}>${escapeHtml(value)}</td>`;
+    return `<td rowspan="${rowSpan}" colspan="${span}" ${attributes.get(style)}${typedValue}${numberFormatAttribute}${formulaAttribute}>${escapeHtml(textValue ?? value)}</td>`;
 }
 
 // HTML carries the template's merges; TSV keeps a placeholder for every physical column.
@@ -159,6 +169,73 @@ function getReportSummaryCopyStatus(kind) {
     throw new Error("Tipo de resumo inválido.");
 }
 
+function operationCell(value, span = 1, style = operationDataStyle) {
+    return { value, span, style, rowSpan: 1 };
+}
+
+function operationPercentCell(value, span, style) {
+    const cell = operationCell(value, span, style);
+    return value == null ? cell : { ...cell, textValue: rateFormatter.format(value), numberFormat: "0.00%" };
+}
+
+function createParcelClipboardRows(summary) {
+    const totals = summary.hasData ? summary : {};
+    const coverage = summary.expectedTotalCount > 0
+        ? summary.expectedScannedCount / summary.expectedTotalCount
+        : null;
+    return [
+        [operationCell("Relatório Parcel Sweeper", 8, operationTitleStyle)],
+        [
+            operationCell("Porcentagem Total", 2, operationHeadingStyle),
+            ...["Total de Bipado", "Não Escaneados", "Pacotes Backlog", "Pacotes Exception"]
+                .map(label => operationCell(label, 1, operationHeadingStyle)),
+            operationCell("Pacotes Missorted", 2, operationHeadingStyle),
+        ],
+        [
+            operationPercentCell(coverage), operationCell(summary.hasData ? "-" : null),
+            operationCell(totals.scannedCount), operationCell(totals.unscannedCount),
+            operationCell(totals.backlogCount), operationCell(totals.exceptionCount),
+            operationCell(totals.missortedCount, 2),
+        ],
+        [operationCell("Distribuição por Operador", 8, operationHeadingStyle)],
+        [
+            operationCell("Operador", 4, operationHeadingStyle),
+            operationCell("Quantidade", 2, operationHeadingStyle),
+            operationCell("Percentual", 2, operationHeadingStyle),
+        ],
+        ...Array.from({ length: parcelOperatorCapacity }, (_, index) => {
+            const operator = summary.operatorStats[index];
+            const style = index % 2 === 0 ? operationDataStyle : operationStripedStyle;
+            return [
+                operationCell(operator && formatParcelOperatorName(operator.operator), 4, style),
+                operationCell(operator?.count, 2, style),
+                operationPercentCell(operator?.percentage, 2, style),
+            ];
+        }),
+    ];
+}
+
+function createReverseClipboardRows(totals, transfers) {
+    const distribution = getReverseDistribution(transfers.slice(-reverseTransferCapacity), totals.total);
+    return [
+        [operationCell("Relatório da Reversa", 8, operationTitleStyle)],
+        REVERSE_TYPE_KEYS.map(type => operationCell(REVERSE_TYPE_DEFINITIONS[type].label, 2, operationHeadingStyle)),
+        REVERSE_TYPE_KEYS.map(type => operationCell(totals.hasData ? totals.quantities[type] : null, 2)),
+        [operationCell("Distribuição por TO", 8, operationHeadingStyle)],
+        ["TO", "Quantidade", "Percentual", "Tipo"].map(label => operationCell(label, 2, operationHeadingStyle)),
+        ...Array.from({ length: reverseTransferCapacity }, (_, index) => {
+            const transfer = distribution[index];
+            const style = index % 2 === 0 ? operationDataStyle : operationStripedStyle;
+            return [
+                operationCell(transfer?.to, 2, style),
+                operationCell(transfer?.quantity, 2, style),
+                operationPercentCell(transfer?.percentage, 2, style),
+                operationCell(transfer?.typeLabel, 2, style),
+            ];
+        }),
+    ];
+}
+
 function createReportSummaryClipboard(kind, {
     context,
     receipt,
@@ -187,26 +264,28 @@ function createReportSummaryClipboard(kind, {
     }
     if (kind === "parcel") {
         const summary = getParcelStateSummary(parcel ?? getParcelSnapshot());
-        const rows = [
-            [cell("Relatório Parcel Sweeper", 4, 12), cell(dateFormatter.format(now), 4, 12)],
-            heading("Porcentagem Total", "Total de Bipado", "Pacotes Exception", "Pacotes Missorted"),
-            [cell(summary.expectedTotalCount > 0 ? rate(summary.expectedScannedCount / summary.expectedTotalCount) : null, 1),
-                cell(summary.hasData ? "-" : null, 1),
-                ...pair(summary.hasData ? summary.scannedCount : null,
-                    summary.hasData ? summary.exceptionCount : null,
-                    summary.hasData ? summary.missortedCount : null)],
-        ];
-        return { ...createClipboardTable(rows), ...parcelClipboardDestination, hasData: summary.hasData };
+        const operatorCount = summary.operatorStats.length;
+        const copyNotice = operatorCount > parcelOperatorCapacity
+            ? `A lista inclui ${parcelOperatorCapacity} de ${operatorCount} operadores.`
+            : "";
+        const rows = createParcelClipboardRows(summary);
+        return {
+            ...createClipboardTable(rows, { getRowHeight: () => 35 }),
+            ...parcelClipboardDestination, hasData: summary.hasData, copyNotice,
+        };
     }
     if (kind === "reverse") {
-        const summary = getReverseStateTotals(reverse ?? getReverseSnapshot());
-        const types = ["return", "missorted", "liquidate", "confiscated"];
-        const rows = [
-            [cell("Reversa", 4, 12), cell(dateFormatter.format(now), 4, 12)],
-            heading("Return", "Missorted", "Liquidate", "Confiscado"),
-            types.map(type => cell(summary.hasData ? summary.quantities[type] : null)),
-        ];
-        return { ...createClipboardTable(rows), ...reverseClipboardDestination, hasData: summary.hasData };
+        const transfers = reverse ? normalizeReverseTransfers(reverse.transfers) : getReverseSnapshot().transfers;
+        const totals = reverse ? getReverseTotals(transfers) : getReverseStateTotals();
+        const copyNotice = transfers.length > reverseTransferCapacity
+            ? `A lista inclui ${reverseTransferCapacity} de ${transfers.length} TOs.`
+            : "";
+        return {
+            ...createClipboardTable(createReverseClipboardRows(totals, transfers), {
+                getRowHeight: index => index < 3 ? 35 : 30,
+            }),
+            ...reverseClipboardDestination, hasData: totals.hasData, copyNotice,
+        };
     }
     let rows;
     let hasData;
@@ -269,7 +348,10 @@ function createReportSummaryClipboard(kind, {
     const listCapacity = summaryRowCount - shiftClipboardReports[kind].headerRows;
     // Empty rows remove names left by a previous, longer list without touching the next window.
     rows.push(...Array.from({ length: listCapacity }, (_, index) => createOperatorRow(operators[index])));
-    return { ...createClipboardTable(rows, { palette: shiftClipboardPalette }), ...status };
+    const rowHeight = status.shift === "PM1" ? 21 : 30;
+    return { ...createClipboardTable(rows, {
+        palette: shiftClipboardPalette, getRowHeight: index => index === 0 ? 35 : rowHeight,
+    }), ...status };
 }
 
 function writeSummaryCopyEvent(payload) {
@@ -341,8 +423,11 @@ function bindReportSummaryCopyButton(button, {
 
         try {
             await writeSummaryClipboard(payload);
+            const instruction = payload.copyNotice
+                ? `Use Ctrl+V. ${payload.copyNotice}`
+                : "Use Ctrl+V para manter mesclagens e alinhamento.";
             setReportNotification({ reportId, type: "success",
-                message: `${payload.label} copiado. Cole em ${destination(payload)}${payload.shift ? ` (${payload.shift})` : ""}. Use Ctrl+V para manter mesclagens e alinhamento.`,
+                message: `${payload.label} copiado. Cole em ${destination(payload)}${payload.shift ? ` (${payload.shift})` : ""}. ${instruction}`,
             });
         } catch {
             setReportNotification({ reportId, type: "error",

@@ -6,7 +6,7 @@ Cada bloco numera os colaboradores a partir de `1º`, na ordem exibida. Colabora
 
 ## Identificação por OPS
 
-Recebimento, Erros de Etiquetagem e Rotas Conferidas somam por OPS. O [modelo do ranking](../../js/reports/employee-ranking/model.js) cruza o código nos registros atuais com o da coluna **ID OPS** na mesma linha do acumulado. Cópias antigas podem fornecer o código junto do nome ou na fórmula da célula. Os nomes servem para exibição e desempate.
+Recebimento, Erros de Etiquetagem e Rotas Conferidas somam por OPS. O modelo cruza o código nos registros atuais com o da coluna **ID** na mesma linha do acumulado. Cópias antigas podem fornecer o código na coluna **ID OPS**, junto do nome ou na fórmula da célula. Os nomes servem para exibição e desempate. [Modelo do ranking](../../js/reports/employee-ranking/model.js)
 
 OPS diferentes mantêm quantidades separadas mesmo para homônimos. Registros de colaboradores com quantidade e sem OPS ficam pendentes no relatório ou no acumulado de origem. A notificação da ação informa quantos registros ficaram fora da soma por falta de OPS identificado. A importação lê os blocos do ranking e ignora listas auxiliares de colaboradores em versões antigas.
 
@@ -38,8 +38,8 @@ O mesmo importador lê **Expedição** e **Log** do **Histórico de Retornados**
 
 ## Botões
 
-- **Importar** lê os acumulados de Mesa de Recebimento, Erros de Etiquetagem e Rotas Conferidas da aba **Ranking de Colaboradores**. Copie o acumulado anterior incluindo as colunas **ID OPS** em C, G e K. Se a cópia trouxer somente os nomes, reexiba essas colunas e copie novamente. A leitura remove o prefixo da posição antes de recuperar o nome. O cálculo mantém os OPS presentes só no histórico. Repetir a importação do mesmo acumulado produz os mesmos totais. A importação também lê os títulos antigos e a quantidade do bloco de Expedição com a coluna de tempo.
-- **Copiar** prepara o ranking para colar a partir do título mesclado **C2:S3**, com Mesa de Recebimento em C:E, Erros de Etiquetagem em G:I, Rotas Conferidas em K:M, Avarias Recebidas em O:P e Pacotes OFF em R:S. Os cinco blocos levam a posição e o nome abreviado da prévia na coluna **Colaborador**. Os três blocos acumuláveis levam o ID OPS na coluna própria. [Formato da cópia](copia-de-dados-para-planilha.md#expedição-do-ranking-mensal)
+- **Importar** lê os acumulados de Pacotes Recebidos, Erros de Etiquetagem e Rotas Conferidas da aba **Ranking de Colaboradores**. Copie o acumulado incluindo os IDs de C, H e M. Se necessário, reexiba essas colunas antes de copiar. A leitura usa o ID, o nome e a quantidade de cada linha. O cálculo mantém os OPS presentes só no histórico. Repetir a importação do mesmo acumulado produz os mesmos totais. A importação também lê os títulos antigos, nomes prefixados com a posição e a quantidade do antigo bloco de Expedição com tempo.
+- **Copiar** prepara o ranking para colar a partir do título mesclado **B2:W3**, com Pacotes Recebidos em B:E, Erros de Etiquetagem em G:J, Rotas Conferidas em L:O, Avarias Recebidas em Q:S e Pacotes OFF em U:W. A posição fica na primeira coluna de cada bloco e o nome abreviado vai na coluna **Colaborador**. Os três blocos acumuláveis levam o OPS na coluna **ID**. [Formato da cópia](copia-de-dados-para-planilha.md#expedição-do-ranking-mensal)
 - **Imagem** copia o ranking para a área de transferência. Segure o botão para baixar o PNG. A imagem inclui todas as linhas com dados.
 - **Lixeira** descarta o acumulado e recalcula o ranking com os dados atuais dos relatórios. Ao limpar Processamento ou Expedição na aba de origem, os blocos correspondentes passam a mostrar o acumulado carregado.
 

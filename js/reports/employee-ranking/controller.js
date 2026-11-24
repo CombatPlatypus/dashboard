@@ -244,7 +244,7 @@ function initializeEmployeeRankingController(root) {
         } catch {
             throw new Error("Não foi possível copiar o ranking com formatação. Verifique a permissão da área de transferência.");
         }
-        notifyWithPendingOps("success", "Ranking copiado. Selecione C2:S3 e cole com Ctrl+V.");
+        notifyWithPendingOps("success", "Ranking copiado. Selecione B2:W3 e cole com Ctrl+V.");
     }));
 
     bindReportImageExportButton(imageButton, {
