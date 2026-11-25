@@ -219,8 +219,14 @@ function createReverseClipboardRows(totals, transfers) {
     const distribution = getReverseDistribution(transfers.slice(-reverseTransferCapacity), totals.total);
     return [
         [operationCell("Relatório da Reversa", 8, operationTitleStyle)],
-        REVERSE_TYPE_KEYS.map(type => operationCell(REVERSE_TYPE_DEFINITIONS[type].label, 2, operationHeadingStyle)),
-        REVERSE_TYPE_KEYS.map(type => operationCell(totals.hasData ? totals.quantities[type] : null, 2)),
+        [
+            operationCell("Total da Reversa", 2, operationHeadingStyle),
+            ...REVERSE_TYPE_KEYS.map(type => operationCell(REVERSE_TYPE_DEFINITIONS[type].label, 2, operationHeadingStyle)),
+        ],
+        [
+            operationCell(totals.hasData ? totals.total : null, 2),
+            ...REVERSE_TYPE_KEYS.map(type => operationCell(totals.hasData ? totals.quantities[type] : null, 2)),
+        ],
         [operationCell("Distribuição por TO", 8, operationHeadingStyle)],
         ["TO", "Quantidade", "Percentual", "Tipo"].map(label => operationCell(label, 2, operationHeadingStyle)),
         ...Array.from({ length: reverseTransferCapacity }, (_, index) => {

@@ -1387,8 +1387,7 @@
 
                             <thead>
                                 <tr>
-                                    <th>Return</th>
-                                    <th>Missorted</th>
+                                    <th>Return / Missorted</th>
                                     <th>Liquidate</th>
                                     <th>Confiscado</th>
                                 </tr>
@@ -1396,8 +1395,7 @@
 
                             <tbody>
                                 <tr>
-                                    <td id="finalReportReverseReturn">—</td>
-                                    <td id="finalReportReverseMissorted">—</td>
+                                    <td id="finalReportReverseReturnMissorted">—</td>
                                     <td id="finalReportReverseLiquidate">—</td>
                                     <td id="finalReportReverseConfiscated">—</td>
                                 </tr>
@@ -1406,18 +1404,13 @@
 
                         <div class="chart doughnut-chart">
                             <div class="chart-canvas-container" id="finalReport-ReverseChartContainer">
-                                <canvas id="finalReport-ReverseChart" role="img"></canvas>
+                                <canvas id="finalReport-ReverseChart" role="img" aria-label="Composição da reversa por tipo"></canvas>
                             </div>
 
                             <div class="chart-label">
                                 <div class="type">
-                                    <div style="background-color: #007A48;"></div>
-                                    <p>Return <span id="finalReport-ReverseReturn">—</span></p>
-                                </div>
-
-                                <div class="type">
                                     <div style="background-color: #8B0000;"></div>
-                                    <p>Missorted <span id="finalReport-ReverseMissorted">—</span></p>
+                                    <p>Return / Missorted <span id="finalReport-ReverseReturnMissorted">—</span></p>
                                 </div>
 
                                 <div class="type">

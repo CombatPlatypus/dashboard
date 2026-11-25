@@ -409,11 +409,11 @@ test("reversa copia totais e distribuição por TO em C201:J215", () => {
     assert.ok(rows.every(row => row.length === 8));
     assert.deepEqual(rows.slice(0, 7), [
         ["Relatório da Reversa", "", "", "", "", "", "", ""],
-        ["Return", "", "Missorted", "", "Liquidate", "", "Confiscado", ""],
-        ["8", "", "2", "", "7", "", "3", ""],
+        ["Total da Reversa", "", "Return / Missorted", "", "Liquidate", "", "Confiscado", ""],
+        ["20", "", "10", "", "7", "", "3", ""],
         ["Distribuição por TO", "", "", "", "", "", "", ""],
         ["TO", "", "Quantidade", "", "Percentual", "", "Tipo", ""],
-        ["TO2", "", "12", "", "60,00%", "", "Return / Liquidate / Confiscado", ""],
+        ["TO2", "", "12", "", "60,00%", "", "Return / Missorted / Liquidate / Confiscado", ""],
         ["TO1", "", "8", "", "40,00%", "", "Return / Missorted / Confiscado", ""],
     ]);
     assert.ok(rows.slice(7).every(row => row.every(value => value === "")));
@@ -426,7 +426,7 @@ test("reversa copia totais e distribuição por TO em C201:J215", () => {
         ...Array.from({ length: 11 }, (_, index) => index + 5)
             .flatMap(row => [`A${row}:B${row}`, `C${row}:D${row}`, `E${row}:F${row}`, `G${row}:H${row}`]),
     ]);
-    assert.deepEqual([sheet.A3.v, sheet.C3.v, sheet.E3.v, sheet.G3.v], [8, 2, 7, 3]);
+    assert.deepEqual([sheet.A3.v, sheet.C3.v, sheet.E3.v, sheet.G3.v], [20, 10, 7, 3]);
     assert.equal([...payload.html.matchAll(/<col width="150"/g)].length, 8);
     assert.deepEqual([...payload.html.matchAll(/<tr style="height:(\d+)px">/g)].map(([, height]) => Number(height)),
         [35, 35, 35, ...Array(12).fill(30)]);
@@ -449,7 +449,7 @@ test("reversa deixa totais vazios sem dados e preserva zeros com uma categoria i
     upsertReverseTransfer({ to: "TO1", quantities: { return: 10 } });
     payload = createReportSummaryClipboard("reverse");
     assert.equal(payload.hasData, true);
-    assert.deepEqual(matrix(payload)[2], ["10", "", "0", "", "0", "", "0", ""]);
+    assert.deepEqual(matrix(payload)[2], ["10", "", "10", "", "0", "", "0", ""]);
     for (const window of ["AM", "PM1", "PM2"]) {
         updateReportContextField("window", window);
         assert.equal(createReportSummaryClipboard("reverse").target, "C201");
@@ -480,8 +480,8 @@ test("botão da reversa acompanha TOs atualizadas, limpeza e restauração e cop
     upsertReverseTransfer({ to: "TO1", quantities: { return: 2 } });
     await reverse.fire();
     const updated = matrix({ text: nativeCopies[1]["text/plain"] });
-    assert.deepEqual(updated[2], ["5", "", "0", "", "7", "", "2", ""]);
-    assert.deepEqual(updated[6], ["TO1", "", "2", "", "14,29%", "", "Return", ""]);
+    assert.deepEqual(updated[2], ["14", "", "5", "", "7", "", "2", ""]);
+    assert.deepEqual(updated[6], ["TO1", "", "2", "", "14,29%", "", "Return / Missorted", ""]);
     resetReverseReport();
     assert.equal(reverse.disabled, true);
     await reverse.fire();
@@ -490,7 +490,7 @@ test("botão da reversa acompanha TOs atualizadas, limpeza e restauração e cop
     assert.equal(reverse.disabled, false);
     await reverse.fire();
     const restored = matrix({ text: nativeCopies[2]["text/plain"] });
-    assert.deepEqual(restored[2], ["5", "", "2", "", "0", "", "1", ""]);
+    assert.deepEqual(restored[2], ["8", "", "7", "", "0", "", "1", ""]);
     assert.deepEqual(restored[5], ["TO1", "", "8", "", "100,00%", "", "Return / Missorted / Confiscado", ""]);
     assert.ok(restored.slice(6).every(row => row.every(value => value === "")));
 });
@@ -506,10 +506,10 @@ test("reversa copia as primeiras 10 TOs da prévia e calcula os percentuais sobr
     initializeReportSummaryCopy(root);
     await reverse.fire();
     const rows = matrix({ text: nativeCopies[0]["text/plain"] });
-    assert.deepEqual(rows[2], ["66", "", "0", "", "0", "", "0", ""]);
+    assert.deepEqual(rows[2], ["66", "", "66", "", "0", "", "0", ""]);
     assert.equal(rows.length, 15);
-    assert.deepEqual(rows[5], ["TO11", "", "11", "", "16,67%", "", "Return", ""]);
-    assert.deepEqual(rows[14], ["TO2", "", "2", "", "3,03%", "", "Return", ""]);
+    assert.deepEqual(rows[5], ["TO11", "", "11", "", "16,67%", "", "Return / Missorted", ""]);
+    assert.deepEqual(rows[14], ["TO2", "", "2", "", "3,03%", "", "Return / Missorted", ""]);
     assert.match(reverseText.textContent, /A lista inclui 10 de 11 TOs\./);
     assert.ok(reverseText.textContent.length <= 146);
 });

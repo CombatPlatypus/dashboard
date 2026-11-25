@@ -1,12 +1,8 @@
 import { CHART_COLORS } from "../../charts/theme.js";
 const REVERSE_TYPE_DEFINITIONS =
     Object.freeze({
-        return: {
-            label: "Return",
-            color: CHART_COLORS.green,
-        },
-        missorted: {
-            label: "Missorted",
+        returnMissorted: {
+            label: "Return / Missorted",
             color: CHART_COLORS.red,
         },
         liquidate: {
@@ -64,18 +60,15 @@ function normalizeReverseType(
         );
 
     if (
+        normalizedValue === "returnmissorted" ||
+        normalizedValue === "return missorted" ||
         normalizedValue === "return" ||
-        normalizedValue === "devolucao"
-    ) {
-        return "return";
-    }
-
-    if (
+        normalizedValue === "devolucao" ||
         normalizedValue === "missorted" ||
         normalizedValue === "mis sorted" ||
         normalizedValue === "sorting incorreto"
     ) {
-        return "missorted";
+        return "returnMissorted";
     }
 
     if (
@@ -153,17 +146,19 @@ function normalizeReversePackages(
     const packages =
         createEmptyReversePackages();
 
+    const trackingNumbersFor = type => Array.isArray(values?.[type]) ? values[type] : [];
+    const returnMissorted = Array.isArray(values?.returnMissorted)
+        ? values.returnMissorted
+        : [...trackingNumbersFor("return"), ...trackingNumbersFor("missorted")];
+
     const seenTrackingNumbers =
         new Set();
 
     REVERSE_TYPE_KEYS.forEach(
         function (typeKey) {
-            const trackingNumbers =
-                Array.isArray(
-                    values?.[typeKey],
-                )
-                    ? values[typeKey]
-                    : [];
+            const trackingNumbers = typeKey === "returnMissorted"
+                ? returnMissorted
+                : trackingNumbersFor(typeKey);
 
             trackingNumbers.forEach(
                 function (value) {
@@ -216,15 +211,13 @@ function createReverseTransfer(
             values.packages,
         );
 
-    REVERSE_TYPE_KEYS.forEach(
-        function (typeKey) {
-            quantities[typeKey] =
-                normalizeReverseQuantity(
-                    values.quantities
-                        ?.[typeKey],
-                );
-        },
-    );
+    for (const typeKey of REVERSE_TYPE_KEYS) {
+        quantities[typeKey] = normalizeReverseQuantity(values.quantities?.[typeKey]);
+    }
+    if (values.quantities?.returnMissorted == null) {
+        quantities.returnMissorted = normalizeReverseQuantity(values.quantities?.return) +
+            normalizeReverseQuantity(values.quantities?.missorted);
+    }
 
     const quantity =
         REVERSE_TYPE_KEYS.reduce(

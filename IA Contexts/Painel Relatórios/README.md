@@ -112,15 +112,15 @@ Verifique cobertura, casos de exceção e classificação em [parcel-sweeper.tes
 
 ## Reversa
 
-Agrupa os pacotes por TO e mostra a composição de Return, Missorted, Liquidate e Confiscado. O usuário escolhe o tipo antes de o [importador](../../js/reports/reverse/import.js) processar o arquivo SPX. O importador lê o identificador da TO na célula B2 e usa o tipo escolhido para classificar os códigos únicos. Uma nova importação da mesma TO atualiza a entrada existente no [estado](../../js/reports/reverse/state.js).
+Agrupa os pacotes por TO nas categorias **Return / Missorted**, **Liquidate** e **Confiscado**. O usuário escolhe uma delas antes de o [importador](../../js/reports/reverse/import.js) processar o arquivo SPX. O importador lê o identificador da TO na célula B2 e usa o tipo escolhido para classificar os códigos únicos. Uma nova importação da mesma TO atualiza a entrada existente no [estado](../../js/reports/reverse/state.js).
 
-A composição, o Final e a cópia compartilham os totais normalizados. Quando só os códigos BR mudam, a prévia atualiza as tabelas correspondentes. O gráfico e o bloco do Final acompanham mudanças nos totais. [Modelo](../../js/reports/reverse/model.js) · [Prévia](../../js/reports/reverse/view.js)
+A prévia e sua cópia em imagem exibem o total geral, os três totais por categoria, a composição, a distribuição por TO e as listas de BRs. A rosca usa vermelho para **Return / Missorted**, azul para **Liquidate** e amarelo para **Confiscado**. O Relatório Final e sua exportação HTML exibem os três totais por categoria e a mesma composição. Quando só os códigos BR mudam, a prévia atualiza as tabelas correspondentes. O gráfico e o bloco do Final acompanham mudanças nos totais. [Modelo](../../js/reports/reverse/model.js) · [Prévia](../../js/reports/reverse/view.js) · [HTML exportado](../../final-report.html)
 
 O botão de cópia do resumo lê os totais e a lista atual no clique. O bloco `C201:J215` da **Base de Dados** inclui os indicadores e a distribuição de até 10 TOs. [Cópia do resumo da Reversa](copia-de-dados-para-planilha.md#resumo-da-reversa)
 
 Os botões de cópia nas tabelas de pacotes enviam o **Código BR** e a **Respectiva TO** em duas colunas, na ordem exibida em cada tabela. [Cópia das listas de pacotes](copia-de-dados-para-planilha.md#listas-de-pacotes-da-reversa)
 
-Verifique o tipo obrigatório, a reimportação sem duplicar totais e a compatibilidade das sessões antigas em [reverse-import.test.mjs](../../tests/reverse-import.test.mjs).
+Ao restaurar sessões antigas, a Reversa soma os totais de Return e Missorted, reúne os BRs na mesma categoria e mantém a respectiva TO de cada pacote. Verifique o tipo obrigatório, a consolidação de sessões antigas e a reimportação sem duplicar totais em [reverse-import.test.mjs](../../tests/reverse-import.test.mjs).
 
 ## Relatório Final
 

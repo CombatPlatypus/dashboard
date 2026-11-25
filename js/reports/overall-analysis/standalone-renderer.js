@@ -22,8 +22,7 @@ const FIELD_IDS = {
     DamageAndLossesTable: "-LossesTable",
     ParcelCoverageScanned: "-ParcelCoverageScanned",
     ParcelCoverageUnscanned: "-ParcelCoverageUnscanned",
-    ReverseCompositionReturn: "-ReverseReturn",
-    ReverseCompositionMissorted: "-ReverseMissorted",
+    ReverseCompositionReturnMissorted: "-ReverseReturnMissorted",
     ReverseCompositionLiquidate: "-ReverseLiquidate",
     ReverseCompositionConfiscated: "-ReverseConfiscated",
 };

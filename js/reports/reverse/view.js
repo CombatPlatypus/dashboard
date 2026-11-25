@@ -76,21 +76,15 @@ function getReverseViewElements(
     return {
         total:
             getElement("reverseTotal"),
-        return:
-            getElement("reverseReturn"),
-        missorted:
-            getElement("reverseMissorted"),
+        returnMissorted:
+            getElement("reverseReturnMissorted"),
         liquidate:
             getElement("reverseLiquidate"),
         confiscated:
             getElement("reverseConfiscated"),
-        compositionReturn:
+        compositionReturnMissorted:
             getElement(
-                "reverseCompositionReturn",
-            ),
-        compositionMissorted:
-            getElement(
-                "reverseCompositionMissorted",
+                "reverseCompositionReturnMissorted",
             ),
         compositionLiquidate:
             getElement(

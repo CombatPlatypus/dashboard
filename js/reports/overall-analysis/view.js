@@ -232,8 +232,8 @@ function getOverallAnalysisViewElements(
     [
         "ParcelScanned", "ParcelBacklog", "ParcelException", "ParcelMissorted",
         "ParcelCoverageScanned", "ParcelCoverageUnscanned",
-        "ReverseReturn", "ReverseMissorted", "ReverseLiquidate", "ReverseConfiscated",
-        "ReverseCompositionReturn", "ReverseCompositionMissorted",
+        "ReverseReturnMissorted", "ReverseLiquidate", "ReverseConfiscated",
+        "ReverseCompositionReturnMissorted",
         "ReverseCompositionLiquidate", "ReverseCompositionConfiscated",
     ].forEach(function (suffix) {
         parcelAndReverseElements[suffix] =

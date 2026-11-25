@@ -430,6 +430,8 @@ try {
             lossRate: text("finalReportLossRate"), indicatorCount: document.querySelectorAll("#finalReportIndicators > div").length,
             expedited: text("finalReportVolumeChecked"), duration: text("finalReportExpeditionTime"),
             date: text("finalReportDate"), reverse: text("finalReport-ReverseConfiscated"),
+            returnMissorted: text("finalReport-ReverseReturnMissorted"),
+            reverseChart: Chart.getChart("finalReport-ReverseChart").data.datasets[0].data,
             bars: Chart.getChart("finalReportReceiptChart").data.datasets[0].data,
             tooltipsDisabled: Object.values(Chart.instances).every(chart => chart.options.plugins.tooltip.enabled === false),
             sizes: [...document.querySelectorAll("canvas")].map(canvas => [canvas.clientWidth, canvas.clientHeight]),
@@ -448,6 +450,8 @@ try {
     assert.equal(rendered.duration, "02:10:05");
     assert.equal(rendered.date, snapshot.dateLabel);
     assert.equal(rendered.reverse, "4 (40%)");
+    assert.equal(rendered.returnMissorted, "5 (50%)");
+    assert.deepEqual(rendered.reverseChart, [5, 1, 4]);
     assert.equal(rendered.tooltipsDisabled, true);
     assert.deepEqual(rendered.bars, [12000, 11500, 500]);
     assert.deepEqual(await report.evaluate(readDamageAndLossesComposition, "finalReportDamageAndLossesComposition"), sourceComposition);
@@ -496,11 +500,11 @@ try {
     await report.goto(pathToFileURL(optionalPath).href);
     await report.waitForFunction(() => document.documentElement.dataset.finalReportState === "ready");
     assert.equal(await report.locator("#finalReportParcelScanned").textContent(), "—");
-    assert.equal(await report.locator("#finalReportReverseReturn").textContent(), "—");
+    assert.equal(await report.locator("#finalReportReverseReturnMissorted").textContent(), "—");
     assert.equal(await report.evaluate(() => Object.values(Chart.instances).length), 7);
     assert.equal(await report.evaluate(() => Object.values(Chart.instances)
         .every(chart => chart.options.plugins.tooltip.enabled === false)), true);
-    assert.deepEqual(await report.evaluate(() => Chart.getChart("finalReport-ReverseChart").data.datasets[0].data), [0, 0, 0, 0]);
+    assert.deepEqual(await report.evaluate(() => Chart.getChart("finalReport-ReverseChart").data.datasets[0].data), [0, 0, 0]);
     assert.deepEqual(requests, []);
     assert.deepEqual(errors, []);
     console.log(JSON.stringify({ output, ...rendered, externalRequests: requests.length, errors }, null, 2));

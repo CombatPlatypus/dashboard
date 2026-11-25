@@ -25,6 +25,7 @@ As linhas do acumulado guardam `opsCode` quando ele está disponível. Uma sess�
 - O seletor aceita arquivos `.js` de até 50 MB. O módulo lê o conteúdo como texto, extrai o JSON e valida o esquema, a versão e a estrutura dos relatórios. A leitura usa `JSON.parse()` sem executar o JavaScript do arquivo.
 - Um arquivo de relatórios aplica o contexto, chama `importSession()` nos módulos presentes e aplica as preferências disponíveis. As visualizações dependentes são atualizadas no mesmo lote após aplicar os dados. A sessão da aba é gravada após o sucesso. Se a aplicação falhar, o código tenta reaplicar os estados afetados, o contexto e as preferências anteriores.
 - Sessões v1 antigas podem conter apenas Planejamento, Processamento, Expedição e Taxa de Perdas. A importação aplica os relatórios presentes no arquivo e conserva o estado atual dos demais.
+- A restauração da Reversa soma as quantidades antigas de Return e Missorted e reúne os BRs por TO em **Return / Missorted**. A próxima gravação da Reversa usa a categoria unificada. [Contexto da Reversa](../Painel%20Relat%C3%B3rios/README.md#reversa)
 - O botão do menu também aceita arquivos só de configurações. Nesse fluxo ele aplica e grava as preferências diretamente na aba. Veja [Página de Configurações](../P%C3%A1gina%20de%20Configura%C3%A7%C3%B5es/README.md) para o fluxo do editor.
 
 ## Prioridade no recarregamento

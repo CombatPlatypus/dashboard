@@ -169,7 +169,7 @@ test("Parcel e Reversa exibem totais, cobertura de esperados e composição e vo
     const text = suffix => elements.get(`overallAnalysis${suffix}`).textContent;
     render();
     assert.equal(text("ParcelScanned"), "—");
-    assert.equal(text("ReverseReturn"), "—");
+    assert.equal(text("ReverseReturnMissorted"), "—");
     const rows = [
         ["Backlog", "Y"], ["Exception", "Y"], ["Mis-sorted", "Y"],
         ["Missing", "Y"], ["Missing", "Y"], ["Backlog", "N"],
@@ -182,20 +182,22 @@ test("Parcel e Reversa exibem totais, cobertura de esperados e composição e vo
     assert.deepEqual(parcelChart.data.datasets[0].data, [3, 2]);
     assert.equal(parcelChart.$parcelTotal, 5);
     assert.equal(parcelChart.$parcelScanned, 3);
-    assert.deepEqual(["Return", "Missorted", "Liquidate", "Confiscated"].map(type => text(`Reverse${type}`)),
-        ["3", "2", "1", "4"]);
-    assert.deepEqual(["Return", "Missorted", "Liquidate", "Confiscated"].map(type => text(`ReverseComposition${type}`)),
-        ["3 (30%)", "2 (20%)", "1 (10%)", "4 (40%)"]);
-    assert.deepEqual(reverseChart.data.datasets[0].data, [3, 2, 1, 4]);
+    assert.deepEqual(["ReturnMissorted", "Liquidate", "Confiscated"].map(type => text(`Reverse${type}`)),
+        ["5", "1", "4"]);
+    assert.deepEqual(["ReturnMissorted", "Liquidate", "Confiscated"].map(type => text(`ReverseComposition${type}`)),
+        ["5 (50%)", "1 (10%)", "4 (40%)"]);
+    assert.deepEqual(reverseChart.data.labels, ["Return / Missorted", "Liquidate", "Confiscado"]);
+    assert.deepEqual(reverseChart.data.datasets[0].data, [5, 1, 4]);
+    assert.deepEqual(reverseChart.data.datasets[0].backgroundColor, ["#8B0000", "#2538a5", "#f99400"]);
     assert.equal(reverseChart.options.plugins.reverseCenterText.text, "10");
     render({ rows: rows.map(row => ({ ...row, expected: "N" })) }, { transfers: [] });
     assert.equal(text("ParcelCoverageScanned"), "—");
-    assert.equal(text("ReverseReturn"), "—");
+    assert.equal(text("ReverseReturnMissorted"), "—");
     render();
     assert.equal(text("ParcelScanned"), "—");
-    assert.equal(text("ReverseCompositionReturn"), "—");
+    assert.equal(text("ReverseCompositionReturnMissorted"), "—");
     assert.deepEqual(parcelChart.data.datasets[0].data, [0, 0]);
-    assert.deepEqual(reverseChart.data.datasets[0].data, [0, 0, 0, 0]);
+    assert.deepEqual(reverseChart.data.datasets[0].data, [0, 0, 0]);
     assert.equal(reverseChart.options.plugins.reverseCenterText.text, "—");
     assert.equal(charts.length, 7);
 });

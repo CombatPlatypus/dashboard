@@ -2634,8 +2634,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Total da Reversa</th>
-                                                <th>Return</th>
-                                                <th>Missorted</th>
+                                                <th>Return / Missorted</th>
                                                 <th>Liquidate</th>
                                                 <th>Confiscado</th>
                                             </tr>
@@ -2644,8 +2643,7 @@
                                         <tbody>
                                             <tr>
                                                 <td id="reverseTotal">—</td>
-                                                <td id="reverseReturn">—</td>
-                                                <td id="reverseMissorted">—</td>
+                                                <td id="reverseReturnMissorted">—</td>
                                                 <td id="reverseLiquidate">—</td>
                                                 <td id="reverseConfiscated">—</td>
                                             </tr>
@@ -2666,13 +2664,8 @@
 
                                             <div class="chart-label">
                                                 <div class="type">
-                                                    <div style="background-color: #007A48;"></div>
-                                                    <p>Return <span id="reverseCompositionReturn">—</span></p>
-                                                </div>
-
-                                                <div class="type">
                                                     <div style="background-color: #8B0000;"></div>
-                                                    <p>Missorted <span id="reverseCompositionMissorted">—</span></p>
+                                                    <p>Return / Missorted <span id="reverseCompositionReturnMissorted">—</span></p>
                                                 </div>
 
                                                 <div class="type">
@@ -2716,14 +2709,14 @@
 
                                     <div id="reversePackageTables" class="distribution-tables flex-box-start">
 
-                                        <div id="reverseReturnPackagesSection">
-                                            <table id="reverseReturnPackagesTable">
+                                        <div id="reverseReturnMissortedPackagesSection">
+                                            <table id="reverseReturnMissortedPackagesTable">
                                                 <caption>
                                                     <div class="flex-box-start">
 
-                                                        <span>Return</span>
+                                                        <span>Return / Missorted</span>
 
-                                                        <button id="reverseCopyReturnPackagesButton" type="button" data-reverse-copy="return" title="Copiar BRs e TOs de Return" aria-label="Copiar BRs e TOs de Return" disabled>
+                                                        <button id="reverseCopyReturnMissortedPackagesButton" type="button" data-reverse-copy="returnMissorted" title="Copiar BRs e TOs de Return / Missorted" aria-label="Copiar BRs e TOs de Return / Missorted" disabled>
                                                             <img src="images/geral-icons/copy-mini-icon.svg">
                                                         </button>
                                                     </div>
@@ -2736,35 +2729,7 @@
                                                     </tr>
                                                 </thead>
 
-                                                <tbody id="reverseReturnPackagesBody">
-                                                    <tr class="empty-row">
-                                                        <td colspan="2">—</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div id="reverseMissortedPackagesSection">
-                                            <table id="reverseMissortedPackagesTable">
-                                                <caption>
-                                                    <div class="flex-box-start">
-
-                                                        <span>Missorted</span>
-
-                                                        <button id="reverseCopyMissortedPackagesButton" type="button" data-reverse-copy="missorted" title="Copiar BRs e TOs de Missorted" aria-label="Copiar BRs e TOs de Missorted" disabled>
-                                                            <img src="images/geral-icons/copy-mini-icon.svg">
-                                                        </button>
-                                                    </div>
-                                                </caption>
-
-                                                <thead>
-                                                    <tr>
-                                                        <th>Código BR</th>
-                                                        <th>Respectiva TO</th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody id="reverseMissortedPackagesBody">
+                                                <tbody id="reverseReturnMissortedPackagesBody">
                                                     <tr class="empty-row">
                                                         <td colspan="2">—</td>
                                                     </tr>
@@ -3400,8 +3365,7 @@
 
                                                         <thead>
                                                             <tr>
-                                                                <th>Return</th>
-                                                                <th>Missorted</th>
+                                                                <th>Return / Missorted</th>
                                                                 <th>Liquidate</th>
                                                                 <th>Confiscado</th>
                                                             </tr>
@@ -3409,8 +3373,7 @@
 
                                                         <tbody>
                                                             <tr>
-                                                                <td id="overallAnalysisReverseReturn">—</td>
-                                                                <td id="overallAnalysisReverseMissorted">—</td>
+                                                                <td id="overallAnalysisReverseReturnMissorted">—</td>
                                                                 <td id="overallAnalysisReverseLiquidate">—</td>
                                                                 <td id="overallAnalysisReverseConfiscated">—</td>
                                                             </tr>
@@ -3424,13 +3387,8 @@
 
                                                         <div class="chart-label">
                                                             <div class="type">
-                                                                <div style="background-color: #007A48;"></div>
-                                                                <p>Return <span id="overallAnalysisReverseCompositionReturn">—</span></p>
-                                                            </div>
-
-                                                            <div class="type">
                                                                 <div style="background-color: #8B0000;"></div>
-                                                                <p>Missorted <span id="overallAnalysisReverseCompositionMissorted">—</span></p>
+                                                                <p>Return / Missorted <span id="overallAnalysisReverseCompositionReturnMissorted">—</span></p>
                                                             </div>
 
                                                             <div class="type">
@@ -4097,8 +4055,7 @@
 
                 <form id="reverseImportTypeForm">
                     <fieldset>
-                        <label><input type="radio" name="reverseImportType" value="return" required> Return</label>
-                        <label><input type="radio" name="reverseImportType" value="missorted" required> Missorted</label>
+                        <label><input type="radio" name="reverseImportType" value="returnMissorted" required> Return / Missorted</label>
                         <label><input type="radio" name="reverseImportType" value="liquidate" required> Liquidate</label>
                         <label><input type="radio" name="reverseImportType" value="confiscated" required> Confiscado</label>
                     </fieldset>

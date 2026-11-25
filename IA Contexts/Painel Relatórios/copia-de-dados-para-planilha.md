@@ -18,7 +18,7 @@ O HTML usa 35 px no título de Processamento e de Expedição. As demais linhas 
 | Relatório | Intervalo | Indicadores |
 | --- | --- | --- |
 | Parcel Sweeper | `C185:J199` | Porcentagem em `C187`, separador em `D187`, Total de Bipado em `E187`, Não Escaneados em `F187`, Backlog em `G187`, Exception em `H187` e Missorted em `I187` |
-| Reversa | `C201:J215` | Return em `C203`, Missorted em `E203`, Liquidate em `G203` e Confiscado em `I203` |
+| Reversa | `C201:J215` | Total da Reversa em `C203`, Return / Missorted em `E203`, Liquidate em `G203` e Confiscado em `I203` |
 
 Parcel Sweeper e Reversa usam esses destinos em todas as janelas.
 
@@ -32,7 +32,7 @@ O HTML leva as 15 linhas com altura de 35 px. As fórmulas em `C14`, `I14` e `K1
 
 ### Resumo da Reversa
 
-Selecione o título mesclado `C201:J201` na aba **Base de Dados** e cole com `Ctrl+V`. O título ocupa a linha inteira. A linha 203 contém os totais por tipo, a linha 204 contém o título **Distribuição por TO** e a linha 205 contém os cabeçalhos. De 206 a 215, a TO ocupa C:D, a quantidade E:F, o percentual G:H e o tipo I:J.
+Selecione o título mesclado `C201:J201` na aba **Base de Dados** e cole com `Ctrl+V`. O título ocupa a linha inteira. A linha 203 contém o total geral e os três totais por categoria, a linha 204 contém o título **Distribuição por TO** e a linha 205 contém os cabeçalhos. De 206 a 215, a TO ocupa C:D, a quantidade E:F, o percentual G:H e o tipo I:J.
 
 As três primeiras linhas do HTML têm 35 px de altura e as demais têm 30 px.
 
@@ -60,7 +60,7 @@ Recebimento, Erros de Etiquetagem e Rotas Conferidas incluem apenas os totais co
 
 ## Listas de pacotes da Reversa
 
-O botão ao lado do título de Return, Missorted, Liquidate ou Confiscado copia os pares da tabela correspondente em texto tabulado. A colagem começa pelo primeiro pacote e preenche **Código BR** na primeira coluna e **Respectiva TO** na segunda. [Implementação](../../js/reports/reverse/package-copy.js) · [Teste](../../tests/reverse-packages.test.mjs)
+O botão ao lado do título de **Return / Missorted**, **Liquidate** ou **Confiscado** copia os pares da tabela correspondente em texto tabulado. A colagem começa pelo primeiro pacote e preenche **Código BR** na primeira coluna e **Respectiva TO** na segunda. [Implementação](../../js/reports/reverse/package-copy.js) · [Teste](../../tests/reverse-packages.test.mjs)
 
 ## Planejamento
 

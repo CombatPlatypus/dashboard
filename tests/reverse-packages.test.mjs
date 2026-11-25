@@ -365,8 +365,7 @@ test(
         for (
             const [typeKey, idSuffix]
             of [
-                ["return", "Return"],
-                ["missorted", "Missorted"],
+                ["returnMissorted", "ReturnMissorted"],
                 ["liquidate", "Liquidate"],
                 ["confiscated", "Confiscated"],
             ]
@@ -414,5 +413,6 @@ test(
             html,
             /<!-- TABELA DE BRs DE CADA RESPETIVA TO -->\s*<div id="reversePackageTables" class="distribution-tables flex-box-start">/,
         );
+        assert.equal([...html.matchAll(/data-reverse-copy=/g)].length, 3);
     },
 );

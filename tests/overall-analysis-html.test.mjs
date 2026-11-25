@@ -90,6 +90,17 @@ test("Parcel e Reversa são opcionais, inclusive quando ambos estão vazios", as
     }
 });
 
+test("HTML do Relatório Final incorpora o total e o gráfico de Return / Missorted", async () => {
+    const html = await createStandaloneOverallAnalysisHtml(createCompleteAnalysis(), { fetchResource: readResource });
+    const { report } = JSON.parse(html.match(/<script id="finalReportData"[^>]*>([\s\S]*?)<\/script>/)[1]);
+    assert.equal(report.reverse.total, 10);
+    assert.deepEqual(report.reverse.quantities, { returnMissorted: 5, liquidate: 1, confiscated: 4 });
+    assert.match(html, /<th>Return \/ Missorted<\/th>/);
+    assert.match(html, /<td id="finalReportReverseReturnMissorted">—<\/td>/);
+    assert.match(html, /Return \/ Missorted <span id="finalReport-ReverseReturnMissorted">—<\/span>/);
+    assert.doesNotMatch(html, /id="finalReport-?Reverse(?:Return|Missorted)"/);
+});
+
 test("zeros importados são válidos sem exigir ocorrências de avarias/perdas", () => {
     const base = createCompleteAnalysis();
     const months = [{ moved: 1000, lost: 0, damage: 0 }];

@@ -61,9 +61,9 @@ function setup(t) {
     return { root, form, confirm, modal, input, button, query, elements };
 }
 
-test("Reveal exige seleção, aceita os quatro tipos e limpa a escolha entre arquivos", async t => {
+test("Reveal exige seleção, aceita os três tipos e limpa a escolha entre arquivos", async t => {
     const { root, form, confirm, modal, query, elements } = setup(t);
-    for (const type of ["return", "missorted", "liquidate", "confiscated"]) {
+    for (const type of ["returnMissorted", "liquidate", "confiscated"]) {
         const pending = requestReverseImportType(root);
         assert.equal(form.selected, null);
         assert.equal(confirm.disabled, true);
@@ -85,6 +85,9 @@ test("instrução de classificação da TO permanece fixa no HTML", () => {
     const instruction = html.match(/id="reverseImportTypeModal"[\s\S]*?<p(?:\s[^>]*)?>([^<]*)<\/p>/);
     assert.equal(instruction?.[1], classificationPrompt);
     const modal = html.match(/id="reverseImportTypeModal"[\s\S]*?<\/form>/)?.[0] ?? "";
+    assert.deepEqual([...modal.matchAll(/name="reverseImportType" value="([^"]+)"/g)].map(([, value]) => value),
+        ["returnMissorted", "liquidate", "confiscated"]);
+    assert.match(modal, /value="returnMissorted" required> Return \/ Missorted<\/label>/);
     assert.match(modal, /value="confiscated" required> Confiscado<\/label>/);
     assert.doesNotMatch(modal, /Intercept/i);
 });
@@ -126,7 +129,7 @@ test("confirmação ocorre antes da leitura e Confiscado classifica a TO inteira
     assert.equal(button.disabled, false);
     const transfer = getReverseState().transfers[0];
     assert.equal(transfer.quantity, 2);
-    assert.deepEqual(transfer.quantities, { return: 0, missorted: 0, liquidate: 0, confiscated: 2 });
+    assert.deepEqual(transfer.quantities, { returnMissorted: 0, liquidate: 0, confiscated: 2 });
 });
 
 test("notificação usa o código da TO sem prefixo duplicado, tipo escolhido e ação da importação", async t => {
@@ -140,7 +143,7 @@ test("notificação usa o código da TO sem prefixo duplicado, tipo escolhido e 
     initializeReverseImport(root);
 
     for (const [type, label, action] of [
-        ["missorted", "Missorted", "adicionada"], ["return", "Return", "atualizada"],
+        ["returnMissorted", "Return / Missorted", "adicionada"],
         ["liquidate", "Liquidate", "atualizada"], ["confiscated", "Confiscado", "atualizada"],
     ]) {
         const pending = input.emit("change");

@@ -91,7 +91,7 @@ test("lê a TO em B2 e classifica pacotes únicos pelo tipo escolhido, ignorando
             {
                 sourceFileName:
                     "transport-list.xlsx",
-                reverseType: "missorted",
+                reverseType: "returnMissorted",
             },
         );
 
@@ -99,14 +99,12 @@ test("lê a TO em B2 e classifica pacotes únicos pelo tipo escolhido, ignorando
     assert.equal(transfer.destination, "SoC de destino");
     assert.equal(transfer.quantity, 5);
     assert.deepEqual(transfer.quantities, {
-        return: 0,
-        missorted: 5,
+        returnMissorted: 5,
         liquidate: 0,
         confiscated: 0,
     });
     assert.deepEqual(transfer.packages, {
-        return: [],
-        missorted: [
+        returnMissorted: [
             "BR1",
             "BR2",
             "BR3",
@@ -186,7 +184,7 @@ test("uma TO nova é adicionada e a mesma TO é atualizada sem duplicar totais",
     const first =
         createReverseImportRecord(
             createRows(),
-            { reverseType: "return" },
+            { reverseType: "returnMissorted" },
         );
 
     const second =
@@ -221,13 +219,12 @@ test("uma TO nova é adicionada e a mesma TO é atualizada sem duplicar totais",
     assert.equal(summary.transfers.length, 2);
     assert.equal(summary.total, 5);
     assert.deepEqual(summary.quantities, {
-        return: 3,
-        missorted: 0,
+        returnMissorted: 3,
         liquidate: 2,
         confiscated: 0,
     });
     assert.deepEqual(summary.packages, {
-        return: [
+        returnMissorted: [
             {
                 trackingNumber: "BR1",
                 to: "TO202610065X5E2",
@@ -241,7 +238,6 @@ test("uma TO nova é adicionada e a mesma TO é atualizada sem duplicar totais",
                 to: "TO202610065X5E2",
             },
         ],
-        missorted: [],
         liquidate: [
             {
                 trackingNumber: "BR10",
@@ -283,8 +279,7 @@ test("uma TO nova é adicionada e a mesma TO é atualizada sem duplicar totais",
     assert.equal(summary.transfers.length, 2);
     assert.equal(summary.total, 5);
     assert.deepEqual(summary.quantities, {
-        return: 0,
-        missorted: 0,
+        returnMissorted: 0,
         liquidate: 2,
         confiscated: 3,
     });
@@ -307,8 +302,8 @@ test("uma TO nova é adicionada e a mesma TO é atualizada sem duplicar totais",
     );
 });
 
-test("os quatro tipos aceitam Forward, tipos desconhecidos e coluna Journey Type ausente", () => {
-    for (const reverseType of ["return", "missorted", "liquidate", "confiscated"]) {
+test("os três tipos aceitam Forward, tipos desconhecidos e coluna Journey Type ausente", () => {
+    for (const reverseType of ["returnMissorted", "liquidate", "confiscated"]) {
         const rows = createRows({ packages: [["BR1", "Forward"], ["BR2", ""], ["BR3", "Unknown"]] });
         rows[23][7] = "";
         const transfer = createReverseImportRecord(rows, { reverseType });
@@ -329,7 +324,7 @@ test("sessão preserva a ordem dos BRs e continua aceitando dados antigos sem as
                 ],
             }),
             {
-                reverseType: "return",
+                reverseType: "returnMissorted",
             },
         );
 
@@ -347,7 +342,7 @@ test("sessão preserva a ordem dos BRs e continua aceitando dados antigos sem as
     assert.deepEqual(
         getReverseState()
             .transfers[0]
-            .packages.return,
+            .packages.returnMissorted,
         ["BR3", "BR1", "BR2"],
     );
 
@@ -358,18 +353,39 @@ test("sessão preserva a ordem dos BRs e continua aceitando dados antigos sem as
                     to: "TOLEGADA1",
                     quantities: {
                         return: 2,
+                        missorted: 3,
                     },
                 },
             ],
         }),
         true,
     );
-    assert.deepEqual(
-        getReverseState()
-            .transfers[0]
-            .packages.return,
-        [],
-    );
+    const [legacyTransfer] = getReverseState().transfers;
+    assert.deepEqual(legacyTransfer.quantities, { returnMissorted: 5, liquidate: 0, confiscated: 0 });
+    assert.deepEqual(legacyTransfer.packages.returnMissorted, []);
+});
+
+test("sessão antiga reúne os BRs de Return e Missorted na mesma lista e preserva a TO", () => {
+    assert.equal(restoreReverseState({ transfers: [
+        { to: "TO1", quantities: { return: 2, missorted: 1 },
+            packages: { return: ["BR2", "BR1"], missorted: ["BR3"] } },
+        { to: "TO2", quantities: { missorted: 1 }, packages: { missorted: ["BR4"] } },
+    ] }), true);
+
+    const session = getReverseState();
+    assert.deepEqual(session.transfers[0].packages, {
+        returnMissorted: ["BR2", "BR1", "BR3"], liquidate: [], confiscated: [],
+    });
+    assert.equal(restoreReverseState(session), true);
+    assert.deepEqual(getReverseState(), session);
+
+    const summary = createReverseSummary(session.transfers);
+    assert.equal(summary.total, 4);
+    assert.deepEqual(summary.packages.returnMissorted, [
+        { trackingNumber: "BR2", to: "TO1" }, { trackingNumber: "BR1", to: "TO1" },
+        { trackingNumber: "BR3", to: "TO1" }, { trackingNumber: "BR4", to: "TO2" },
+    ]);
+    assert.deepEqual(summary.transfers.map(({ typeLabel }) => typeLabel), ["Return / Missorted", "Return / Missorted"]);
 });
 
 test("exige tipo válido antes de ler ou analisar o arquivo", async () => {
