@@ -4,7 +4,9 @@ import { test } from "node:test";
 import { readParcelFile } from "../js/reports/parcel-sweeper/import.js";
 import { initializeParcelCharts } from "../js/reports/parcel-sweeper/charts.js";
 import { initializeParcelView } from "../js/reports/parcel-sweeper/view.js";
-import { replaceParcelRows, resetParcelReport, restoreParcelState, updateParcelFilter } from "../js/reports/parcel-sweeper/state.js";
+import {
+    replaceParcelRows, resetParcelReport, restoreParcelState, toggleParcelOperatorBulky, updateParcelFilter,
+} from "../js/reports/parcel-sweeper/state.js";
 
 function replaceGlobal(t, name, value) {
     const original = Object.getOwnPropertyDescriptor(globalThis, name);
@@ -23,7 +25,9 @@ function initializeReport(t) {
         }
         addEventListener() {}
         setAttribute(name, value) { this[name] = value; }
-        querySelector() { return null; }
+        querySelector(selector) {
+            return selector === "[data-parcel-package-count]" ? this.packageCount ?? null : null;
+        }
         querySelectorAll() { return []; }
         closest() { return this.table ?? this; }
         replaceChildren() { this.children = []; }
@@ -41,7 +45,11 @@ function initializeReport(t) {
         "parcelUnscannedTotal", "parcelCoverageScanned", "parcelCoverageUnscanned", "parcelOperatorDistributionBody",
         "parcelPackageFilter", "parcelCommonPackagesBody", "parcelBulkyPackagesBody"];
     const elements = new Map(ids.map(id => [id, new Element()]));
-    for (const id of ["parcelCommonPackagesBody", "parcelBulkyPackagesBody"]) elements.get(id).table = new Element("table");
+    for (const id of ["parcelCommonPackagesBody", "parcelBulkyPackagesBody"]) {
+        const table = new Element("table");
+        table.packageCount = new Element("span");
+        elements.get(id).table = table;
+    }
     for (const id of ["parcelCoverageChart", "parcelAgingChart", "parcelScannedStatusChart", "parcelFinalStatusChart", "parcelNextStepActionChart"]) {
         elements.set(id, new Canvas());
     }
@@ -134,4 +142,40 @@ test("totais da legenda preservam outros exports, arquivos sem Expected e arquiv
     assert.equal(elements.get("parcelCoverageScanned").textContent, "—");
     assert.equal(elements.get("parcelCoverageUnscanned").textContent, "—");
     assert.equal(centerText(coverage), "—");
+});
+
+test("contadores dos títulos acompanham o filtro e a classificação das duas tabelas de BRs", t => {
+    const { elements } = initializeReport(t);
+    const tables = ["parcelCommonPackagesBody", "parcelBulkyPackagesBody"].map(id => elements.get(id));
+    const checkCounts = (common, bulky) => {
+        assert.deepEqual(tables.map(body => body.table.packageCount.textContent), [`(${common})`, `(${bulky})`]);
+        assert.deepEqual(tables.map(body => body.children.filter(row => row.className !== "empty-row").length),
+            [common, bulky]);
+    };
+    const rows = [
+        ["Backlog", "LMHub_Received", "[Ops1] ANA"],
+        ["Backlog", "LMHub_Received", "[Ops1] ANA"],
+        ["Exception", "LMHub_Received", "[Ops1] ANA"],
+        ["Exception", "LMHub_Received", "[Ops2] BRUNO"],
+        ["Exception", "LMHub_Received", "[Ops2] BRUNO"],
+        ["Backlog", "SOC_Received", "[Ops2] BRUNO"],
+        ["Exception", "", "[Ops1] ANA"],
+        ["Processed", "LMHub_Received", "[Ops2] BRUNO"],
+    ].map(([countType, finalStatus, operator], index) => ({
+        trackingNumber: `BR${index + 1}`, countType, finalStatus, operator,
+    }));
+
+    checkCounts(0, 0);
+    replaceParcelRows(rows);
+    checkCounts(5, 0);
+    toggleParcelOperatorBulky("[Ops2] BRUNO");
+    checkCounts(3, 2);
+    updateParcelFilter("backlog");
+    checkCounts(2, 0);
+    updateParcelFilter("exception");
+    checkCounts(1, 2);
+    assert.equal(restoreParcelState({ rows, activeFilter: "backlog", operatorKindOverrides: { "[ops1] ana": true } }), true);
+    checkCounts(0, 2);
+    resetParcelReport();
+    checkCounts(0, 0);
 });

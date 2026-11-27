@@ -61,7 +61,7 @@ const PARCEL_IMPORT_NOTIFICATION =
         type: "idle",
 
         message:
-            "No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo parcel para exportar e, em seguida, volte aqui e clique em importar.",
+            "No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo para exportar e, em seguida, volte aqui e clique em importar.",
     });
 
 const REVERSE_IMPORT_NOTIFICATION =

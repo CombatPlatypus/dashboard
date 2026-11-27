@@ -1,3 +1,5 @@
+import { isParcelLMHubReceived, normalizeParcelCountType } from "./model.js";
+
 import {
     getParcelSnapshot,
     hasParcelRowsChanged,
@@ -58,6 +60,38 @@ function createParcelFileName() {
             );
 
     return `relatorio-parcel-sweeper-${date}.png`;
+}
+
+function downloadParcelReceivedPackages() {
+    const state = getParcelSnapshot();
+    if (!canExportParcelReport(state)) return;
+
+    try {
+        const xlsx = window.XLSX;
+        const rows = state.rows.filter(row =>
+            isParcelLMHubReceived(row) && normalizeParcelCountType(row.countType) !== "missing",
+        );
+        const sheet = xlsx.utils.aoa_to_sheet([
+            ["SPX TN"],
+            ...rows.map(row => [row.trackingNumber]),
+        ]);
+        const workbook = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(workbook, sheet, "Parcel Sweeper");
+        xlsx.writeFile(workbook, "smart_routing_batch_add_order_template.xlsx", { compression: true });
+
+        setReportNotification({
+            reportId: "parcel",
+            type: "success",
+            message: "Planilha de BRs do Parcel Sweeper gerada.",
+        });
+    } catch (error) {
+        console.error("Não foi possível gerar a planilha de BRs do Parcel Sweeper.", error);
+        setReportNotification({
+            reportId: "parcel",
+            type: "error",
+            message: "Não foi possível gerar a planilha de BRs do Parcel Sweeper.",
+        });
+    }
 }
 
 async function runParcelExport({
@@ -192,6 +226,8 @@ function initializeParcelExport(
             "#parcelPreview",
         );
 
+    const downloadButton = rootElement.querySelector("#parcelDownloadReceivedPackagesButton");
+
     if (
         !(
             copyButton instanceof
@@ -204,7 +240,7 @@ function initializeParcelExport(
         !(
             exportArea instanceof
                 HTMLElement
-        )
+        ) || !(downloadButton instanceof HTMLButtonElement)
     ) {
         return false;
     }
@@ -220,6 +256,8 @@ function initializeParcelExport(
     copyButton.dataset
         .parcelExportInitialized =
             "true";
+
+    downloadButton.addEventListener("click", downloadParcelReceivedPackages);
 
     bindReportImageExportButton(
         copyButton,
@@ -261,19 +299,14 @@ function initializeParcelExport(
         },
     );
 
-    subscribeParcelState(
-        function (state, change) {
-            if (hasParcelRowsChanged(change)) {
-                renderParcelExportStatus(copyButton, clearButton, state);
-            }
-        },
-    );
-
-    renderParcelExportStatus(
-        copyButton,
-        clearButton,
-        getParcelSnapshot(),
-    );
+    const renderDataStatus = state => {
+        renderParcelExportStatus(copyButton, clearButton, state);
+        downloadButton.disabled = !canExportParcelReport(state);
+    };
+    subscribeParcelState((state, change) => {
+        if (hasParcelRowsChanged(change)) renderDataStatus(state);
+    });
+    renderDataStatus(getParcelSnapshot());
 
     return true;
 }

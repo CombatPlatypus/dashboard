@@ -924,10 +924,10 @@
         background-color: var(--color-container);
         border: 1px solid var(--color-border);
         border-radius: 3px;
-        font: inherit;
-        font-size: 13px;
+        font-size: 14px;
+        font-family: 'Open Sans', sans-serif;
         font-weight: 600;
-        letter-spacing: 0.7px;
+        letter-spacing: 1px;
         line-height: 1.35;
         text-align: center;
         cursor: pointer;
@@ -1044,17 +1044,14 @@
             background-color: var(--color-container);
             border: 1px solid var(--color-border);
             border-radius: 3px;
-            font: inherit;
-            font-size: 13px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: 1px;
             line-height: 1.35;
             text-align: center;
             cursor: pointer;
-            transition:
-                color 160ms ease,
-                background-color 160ms ease,
-                border-color 160ms ease;
+
         }
         #parcel .data-selector button::before {
             position: absolute;

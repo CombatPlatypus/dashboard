@@ -229,6 +229,14 @@ function renderParcelPackageTable(
     sort,
 ) {
     const table = body.closest("table");
+    const count = table.querySelector("[data-parcel-package-count]");
+    if (count) {
+        const label = `(${parcelIntegerFormatter.format(rows.length)})`;
+        if (count.textContent !== label) {
+            count.textContent = label;
+        }
+    }
+
     const copyButton = table.querySelector("[data-parcel-copy]");
     if (copyButton instanceof HTMLButtonElement) {
         copyButton.disabled = copyButton.dataset.parcelCopyBusy === "true" || rows.length === 0;

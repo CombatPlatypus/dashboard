@@ -47,7 +47,7 @@
             <div class="package-tables">
                 <div class="table-scroll">
                     <table id="parcelCommonPackagesTable">
-                        <caption><div><span>Pacotes Comuns</span><button id="parcelCopyCommonPackagesButton" type="button" data-parcel-copy="common" title="Copiar BRs de pacotes comuns" aria-label="Copiar BRs de pacotes comuns" disabled><img src="../../images/geral-icons/copy-mini-icon.svg" alt=""></button></div></caption>
+                        <caption><div><span>Pacotes Comuns <span data-parcel-package-count>(0)</span></span><button id="parcelCopyCommonPackagesButton" type="button" data-parcel-copy="common" title="Copiar BRs de pacotes comuns" aria-label="Copiar BRs de pacotes comuns" disabled><img src="../../images/geral-icons/copy-mini-icon.svg" alt=""></button></div></caption>
                         <thead><tr>
                             <th><button data-parcel-sort="operator" aria-label="Ordenar comuns por operador"><span>Operador</span><span class="parcel-sort-indicator">↕</span></button></th>
                             <th><button data-parcel-sort="trackingNumber" aria-label="Ordenar comuns por BR"><span>Código BR</span><span class="parcel-sort-indicator">↕</span></button></th>
@@ -57,7 +57,7 @@
                 </div>
                 <div class="table-scroll">
                     <table id="parcelBulkyPackagesTable">
-                        <caption><div><span>Pacotes Volumosos</span><button id="parcelCopyBulkyPackagesButton" type="button" data-parcel-copy="bulky" title="Copiar BRs de pacotes volumosos" aria-label="Copiar BRs de pacotes volumosos" disabled><img src="../../images/geral-icons/copy-mini-icon.svg" alt=""></button></div></caption>
+                        <caption><div><span>Pacotes Volumosos <span data-parcel-package-count>(0)</span></span><button id="parcelCopyBulkyPackagesButton" type="button" data-parcel-copy="bulky" title="Copiar BRs de pacotes volumosos" aria-label="Copiar BRs de pacotes volumosos" disabled><img src="../../images/geral-icons/copy-mini-icon.svg" alt=""></button></div></caption>
                         <thead><tr>
                             <th><button data-parcel-sort="operator" aria-label="Ordenar volumosos por operador"><span>Operador</span><span class="parcel-sort-indicator">↕</span></button></th>
                             <th><button data-parcel-sort="trackingNumber" aria-label="Ordenar volumosos por BR"><span>Código BR</span><span class="parcel-sort-indicator">↕</span></button></th>
@@ -77,14 +77,16 @@
         resetReportNotification("parcel");
         function loadData() {
             replaceParcelRows([
-                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR10", countType: "Exception", scannedStatus: "Scanned" },
-                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR2", countType: "Backlog", scannedStatus: "Scanned" },
-                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR1", countType: "Backlog", scannedStatus: "Scanned" },
-                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR20", countType: "Exception", scannedStatus: "Scanned" },
-                { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR8", countType: "Backlog", scannedStatus: "Scanned" },
-                { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR3", countType: "Exception", scannedStatus: "Scanned" },
+                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR10", countType: "Exception", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR2", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR1", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR20", countType: "Exception", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+                { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR8", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+                { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR3", countType: "Exception", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
                 { operator: "[Ops100]ANA TESTE", trackingNumber: "BR997", countType: "Processed", scannedStatus: "Scanned" },
-                { operator: "operador@teste.com", trackingNumber: "BR998", countType: "Backlog", scannedStatus: "Scanned" },
+                { operator: "operador@teste.com", trackingNumber: "BR998", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+                { operator: "[Ops100]ANA TESTE", trackingNumber: "BR999", countType: "Backlog", finalStatus: "SOC_Received", scannedStatus: "LMHub_Received" },
+                { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR1000", countType: "Exception", scannedStatus: "LMHub_Received" },
             ], "dados-ficticios.csv");
             toggleParcelOperatorBulky("[Ops200]CAIO TESTE");
         }

@@ -104,11 +104,19 @@ Verifique a leitura do formato em [losses-rate-workbook.test.mjs](../../tests/lo
 
 Acompanha a cobertura da varredura e apresenta recortes de pacotes por operador, aging, status e próxima ação. O [importador](../../js/reports/parcel-sweeper/import.js) normaliza os registros do arquivo. O [modelo](../../js/reports/parcel-sweeper/model.js) usa `Count Type` para a cobertura dos pacotes esperados e aplica as regras de classificação por operador. O [estado](../../js/reports/parcel-sweeper/state.js) guarda os registros e os ajustes manuais de classificação.
 
+A barra de notificações orienta a exportar um arquivo em **SPX > Parcel Sweeper > Parcel Sweeper View** e clicar em importar no dashboard. A mesma orientação aparece na abertura e após limpar o relatório. [Mensagem padrão](../../js/reports/report-notifications.js) · [Teste da mensagem](../../tests/parcel-sweeper-copy.test.mjs)
+
 Prévia e gráficos reaproveitam o resumo até a troca das linhas. O filtro atualiza as duas tabelas de pacotes, a ordem muda só a tabela acionada, e a classificação manual atualiza o operador e a divisão entre comuns e volumosos. O Final usa apenas os totais de pacotes e cobertura. [Resumo compartilhado](../../js/reports/parcel-sweeper/state.js) · [Prévia](../../js/reports/parcel-sweeper/view.js)
+
+As tabelas **Pacotes Comuns** e **Pacotes Volumosos** exigem `Final Status = LMHub_Received` para incluir um BR de Backlog ou Exception. A regra vale nos filtros **Todos os Pacotes**, **Backlog** e **Exception**. A cópia de BRs segue o filtro e a ordem da tabela. Os indicadores de Backlog e Exception contam os registros da base completa pelo `Count Type`. [Filtro de pacotes](../../js/reports/parcel-sweeper/model.js#L812) · [Cópia de BRs](../../js/reports/parcel-sweeper/package-copy.js)
+
+O título de cada tabela mostra, entre parênteses, o total de BRs da própria tabela no filtro ativo. O valor vem das linhas filtradas e acompanha a reclassificação de operadores. As listas vazias exibem `(0)`. [Prévia das tabelas](../../js/reports/parcel-sweeper/view.js) · [Teste dos contadores](../../tests/parcel-sweeper-coverage.test.mjs)
+
+O primeiro botão da barra de ações baixa `smart_routing_batch_add_order_template.xlsx` com uma coluna e o cabeçalho exato `SPX TN`. No clique, a exportação lê a base atual e inclui um BR por registro com `Final Status = LMHub_Received` e `Count Type` diferente de `Missing`, na ordem da importação. O botão fica disponível com dados importados ou restaurados. Se nenhum registro atender às duas condições, o arquivo contém apenas o cabeçalho. [Exportador](../../js/reports/parcel-sweeper/export.js) · [Teste do XLSX](../../tests/parcel-sweeper-export.test.mjs)
 
 A cópia para **Base de Dados** monta os indicadores e a distribuição por operador a partir do resumo compartilhado no momento do clique. O bloco `C185:J199` inclui até 10 operadores e independe dos filtros de pacotes e dos ajustes de classificação. [Cópia do Parcel Sweeper](copia-de-dados-para-planilha.md#parcel-sweeper)
 
-Verifique cobertura, casos de exceção e classificação em [parcel-sweeper.test.mjs](../../tests/parcel-sweeper.test.mjs) e [parcel-sweeper-overrides.test.mjs](../../tests/parcel-sweeper-overrides.test.mjs).
+Verifique cobertura, filtros e classificação em [parcel-sweeper.test.mjs](../../tests/parcel-sweeper.test.mjs) e [parcel-sweeper-overrides.test.mjs](../../tests/parcel-sweeper-overrides.test.mjs). A [suíte de cópia dos BRs](../../tests/parcel-sweeper-copy.test.mjs) cobre os filtros nas duas tabelas.
 
 ## Reversa
 

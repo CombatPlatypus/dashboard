@@ -809,6 +809,10 @@ function createParcelAgingDistribution(
     return distribution;
 }
 
+function isParcelLMHubReceived(row) {
+    return normalizeParcelText(row.finalStatus) === "LMHub_Received";
+}
+
 function filterParcelPackageRows(
     rows,
     filter,
@@ -820,17 +824,14 @@ function filterParcelPackageRows(
 
     return rows.filter(
         function (row) {
+            if (!isParcelLMHubReceived(row)) {
+                return false;
+            }
+
             const countType =
                 normalizeParcelCountType(
                     row.countType,
                 );
-
-            if (
-                countType === "exception" &&
-                normalizeParcelText(row.finalStatus) !== "LMHub_Received"
-            ) {
-                return false;
-            }
 
             if (
                 normalizedFilter ===
@@ -1039,6 +1040,7 @@ export {
     filterParcelPackageRows,
     formatParcelOperatorName,
     getParcelOperatorKey,
+    isParcelLMHubReceived,
     isParcelOperator,
     isParcelScannedRow,
     normalizeParcelColumnName,

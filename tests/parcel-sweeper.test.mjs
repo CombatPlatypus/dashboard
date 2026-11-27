@@ -320,6 +320,7 @@ test("inclui BRs de operadores sem Ops sem alterar a cobertura nem as análises 
         createParcelRow({
             trackingNumber: "BR1",
             scannedStatus: "LMHub_Received",
+            finalStatus: "LMHub_Received",
             countType: "Backlog",
             operator: "[Ops1]ANA",
             scannedTime: "2026-10-02 14:00:00",
@@ -335,6 +336,7 @@ test("inclui BRs de operadores sem Ops sem alterar a cobertura nem as análises 
         createParcelRow({
             trackingNumber: "BR3",
             scannedStatus: "LMHub_Received",
+            finalStatus: "LMHub_Received",
             countType: "Backlog",
             operator: "Maria Eduarda",
         }),
@@ -520,48 +522,29 @@ test("distribui aging nas sete faixas e exclui valores abaixo de uma hora", () =
     );
 });
 
-test("Exception exige Final Status LMHub_Received, inclusive no filtro Todos", () => {
-    const rows = [
-        { countType: "Backlog" },
+test("Backlog e Exception exigem Final Status LMHub_Received em todos os filtros", () => {
+    const backlog = [
+        { countType: "Backlog", finalStatus: "LMHub_Received" },
+        { countType: " backlog ", finalStatus: " LMHub_Received " },
+    ];
+    const exception = [
         { countType: "Exception", finalStatus: "LMHub_Received" },
         { countType: " exception ", finalStatus: " LMHub_Received " },
-        { countType: "Exception", finalStatus: "SOC_Received", scannedStatus: "LMHub_Received" },
-        { countType: "Exception", finalStatus: "Return_LMHub_Received" },
-        { countType: "Exception", finalStatus: "lmhub_received" },
-        { countType: "Exception", finalStatus: "-" },
-        { countType: "Exception", finalStatus: "" },
-        { countType: "Exception", finalStatus: null },
-        { countType: "Exception" },
-        { countType: "Missing" },
+    ];
+    const rows = [
+        ...backlog,
+        ...exception,
+        ...["Backlog", "Exception"].flatMap(countType => [
+            { countType, finalStatus: "SOC_Received", scannedStatus: "LMHub_Received" },
+            ...["Return_LMHub_Received", "lmhub_received", "-", "", null].map(finalStatus => ({ countType, finalStatus })),
+            { countType },
+        ]),
+        { countType: "Processed", finalStatus: "LMHub_Received" },
     ];
 
-    assert.equal(
-        filterParcelPackageRows(
-            rows,
-            "all",
-        ).length,
-        3,
-    );
-
-    assert.equal(
-        filterParcelPackageRows(
-            rows,
-            "backlog",
-        ).length,
-        1,
-    );
-
-    assert.equal(
-        filterParcelPackageRows(
-            rows,
-            "exception",
-        ).length,
-        2,
-    );
-
-    assert.deepEqual(filterParcelPackageRows(rows, "all"), rows.slice(0, 3));
-    assert.deepEqual(filterParcelPackageRows(rows, "backlog"), rows.slice(0, 1));
-    assert.deepEqual(filterParcelPackageRows(rows, "exception"), rows.slice(1, 3));
+    assert.deepEqual(filterParcelPackageRows(rows, "all"), [...backlog, ...exception]);
+    assert.deepEqual(filterParcelPackageRows(rows, "backlog"), backlog);
+    assert.deepEqual(filterParcelPackageRows(rows, "exception"), exception);
 });
 
 test("importa o CSV exportado pelo Parcel Sweeper", async () => {
@@ -686,6 +669,7 @@ test("o HTML e a inicialização ligam todos os pontos do relatório", () => {
         "parcelOperatorDistributionBody",
         "parcelCommonPackagesBody",
         "parcelBulkyPackagesBody",
+        "parcelDownloadReceivedPackagesButton",
     ].forEach(
         function (id) {
             assert.equal(

@@ -51,8 +51,8 @@ test("ordena o rótulo exibido do operador sem mudar código, nome original ou a
 test("tabelas mantêm ordenações independentes ao aplicar os filtros", () => {
     const rows = [
         { operator: "[Ops2]ANA SILVA", trackingNumber: "BR10", countType: "Exception", finalStatus: "LMHub_Received" },
-        { operator: "[Ops10]BRUNO LIMA", trackingNumber: "BR2", countType: "Backlog" },
-        { operator: "[Ops2]ANA SILVA", trackingNumber: "BR1", countType: "Backlog" },
+        { operator: "[Ops10]BRUNO LIMA", trackingNumber: "BR2", countType: "Backlog", finalStatus: "LMHub_Received" },
+        { operator: "[Ops2]ANA SILVA", trackingNumber: "BR1", countType: "Backlog", finalStatus: "LMHub_Received" },
         { operator: "[Ops1]CARLA SOUZA", trackingNumber: "BR3", countType: "Processed" },
     ];
     const commonSort = Object.freeze({ column: "trackingNumber", direction: "desc" });
@@ -68,10 +68,11 @@ test("tabelas mantêm ordenações independentes ao aplicar os filtros", () => {
     assert.deepEqual(bulkySort, { column: "operator", direction: "asc" });
 });
 
-test("ambas as tabelas têm botões de ordenação em Operador e Código BR", () => {
+test("as tabelas exibem o contador entre o nome e a cópia e ordenam por Operador e Código BR", () => {
     const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-    for (const kind of ["Common", "Bulky"]) {
+    for (const [kind, label] of [["Common", "Pacotes Comuns"], ["Bulky", "Pacotes Volumosos"]]) {
         const table = html.match(new RegExp(`<table id="parcel${kind}PackagesTable">([\\s\\S]*?)</table>`))[1];
+        assert.match(table, new RegExp(`<caption>[\\s\\S]*?<span>${label} <span data-parcel-package-count>\\(0\\)</span></span>\\s*<button\\b`));
         assert.equal((table.match(/aria-sort="none"/g) ?? []).length, 2);
         assert.match(table, /<button\b[^>]*\bdata-parcel-sort="operator"[^>]*>/);
         assert.match(table, /<button\b[^>]*\bdata-parcel-sort="trackingNumber"[^>]*>/);

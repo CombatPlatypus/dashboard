@@ -77,15 +77,17 @@ test("cada botão acompanha filtros, ordenação e correções de Volumoso sem m
     setup(t, async value => writes.push(value));
     const rows = [
         { operator: "[Ops100]ANA TESTE", trackingNumber: "BR10", countType: "Exception", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
-        { operator: "[Ops100]ANA TESTE", trackingNumber: "BR2", countType: "Backlog", scannedStatus: "Scanned" },
+        { operator: "[Ops100]ANA TESTE", trackingNumber: "BR2", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
         { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR3", countType: "Exception", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
-        { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR1", countType: "Backlog", scannedStatus: "Scanned" },
+        { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR1", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
         { operator: "[Ops100]ANA TESTE", trackingNumber: "BR99", countType: "Processed", scannedStatus: "Scanned" },
-        { operator: "operador@teste.com", trackingNumber: "BR98", countType: "Backlog", scannedStatus: "Scanned" },
+        { operator: "operador@teste.com", trackingNumber: "BR98", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
         { operator: "[Ops100]ANA TESTE", trackingNumber: "BR97", countType: "Exception", finalStatus: "SOC_Received", scannedStatus: "LMHub_Received" },
         { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR96", countType: "Exception", finalStatus: "Return_LMHub_Packed", scannedStatus: "LMHub_Received" },
-        { operator: "-", trackingNumber: "BR95", countType: "Backlog", scannedStatus: "Scanned" },
-        { operator: "", trackingNumber: "BR94", countType: "Backlog", scannedStatus: "Scanned" },
+        { operator: "-", trackingNumber: "BR95", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+        { operator: "", trackingNumber: "BR94", countType: "Backlog", finalStatus: "LMHub_Received", scannedStatus: "Scanned" },
+        { operator: "[Ops100]ANA TESTE", trackingNumber: "BR93", countType: "Backlog", finalStatus: "SOC_Received", scannedStatus: "LMHub_Received" },
+        { operator: "[Ops200]CAIO TESTE", trackingNumber: "BR92", countType: "Backlog", scannedStatus: "LMHub_Received" },
     ];
     const common = new Body(); const bulky = new Body();
     const commonButton = new Button(); const bulkyButton = new Button();
@@ -155,13 +157,14 @@ test("impede cliques duplicados e libera o botão conforme a tabela após a cóp
     assert.equal(button.title, "Copiar BRs");
 });
 
-test("HTML conecta os botões e mantém a nova orientação ao abrir e limpar", t => {
+test("HTML conecta os botões e exibe a mesma orientação ao abrir e limpar", t => {
     const { text } = setup(t);
-    const message = "No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo parcel para exportar e, em seguida, volte aqui e clique em importar.";
+    const message = "No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo para exportar e, em seguida, volte aqui e clique em importar.";
     resetReportNotification("parcel");
     assert.equal(text.textContent, message);
     const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-    assert.match(html, /<h4 id="parcelNotificationText">\s*No SPX, acesse Parcel Sweeper \/ Parcel Sweeper View, escolha um arquivo parcel para exportar e, em seguida, volte aqui e clique em importar\./);
+    const initialMessage = html.match(/<h4 id="parcelNotificationText">([\s\S]*?)<\/h4>/)?.[1].trim();
+    assert.equal(initialMessage, message);
     for (const [id, kind] of [["parcelCopyCommonPackagesButton", "common"], ["parcelCopyBulkyPackagesButton", "bulky"]]) {
         assert.equal(html.split(`id="${id}"`).length - 1, 1);
         assert.match(html, new RegExp(`<button id="${id}" type="button" data-parcel-copy="${kind}"[^>]*>`));

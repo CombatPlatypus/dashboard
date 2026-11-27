@@ -52,6 +52,7 @@
             operator: profile.operator,
             trackingNumber: `BR${operatorIndex + 1}${String(index + 1).padStart(4, "0")}`,
             scannedStatus: "LMHub_Received",
+            finalStatus: "LMHub_Received",
             scannedTime: new Date(Date.UTC(2026, 9, 2, 14, 0, index * profile.gap))
                 .toISOString().slice(0, 19).replace("T", " "),
             countType: index % 3 === 0 ? "Exception" : "Backlog",

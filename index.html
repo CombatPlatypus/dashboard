@@ -2314,12 +2314,16 @@
                                         <img id="parcelNotificationIcon" src="images/geral-icons/bell-icon.svg">
 
                                         <h4 id="parcelNotificationText">
-                                            No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo parcel para exportar e, em seguida, volte aqui e clique em importar.
+                                            No SPX, acesse Parcel Sweeper / Parcel Sweeper View, escolha um arquivo para exportar e, em seguida, volte aqui e clique em importar.
                                         </h4>
                                     </div>
                                 </div>
 
                                 <div class="report-actions">
+                                    <button id="parcelDownloadReceivedPackagesButton" type="button" title="Baixar BRs com Final Status LMHub_Received em XLSX (exceto Missing)" aria-label="Baixar BRs com Final Status LMHub_Received em XLSX (exceto Missing)" disabled>
+                                        <img src="images/geral-icons/file-xlsx-icon.svg" alt="">
+                                    </button>
+
                                     <button id="parcelCopySummaryButton" type="button" title="Copiar resumo do Parcel Sweeper para a planilha" aria-label="Copiar resumo do Parcel Sweeper para a planilha" disabled>
                                         <img src="images/geral-icons/copy-icon.svg" alt="">
                                     </button>
@@ -2448,7 +2452,7 @@
                                         </button>
 
                                         <button type="button" role="tab" aria-selected="false" data-parcel-filter="backlog" disabled>
-                                            <span>Backlog</span>
+                                            <span>Backlog (LMHub_Received)</span>
                                         </button>
 
                                         <button type="button" role="tab" aria-selected="false" data-parcel-filter="exception" disabled>
@@ -2464,7 +2468,7 @@
                                                 <caption>
                                                     <div class="flex-box-start">
 
-                                                        <span>Pacotes Comuns</span>
+                                                        <span>Pacotes Comuns <span data-parcel-package-count>(0)</span></span>
 
                                                         <button id="parcelCopyCommonPackagesButton" type="button" data-parcel-copy="common" title="Copiar BRs de pacotes comuns" aria-label="Copiar BRs de pacotes comuns" disabled>
                                                             <img src="images/geral-icons/copy-mini-icon.svg">
@@ -2499,7 +2503,7 @@
                                             <table id="parcelBulkyPackagesTable">
                                                 <caption>
                                                     <div class="flex-box-start">
-                                                        <span>Pacotes Volumosos</span>
+                                                        <span>Pacotes Volumosos <span data-parcel-package-count>(0)</span></span>
                                                         
                                                         <button id="parcelCopyBulkyPackagesButton" type="button" data-parcel-copy="bulky" title="Copiar BRs de pacotes volumosos" aria-label="Copiar BRs de pacotes volumosos" disabled>
                                                             <img src="images/geral-icons/copy-mini-icon.svg">
