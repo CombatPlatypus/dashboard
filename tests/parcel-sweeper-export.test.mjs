@@ -9,7 +9,7 @@ import {
 
 const XLSX = createRequire(import.meta.url)("../js/libraries/xlsx.full.min.js");
 
-test("botão baixa um XLSX dos BRs recebidos da base atual, exceto Missing", async t => {
+test("botão baixa Backlog e Exception recebidos com operador Ops ou Shopee", async t => {
     class Element extends EventTarget {
         dataset = {};
     }
@@ -60,13 +60,18 @@ test("botão baixa um XLSX dos BRs recebidos da base atual, exceto Missing", asy
 
     const csv = [
         "SPX Tracking Number,Final Status,Scanned Status,Count Type,Operator,Aging Time,Scanned Time",
-        "BR103,LMHub_Received,-,Missing,,,",
+        "BR103,LMHub_Received,-,Missing,[Ops1] ANA,,",
         "BR101,LMHub_Received,-,Backlog,[Ops1] ANA,,",
         "BR102,LMHub_Received,-,Exception,[Ops2] BRUNO,,",
-        "BR106,LMHub_Received,-,Processed,,,",
+        "BR106,LMHub_Received,-,Processed,[Ops1] ANA,,",
         "BR104,SOC_Received,LMHub_Received,Backlog,[Ops1] ANA,,",
         "BR105,Return_LMHub_Received,LMHub_Received,Exception,[Ops2] BRUNO,,",
-        "BR107,LMHub_Received,-, missing ,,,",
+        "BR107,LMHub_Received,-,Mis-sorted,[Ops2] BRUNO,,",
+        "BR108,LMHub_Received,-,Exception, analista@SHOPEE.COM ,,",
+        "BR109,LMHub_Received,-,Backlog,,,",
+        "BR110,LMHub_Received,-,Exception,ANA,,",
+        "BR111,LMHub_Received,-,Backlog,operador@empresa.com,,",
+        "BR112,LMHub_Received,-,Exception,operador@shopee.com.exemplo.net,,",
         "BR101,LMHub_Received,-,Backlog,[Ops1] ANA,,",
     ].join("\n");
     const imported = await readParcelFile(new File([csv], "parcel.csv"));
@@ -75,10 +80,10 @@ test("botão baixa um XLSX dos BRs recebidos da base atual, exceto Missing", asy
     toggleParcelOperatorBulky("[Ops1] ANA");
     assert.equal(button.disabled, false);
     button.click();
-    const expected = [["SPX TN"], ["BR101"], ["BR102"], ["BR106"], ["BR101"]];
+    const expected = [["SPX TN"], ["BR101"], ["BR102"], ["BR108"], ["BR101"]];
     checkWorkbook(0, expected);
 
-    replaceParcelRows([{ trackingNumber: "BR103", finalStatus: "LMHub_Received", countType: "Missing" }]);
+    replaceParcelRows([{ trackingNumber: "BR109", finalStatus: "LMHub_Received", countType: "Backlog" }]);
     button.click();
     checkWorkbook(1, [["SPX TN"]]);
 

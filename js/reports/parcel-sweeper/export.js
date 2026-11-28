@@ -1,4 +1,4 @@
-import { isParcelLMHubReceived, normalizeParcelCountType } from "./model.js";
+import { filterParcelPackageRows, isParcelOperator } from "./model.js";
 
 import {
     getParcelSnapshot,
@@ -68,8 +68,8 @@ function downloadParcelReceivedPackages() {
 
     try {
         const xlsx = window.XLSX;
-        const rows = state.rows.filter(row =>
-            isParcelLMHubReceived(row) && normalizeParcelCountType(row.countType) !== "missing",
+        const rows = filterParcelPackageRows(state.rows, "all").filter(({ operator }) =>
+            isParcelOperator(operator) || /^[^\s@]+@shopee\.com$/i.test(operator),
         );
         const sheet = xlsx.utils.aoa_to_sheet([
             ["SPX TN"],
